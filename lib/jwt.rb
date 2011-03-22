@@ -13,7 +13,7 @@ module JWT
   
   def self.sign(algorithm, msg, key)
     raise NotImplementedError.new("Unsupported signing method") unless ["HS256", "HS384", "HS512"].include?(algorithm)
-    OpenSSL::HMAC.hexdigest(OpenSSL::Digest::Digest.new(algorithm.sub('HS', 'sha')), key, msg)
+    OpenSSL::HMAC.digest(OpenSSL::Digest::Digest.new(algorithm.sub('HS', 'sha')), key, msg)
   end
   
   def self.base64url_decode(str)

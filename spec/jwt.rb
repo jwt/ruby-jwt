@@ -14,7 +14,7 @@ describe JWT do
   it "decodes valid JWTs" do
     example_payload = {"hello" => "world"}
     example_secret = 'secret'
-    example_jwt = 'eyJhbGciOiAiSFMyNTYiLCAidHlwIjogIkpXVCJ9.eyJoZWxsbyI6ICJ3b3JsZCJ9.YjZmNmEwMmMzMmU4NmEyMjRhYzRlMmFhYTQxNWQyMTA2Y2JiNDk4NGEyN2Q5ODYzOWVkODI2ZjVjYjY5Y2EzZg'
+    example_jwt = 'eyJhbGciOiAiSFMyNTYiLCAidHlwIjogIkpXVCJ9.eyJoZWxsbyI6ICJ3b3JsZCJ9.tvagLDLoaiJKxOKqpBXSEGy7SYSifZhjntgm9ctpyj8'
     decoded_payload = JWT.decode(example_jwt, example_secret)
     decoded_payload.should == example_payload
   end
