@@ -13,5 +13,5 @@ Echoe.new('jwt', '0.1.2') do |p|
 end
 
 task :test do
-  sh "spec spec/jwt.rb"
+  sh "rspec spec/jwt.rb"
 end

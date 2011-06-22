@@ -12,7 +12,24 @@ module JWT
   class DecodeError < Exception; end
   
   def self.sign(algorithm, msg, key)
-    raise NotImplementedError.new("Unsupported signing method") unless ["HS256", "HS384", "HS512"].include?(algorithm)
+    if ["HS256", "HS384", "HS512"].include?(algorithm)
+      sign_hmac(algorithm, msg, key)
+    elsif ["RS256", "RS384", "RS512"].include?(algorithm)
+      sign_rsa(algorithm, msg, key)
+    else
+      raise NotImplementedError.new("Unsupported signing method")
+    end
+  end
+
+  def self.sign_rsa(algorithm, msg, private_key)
+    private_key.sign(OpenSSL::Digest::Digest.new(algorithm.sub('RS', 'sha')), msg)
+  end
+
+  def self.verify_rsa(algorithm, public_key, signing_input, signature)
+    public_key.verify(OpenSSL::Digest::Digest.new(algorithm.sub('RS', 'sha')), signature, signing_input)
+  end
+
+  def self.sign_hmac(algorithm, msg, key)
     OpenSSL::HMAC.digest(OpenSSL::Digest::Digest.new(algorithm.sub('HS', 'sha')), key, msg)
   end
   
@@ -49,11 +66,13 @@ module JWT
       raise JWT::DecodeError.new("Invalid segment encoding")
     end
     if verify
-      begin
-        if not signature == sign(header['alg'], signing_input, key)
-          raise JWT::DecodeError.new("Signature verification failed")
-        end
-      rescue NotImplementedError
+      algo = header['alg']
+
+      if ["HS256", "HS384", "HS512"].include?(algo)
+        raise JWT::DecodeError.new("Signature verification failed") unless signature == sign_hmac(algo, signing_input, key)
+      elsif ["RS256", "RS384", "RS512"].include?(algo)
+        verify_rsa(algo, key, signing_input, signature)
+      else
         raise JWT::DecodeError.new("Algorithm not supported")
       end
     end
