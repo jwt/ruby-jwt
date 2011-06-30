@@ -43,6 +43,12 @@ The tests are written with rspec. Given you have rake and rspec, you can run tes
 
     rake test
 
+## Contributors
+
+ * Ilya Zhitomirskiy
+ * Daniel Grippi <daniel@joindiaspora.com>
+ * Jeff Lindsay <jeff.lindsay@twilio.com>
+
 ## License
 
 MIT
