@@ -6,7 +6,8 @@ Gem::Specification.new do |s|
 
   s.required_rubygems_version = Gem::Requirement.new(">= 1.2") if s.respond_to? :required_rubygems_version=
   s.authors = [%q{Jeff Lindsay}]
-  s.date = %q{2011-06-22}
+  s.cert_chain = [%q{/Users/progrium/.gem/gem-public_cert.pem}]
+  s.date = %q{2011-06-30}
   s.description = %q{JSON Web Token implementation in Ruby}
   s.email = %q{jeff.lindsay@twilio.com}
   s.extra_rdoc_files = [%q{lib/jwt.rb}]
@@ -16,6 +17,7 @@ Gem::Specification.new do |s|
   s.require_paths = [%q{lib}]
   s.rubyforge_project = %q{jwt}
   s.rubygems_version = %q{1.8.5}
+  s.signing_key = %q{/Users/progrium/.gem/gem-private_key.pem}
   s.summary = %q{JSON Web Token implementation in Ruby}
 
   if s.respond_to? :specification_version then
