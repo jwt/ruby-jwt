@@ -71,7 +71,7 @@ module JWT
       if ["HS256", "HS384", "HS512"].include?(algo)
         raise JWT::DecodeError.new("Signature verification failed") unless signature == sign_hmac(algo, signing_input, key)
       elsif ["RS256", "RS384", "RS512"].include?(algo)
-        verify_rsa(algo, key, signing_input, signature)
+        raise JWT::DecodeError.new("Signature verification failed") unless verify_rsa(algo, key, signing_input, signature)
       else
         raise JWT::DecodeError.new("Algorithm not supported")
       end

@@ -27,11 +27,18 @@ describe JWT do
     decoded_payload.should == example_payload
   end
 
-  it "raises exception with wrong key" do
+  it "raises exception with wrong hmac key" do
     right_secret = 'foo'
     bad_secret = 'bar'
-    jwt_message = JWT.encode(@payload, right_secret)
+    jwt_message = JWT.encode(@payload, right_secret, "HS256")
     lambda { JWT.decode(jwt_message, bad_secret) }.should raise_error(JWT::DecodeError)
+  end
+
+  it "raises exception with wrong rsa key" do
+    right_private_key = OpenSSL::PKey::RSA.generate(512)
+    bad_private_key = OpenSSL::PKey::RSA.generate(512)
+    jwt = JWT.encode(@payload, right_private_key, "RS256")
+    lambda { JWT.decode(jwt, bad_private_key.public_key) }.should raise_error(JWT::DecodeError)
   end
   
   it "allows decoding without key" do
