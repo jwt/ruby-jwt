@@ -1,5 +1,5 @@
 # JWT
-A Ruby implementation of [JSON Web Token draft 01](http://self-issued.info/docs/draft-jones-json-web-token-01.html).
+A Ruby implementation of [JSON Web Token draft 06](http://self-issued.info/docs/draft-jones-json-web-token-06.html).
 
 ## Installing
 
@@ -37,7 +37,18 @@ Change the algorithm with by setting it in encode:
 
     JWT.encode({"some" => "payload"}, "secret", "HS512")
 
-## Tests
+**Plaintext**
+
+We also support unsigned plaintext JWTs as introduced by draft 03 by explicitly specifying `nil` as the key and algorithm:
+
+    jwt = JWT.encode({"some" => "payload"}, nil, nil)
+    JWT.decode(jwt, nil, nil)
+
+## Development and Tests
+
+We depend on [Echoe](http://rubygems.org/gems/echoe) for defining gemspec and performing releases to rubygems.org, which can be done with
+
+    rake release
 
 The tests are written with rspec. Given you have rake and rspec, you can run tests with
 
@@ -45,6 +56,7 @@ The tests are written with rspec. Given you have rake and rspec, you can run tes
 
 ## Contributors
 
+ * Jordan Brough <github.jordanb@xoxy.net>
  * Ilya Zhitomirskiy <ilya@joindiaspora.com>
  * Daniel Grippi <daniel@joindiaspora.com>
  * Jeff Lindsay <jeff.lindsay@twilio.com>

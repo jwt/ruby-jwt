@@ -52,4 +52,11 @@ describe JWT do
   it "raises exception on unsupported crypto algorithm" do
     lambda { JWT.encode(@payload, "secret", 'HS1024') }.should raise_error(NotImplementedError)
   end
+  
+  it "encodes and decodes plaintext JWTs" do
+    jwt = JWT.encode(@payload, nil, nil)
+    jwt.split('.').length.should == 2
+    decoded_payload = JWT.decode(jwt, nil, nil)
+    decoded_payload.should == @payload
+  end
 end
