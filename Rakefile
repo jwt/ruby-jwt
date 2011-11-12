@@ -9,7 +9,7 @@ Echoe.new('jwt', '0.1.4') do |p|
   p.email          = "jeff.lindsay@twilio.com"
   p.ignore_pattern = ["tmp/*"]
   p.runtime_dependencies = ["json >=1.2.4"]
-  p.development_dependencies = []
+  p.development_dependencies = ["echoe >=4.6.3"]
 end
 
 task :test do
