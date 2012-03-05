@@ -42,10 +42,10 @@ module JWT
     Base64.encode64(str).gsub("+", "-").gsub("/", "_").gsub("\n", "").gsub('=', '')
   end  
   
-  def self.encode(payload, key, algorithm='HS256')
+  def self.encode(payload, key, algorithm='HS256', header_fields={})
     algorithm ||= "none"
     segments = []
-    header = {"typ" => "JWT", "alg" => algorithm}
+    header = {"typ" => "JWT", "alg" => algorithm}.merge(header_fields)
     segments << base64url_encode(header.to_json)
     segments << base64url_encode(payload.to_json)
     signing_input = segments.join('.')
@@ -58,7 +58,7 @@ module JWT
     segments.join('.')
   end
   
-  def self.decode(jwt, key=nil, verify=true)
+  def self.decode(jwt, key=nil, verify=true, &keyfinder)
     segments = jwt.split('.')
     raise JWT::DecodeError.new("Not enough or too many segments") unless [2,3].include? segments.length
     header_segment, payload_segment, crypto_segment = segments
@@ -72,6 +72,10 @@ module JWT
     end
     if verify == true
       algo = header['alg']
+
+      if keyfinder
+        key = keyfinder.call(header)
+      end
 
       if ["HS256", "HS384", "HS512"].include?(algo)
         raise JWT::DecodeError.new("Signature verification failed") unless signature == sign_hmac(algo, signing_input, key)
