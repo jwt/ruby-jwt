@@ -1,6 +1,6 @@
 source "https://rubygems.org"
 
-gem "json", ">=1.2.4"
+gem "multi_json", "~> 1.0"
 
 group :development do
   gem "echoe", ">=4.6.3"
