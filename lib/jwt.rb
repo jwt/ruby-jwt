@@ -6,7 +6,7 @@
 
 require "base64"
 require "openssl"
-require "json"
+require "multi_json"
 
 module JWT
   class DecodeError < Exception; end
@@ -46,8 +46,8 @@ module JWT
     algorithm ||= "none"
     segments = []
     header = {"typ" => "JWT", "alg" => algorithm}.merge(header_fields)
-    segments << base64url_encode(header.to_json)
-    segments << base64url_encode(payload.to_json)
+    segments << base64url_encode(MultiJson.encode(header))
+    segments << base64url_encode(MultiJson.encode(payload))
     signing_input = segments.join('.')
     if algorithm != "none"
       signature = sign(algorithm, signing_input, key)
@@ -64,8 +64,8 @@ module JWT
     header_segment, payload_segment, crypto_segment = segments
     signing_input = [header_segment, payload_segment].join('.')
     begin
-      header = JSON.parse(base64url_decode(header_segment))
-      payload = JSON.parse(base64url_decode(payload_segment))
+      header = MultiJson.decode(base64url_decode(header_segment))
+      payload = MultiJson.decode(base64url_decode(payload_segment))
       signature = base64url_decode(crypto_segment) if verify
     rescue JSON::ParserError
       raise JWT::DecodeError.new("Invalid segment encoding")
