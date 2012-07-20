@@ -1,6 +1,6 @@
-# 
+#
 # JSON Web Token implementation
-# 
+#
 # Should be up to date with the latest spec:
 # http://self-issued.info/docs/draft-jones-json-web-token-06.html
 
@@ -10,7 +10,7 @@ require "multi_json"
 
 module JWT
   class DecodeError < Exception; end
-  
+
   def self.sign(algorithm, msg, key)
     if ["HS256", "HS384", "HS512"].include?(algorithm)
       sign_hmac(algorithm, msg, key)
@@ -32,16 +32,16 @@ module JWT
   def self.sign_hmac(algorithm, msg, key)
     OpenSSL::HMAC.digest(OpenSSL::Digest::Digest.new(algorithm.sub('HS', 'sha')), key, msg)
   end
-  
+
   def self.base64url_decode(str)
     str += '=' * (4 - str.length.modulo(4))
     Base64.decode64(str.gsub("-", "+").gsub("_", "/"))
   end
-  
+
   def self.base64url_encode(str)
     Base64.encode64(str).gsub("+", "-").gsub("/", "_").gsub("\n", "").gsub('=', '')
-  end  
-  
+  end
+
   def self.encode(payload, key, algorithm='HS256', header_fields={})
     algorithm ||= "none"
     segments = []
@@ -57,7 +57,7 @@ module JWT
     end
     segments.join('.')
   end
-  
+
   def self.decode(jwt, key=nil, verify=true, &keyfinder)
     segments = jwt.split('.')
     raise JWT::DecodeError.new("Not enough or too many segments") unless [2,3].include? segments.length
@@ -77,12 +77,16 @@ module JWT
         key = keyfinder.call(header)
       end
 
-      if ["HS256", "HS384", "HS512"].include?(algo)
-        raise JWT::DecodeError.new("Signature verification failed") unless signature == sign_hmac(algo, signing_input, key)
-      elsif ["RS256", "RS384", "RS512"].include?(algo)
-        raise JWT::DecodeError.new("Signature verification failed") unless verify_rsa(algo, key, signing_input, signature)
-      else
-        raise JWT::DecodeError.new("Algorithm not supported")
+      begin
+        if ["HS256", "HS384", "HS512"].include?(algo)
+          raise JWT::DecodeError.new("Signature verification failed") unless signature == sign_hmac(algo, signing_input, key)
+        elsif ["RS256", "RS384", "RS512"].include?(algo)
+          raise JWT::DecodeError.new("Signature verification failed") unless verify_rsa(algo, key, signing_input, signature)
+        else
+          raise JWT::DecodeError.new("Algorithm not supported")
+        end
+      rescue OpenSSL::PKey::PKeyError
+        raise JWT::DecodeError.new("Signature verification failed")
       end
     end
     payload
