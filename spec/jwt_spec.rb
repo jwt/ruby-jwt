@@ -19,6 +19,16 @@ describe JWT do
     decoded_payload.should == @payload
   end
 
+  it "encodes and decodes JWTs with custom header fields" do
+    private_key = OpenSSL::PKey::RSA.generate(512)
+    jwt = JWT.encode(@payload, private_key, "RS256", {"kid" => 'default'})
+    decoded_payload = JWT.decode(jwt) do |header|
+      header["kid"].should == 'default'
+      private_key.public_key
+    end
+    decoded_payload.should == @payload
+  end
+
   it "decodes valid JWTs" do
     example_payload = {"hello" => "world"}
     example_secret = 'secret'

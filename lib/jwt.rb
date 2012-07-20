@@ -1,16 +1,16 @@
-# 
+#
 # JSON Web Token implementation
-# 
+#
 # Should be up to date with the latest spec:
 # http://self-issued.info/docs/draft-jones-json-web-token-06.html
 
 require "base64"
 require "openssl"
-require "json"
+require "multi_json"
 
 module JWT
   class DecodeError < Exception; end
-  
+
   def self.sign(algorithm, msg, key)
     if ["HS256", "HS384", "HS512"].include?(algorithm)
       sign_hmac(algorithm, msg, key)
@@ -32,22 +32,22 @@ module JWT
   def self.sign_hmac(algorithm, msg, key)
     OpenSSL::HMAC.digest(OpenSSL::Digest::Digest.new(algorithm.sub('HS', 'sha')), key, msg)
   end
-  
+
   def self.base64url_decode(str)
     str += '=' * (4 - str.length.modulo(4))
     Base64.decode64(str.gsub("-", "+").gsub("_", "/"))
   end
-  
+
   def self.base64url_encode(str)
     Base64.encode64(str).gsub("+", "-").gsub("/", "_").gsub("\n", "").gsub('=', '')
-  end  
-  
-  def self.encode(payload, key, algorithm='HS256')
+  end
+
+  def self.encode(payload, key, algorithm='HS256', header_fields={})
     algorithm ||= "none"
     segments = []
-    header = {"typ" => "JWT", "alg" => algorithm}
-    segments << base64url_encode(header.to_json)
-    segments << base64url_encode(payload.to_json)
+    header = {"typ" => "JWT", "alg" => algorithm}.merge(header_fields)
+    segments << base64url_encode(MultiJson.encode(header))
+    segments << base64url_encode(MultiJson.encode(payload))
     signing_input = segments.join('.')
     if algorithm != "none"
       signature = sign(algorithm, signing_input, key)
@@ -57,21 +57,25 @@ module JWT
     end
     segments.join('.')
   end
-  
-  def self.decode(jwt, key=nil, verify=true)
+
+  def self.decode(jwt, key=nil, verify=true, &keyfinder)
     segments = jwt.split('.')
     raise JWT::DecodeError.new("Not enough or too many segments") unless [2,3].include? segments.length
     header_segment, payload_segment, crypto_segment = segments
     signing_input = [header_segment, payload_segment].join('.')
     begin
-      header = JSON.parse(base64url_decode(header_segment))
-      payload = JSON.parse(base64url_decode(payload_segment))
+      header = MultiJson.decode(base64url_decode(header_segment))
+      payload = MultiJson.decode(base64url_decode(payload_segment))
       signature = base64url_decode(crypto_segment) if verify
     rescue JSON::ParserError
       raise JWT::DecodeError.new("Invalid segment encoding")
     end
     if verify == true
       algo = header['alg']
+
+      if keyfinder
+        key = keyfinder.call(header)
+      end
 
       begin
         if ["HS256", "HS384", "HS512"].include?(algo)
