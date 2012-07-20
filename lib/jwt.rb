@@ -73,12 +73,16 @@ module JWT
     if verify == true
       algo = header['alg']
 
-      if ["HS256", "HS384", "HS512"].include?(algo)
-        raise JWT::DecodeError.new("Signature verification failed") unless signature == sign_hmac(algo, signing_input, key)
-      elsif ["RS256", "RS384", "RS512"].include?(algo)
-        raise JWT::DecodeError.new("Signature verification failed") unless verify_rsa(algo, key, signing_input, signature)
-      else
-        raise JWT::DecodeError.new("Algorithm not supported")
+      begin
+        if ["HS256", "HS384", "HS512"].include?(algo)
+          raise JWT::DecodeError.new("Signature verification failed") unless signature == sign_hmac(algo, signing_input, key)
+        elsif ["RS256", "RS384", "RS512"].include?(algo)
+          raise JWT::DecodeError.new("Signature verification failed") unless verify_rsa(algo, key, signing_input, signature)
+        else
+          raise JWT::DecodeError.new("Algorithm not supported")
+        end
+      rescue OpenSSL::PKey::PKeyError
+        raise JWT::DecodeError.new("Signature verification failed")
       end
     end
     payload
