@@ -60,6 +60,7 @@ The tests are written with rspec. Given you have rake and rspec, you can run tes
  * Ilya Zhitomirskiy <ilya@joindiaspora.com>
  * Daniel Grippi <daniel@joindiaspora.com>
  * Jeff Lindsay <jeff.lindsay@twilio.com>
+ * Bob Aman <bobaman@google.com>
 
 ## License
 
