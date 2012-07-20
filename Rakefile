@@ -8,10 +8,10 @@ Echoe.new('jwt', '0.1.5') do |p|
   p.author         = "Jeff Lindsay"
   p.email          = "jeff.lindsay@twilio.com"
   p.ignore_pattern = ["tmp/*"]
-  p.runtime_dependencies = ["multi_json ~> 1.0"]
+  p.runtime_dependencies = ["multi_json ~>1.0"]
   p.development_dependencies = ["echoe >=4.6.3"]
 end
 
 task :test do
-  sh "rspec spec/jwt.rb"
+  sh "rspec spec/jwt_spec.rb"
 end
