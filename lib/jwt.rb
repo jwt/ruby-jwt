@@ -9,7 +9,7 @@ require "openssl"
 require "multi_json"
 
 module JWT
-  class DecodeError < Exception; end
+  class DecodeError < StandardError; end
 
   def self.sign(algorithm, msg, key)
     if ["HS256", "HS384", "HS512"].include?(algorithm)
