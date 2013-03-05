@@ -70,6 +70,36 @@ describe JWT do
     decoded_payload.should == @payload
   end
 
+  it "does not use == to compare digests" do
+    secret = "secret"
+    jwt = JWT.encode(@payload, secret)
+    crypto_segment = jwt.split(".").last
+
+    signature = JWT.base64url_decode(crypto_segment)
+    signature.should_not_receive('==')
+    JWT.should_receive(:base64url_decode).with(crypto_segment).once.and_return(signature)
+    JWT.should_receive(:base64url_decode).any_number_of_times.and_call_original
+
+    JWT.decode(jwt, secret)
+  end
+
+  describe "secure comparison" do
+    it "returns true if strings are equal" do
+      expect(JWT.secure_compare("Foo", "Foo")).to be_true
+    end
+
+    it "returns false if either input is nil or empty" do
+      [nil, ""].each do |bad|
+        expect(JWT.secure_compare(bad, "Foo")).to be_false
+        expect(JWT.secure_compare("Foo", bad)).to be_false
+      end
+    end
+
+    it "retuns falise of the strings are different" do
+        expect(JWT.secure_compare("Foo", "Bar")).to be_false
+    end
+  end
+
   it "raise exception on invalid signature" do
     pubkey = OpenSSL::PKey::RSA.new(<<-PUBKEY)
 -----BEGIN PUBLIC KEY-----
