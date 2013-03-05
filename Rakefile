@@ -2,7 +2,7 @@ require 'rubygems'
 require 'rake'
 require 'echoe'
 
-Echoe.new('jwt', '0.1.5') do |p|
+Echoe.new('jwt', '0.1.6') do |p|
   p.description    = "JSON Web Token implementation in Ruby"
   p.url            = "http://github.com/progrium/ruby-jwt"
   p.author         = "Jeff Lindsay"
