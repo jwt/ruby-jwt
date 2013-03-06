@@ -67,7 +67,7 @@ module JWT
       header = MultiJson.decode(base64url_decode(header_segment))
       payload = MultiJson.decode(base64url_decode(payload_segment))
       signature = base64url_decode(crypto_segment) if verify
-    rescue JSON::ParserError
+    rescue MultiJson::LoadError => e
       raise JWT::DecodeError.new("Invalid segment encoding")
     end
     if verify == true
