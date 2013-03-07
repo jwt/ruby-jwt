@@ -37,6 +37,13 @@ describe JWT do
     decoded_payload.should == example_payload
   end
 
+  it "raises exception when the token is invalid" do
+    example_secret = 'secret'
+    # Same as above exmaple with some random bytes replaced
+    example_jwt = 'eyJhbGciOiAiSFMyNTYiLCAidHiMomlwIjogIkJ9.eyJoZWxsbyI6ICJ3b3JsZCJ9.tvagLDLoaiJKxOKqpBXSEGy7SYSifZhjntgm9ctpyj8'
+    lambda { JWT.decode(example_jwt, example_secret) }.should raise_error(JWT::DecodeError)
+  end
+
   it "raises exception with wrong hmac key" do
     right_secret = 'foo'
     bad_secret = 'bar'
