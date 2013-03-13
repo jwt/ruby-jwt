@@ -70,7 +70,7 @@ module JWT
     rescue MultiJson::LoadError => e
       raise JWT::DecodeError.new("Invalid segment encoding")
     end
-    if verify == true
+    if verify
       algo = header['alg']
 
       if keyfinder
