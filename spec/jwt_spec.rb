@@ -66,6 +66,14 @@ describe JWT do
     decoded_payload.should == @payload
   end
 
+  it "checks the key when verify is truthy" do
+    right_secret = 'foo'
+    bad_secret = 'bar'
+    jwt = JWT.encode(@payload, right_secret)
+    verify = "yes" =~ /^y/i
+    lambda { JWT.decode(jwt, bad_secret, verify) }.should raise_error(JWT::DecodeError)
+  end
+
   it "raises exception on unsupported crypto algorithm" do
     lambda { JWT.encode(@payload, "secret", 'HS1024') }.should raise_error(NotImplementedError)
   end
