@@ -87,6 +87,8 @@ module JWT
         end
       rescue OpenSSL::PKey::PKeyError
         raise JWT::DecodeError.new("Signature verification failed")
+      ensure
+        OpenSSL.errors.clear
       end
     end
     payload

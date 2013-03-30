@@ -115,6 +115,11 @@ describe JWT do
     end
   end
 
+  # no method should leave OpenSSL.errors populated
+  after do
+    OpenSSL.errors.should be_empty
+  end
+
   it "raise exception on invalid signature" do
     pubkey = OpenSSL::PKey::RSA.new(<<-PUBKEY)
 -----BEGIN PUBLIC KEY-----
