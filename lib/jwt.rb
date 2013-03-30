@@ -51,11 +51,11 @@ module JWT
     segments << base64url_encode(MultiJson.encode(header))
     segments << base64url_encode(MultiJson.encode(payload))
     signing_input = segments.join(".")
-    if algorithm != "none"
+    if algorithm == "none"
+      segments << ""
+    else
       signature = sign(algorithm, signing_input, key)
       segments << base64url_encode(signature)
-    else
-      segments << ""
     end
     segments.join(".")
   end
