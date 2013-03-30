@@ -24,19 +24,19 @@ module JWT
   end
 
   def sign_rsa(algorithm, msg, private_key)
-    private_key.sign(OpenSSL::Digest::Digest.new(algorithm.sub('RS', 'sha')), msg)
+    private_key.sign(OpenSSL::Digest::Digest.new(algorithm.sub("RS", "sha")), msg)
   end
 
   def verify_rsa(algorithm, public_key, signing_input, signature)
-    public_key.verify(OpenSSL::Digest::Digest.new(algorithm.sub('RS', 'sha')), signature, signing_input)
+    public_key.verify(OpenSSL::Digest::Digest.new(algorithm.sub("RS", "sha")), signature, signing_input)
   end
 
   def sign_hmac(algorithm, msg, key)
-    OpenSSL::HMAC.digest(OpenSSL::Digest::Digest.new(algorithm.sub('HS', 'sha')), key, msg)
+    OpenSSL::HMAC.digest(OpenSSL::Digest::Digest.new(algorithm.sub("HS", "sha")), key, msg)
   end
 
   def base64url_decode(str)
-    str += '=' * (4 - str.length.modulo(4))
+    str += "=" * (4 - str.length.modulo(4))
     Base64.decode64(str.tr("-_", "+/"))
   end
 
@@ -44,27 +44,27 @@ module JWT
     Base64.encode64(str).tr("-_", "+/").gsub(/[\n=]/, "")
   end
 
-  def encode(payload, key, algorithm='HS256', header_fields={})
+  def encode(payload, key, algorithm="HS256", header_fields={})
     algorithm ||= "none"
     segments = []
     header = {"typ" => "JWT", "alg" => algorithm}.merge(header_fields)
     segments << base64url_encode(MultiJson.encode(header))
     segments << base64url_encode(MultiJson.encode(payload))
-    signing_input = segments.join('.')
+    signing_input = segments.join(".")
     if algorithm != "none"
       signature = sign(algorithm, signing_input, key)
       segments << base64url_encode(signature)
     else
       segments << ""
     end
-    segments.join('.')
+    segments.join(".")
   end
 
   def decode(jwt, key=nil, verify=true, &keyfinder)
-    segments = jwt.split('.')
+    segments = jwt.split(".")
     raise JWT::DecodeError.new("Not enough or too many segments") unless [2,3].include? segments.length
     header_segment, payload_segment, crypto_segment = segments
-    signing_input = [header_segment, payload_segment].join('.')
+    signing_input = [header_segment, payload_segment].join(".")
     begin
       header = MultiJson.decode(base64url_decode(header_segment))
       payload = MultiJson.decode(base64url_decode(payload_segment))
@@ -73,7 +73,7 @@ module JWT
       raise JWT::DecodeError.new("Invalid segment encoding")
     end
     if verify
-      algo = header['alg']
+      algo = header["alg"]
 
       if keyfinder
         key = keyfinder.call(header)
