@@ -11,7 +11,9 @@ require "multi_json"
 module JWT
   class DecodeError < StandardError; end
 
-  def self.sign(algorithm, msg, key)
+  module_function
+
+  def sign(algorithm, msg, key)
     if ["HS256", "HS384", "HS512"].include?(algorithm)
       sign_hmac(algorithm, msg, key)
     elsif ["RS256", "RS384", "RS512"].include?(algorithm)
@@ -21,28 +23,28 @@ module JWT
     end
   end
 
-  def self.sign_rsa(algorithm, msg, private_key)
+  def sign_rsa(algorithm, msg, private_key)
     private_key.sign(OpenSSL::Digest::Digest.new(algorithm.sub('RS', 'sha')), msg)
   end
 
-  def self.verify_rsa(algorithm, public_key, signing_input, signature)
+  def verify_rsa(algorithm, public_key, signing_input, signature)
     public_key.verify(OpenSSL::Digest::Digest.new(algorithm.sub('RS', 'sha')), signature, signing_input)
   end
 
-  def self.sign_hmac(algorithm, msg, key)
+  def sign_hmac(algorithm, msg, key)
     OpenSSL::HMAC.digest(OpenSSL::Digest::Digest.new(algorithm.sub('HS', 'sha')), key, msg)
   end
 
-  def self.base64url_decode(str)
+  def base64url_decode(str)
     str += '=' * (4 - str.length.modulo(4))
     Base64.decode64(str.tr("-_", "+/"))
   end
 
-  def self.base64url_encode(str)
+  def base64url_encode(str)
     Base64.encode64(str).tr("-_", "+/").gsub(/[\n=]/, "")
   end
 
-  def self.encode(payload, key, algorithm='HS256', header_fields={})
+  def encode(payload, key, algorithm='HS256', header_fields={})
     algorithm ||= "none"
     segments = []
     header = {"typ" => "JWT", "alg" => algorithm}.merge(header_fields)
@@ -58,7 +60,7 @@ module JWT
     segments.join('.')
   end
 
-  def self.decode(jwt, key=nil, verify=true, &keyfinder)
+  def decode(jwt, key=nil, verify=true, &keyfinder)
     segments = jwt.split('.')
     raise JWT::DecodeError.new("Not enough or too many segments") unless [2,3].include? segments.length
     header_segment, payload_segment, crypto_segment = segments
@@ -94,7 +96,7 @@ module JWT
 
   # From devise
   # constant-time comparison algorithm to prevent timing attacks
-  def self.secure_compare(a, b)
+  def secure_compare(a, b)
     return false if a.nil? || b.nil? || a.empty? || b.empty? || a.bytesize != b.bytesize
     l = a.unpack "C#{a.bytesize}"
 
