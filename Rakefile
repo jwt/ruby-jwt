@@ -10,6 +10,7 @@ Echoe.new('jwt', '0.1.8') do |p|
   p.ignore_pattern = ["tmp/*"]
   p.runtime_dependencies = ["multi_json >=1.5"]
   p.development_dependencies = ["echoe >=4.6.3"]
+  p.license        = "MIT"
 end
 
 task :test do
