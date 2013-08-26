@@ -108,7 +108,7 @@ describe JWT do
     signature = JWT.base64url_decode(crypto_segment)
     signature.should_not_receive('==')
     JWT.should_receive(:base64url_decode).with(crypto_segment).once.and_return(signature)
-    JWT.should_receive(:base64url_decode).any_number_of_times.and_call_original
+    JWT.should_receive(:base64url_decode).at_least(:once).and_call_original
 
     JWT.decode(jwt, secret)
   end
