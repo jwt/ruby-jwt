@@ -58,6 +58,21 @@ describe JWT do
     lambda { JWT.decode(jwt, bad_private_key.public_key) }.should raise_error(JWT::DecodeError)
   end
 
+  it "raises exception with invalid signature" do
+    example_payload = {"hello" => "world"}
+    example_secret = 'secret'
+    example_jwt = 'eyJhbGciOiAiSFMyNTYiLCAidHlwIjogIkpXVCJ9.eyJoZWxsbyI6ICJ3b3JsZCJ9.'
+    lambda { JWT.decode(example_jwt, example_secret) }.should raise_error(JWT::DecodeError)
+  end
+
+  it "raises exception with nonexistent header" do
+    lambda { JWT.decode("..stuff") }.should raise_error(JWT::DecodeError)
+  end
+
+  it "raises exception with nonexistent payload" do
+    lambda { JWT.decode("eyJhbGciOiAiSFMyNTYiLCAidHlwIjogIkpXVCJ9..stuff") }.should raise_error(JWT::DecodeError)
+  end
+
   it "allows decoding without key" do
     right_secret = 'foo'
     bad_secret = 'bar'
@@ -93,7 +108,7 @@ describe JWT do
     signature = JWT.base64url_decode(crypto_segment)
     signature.should_not_receive('==')
     JWT.should_receive(:base64url_decode).with(crypto_segment).once.and_return(signature)
-    JWT.should_receive(:base64url_decode).any_number_of_times.and_call_original
+    JWT.should_receive(:base64url_decode).at_least(:once).and_call_original
 
     JWT.decode(jwt, secret)
   end
