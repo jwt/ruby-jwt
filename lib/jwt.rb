@@ -24,15 +24,15 @@ module JWT
   end
 
   def sign_rsa(algorithm, msg, private_key)
-    private_key.sign(OpenSSL::Digest::Digest.new(algorithm.sub("RS", "sha")), msg)
+    private_key.sign(OpenSSL::Digest.new(algorithm.sub("RS", "sha")), msg)
   end
 
   def verify_rsa(algorithm, public_key, signing_input, signature)
-    public_key.verify(OpenSSL::Digest::Digest.new(algorithm.sub("RS", "sha")), signature, signing_input)
+    public_key.verify(OpenSSL::Digest.new(algorithm.sub("RS", "sha")), signature, signing_input)
   end
 
   def sign_hmac(algorithm, msg, key)
-    OpenSSL::HMAC.digest(OpenSSL::Digest::Digest.new(algorithm.sub("HS", "sha")), key, msg)
+    OpenSSL::HMAC.digest(OpenSSL::Digest.new(algorithm.sub("HS", "sha")), key, msg)
   end
 
   def base64url_decode(str)
