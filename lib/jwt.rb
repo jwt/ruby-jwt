@@ -41,7 +41,7 @@ module JWT
   end
 
   def base64url_encode(str)
-    Base64.encode64(str).tr("-_", "+/").gsub(/[\n=]/, "")
+    Base64.encode64(str).tr("+/", "-_").gsub(/[\n=]/, "")
   end
 
   def encode(payload, key, algorithm="HS256", header_fields={})
