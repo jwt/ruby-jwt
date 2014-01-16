@@ -159,4 +159,11 @@ PUBKEY
     )
     lambda { JWT.decode(jwt, pubkey, true) }.should raise_error(JWT::DecodeError)
   end
+
+  describe "urlsafe base64 encoding" do
+    it "replaces + and / with - and _" do
+      Base64.stub(:encode64) { "string+with/non+url-safe/characters_" }
+      JWT.base64url_encode("foo").should == "string-with_non-url-safe_characters_"
+    end
+  end
 end
