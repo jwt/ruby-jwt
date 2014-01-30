@@ -9,24 +9,24 @@ describe JWT do
     secret = "secret"
     jwt = JWT.encode(@payload, secret)
     decoded_payload = JWT.decode(jwt, secret)
-    decoded_payload.should == @payload
+    expect(decoded_payload).to eq(@payload)
   end
 
   it "encodes and decodes JWTs for RSA signatures" do
     private_key = OpenSSL::PKey::RSA.generate(512)
     jwt = JWT.encode(@payload, private_key, "RS256")
     decoded_payload = JWT.decode(jwt, private_key.public_key)
-    decoded_payload.should == @payload
+    expect(decoded_payload).to eq(@payload)
   end
 
   it "encodes and decodes JWTs with custom header fields" do
     private_key = OpenSSL::PKey::RSA.generate(512)
     jwt = JWT.encode(@payload, private_key, "RS256", {"kid" => 'default'})
     decoded_payload = JWT.decode(jwt) do |header|
-      header["kid"].should == 'default'
+      expect(header["kid"]).to eq('default')
       private_key.public_key
     end
-    decoded_payload.should == @payload
+    expect(decoded_payload).to eq(@payload)
   end
 
   it "decodes valid JWTs" do
@@ -34,43 +34,43 @@ describe JWT do
     example_secret = 'secret'
     example_jwt = 'eyJhbGciOiAiSFMyNTYiLCAidHlwIjogIkpXVCJ9.eyJoZWxsbyI6ICJ3b3JsZCJ9.tvagLDLoaiJKxOKqpBXSEGy7SYSifZhjntgm9ctpyj8'
     decoded_payload = JWT.decode(example_jwt, example_secret)
-    decoded_payload.should == example_payload
+    expect(decoded_payload).to eq(example_payload)
   end
 
   it "raises exception when the token is invalid" do
     example_secret = 'secret'
     # Same as above exmaple with some random bytes replaced
     example_jwt = 'eyJhbGciOiAiSFMyNTYiLCAidHiMomlwIjogIkJ9.eyJoZWxsbyI6ICJ3b3JsZCJ9.tvagLDLoaiJKxOKqpBXSEGy7SYSifZhjntgm9ctpyj8'
-    lambda { JWT.decode(example_jwt, example_secret) }.should raise_error(JWT::DecodeError)
+    expect { JWT.decode(example_jwt, example_secret) }.to raise_error(JWT::DecodeError)
   end
 
   it "raises exception with wrong hmac key" do
     right_secret = 'foo'
     bad_secret = 'bar'
     jwt_message = JWT.encode(@payload, right_secret, "HS256")
-    lambda { JWT.decode(jwt_message, bad_secret) }.should raise_error(JWT::DecodeError)
+    expect { JWT.decode(jwt_message, bad_secret) }.to raise_error(JWT::DecodeError)
   end
 
   it "raises exception with wrong rsa key" do
     right_private_key = OpenSSL::PKey::RSA.generate(512)
     bad_private_key = OpenSSL::PKey::RSA.generate(512)
     jwt = JWT.encode(@payload, right_private_key, "RS256")
-    lambda { JWT.decode(jwt, bad_private_key.public_key) }.should raise_error(JWT::DecodeError)
+    expect { JWT.decode(jwt, bad_private_key.public_key) }.to raise_error(JWT::DecodeError)
   end
 
   it "raises exception with invalid signature" do
     example_payload = {"hello" => "world"}
     example_secret = 'secret'
     example_jwt = 'eyJhbGciOiAiSFMyNTYiLCAidHlwIjogIkpXVCJ9.eyJoZWxsbyI6ICJ3b3JsZCJ9.'
-    lambda { JWT.decode(example_jwt, example_secret) }.should raise_error(JWT::DecodeError)
+    expect { JWT.decode(example_jwt, example_secret) }.to raise_error(JWT::DecodeError)
   end
 
   it "raises exception with nonexistent header" do
-    lambda { JWT.decode("..stuff") }.should raise_error(JWT::DecodeError)
+    expect { JWT.decode("..stuff") }.to raise_error(JWT::DecodeError)
   end
 
   it "raises exception with nonexistent payload" do
-    lambda { JWT.decode("eyJhbGciOiAiSFMyNTYiLCAidHlwIjogIkpXVCJ9..stuff") }.should raise_error(JWT::DecodeError)
+    expect { JWT.decode("eyJhbGciOiAiSFMyNTYiLCAidHlwIjogIkpXVCJ9..stuff") }.to raise_error(JWT::DecodeError)
   end
 
   it "allows decoding without key" do
@@ -78,7 +78,7 @@ describe JWT do
     bad_secret = 'bar'
     jwt = JWT.encode(@payload, right_secret)
     decoded_payload = JWT.decode(jwt, bad_secret, false)
-    decoded_payload.should == @payload
+    expect(decoded_payload).to eq(@payload)
   end
 
   it "checks the key when verify is truthy" do
@@ -86,18 +86,18 @@ describe JWT do
     bad_secret = 'bar'
     jwt = JWT.encode(@payload, right_secret)
     verify = "yes" =~ /^y/i
-    lambda { JWT.decode(jwt, bad_secret, verify) }.should raise_error(JWT::DecodeError)
+    expect { JWT.decode(jwt, bad_secret, verify) }.to raise_error(JWT::DecodeError)
   end
 
   it "raises exception on unsupported crypto algorithm" do
-    lambda { JWT.encode(@payload, "secret", 'HS1024') }.should raise_error(NotImplementedError)
+    expect { JWT.encode(@payload, "secret", 'HS1024') }.to raise_error(NotImplementedError)
   end
 
   it "encodes and decodes plaintext JWTs" do
     jwt = JWT.encode(@payload, nil, nil)
-    jwt.split('.').length.should == 2
+    expect(jwt.split('.').length).to eq(2)
     decoded_payload = JWT.decode(jwt, nil, nil)
-    decoded_payload.should == @payload
+    expect(decoded_payload).to eq(@payload)
   end
 
   it "does not use == to compare digests" do
@@ -106,9 +106,9 @@ describe JWT do
     crypto_segment = jwt.split(".").last
 
     signature = JWT.base64url_decode(crypto_segment)
-    signature.should_not_receive('==')
-    JWT.should_receive(:base64url_decode).with(crypto_segment).once.and_return(signature)
-    JWT.should_receive(:base64url_decode).at_least(:once).and_call_original
+    expect(signature).not_to receive('==')
+    expect(JWT).to receive(:base64url_decode).with(crypto_segment).once.and_return(signature)
+    expect(JWT).to receive(:base64url_decode).at_least(:once).and_call_original
 
     JWT.decode(jwt, secret)
   end
@@ -132,7 +132,7 @@ describe JWT do
 
   # no method should leave OpenSSL.errors populated
   after do
-    OpenSSL.errors.should be_empty
+    expect(OpenSSL.errors).to be_empty
   end
 
   it "raise exception on invalid signature" do
@@ -157,13 +157,13 @@ PUBKEY
       'wcy1PxsROY1fmBvXSer0IQesAqOW-rPOCNReSn-eY8d53ph1x2HAF-AzEi3GOl' +
       '6hFycH8wj7Su6JqqyEbIVLxE7q7DkAZGaMPkxbTHs1EhSd5_oaKQ6O4xO3ZnnT4'
     )
-    lambda { JWT.decode(jwt, pubkey, true) }.should raise_error(JWT::DecodeError)
+    expect { JWT.decode(jwt, pubkey, true) }.to raise_error(JWT::DecodeError)
   end
 
   describe "urlsafe base64 encoding" do
     it "replaces + and / with - and _" do
-      Base64.stub(:encode64) { "string+with/non+url-safe/characters_" }
-      JWT.base64url_encode("foo").should == "string-with_non-url-safe_characters_"
+      allow(Base64).to receive(:encode64) { "string+with/non+url-safe/characters_" }
+      expect(JWT.base64url_encode("foo")).to eq("string-with_non-url-safe_characters_")
     end
   end
 end
