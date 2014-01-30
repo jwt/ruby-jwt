@@ -100,6 +100,12 @@ describe JWT do
     expect(decoded_payload).to eq(@payload)
   end
 
+  it "requires a signature segment when verify is truthy" do
+    jwt = JWT.encode(@payload, nil, nil)
+    expect(jwt.split('.').length).to eq(2)
+    expect { JWT.decode(jwt, nil, true) }.to raise_error(JWT::DecodeError)
+  end
+
   it "does not use == to compare digests" do
     secret = "secret"
     jwt = JWT.encode(@payload, secret)
@@ -125,8 +131,8 @@ describe JWT do
       end
     end
 
-    it "retuns falise of the strings are different" do
-        expect(JWT.secure_compare("Foo", "Bar")).to be_false
+    it "retuns false if the strings are different" do
+      expect(JWT.secure_compare("Foo", "Bar")).to be_false
     end
   end
 
@@ -164,6 +170,17 @@ PUBKEY
     it "replaces + and / with - and _" do
       allow(Base64).to receive(:encode64) { "string+with/non+url-safe/characters_" }
       expect(JWT.base64url_encode("foo")).to eq("string-with_non-url-safe_characters_")
+    end
+  end
+
+  describe 'decoded_segments' do
+    it "allows access to the decoded header and payload" do
+      secret = "secret"
+      jwt = JWT.encode(@payload, secret)
+      decoded_segments = JWT.decoded_segments(jwt)
+      expect(decoded_segments.size).to eq(4)
+      expect(decoded_segments[0]).to eq({"typ" => "JWT", "alg" => "HS256"})
+      expect(decoded_segments[1]).to eq(@payload)
     end
   end
 end
