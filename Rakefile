@@ -8,7 +8,6 @@ Echoe.new('jwt', '0.1.11') do |p|
   p.author         = "Jeff Lindsay"
   p.email          = "progrium@gmail.com"
   p.ignore_pattern = ["tmp/*"]
-  p.runtime_dependencies = ["multi_json >=1.5"]
   p.development_dependencies = ["echoe >=4.6.3"]
   p.licenses       = "MIT"
 end
