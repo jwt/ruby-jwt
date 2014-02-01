@@ -73,6 +73,10 @@ describe JWT do
     expect { JWT.decode("eyJhbGciOiAiSFMyNTYiLCAidHlwIjogIkpXVCJ9..stuff") }.to raise_error(JWT::DecodeError)
   end
 
+  it "raises exception with nil jwt" do
+    expect { JWT.decode(nil) }.to raise_error(JWT::DecodeError)
+  end
+
   it "allows decoding without key" do
     right_secret = 'foo'
     bad_secret = 'bar'
