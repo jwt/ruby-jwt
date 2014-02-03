@@ -59,7 +59,6 @@ describe JWT do
   end
 
   it "raises exception with invalid signature" do
-    example_payload = {"hello" => "world"}
     example_secret = 'secret'
     example_jwt = 'eyJhbGciOiAiSFMyNTYiLCAidHlwIjogIkpXVCJ9.eyJoZWxsbyI6ICJ3b3JsZCJ9.'
     expect { JWT.decode(example_jwt, example_secret) }.to raise_error(JWT::DecodeError)
