@@ -59,7 +59,6 @@ describe JWT do
   end
 
   it "raises exception with invalid signature" do
-    example_payload = {"hello" => "world"}
     example_secret = 'secret'
     example_jwt = 'eyJhbGciOiAiSFMyNTYiLCAidHlwIjogIkpXVCJ9.eyJoZWxsbyI6ICJ3b3JsZCJ9.'
     expect { JWT.decode(example_jwt, example_secret) }.to raise_error(JWT::DecodeError)
@@ -71,6 +70,10 @@ describe JWT do
 
   it "raises exception with nonexistent payload" do
     expect { JWT.decode("eyJhbGciOiAiSFMyNTYiLCAidHlwIjogIkpXVCJ9..stuff") }.to raise_error(JWT::DecodeError)
+  end
+
+  it "raises exception with nil jwt" do
+    expect { JWT.decode(nil) }.to raise_error(JWT::DecodeError)
   end
 
   it "allows decoding without key" do

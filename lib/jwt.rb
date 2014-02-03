@@ -94,6 +94,8 @@ module JWT
   end
 
   def decode(jwt, key=nil, verify=true, &keyfinder)
+    raise JWT::DecodeError.new("Nil JSON web token") unless jwt
+
     header, payload, signature, signing_input = decoded_segments(jwt, verify)
     raise JWT::DecodeError.new("Not enough or too many segments") unless header && payload
 
