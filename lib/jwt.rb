@@ -103,7 +103,7 @@ module JWT
       algo, key = signature_algorithm_and_key(header, key, &keyfinder)
       verify_signature(algo, key, signing_input, signature)
     end
-    payload
+    return payload,header
   end
 
   def signature_algorithm_and_key(header, key, &keyfinder)
