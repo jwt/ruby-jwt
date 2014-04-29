@@ -9,14 +9,14 @@ describe JWT do
     secret = "secret"
     jwt = JWT.encode(@payload, secret)
     decoded_payload = JWT.decode(jwt, secret)
-    expect(decoded_payload).to eq(@payload)
+    expect(decoded_payload).to include(@payload)
   end
 
   it "encodes and decodes JWTs for RSA signatures" do
     private_key = OpenSSL::PKey::RSA.generate(512)
     jwt = JWT.encode(@payload, private_key, "RS256")
     decoded_payload = JWT.decode(jwt, private_key.public_key)
-    expect(decoded_payload).to eq(@payload)
+    expect(decoded_payload).to include(@payload)
   end
 
   it "encodes and decodes JWTs with custom header fields" do
@@ -26,7 +26,7 @@ describe JWT do
       expect(header["kid"]).to eq('default')
       private_key.public_key
     end
-    expect(decoded_payload).to eq(@payload)
+    expect(decoded_payload).to include(@payload)
   end
 
   it "decodes valid JWTs" do
@@ -34,7 +34,7 @@ describe JWT do
     example_secret = 'secret'
     example_jwt = 'eyJhbGciOiAiSFMyNTYiLCAidHlwIjogIkpXVCJ9.eyJoZWxsbyI6ICJ3b3JsZCJ9.tvagLDLoaiJKxOKqpBXSEGy7SYSifZhjntgm9ctpyj8'
     decoded_payload = JWT.decode(example_jwt, example_secret)
-    expect(decoded_payload).to eq(example_payload)
+    expect(decoded_payload).to include(example_payload)
   end
 
   it "raises exception when the token is invalid" do
@@ -81,7 +81,7 @@ describe JWT do
     bad_secret = 'bar'
     jwt = JWT.encode(@payload, right_secret)
     decoded_payload = JWT.decode(jwt, bad_secret, false)
-    expect(decoded_payload).to eq(@payload)
+    expect(decoded_payload).to include(@payload)
   end
 
   it "checks the key when verify is truthy" do
@@ -100,7 +100,7 @@ describe JWT do
     jwt = JWT.encode(@payload, nil, nil)
     expect(jwt.split('.').length).to eq(2)
     decoded_payload = JWT.decode(jwt, nil, nil)
-    expect(decoded_payload).to eq(@payload)
+    expect(decoded_payload).to include(@payload)
   end
 
   it "requires a signature segment when verify is truthy" do
