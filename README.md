@@ -54,6 +54,8 @@ The tests are written with rspec. Given you have rake and rspec, you can run tes
 
     rake test
 
+**If you want a release cut with your PR, please include a version bump according to [Semantic Versioning](http://semver.org/)*
+
 ## Contributors
 
  * Jordan Brough <github.jordanb@xoxy.net>
