@@ -122,23 +122,6 @@ describe JWT do
     JWT.decode(jwt, secret)
   end
 
-  describe "secure comparison" do
-    it "returns true if strings are equal" do
-      expect(JWT.secure_compare("Foo", "Foo")).to be_true
-    end
-
-    it "returns false if either input is nil or empty" do
-      [nil, ""].each do |bad|
-        expect(JWT.secure_compare(bad, "Foo")).to be_false
-        expect(JWT.secure_compare("Foo", bad)).to be_false
-      end
-    end
-
-    it "retuns false if the strings are different" do
-      expect(JWT.secure_compare("Foo", "Bar")).to be_false
-    end
-  end
-
   # no method should leave OpenSSL.errors populated
   after do
     expect(OpenSSL.errors).to be_empty
