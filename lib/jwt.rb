@@ -116,7 +116,7 @@ module JWT
   def verify_signature(algo, key, signing_input, signature)
     begin
       if ["HS256", "HS384", "HS512"].include?(algo)
-        raise JWT::DecodeError.new("Signature verification failed") unless secure_compare(signature, sign_hmac(algo, signing_input, key))
+        raise JWT::DecodeError.new("Signature verification failed") unless signature == sign_hmac(algo, signing_input, key)
       elsif ["RS256", "RS384", "RS512"].include?(algo)
         raise JWT::DecodeError.new("Signature verification failed") unless verify_rsa(algo, key, signing_input, signature)
       else
@@ -127,17 +127,6 @@ module JWT
     ensure
       OpenSSL.errors.clear
     end
-  end
-
-  # From devise
-  # constant-time comparison algorithm to prevent timing attacks
-  def secure_compare(a, b)
-    return false if a.nil? || b.nil? || a.empty? || b.empty? || a.bytesize != b.bytesize
-    l = a.unpack "C#{a.bytesize}"
-
-    res = 0
-    b.each_byte { |byte| res |= byte ^ l.shift }
-    res == 0
   end
 
 end
