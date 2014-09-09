@@ -12,5 +12,5 @@ end
 
 group :test, :development do
   gem 'rake'
-  gem 'rspec'
+  gem 'rspec', '~> 3'
 end
