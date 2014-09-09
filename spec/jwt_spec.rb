@@ -124,18 +124,18 @@ describe JWT do
 
   describe "secure comparison" do
     it "returns true if strings are equal" do
-      expect(JWT.secure_compare("Foo", "Foo")).to be_true
+      expect(JWT.secure_compare("Foo", "Foo")).to be true
     end
 
     it "returns false if either input is nil or empty" do
       [nil, ""].each do |bad|
-        expect(JWT.secure_compare(bad, "Foo")).to be_false
-        expect(JWT.secure_compare("Foo", bad)).to be_false
+        expect(JWT.secure_compare(bad, "Foo")).to be false
+        expect(JWT.secure_compare("Foo", bad)).to be false
       end
     end
 
     it "retuns false if the strings are different" do
-      expect(JWT.secure_compare("Foo", "Bar")).to be_false
+      expect(JWT.secure_compare("Foo", "Bar")).to be false
     end
   end
 
