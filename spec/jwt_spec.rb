@@ -2,7 +2,7 @@ require 'helper'
 
 describe JWT do
   before do
-    @payload = {"foo" => "bar"}
+    @payload = {"foo" => "bar", "exp" => Time.now.to_i}
   end
 
   it "encodes and decodes JWTs" do
@@ -120,6 +120,32 @@ describe JWT do
     expect(JWT).to receive(:base64url_decode).at_least(:once).and_call_original
 
     JWT.decode(jwt, secret)
+  end
+
+  it "raises error when expired" do
+    expired_payload = @payload.clone
+    expired_payload['exp'] = Time.now.to_i - 1
+    secret = "secret"
+    jwt = JWT.encode(expired_payload, secret)
+    expect { JWT.decode(jwt, secret) }.to raise_error(JWT::ExpiredSignature)
+  end
+  
+  it "performs normal decode with skipped expiration check" do
+    expired_payload = @payload.clone
+    expired_payload['exp'] = Time.now.to_i - 1
+    secret = "secret"
+    jwt = JWT.encode(expired_payload, secret)
+    decoded_payload = JWT.decode(jwt, secret, true, {:verify_expiration => false})
+    expect(decoded_payload).to include(expired_payload)
+  end
+  
+  it "performs normal decode using leeway" do
+    expired_payload = @payload.clone
+    expired_payload['exp'] = Time.now.to_i - 2
+    secret = "secret"
+    jwt = JWT.encode(expired_payload, secret)
+    decoded_payload = JWT.decode(jwt, secret, true, {:leeway => 3})
+    expect(decoded_payload).to include(expired_payload)
   end
 
   describe "secure comparison" do
