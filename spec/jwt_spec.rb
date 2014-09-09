@@ -2,7 +2,7 @@ require 'helper'
 
 describe JWT do
   before do
-    @payload = {"foo" => "bar", "exp" => Time.now.to_i}
+    @payload = {"foo" => "bar", "exp" => Time.now.to_i + 1}
   end
 
   it "encodes and decodes JWTs" do
