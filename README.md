@@ -117,6 +117,7 @@ The tests are written with rspec. Given you have rake and rspec, you can run tes
  * Rob Wygand <rob@wygand.com>
  * Ariel Salomon (Oscil8)
  * Paul Battley <pbattley@gmail.com>
+ * Zane Shannon [@zshannon](https://github.com/zshannon)
 
 ## License
 
