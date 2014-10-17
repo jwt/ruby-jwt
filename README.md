@@ -44,6 +44,56 @@ We also support unsigned plaintext JWTs as introduced by draft 03 by explicitly 
     jwt = JWT.encode({"some" => "payload"}, nil, nil)
     JWT.decode(jwt, nil, nil)
 
+## Support for reserved claim names
+JSON Web Token defines some reserved claim names and defines how they should be
+used. JWT supports these reserved claim names:
+
+ - "exp" (Expiration Time) Claim
+
+### Expiration Time Claim
+
+From [draft 01 of the JWT spec](http://self-issued.info/docs/draft-jones-json-web-token-01.html#ReservedClaimName):
+
+> The exp (expiration time) claim identifies the expiration time on or after
+> which the JWT MUST NOT be accepted for processing. The processing of the exp
+> claim requires that the current date/time MUST be before the expiration
+> date/time listed in the exp claim. Implementers MAY provide for some small
+> leeway, usually no more than a few minutes, to account for clock skew. Its
+> value MUST be a number containing an IntDate value. Use of this claim is
+> OPTIONAL.
+
+You pass the expiration time as a UTC UNIX timestamp (an int). For example:
+
+    JWT.encode({"exp": 1371720939}, "secret")
+
+    JWT.encode({"exp": Time.now.to_i()}, "secret")
+
+Expiration time is automatically verified in `JWT.decode()` and raises
+`JWT::ExpiredSignature` if the expiration time is in the past:
+
+    begin
+        JWT.decode("JWT_STRING", "secret")
+    rescue JWT::ExpiredSignature
+        # Signature has expired
+	end
+
+Expiration time will be compared to the current UTC time (as given by
+`Time.now.to_i`), so be sure to use a UTC timestamp or datetime in encoding.
+
+You can turn off expiration time verification with the `verify_expiration` option.
+
+JWT also supports the leeway part of the expiration time definition, which
+means you can validate a expiration time which is in the past but not very far.
+For example, if you have a JWT payload with a expiration time set to 30 seconds
+after creation but you know that sometimes you will process it after 30 seconds,
+you can set a leeway of 10 seconds in order to have some margin:
+
+    jwt_payload = JWT.encode({'exp': Time.now.to_i + 30}, 'secret')
+    sleep(32)
+    # jwt_payload is now expired
+    # But with some leeway, it will still validate
+    JWT.decode(jwt_payload, 'secret', true, leeway=10)
+
 ## Development and Tests
 
 We depend on [Echoe](http://rubygems.org/gems/echoe) for defining gemspec and performing releases to rubygems.org, which can be done with
@@ -67,6 +117,7 @@ The tests are written with rspec. Given you have rake and rspec, you can run tes
  * Rob Wygand <rob@wygand.com>
  * Ariel Salomon (Oscil8)
  * Paul Battley <pbattley@gmail.com>
+ * Zane Shannon [@zshannon](https://github.com/zshannon)
 
 ## License
 
