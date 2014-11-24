@@ -129,6 +129,14 @@ describe JWT do
     jwt = JWT.encode(expired_payload, secret)
     expect { JWT.decode(jwt, secret) }.to raise_error(JWT::ExpiredSignature)
   end
+
+  it 'raises error when exp is not an IntDate' do
+    expired_payload = @payload.clone
+    expired_payload['exp'] = '2+fjkd234'
+    secret = 'secret'
+    jwt = JWT.encode(expired_payload, secret)
+    expect { JWT.decode(jwt, secret) }.to raise_error(JWT::InvalidExp)
+  end
   
   it "performs normal decode with skipped expiration check" do
     expired_payload = @payload.clone
@@ -145,6 +153,15 @@ describe JWT do
     secret = "secret"
     jwt = JWT.encode(expired_payload, secret)
     decoded_payload = JWT.decode(jwt, secret, true, {:leeway => 3})
+    expect(decoded_payload).to include(expired_payload)
+  end
+
+  it 'performs normal decode' do
+    expired_payload = @payload.clone
+    expired_payload['exp'] = Time.now.to_i + 2
+    secret = "secret"
+    jwt = JWT.encode(expired_payload, secret)
+    decoded_payload = JWT.decode(jwt, secret, true)
     expect(decoded_payload).to include(expired_payload)
   end
 
