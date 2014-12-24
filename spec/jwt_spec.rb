@@ -1,4 +1,5 @@
-require 'helper'
+require 'spec_helper'
+require_relative '../lib/jwt'
 
 describe JWT do
   before do
