@@ -3,11 +3,35 @@ require_relative '../../lib/jwa'
 
 describe JWA do
   context 'HMAC signing, verifying' do
+    let(:input) { 'my super awesome input' }
+    let(:secret) { 'donottellanyone' }
+
     [256, 384, 512].each do |bit|
-      it "#{bit} should verify"
-      it "#{bit} should not verify"
-      it 'missing secret'
-      it 'weird input'
+      before(:each) do
+        @jwa = JWA.create "HS#{bit}"
+        @sig = @jwa.sign input, secret
+      end
+
+      it "#{bit} should verify" do
+        expect(@jwa.verify(input, @sig, secret)).to eq(true)
+      end
+
+      it "#{bit} should not verify" do
+        expect(@jwa.verify('different', @sig, secret)).to eq(false)
+        expect(@jwa.verify(input, 'different', secret)).to eq(false)
+        expect(@jwa.verify(input, @sig, 'let me in')).to eq(false)
+      end
+
+      it 'missing secret' do
+        expect{ @jwa.sign(input) }.to raise_error
+      end
+
+      it 'weird input' do
+        inpt = { a: [1, 2, 3, 4] }
+        data = @jwa.sign(inpt, secret)
+        expect(@jwa.verify(inpt, data, secret)).to eq(true)
+        expect(@jwa.verify(inpt, data, 'let me in')).to eq(false)
+      end
     end
   end
 
@@ -65,6 +89,9 @@ describe JWA do
   end
 
   context 'unsupported algorithm' do
-    it 'should throw'
+    it 'should throw' do
+      expect{ JWA.create('invalid') }.to raise_error
+      expect{ JWA.create('HS255') }.to raise_error
+    end
   end
 end

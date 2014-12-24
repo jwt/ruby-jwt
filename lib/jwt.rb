@@ -99,13 +99,13 @@ module JWT
 
     header, payload, signature, signing_input = decoded_segments(jwt, verify)
     raise JWT::DecodeError.new("Not enough or too many segments") unless header && payload
-    
+
     default_options = {
       :verify_expiration => true,
       :leeway => 0
     }
     options = default_options.merge(options)
-    
+
     if verify
       algo, key = signature_algorithm_and_key(header, key, &keyfinder)
       verify_signature(algo, key, signing_input, signature)
