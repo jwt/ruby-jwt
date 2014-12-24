@@ -13,4 +13,5 @@ end
 group :test, :development do
   gem 'rake'
   gem 'rspec', '~> 3'
+  gem 'codeclimate-test-reporter'
 end
