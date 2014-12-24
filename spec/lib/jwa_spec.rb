@@ -22,11 +22,11 @@ describe JWA do
         expect(@jwa.verify(input, @sig, 'let me in')).to eq(false)
       end
 
-      it 'missing secret' do
+      it "#{bit} missing secret" do
         expect{ @jwa.sign(input) }.to raise_error
       end
 
-      it 'weird input' do
+      it "#{bit} weird input" do
         inpt = { a: [1, 2, 3, 4] }
         data = @jwa.sign(inpt, secret)
         expect(@jwa.verify(inpt, data, secret)).to eq(true)
