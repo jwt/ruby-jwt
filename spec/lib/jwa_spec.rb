@@ -36,12 +36,47 @@ describe JWA do
   end
 
   context 'RSASSA signing, veryfying' do
+    let(:input) { 'my super awesome input' }
+    let(:public_key) do 
+      OpenSSL::PKey::RSA.new File.read(File.join(CERT_PATH, 'jwa', 'rsa-public.pem'))
+    end
+
+    let(:private_key) do 
+      OpenSSL::PKey::RSA.new File.read(File.join(CERT_PATH, 'jwa', 'rsa-private.pem'))
+    end
+
+    let(:wrong_public_key) do
+      OpenSSL::PKey::RSA.new File.read(File.join(CERT_PATH, 'jwa', 'rsa-wrong-public.pem')) 
+    end
+
     [256, 384, 512].each do |bit|
-      it "#{bit} should verify"
-      it "#{bit} should not verify"
-      it "#{bit} missing sign key"
-      it "#{bit} missing verify key"
-      it "#{bit} weird input"
+      before(:each) do
+        @jwa = JWA.create "RS#{bit}"
+        @sig = @jwa.sign input, private_key
+      end
+
+      it "#{bit} should verify" do
+        expect(@jwa.verify(input, @sig, public_key)).to eq(true)
+      end
+
+      it "#{bit} should not verify" do
+        expect(@jwa.verify(input, @sig, wrong_public_key)).to eq(false)
+      end
+
+      it "#{bit} missing sign key" do
+        expect{@jwa.sign(input)}.to raise_error
+      end
+
+      it "#{bit} missing verify key" do
+        expect{@jwa.verify(input, @sig)}.to raise_error
+      end
+
+      it "#{bit} weird input" do
+        inpt = { a: [1, 2, 3, 4] }
+        data = @jwa.sign(inpt, private_key)
+        expect(@jwa.verify(inpt, data, public_key)).to eq(true)
+        expect(@jwa.verify(inpt, data, wrong_public_key)).to eq(false)
+      end
     end
   end
 

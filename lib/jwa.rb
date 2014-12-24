@@ -1,5 +1,6 @@
 module JWA
   autoload :HS, 'jwa/hmac'
+  autoload :RS, 'jwa/rsassa'
 
   class Base
     def normalize_input(input)
