@@ -80,41 +80,48 @@ describe JWA do
     end
   end
 
-  [256, 384, 512].each do |bit|
-    context "RS#{bit} openssl sign -> ruby verify" do
-      it 'should verify'
-      it 'should not verify'
-    end
-  end
-
-  [256, 384, 512].each do |bit|
-    context "RS#{bit} ruby sign -> openssl verify" do
-      it 'should verify'
-      it 'should not verify'
-    end
-  end
-
-  context 'ECDSA signing, verifying' do
+  context 'ECDSA signing, verifying', skip: '@see: https://bugs.ruby-lang.org/issues/5600' do
+    let(:input) { 'my super awesome input' }
     [256, 384, 512].each do |bit|
-      it "#{bit} should verify"
-      it "#{bit} should not verify"
-      it "#{bit} missing sign key"
-      it "#{bit} missing verify key"
-      it "#{bit} weird input"
-    end
-  end
+      let(:private_key) do
+        OpenSSL::PKey::EC.new File.read(File.join(CERT_PATH, 'jwa', "ec#{bit}-private.pem")) 
+      end
 
-  [256, 384, 512].each do |bit|
-    context "ES#{bit} openssl sign -> ruby verify" do
-      it 'should verify'
-      it 'should not verify'
-    end
-  end
+      let(:public_key) do 
+        OpenSSL::PKey::EC.new File.read(File.join(CERT_PATH, 'jwa', "ec#{bit}-public.pem")) 
+      end
 
-  [256, 384, 512].each do |bit|
-    context "ES#{bit} ruby sign -> openssl verify" do
-      it 'should verify'
-      it 'should not verify'
+      let(:wrong_public_key) do
+        OpenSSL::PKey::EC.new File.read(File.join(CERT_PATH, 'jwa', "ec#{bit}-wrong-public.pem")) 
+      end
+
+      before(:each) do
+        @jwa = JWA.create("ES#{bit}")
+        @sig = @jwa.sign(input, private_key)
+      end
+
+      it "#{bit} should verify" do
+        expect(@jwa.verify(input, @sig, public_key)).to eq(true)
+      end
+
+      it "#{bit} should not verify" do
+        expect(@jwa.verify(input, @sig, wrong_public_key)).to eq(false)
+      end
+
+      it "#{bit} missing sign key" do
+        expect{@jwa.sign(input)}.to raise_error
+      end
+
+      it "#{bit} missing verify key" do
+        expect{@jwa.verify(input, @sig)}.to raise_error
+      end
+
+      it "#{bit} weird input" do
+        inpt = { a: [1, 2, 3, 4] }
+        data = @jwa.sign(inpt, private_key)
+        expect(@jwa.verify(inpt, data, public_key)).to eq(true)
+        expect(@jwa.verify(inpt, data, wrong_public_key)).to eq(false)
+      end
     end
   end
 

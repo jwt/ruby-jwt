@@ -1,4 +1,5 @@
 module JWA
+  autoload :ES, 'jwa/ecdsa'
   autoload :HS, 'jwa/hmac'
   autoload :RS, 'jwa/rsassa'
 
