@@ -126,8 +126,20 @@ describe JWA do
   end
 
   context 'NONE' do
-    it 'should verify'
-    it 'should not verify'
+    let(:input) { 'my super awesome input' }
+
+    before(:each) do
+      @jwa = JWA.create('NONE')
+      @sig = @jwa.sign(input)
+    end
+
+    it 'should verify' do
+      expect(@jwa.verify(input, @sig)).to eq(true)
+    end
+
+    it 'should not verify' do
+      expect(@jwa.verify(input, JWA.create('NONE').sign('test'))).to eq(false)
+    end
   end
 
   context 'unsupported algorithm' do
