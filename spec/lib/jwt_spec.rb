@@ -1,98 +1,30 @@
 require 'spec_helper'
-require_relative '../../lib/jwt'
+require 'jwt'
 
 describe JWT do
-  context 'RSASSA' do
-    %w(RS256 RS384 RS512).each do |algorithm|
-      context "[#{algorithm}] when signing a token" do
-        it 'should be syntactically valid'
-        it 'should validate with public key'
-        it 'should throw with invalid public key'
-      end
+  let(:jwt_header) { { 'alg' => 'HS256', 'typ' => 'JWT' } }
+  let(:jwt_header_base64) { 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9' }
+  let(:jwt_payload) { { 'sub' => 1234567890, 'name' => 'John Doe', 'admin' => true } }
+  let(:jwt_payload_base64) { 'eyJzdWIiOjEyMzQ1Njc4OTAsIm5hbWUiOiJKb2huIERvZSIsImFkbWluIjp0cnVlfQ==' }
+  let(:secret) { 'secret' }
+  let(:jwt_signature_base64) { 'zzPVwrCDlyRQSEMsDCLrq4cjMl5t88H5T2msS_HgdqI=' }
+  let(:token) { "#{jwt_header_base64}.#{jwt_payload_base64}.#{jwt_signature_base64}" }
+
+  context 'encode' do
+    it 'should match given pre-caclculated result' do
+      jwt = JWT.encode(jwt_payload, secret)
+      expect(jwt).to eq("#{jwt_header_base64}.#{jwt_payload_base64}.#{jwt_signature_base64}")
     end
   end
 
-  context 'HMAC' do
-    let(:secret) { 'valid-secret' }
+  context 'decode' do
+    it 'should match given input data' do
+      header, payload, signature, valid = JWT.decode(token, secret)
 
-    %w(HS256 HS384 HS512).each do |algorithm|
-      context "[#{algorithm}] when signing a token" do
-        it 'should be syntactically valid'
-        it 'should without options'
-        it 'should validate with secret'
-        it 'should throw with invalid secret'
-        it 'should throw with secret and token not signed'
-        it 'should throw when verifying null'
-        it 'should throw when the payload is not json'
-      end
+      expect(header).to eq(jwt_header)
+      expect(payload).to eq(jwt_payload)
+      expect(signature).to eq(Base64.urlsafe_decode64(jwt_signature_base64))
+      expect(valid).to eq(true)
     end
-  end
-
-  context 'ECDSA' do
-    %w(ES256 ES384 ES512).each do |algorithm|
-      context "[#{algorithm}] when signing a token" do
-        it 'should be syntactically valid'
-        it 'should without options'
-        it 'should validate with secret'
-        it 'should throw with invalid secret'
-        it 'should throw with secret and token not signed'
-        it 'should throw when verifying null'
-        it 'should throw when the payload is not json'
-      end
-    end
-  end
-
-  context 'none' do
-
-  end
-
-  context 'when signing a token with expiration' do
-    it 'should be valid expiration'
-    it 'should be invalid'
-  end
-
-  context 'when signing a token with audience' do
-    it 'should check audience'
-    it 'should check audience in array'
-    it 'should throw when invalid audience'
-    it 'should throw when invalid audience in array'
-  end
-
-  context 'when signing a token with array audience' do
-    it 'should check audience'
-    it 'should check other audience'
-    it 'should check audience in array'
-    it 'should throw when invalid audience'
-    it 'should throw when invalid audience in array'
-  end
-
-  context 'when signing a token without audience' do
-    it 'should check audience'
-    it 'should check audience in array'
-  end
-
-  context 'when signing a token with issuer' do
-    it 'should check issuer'
-    it 'should throw when invalid issuer'
-  end
-
-  context 'when signing a token without issuer' do
-    it 'should check issuer'
-  end
-
-  context 'when verifying a malformed token' do
-    it 'should throw'
-  end
-
-  context 'when decoding a jwt token with additional parts' do
-    it 'should throw'
-  end
-
-  context 'when decoding a invalid jwt token' do
-    it 'should return nil'
-  end
-
-  context 'when decoding a valid jwt token' do
-    it 'should return the payload'
   end
 end

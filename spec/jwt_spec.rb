@@ -3,26 +3,26 @@ require_relative '../lib/jwt'
 
 describe JWT do
   before do
-    @payload = {"foo" => "bar", "exp" => Time.now.to_i + 1}
+    @payload = { "foo" => "bar", "exp" => Time.now.to_i + 1 }
   end
 
   it "encodes and decodes JWTs" do
-    secret = "secret"
-    jwt = JWT.encode(@payload, secret)
+    secret          = "secret"
+    jwt             = JWT.encode(@payload, secret)
     decoded_payload = JWT.decode(jwt, secret)
     expect(decoded_payload).to include(@payload)
   end
 
   it "encodes and decodes JWTs for RSA signatures" do
-    private_key = OpenSSL::PKey::RSA.generate(512)
-    jwt = JWT.encode(@payload, private_key, "RS256")
+    private_key     = OpenSSL::PKey::RSA.generate(512)
+    jwt             = JWT.encode(@payload, private_key, "RS256")
     decoded_payload = JWT.decode(jwt, private_key.public_key)
     expect(decoded_payload).to include(@payload)
   end
 
   it "encodes and decodes JWTs with custom header fields" do
-    private_key = OpenSSL::PKey::RSA.generate(512)
-    jwt = JWT.encode(@payload, private_key, "RS256", {"kid" => 'default'})
+    private_key     = OpenSSL::PKey::RSA.generate(512)
+    jwt             = JWT.encode(@payload, private_key, "RS256", { "kid" => 'default' })
     decoded_payload = JWT.decode(jwt) do |header|
       expect(header["kid"]).to eq('default')
       private_key.public_key
@@ -31,9 +31,9 @@ describe JWT do
   end
 
   it "decodes valid JWTs" do
-    example_payload = {"hello" => "world"}
-    example_secret = 'secret'
-    example_jwt = 'eyJhbGciOiAiSFMyNTYiLCAidHlwIjogIkpXVCJ9.eyJoZWxsbyI6ICJ3b3JsZCJ9.tvagLDLoaiJKxOKqpBXSEGy7SYSifZhjntgm9ctpyj8'
+    example_payload = { "hello" => "world" }
+    example_secret  = 'secret'
+    example_jwt     = 'eyJhbGciOiAiSFMyNTYiLCAidHlwIjogIkpXVCJ9.eyJoZWxsbyI6ICJ3b3JsZCJ9.tvagLDLoaiJKxOKqpBXSEGy7SYSifZhjntgm9ctpyj8'
     decoded_payload = JWT.decode(example_jwt, example_secret)
     expect(decoded_payload).to include(example_payload)
   end
@@ -41,27 +41,27 @@ describe JWT do
   it "raises exception when the token is invalid" do
     example_secret = 'secret'
     # Same as above exmaple with some random bytes replaced
-    example_jwt = 'eyJhbGciOiAiSFMyNTYiLCAidHiMomlwIjogIkJ9.eyJoZWxsbyI6ICJ3b3JsZCJ9.tvagLDLoaiJKxOKqpBXSEGy7SYSifZhjntgm9ctpyj8'
+    example_jwt    = 'eyJhbGciOiAiSFMyNTYiLCAidHiMomlwIjogIkJ9.eyJoZWxsbyI6ICJ3b3JsZCJ9.tvagLDLoaiJKxOKqpBXSEGy7SYSifZhjntgm9ctpyj8'
     expect { JWT.decode(example_jwt, example_secret) }.to raise_error(JWT::DecodeError)
   end
 
   it "raises exception with wrong hmac key" do
     right_secret = 'foo'
-    bad_secret = 'bar'
-    jwt_message = JWT.encode(@payload, right_secret, "HS256")
+    bad_secret   = 'bar'
+    jwt_message  = JWT.encode(@payload, right_secret, "HS256")
     expect { JWT.decode(jwt_message, bad_secret) }.to raise_error(JWT::DecodeError)
   end
 
   it "raises exception with wrong rsa key" do
     right_private_key = OpenSSL::PKey::RSA.generate(512)
-    bad_private_key = OpenSSL::PKey::RSA.generate(512)
-    jwt = JWT.encode(@payload, right_private_key, "RS256")
+    bad_private_key   = OpenSSL::PKey::RSA.generate(512)
+    jwt               = JWT.encode(@payload, right_private_key, "RS256")
     expect { JWT.decode(jwt, bad_private_key.public_key) }.to raise_error(JWT::DecodeError)
   end
 
   it "raises exception with invalid signature" do
     example_secret = 'secret'
-    example_jwt = 'eyJhbGciOiAiSFMyNTYiLCAidHlwIjogIkpXVCJ9.eyJoZWxsbyI6ICJ3b3JsZCJ9.'
+    example_jwt    = 'eyJhbGciOiAiSFMyNTYiLCAidHlwIjogIkpXVCJ9.eyJoZWxsbyI6ICJ3b3JsZCJ9.'
     expect { JWT.decode(example_jwt, example_secret) }.to raise_error(JWT::DecodeError)
   end
 
@@ -78,18 +78,18 @@ describe JWT do
   end
 
   it "allows decoding without key" do
-    right_secret = 'foo'
-    bad_secret = 'bar'
-    jwt = JWT.encode(@payload, right_secret)
+    right_secret    = 'foo'
+    bad_secret      = 'bar'
+    jwt             = JWT.encode(@payload, right_secret)
     decoded_payload = JWT.decode(jwt, bad_secret, false)
     expect(decoded_payload).to include(@payload)
   end
 
   it "checks the key when verify is truthy" do
     right_secret = 'foo'
-    bad_secret = 'bar'
-    jwt = JWT.encode(@payload, right_secret)
-    verify = "yes" =~ /^y/i
+    bad_secret   = 'bar'
+    jwt          = JWT.encode(@payload, right_secret)
+    verify       = "yes" =~ /^y/i
     expect { JWT.decode(jwt, bad_secret, verify) }.to raise_error(JWT::DecodeError)
   end
 
@@ -111,8 +111,8 @@ describe JWT do
   end
 
   it "does not use == to compare digests" do
-    secret = "secret"
-    jwt = JWT.encode(@payload, secret)
+    secret         = "secret"
+    jwt            = JWT.encode(@payload, secret)
     crypto_segment = jwt.split(".").last
 
     signature = JWT.base64url_decode(crypto_segment)
@@ -124,28 +124,28 @@ describe JWT do
   end
 
   it "raises error when expired" do
-    expired_payload = @payload.clone
+    expired_payload        = @payload.clone
     expired_payload['exp'] = Time.now.to_i - 1
-    secret = "secret"
-    jwt = JWT.encode(expired_payload, secret)
+    secret                 = "secret"
+    jwt                    = JWT.encode(expired_payload, secret)
     expect { JWT.decode(jwt, secret) }.to raise_error(JWT::ExpiredSignature)
   end
-  
+
   it "performs normal decode with skipped expiration check" do
-    expired_payload = @payload.clone
+    expired_payload        = @payload.clone
     expired_payload['exp'] = Time.now.to_i - 1
-    secret = "secret"
-    jwt = JWT.encode(expired_payload, secret)
-    decoded_payload = JWT.decode(jwt, secret, true, {:verify_expiration => false})
+    secret                 = "secret"
+    jwt                    = JWT.encode(expired_payload, secret)
+    decoded_payload        = JWT.decode(jwt, secret, true, { :verify_expiration => false })
     expect(decoded_payload).to include(expired_payload)
   end
-  
+
   it "performs normal decode using leeway" do
-    expired_payload = @payload.clone
+    expired_payload        = @payload.clone
     expired_payload['exp'] = Time.now.to_i - 2
-    secret = "secret"
-    jwt = JWT.encode(expired_payload, secret)
-    decoded_payload = JWT.decode(jwt, secret, true, {:leeway => 3})
+    secret                 = "secret"
+    jwt                    = JWT.encode(expired_payload, secret)
+    decoded_payload        = JWT.decode(jwt, secret, true, { :leeway => 3 })
     expect(decoded_payload).to include(expired_payload)
   end
 
@@ -182,16 +182,16 @@ SvbWhCDa/LMOWxHdmrcJi6XoSg1vnOyCoKbyAoauTt/XqdkHbkDdQ6HFbJieu9il
 LDZZNliPhfENuKeC2MCGVXTEu8Cqhy1w6e4axavLlXoYf4laJIZ/e7au8SqDbY0B
 xwIDAQAB
 -----END PUBLIC KEY-----
-PUBKEY
+    PUBKEY
     jwt = (
-      'eyJhbGciOiJSUzI1NiJ9.eyJpc3MiOiJhY2NvdW50cy5nb29nbGUuY29tIiwiY' +
-      'XVkIjoiMTA2MDM1Nzg5MTY4OC5hcHBzLmdvb2dsZXVzZXJjb250ZW50LmNvbSI' +
-      'sImNpZCI6IjEwNjAzNTc4OTE2ODguYXBwcy5nb29nbGV1c2VyY29udGVudC5jb' +
-      '20iLCJpZCI6IjExNjQ1MjgyNDMwOTg1Njc4MjE2MyIsInRva2VuX2hhc2giOiJ' +
-      '0Z2hEOUo4bjhWME4ydmN3NmVNaWpnIiwiaWF0IjoxMzIwNjcwOTc4LCJleHAiO' +
-      'jEzMjA2NzQ4Nzh9.D8x_wirkxDElqKdJBcsIws3Ogesk38okz6MN7zqC7nEAA7' +
-      'wcy1PxsROY1fmBvXSer0IQesAqOW-rPOCNReSn-eY8d53ph1x2HAF-AzEi3GOl' +
-      '6hFycH8wj7Su6JqqyEbIVLxE7q7DkAZGaMPkxbTHs1EhSd5_oaKQ6O4xO3ZnnT4'
+    'eyJhbGciOiJSUzI1NiJ9.eyJpc3MiOiJhY2NvdW50cy5nb29nbGUuY29tIiwiY' +
+        'XVkIjoiMTA2MDM1Nzg5MTY4OC5hcHBzLmdvb2dsZXVzZXJjb250ZW50LmNvbSI' +
+        'sImNpZCI6IjEwNjAzNTc4OTE2ODguYXBwcy5nb29nbGV1c2VyY29udGVudC5jb' +
+        '20iLCJpZCI6IjExNjQ1MjgyNDMwOTg1Njc4MjE2MyIsInRva2VuX2hhc2giOiJ' +
+        '0Z2hEOUo4bjhWME4ydmN3NmVNaWpnIiwiaWF0IjoxMzIwNjcwOTc4LCJleHAiO' +
+        'jEzMjA2NzQ4Nzh9.D8x_wirkxDElqKdJBcsIws3Ogesk38okz6MN7zqC7nEAA7' +
+        'wcy1PxsROY1fmBvXSer0IQesAqOW-rPOCNReSn-eY8d53ph1x2HAF-AzEi3GOl' +
+        '6hFycH8wj7Su6JqqyEbIVLxE7q7DkAZGaMPkxbTHs1EhSd5_oaKQ6O4xO3ZnnT4'
     )
     expect { JWT.decode(jwt, pubkey, true) }.to raise_error(JWT::DecodeError)
   end
@@ -205,11 +205,11 @@ PUBKEY
 
   describe 'decoded_segments' do
     it "allows access to the decoded header and payload" do
-      secret = "secret"
-      jwt = JWT.encode(@payload, secret)
+      secret           = "secret"
+      jwt              = JWT.encode(@payload, secret)
       decoded_segments = JWT.decoded_segments(jwt)
       expect(decoded_segments.size).to eq(4)
-      expect(decoded_segments[0]).to eq({"typ" => "JWT", "alg" => "HS256"})
+      expect(decoded_segments[0]).to eq({ "typ" => "JWT", "alg" => "HS256" })
       expect(decoded_segments[1]).to eq(@payload)
     end
   end
