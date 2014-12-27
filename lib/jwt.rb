@@ -30,7 +30,7 @@ module JWT
     token.join '.'
   end
 
-  def self.decode(token, secret_or_key = nil, verify = true, options = {}, &keyfinder)
+  def self.decode(token, secret_or_key = nil, verify = true)
     begin
       header, payload, signature = token.split('.')
 

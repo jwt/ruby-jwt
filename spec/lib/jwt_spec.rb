@@ -65,4 +65,19 @@ describe JWT do
       end
     end
   end
+
+  it 'should preserve custom header fields' do
+    h         = jwt_header
+    h['alg']  = 'none'
+    h['test'] = 'test'
+    hb64      = Base64.urlsafe_encode64(h.to_json)
+    token     = "#{hb64}.#{jwt_payload_base64}."
+
+    header, payload, signature, valid = JWT.decode(token)
+
+    expect(header).to eq(h)
+    expect(payload).to eq(jwt_payload)
+    expect(signature).to eq('')
+    expect(valid).to eq(false)
+  end
 end
