@@ -1,4 +1,4 @@
-require "codeclimate-test-reporter"
+require 'codeclimate-test-reporter'
 CodeClimate::TestReporter.start
 
 CERT_PATH = File.join(File.dirname(__FILE__), '..', 'tmp', 'certs')

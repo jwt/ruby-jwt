@@ -1,6 +1,7 @@
 require 'openssl'
 require 'base64'
 require 'json'
+require 'jwa'
 
 module JWT
   extend self
