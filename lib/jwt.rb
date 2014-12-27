@@ -18,7 +18,14 @@ module JWT
 
     token << Base64.urlsafe_encode64(header.merge(head).to_json)
     token << Base64.urlsafe_encode64(payload.to_json)
-    token << Base64.urlsafe_encode64(OpenSSL::HMAC.digest(OpenSSL::Digest.new('sha256'), secret_or_key, token.join('.')))
+
+    signature = if algorithm != 'none'
+                  Base64.urlsafe_encode64(OpenSSL::HMAC.digest(OpenSSL::Digest.new('sha256'), secret_or_key, token.join('.')))
+                else
+                  ''
+                end
+
+    token << signature
 
     token.join '.'
   end
@@ -29,14 +36,18 @@ module JWT
 
       header    = JSON.parse(Base64.urlsafe_decode64(header))
       payload   = JSON.parse(Base64.urlsafe_decode64(payload))
-      signature = Base64.urlsafe_decode64(signature)
+      signature = if header['alg'] == 'none'
+                    ''
+                  else
+                    Base64.urlsafe_decode64(signature)
+                  end
     rescue Exception => e
       raise JWT::DecodeError.new e.message
     end
 
     valid = false
 
-    if verify
+    if verify && header['alg'] != 'none'
       valid = signature === Base64.urlsafe_decode64(encode(payload, secret_or_key, header['alg'], header).split('.').last())
       raise JWT::DecodeError.new('Token verification failed. Data corrupted or pass phrase incorrect.') unless valid
     end
