@@ -3,12 +3,14 @@ require 'base64'
 require 'json'
 
 module JWT
+  extend self
+
   class DecodeError < Exception;
   end
   class EncodeError < Exception;
   end
 
-  def self.encode(payload, secret_or_key, algorithm = 'HS256', head = {})
+  def encode(payload, secret_or_key, algorithm = 'HS256', head = {})
     header = {
         'alg' => algorithm,
         'typ' => 'JWT'
@@ -30,7 +32,7 @@ module JWT
     token.join '.'
   end
 
-  def self.decode(token, secret_or_key = nil, verify = true)
+  def decode(token, secret_or_key = nil, verify = true)
     begin
       header, payload, signature = token.split('.')
 
