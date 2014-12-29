@@ -1,3 +1,5 @@
+require 'jwt/base64'
+
 module JWA
   class HMAC
     def initialize(bits)
@@ -9,7 +11,7 @@ module JWA
 
       signature = OpenSSL::HMAC.digest OpenSSL::Digest.new("sha#{@bits}"), secret, data
 
-      Base64.urlsafe_encode64 signature
+      JWT::Base64.encode signature
     end
 
     def verify(data, signature, secret)

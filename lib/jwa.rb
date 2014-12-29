@@ -1,3 +1,4 @@
+require 'jwt/base64'
 require 'jwa/hmac'
 
 module JWA

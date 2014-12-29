@@ -8,7 +8,7 @@ describe JWT do
   let(:jwt_payload_base64) { 'eyJzdWIiOjEyMzQ1Njc4OTAsIm5hbWUiOiJKb2huIERvZSIsImFkbWluIjp0cnVlfQ' }
   let(:secret) { 'secret' }
   let(:wrong_secret) { 'wrong secret' }
-  let(:jwt_signature_base64) { 'zzPVwrCDlyRQSEMsDCLrq4cjMl5t88H5T2msS_HgdqI' }
+  let(:jwt_signature_base64) { 'eoaDVGTClRdfxUZXiPs3f8FmJDkDE_VCQFXqKxpLsts' }
   let(:token) { "#{jwt_header_base64}.#{jwt_payload_base64}.#{jwt_signature_base64}" }
 
   context 'encode' do
@@ -20,7 +20,7 @@ describe JWT do
     it 'should create plain tokens' do
       header        = jwt_header
       header['alg'] = 'none'
-      header        = Base64.urlsafe_encode64(header.to_json)
+      header        = JWT::Base64.encode(header.to_json)
       token         = "#{header}.#{jwt_payload_base64}."
 
       jwt = JWT.encode(jwt_payload, '', 'none')
@@ -37,7 +37,7 @@ describe JWT do
 
       expect(header).to eq(jwt_header)
       expect(payload).to eq(jwt_payload)
-      expect(signature).to eq(Base64.urlsafe_decode64(jwt_signature_base64))
+      expect(signature).to eq(JWT::Base64.decode(jwt_signature_base64))
       expect(valid).to eq(true)
     end
 
