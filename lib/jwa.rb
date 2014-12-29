@@ -3,14 +3,20 @@ require 'jwa/hmac'
 module JWA
   extend self
 
+  # The complete list of signing algorithms defined in the IETF JSON Web Algorithms (JWA) version 38
+  # https://tools.ietf.org/html/draft-ietf-jose-json-web-algorithms-38#section-3.1
   ALGORITHMS = %w(HS256 HS384 HS512 RS256 RS384 RS512 ES256 ES384 ES512 PS256 PS384 PS512 none)
 
+  # raises if the payload is not a string
   class InvalidPayloadFormat < ArgumentError
   end
 
+  # raises if  a algorithm is called that is not defined in the specs
+  # Info: all algorithms a case-sensitive
   class InvalidAlgorithm < ArgumentError
   end
 
+  # raises if a secret or key is required but not provided in order to sign the data
   class MissingSecretOrKey < ArgumentError
   end
 
@@ -28,13 +34,23 @@ module JWA
     end
   end
 
-  def verify(algorithm, data, secret_or_private_key = '')
-    validate_algorithm algorithm
+  def verify(algorithm, data, signature, secret_or_private_key = '')
+    algo, bits = validate_algorithm algorithm
     validate_data data
+    validate_data signature
+
+    case algo
+      when 'HS'
+        JWA::HMAC.new(bits).verify(data, signature, secret_or_private_key)
+      when 'RS'
+      when 'ES'
+      when 'PS'
+      when 'none'
+    end
   end
 
   def validate_algorithm(algorithm)
-    raise JWA::InvalidAlgorithm.new("JWA: Given algorithm [#{algorithm.to_s}] is not part of the JWS supported algorithms.") unless ALGORITHMS.include? algorithm #
+    raise JWA::InvalidAlgorithm.new("JWA: Given algorithm [#{algorithm.to_s}] is not part of the JWS supported algorithms.") unless ALGORITHMS.include? algorithm
 
     match = algorithm.match(/(HS|RS|ES|PS|none)(\d+)?/)
 
