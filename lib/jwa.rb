@@ -1,4 +1,3 @@
-require 'jwt/base64'
 require 'jwa/hmac'
 
 module JWA
@@ -21,6 +20,10 @@ module JWA
   class MissingSecretOrKey < ArgumentError
   end
 
+  # raises if a part of code is not implemented
+  class NotImplemented < ArgumentError
+  end
+
   def sign(algorithm, data, secret_or_private_key = '')
     algo, bits = validate_algorithm algorithm
     validate_data data
@@ -28,10 +31,8 @@ module JWA
     case algo
       when 'HS'
         JWA::HMAC.new(bits).sign(data, secret_or_private_key)
-      when 'RS'
-      when 'ES'
-      when 'PS'
-      when 'none'
+      else
+        raise JWA::NotImplemented.new("JWA: #{algorithm} is not implemented yet.")
     end
   end
 
@@ -43,10 +44,8 @@ module JWA
     case algo
       when 'HS'
         JWA::HMAC.new(bits).verify(data, signature, secret_or_private_key)
-      when 'RS'
-      when 'ES'
-      when 'PS'
-      when 'none'
+      else
+        raise JWA::NotImplemented.new("JWA: #{algorithm} is not implemented yet.")
     end
   end
 

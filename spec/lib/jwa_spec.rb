@@ -20,6 +20,12 @@ describe JWA do
     expect { JWA.verify('NONE', string, secret) }.to raise_error(JWA::InvalidAlgorithm)
   end
 
+  it 'should raise if algorithm is not implemented' do
+    %w(RS256 RS384 RS512 ES256 ES384 ES512 PS256 PS384 PS512 none).each do |algo|
+      expect { JWA.sign(algo, string, secret) }.to raise_error(JWA::NotImplemented)
+    end
+  end
+
   it 'should only accept strings as input data' do
     algo = 'HS256'
     sign = JWA.sign algo, string, secret

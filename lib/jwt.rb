@@ -1,6 +1,5 @@
 require 'openssl'
 require 'json'
-require 'base64'
 require 'jwt/base64'
 require 'jwa'
 

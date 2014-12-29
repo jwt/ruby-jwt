@@ -1,5 +1,3 @@
-require 'jwt/base64'
-
 module JWA
   class HMAC
     def initialize(bits)
