@@ -43,7 +43,7 @@ describe JWA do
     end
 
     let(:secret) do
-      Base64.urlsafe_decode64 'hJtXIZ2uSN5kbQfbtTNWbpdmhkV8FJG-Onbc6mxCcYg='
+      JWT::Base64.decode 'hJtXIZ2uSN5kbQfbtTNWbpdmhkV8FJG-Onbc6mxCcYg'
     end
 
     let(:signatures) do

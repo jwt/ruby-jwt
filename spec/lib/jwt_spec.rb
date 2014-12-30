@@ -44,7 +44,7 @@ describe JWT do
     it 'should handle plain tokens' do
       h        = jwt_header
       h['alg'] = 'none'
-      hb64     = Base64.urlsafe_encode64(h.to_json)
+      hb64     = JWT::Base64.encode(h.to_json)
       token    = "#{hb64}.#{jwt_payload_base64}."
 
       header, payload, signature, valid = JWT.decode(token)
@@ -70,7 +70,7 @@ describe JWT do
     h         = jwt_header
     h['alg']  = 'none'
     h['test'] = 'test'
-    hb64      = Base64.urlsafe_encode64(h.to_json)
+    hb64      = JWT::Base64.encode(h.to_json)
     token     = "#{hb64}.#{jwt_payload_base64}."
 
     header, payload, signature, valid = JWT.decode(token)
