@@ -1,11 +1,20 @@
 #!/bin/sh
 
+rm -rf tmp/certs/*.pem
+
 mkdir -p tmp/certs
 
-openssl genrsa 2048 > tmp/certs/rsa-private.pem
-openssl genrsa 2048 > tmp/certs/rsa-wrong-private.pem
-openssl rsa -in tmp/certs/rsa-private.pem -pubout > tmp/certs/rsa-public.pem
-openssl rsa -in tmp/certs/rsa-wrong-private.pem -pubout > tmp/certs/rsa-wrong-public.pem
+# RSA KEYS
+openssl genrsa 1024 > tmp/certs/rsa-1024-private.pem
+openssl rsa -in tmp/certs/rsa-1024-private.pem -pubout > tmp/certs/rsa-1024-public.pem
+openssl genrsa 2048 > tmp/certs/rsa-2048-private.pem
+openssl genrsa 2048 > tmp/certs/rsa-2048-wrong-private.pem
+openssl rsa -in tmp/certs/rsa-2048-private.pem -pubout > tmp/certs/rsa-2048-public.pem
+openssl rsa -in tmp/certs/rsa-2048-wrong-private.pem -pubout > tmp/certs/rsa-2048-wrong-public.pem
+openssl genrsa 4096 > tmp/certs/rsa-4096-private.pem
+openssl rsa -in tmp/certs/rsa-4096-private.pem -pubout > tmp/certs/rsa-4096-public.pem
+
+# ECDSA KEYS
 openssl ecparam -out tmp/certs/ec256-private.pem -name secp256k1 -genkey
 openssl ecparam -out tmp/certs/ec256-wrong-private.pem -name secp256k1 -genkey
 openssl ecparam -out tmp/certs/ec384-private.pem -name secp384r1 -genkey
