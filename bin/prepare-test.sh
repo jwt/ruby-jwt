@@ -1,6 +1,6 @@
 #!/bin/sh
 
-mkdir -p tmp/certs/jwa
+mkdir -p tmp/certs
 
 openssl genrsa 2048 > tmp/certs/rsa-private.pem
 openssl genrsa 2048 > tmp/certs/rsa-wrong-private.pem
