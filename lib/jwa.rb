@@ -1,4 +1,5 @@
 require 'jwa/hmac'
+require 'jwa/rsassa'
 
 module JWA
   extend self
@@ -31,19 +32,23 @@ module JWA
     case algo
       when 'HS'
         JWA::HMAC.new(bits).sign(data, secret_or_private_key)
+      when 'RS'
+        JWA::RSASSA.new(bits).sign(data, secret_or_private_key)
       else
         raise JWA::NotImplemented.new("JWA: #{algorithm} is not implemented yet.")
     end
   end
 
-  def verify(algorithm, data, signature, secret_or_private_key = '')
+  def verify(algorithm, data, signature, secret_or_public_key = '')
     algo, bits = validate_algorithm algorithm
     validate_data data
     validate_data signature
 
     case algo
       when 'HS'
-        JWA::HMAC.new(bits).verify(data, signature, secret_or_private_key)
+        JWA::HMAC.new(bits).verify(data, signature, secret_or_public_key)
+      when 'RS'
+        JWA::RSASSA.new(bits).verify(data, signature, secret_or_public_key)
       else
         raise JWA::NotImplemented.new("JWA: #{algorithm} is not implemented yet.")
     end
