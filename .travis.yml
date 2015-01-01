@@ -12,6 +12,3 @@ before_install:
   - gem --version
 before_script:
   - bin/prepare-test.sh
-addons:
-  code_climate:
-    repo_token: f00428819bf1930e10b8ea2eecf6ecf57e295fcca4f4eb1d77bfd278f573e239

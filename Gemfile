@@ -9,5 +9,5 @@ end
 group :test, :development do
   gem 'rake'
   gem 'rspec'
-  gem 'codeclimate-test-reporter'
+  gem 'codeclimate-test-reporter', require: false
 end
