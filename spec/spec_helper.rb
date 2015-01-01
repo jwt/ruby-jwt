@@ -1,6 +1,16 @@
 require 'codeclimate-test-reporter'
 CodeClimate::TestReporter.start
 
+SimpleCov.configure do
+  root File.join(File.dirname(__FILE__), '..')
+  project_name 'Ruby JWT - Ruby JSON Web Token implementation'
+  formatter SimpleCov::Formatter::HTMLFormatter
+
+  add_filter 'spec'
+end
+
+SimpleCov.start if ENV['COVERAGE']
+
 CERT_PATH = File.join(File.dirname(__FILE__), '..', 'tmp', 'certs')
 
 RSpec.configure do |config|

@@ -28,16 +28,12 @@ module JWT
   end
 
   def decode(token, secret_or_key = nil, verify = true)
-    begin
-      orig_header, orig_payload, orig_signature = token.split('.')
+    orig_header, orig_payload, orig_signature = token.split('.')
 
-      header    = JSON.parse(Base64.decode(orig_header))
-      payload   = JSON.parse(Base64.decode(orig_payload))
-      signature = header['alg'] == 'none' ? '' : Base64.decode(orig_signature)
-    rescue Exception => e
-      raise JWT::DecodeError.new e.message
-    end
-
+    header    = JSON.parse(Base64.decode(orig_header))
+    payload   = JSON.parse(Base64.decode(orig_payload))
+    signature = header['alg'] == 'none' ? '' : Base64.decode(orig_signature)
+    
     valid = false
 
     if verify

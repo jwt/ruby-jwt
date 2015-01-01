@@ -47,11 +47,14 @@ describe JWA do
     expect { JWA.verify('RS513', string, secret) }.to raise_error(JWA::InvalidAlgorithm)
     expect { JWA.sign('hs256', string) }.to raise_error(JWA::InvalidAlgorithm)
     expect { JWA.verify('NONE', string, secret) }.to raise_error(JWA::InvalidAlgorithm)
+
+    expect(JWA::ALGORITHMS).to eq(%w(HS256 HS384 HS512 RS256 RS384 RS512 ES256 ES384 ES512 PS256 PS384 PS512 none))
   end
 
   it 'should raise if algorithm is not implemented' do
     %w(ES256 ES384 ES512 PS256 PS384 PS512).each do |algo|
       expect { JWA.sign(algo, string, secret) }.to raise_error(JWA::NotImplemented)
+      expect { JWA.verify(algo, string, secret) }.to raise_error(JWA::NotImplemented)
     end
   end
 
