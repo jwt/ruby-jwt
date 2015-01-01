@@ -144,6 +144,11 @@ describe JWA do
         it 'should return true for matching signature and data' do
           expect(JWA.verify(algorithm, payload, rsa_2048_signatures[bits.to_s], rsa_key['2048'][:public])).to eq(true)
         end
+
+        it 'should return for mismatching signature and data' do
+          expect(JWA.verify(algorithm, payload, rsa_2048_signatures[bits.to_s], rsa_key['2048_wrong'][:public])).to eq(false)
+          expect(JWA.verify(algorithm, payload, rsa_2048_signatures[bits.to_s], rsa_key['4096'][:public])).to eq(false)
+        end
       end
 
       it 'should raise if key is weaker than 2048 bits' do
