@@ -1,6 +1,12 @@
 # WARNING: This is the 2.x branch of ruby-jwt, currently under heavy development
 
 # JWT
+
+[![Build Status](https://travis-ci.org/excpt/ruby-jwt.svg?branch=refactoring)](https://travis-ci.org/excpt/ruby-jwt)
+[![Codeship Status for excpt/moments](https://codeship.com/projects/f94b6890-6dc3-0132-8f82-52110d7a425c/status?branch=master)](https://codeship.com/projects/54274)
+[![Code Climate](https://codeclimate.com/github/excpt/ruby-jwt/badges/gpa.svg)](https://codeclimate.com/github/excpt/ruby-jwt)
+[![Test Coverage](https://codeclimate.com/github/excpt/ruby-jwt/badges/coverage.svg)](https://codeclimate.com/github/excpt/ruby-jwt)
+
 A Ruby implementation of [JSON Web Token draft 06](http://self-issued.info/docs/draft-jones-json-web-token-06.html).
 
 ## Installing
