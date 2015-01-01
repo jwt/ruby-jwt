@@ -1,3 +1,5 @@
+# WARNING: This is the 2.x branch of ruby-jwt, currently under heavy development
+
 # JWT
 A Ruby implementation of [JSON Web Token draft 06](http://self-issued.info/docs/draft-jones-json-web-token-06.html).
 
