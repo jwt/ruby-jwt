@@ -17,44 +17,40 @@ module JWT
         'typ' => 'JWT'
     }
 
-    token = []
+    header  = Base64.encode header.merge(head).to_json
+    payload = Base64.encode payload.to_json
 
-    token << Base64.encode(header.merge(head).to_json)
-    token << Base64.encode(payload.to_json)
+    token = [header, payload]
 
-    signature = if algorithm != 'none'
-                  Base64.encode(OpenSSL::HMAC.digest(OpenSSL::Digest.new('sha256'), secret_or_key, token.join('.')))
-                else
-                  ''
-                end
-
-    token << signature
+    token << JWA.sign(algorithm, (header + '.' + payload).to_s, secret_or_key)
 
     token.join '.'
   end
 
   def decode(token, secret_or_key = nil, verify = true)
     begin
-      header, payload, signature = token.split('.')
+      orig_header, orig_payload, orig_signature = token.split('.')
 
-      header    = JSON.parse(Base64.decode(header))
-      payload   = JSON.parse(Base64.decode(payload))
-      signature = if header['alg'] == 'none'
-                    ''
-                  else
-                    Base64.decode(signature)
-                  end
+      header    = JSON.parse(Base64.decode(orig_header))
+      payload   = JSON.parse(Base64.decode(orig_payload))
+      signature = header['alg'] == 'none' ? '' : Base64.decode(orig_signature)
     rescue Exception => e
       raise JWT::DecodeError.new e.message
     end
 
     valid = false
 
-    if verify && header['alg'] != 'none'
-      valid = signature === Base64.decode(encode(payload, secret_or_key, header['alg'], header).split('.').last())
+    if verify
+      valid = verify(header['alg'], (orig_header + '.' + orig_payload), orig_signature, secret_or_key)
       raise JWT::DecodeError.new('Token verification failed. Data corrupted or pass phrase incorrect.') unless valid
     end
 
     [header, payload, signature, valid]
   end
+
+  def verify(algorithm, payload, signature, secret_or_key)
+    JWA.verify(algorithm, payload, signature, secret_or_key)
+  end
+
+  private :verify
 end

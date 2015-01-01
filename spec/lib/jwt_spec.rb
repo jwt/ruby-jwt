@@ -52,7 +52,7 @@ describe JWT do
       expect(header).to eq(h)
       expect(payload).to eq(jwt_payload)
       expect(signature).to eq('')
-      expect(valid).to eq(false)
+      expect(valid).to eq(true)
     end
 
     context 'raises DecodeError' do
@@ -78,6 +78,6 @@ describe JWT do
     expect(header).to eq(h)
     expect(payload).to eq(jwt_payload)
     expect(signature).to eq('')
-    expect(valid).to eq(false)
+    expect(valid).to eq(true)
   end
 end

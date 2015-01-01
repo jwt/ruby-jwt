@@ -50,7 +50,7 @@ describe JWA do
   end
 
   it 'should raise if algorithm is not implemented' do
-    %w(ES256 ES384 ES512 PS256 PS384 PS512 none).each do |algo|
+    %w(ES256 ES384 ES512 PS256 PS384 PS512).each do |algo|
       expect { JWA.sign(algo, string, secret) }.to raise_error(JWA::NotImplemented)
     end
   end
