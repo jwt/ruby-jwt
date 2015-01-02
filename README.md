@@ -48,25 +48,25 @@ sudo gem install jwt
 Signing a JSON Web Token.
 
 ```ruby
-JWT.encode({"some" => "payload"}, "secret")
+JWT.encode({some: 'payload'}, 'secret')
 ```
 
 Note: The resulting JWT will not be encrypted, but verifiable with a secret key.
 
 ```ruby
-JWT.decode("someJWTstring", "secret")
+JWT.decode('someJWTstring', 'secret')
 ```
 
 If the secret is wrong, it will raise a `JWT::DecodeError` telling you as such. You can still get at the payload by setting the verify argument to false.
 
 ```ruby
-JWT.decode("someJWTstring", nil, false)
+JWT.decode('someJWTstring', nil, false)
 ```
 
 Change the algorithm with by setting it in encode:
 
 ```ruby
-JWT.encode({"some" => "payload"}, "secret", "HS512")
+JWT.encode({some: 'payload'}, 'secret', 'HS512')
 ```
 
 **Plaintext**
@@ -74,7 +74,7 @@ JWT.encode({"some" => "payload"}, "secret", "HS512")
 We also support unsigned plaintext JWTs as introduced by draft 03 by explicitly specifying `nil` as the key and algorithm:
 
 ```ruby
-jwt = JWT.encode({"some" => "payload"}, nil, nil)
+jwt = JWT.encode({some: 'payload'}, nil, nil)
 JWT.decode(jwt, nil, nil)
 ```
 
@@ -99,8 +99,8 @@ From [draft 01 of the JWT spec](http://self-issued.info/docs/draft-jones-json-we
 You pass the expiration time as a UTC UNIX timestamp (an int). For example:
 
 ```ruby
-JWT.encode({"exp": 1371720939}, "secret")
-JWT.encode({"exp": Time.now.to_i()}, "secret")
+JWT.encode({exp: 1371720939}, 'secret')
+JWT.encode({exp: Time.now.to_i()}, 'secret')
 ```
 
 Expiration time is automatically verified in `JWT.decode()` and raises
@@ -108,7 +108,7 @@ Expiration time is automatically verified in `JWT.decode()` and raises
 
 ```ruby
 begin
-    JWT.decode("JWT_STRING", "secret")
+    JWT.decode('JWT_STRING', 'secret')
 rescue JWT::ExpiredSignature
     # Signature has expired
 end
@@ -126,7 +126,7 @@ after creation but you know that sometimes you will process it after 30 seconds,
 you can set a leeway of 10 seconds in order to have some margin:
 
 ```ruby
-jwt_payload = JWT.encode({'exp': Time.now.to_i + 30}, 'secret')
+jwt_payload = JWT.encode({exp: Time.now.to_i + 30}, 'secret')
 sleep(32)
 # jwt_payload is now expired
 # But with some leeway, it will still validate
