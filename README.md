@@ -7,31 +7,15 @@
 [![Code Climate](https://codeclimate.com/github/excpt/ruby-jwt/badges/gpa.svg)](https://codeclimate.com/github/excpt/ruby-jwt)
 [![Test Coverage](https://codeclimate.com/github/excpt/ruby-jwt/badges/coverage.svg)](https://codeclimate.com/github/excpt/ruby-jwt)
 
-A Ruby implementation of [JSON Web Token (JWT) - draft-ietf-oauth-json-web-token-32](http://tools.ietf.org/html/draft-ietf-oauth-json-web-token-32).
+## Goal
 
-## Installing
+The goal is to implement the complete JWT spec including the underlying specs JWS, JWA, JWK and JWE.
 
-```bash
-sudo gem install jwt
-```
-
-## Usage
-
-```ruby
-    JWT.encode({"some" => "payload"}, "secret")
-```
-
-Note the resulting JWT will not be encrypted, but verifiable with a secret key.
-
-```ruby
-    JWT.decode("someJWTstring", "secret")
-```
-
-If the secret is wrong, it will raise a `JWT::DecodeError` telling you as such. You can still get at the payload by setting the verify argument to false.
-
-```ruby
-    JWT.decode("someJWTstring", nil, false)
-```
+* [JSON Web Token (JWT)](https://tools.ietf.org/html/draft-ietf-oauth-json-web-token-32)
+* [JSON Web Signature (JWS)](https://tools.ietf.org/html/draft-ietf-jose-json-web-signature-39)
+* [JSON Web Encryption (JWE)](https://tools.ietf.org/html/draft-ietf-jose-json-web-encryption-39)
+* [JSON Web Key (JWK)](https://tools.ietf.org/html/draft-ietf-jose-json-web-key-39)
+* [JSON Web Algorithms (JWA)](https://tools.ietf.org/html/draft-ietf-jose-json-web-algorithms-39)
 
 ## Algorithms
 
@@ -49,10 +33,40 @@ The JWT spec supports several algorithms for cryptographic signing. This library
 * RS384 - RSA using SHA-384 hash algorithm
 * RS512 - RSA using SHA-512 hash algorithm
 
+**NONE**
+
+* NONE - No signature
+
+## Installing
+
+```bash
+sudo gem install jwt
+```
+
+## Usage
+
+Signing a JSON Web Token.
+
+```ruby
+JWT.encode({"some" => "payload"}, "secret")
+```
+
+Note: The resulting JWT will not be encrypted, but verifiable with a secret key.
+
+```ruby
+JWT.decode("someJWTstring", "secret")
+```
+
+If the secret is wrong, it will raise a `JWT::DecodeError` telling you as such. You can still get at the payload by setting the verify argument to false.
+
+```ruby
+JWT.decode("someJWTstring", nil, false)
+```
+
 Change the algorithm with by setting it in encode:
 
 ```ruby
-    JWT.encode({"some" => "payload"}, "secret", "HS512")
+JWT.encode({"some" => "payload"}, "secret", "HS512")
 ```
 
 **Plaintext**
@@ -60,8 +74,8 @@ Change the algorithm with by setting it in encode:
 We also support unsigned plaintext JWTs as introduced by draft 03 by explicitly specifying `nil` as the key and algorithm:
 
 ```ruby
-    jwt = JWT.encode({"some" => "payload"}, nil, nil)
-    JWT.decode(jwt, nil, nil)
+jwt = JWT.encode({"some" => "payload"}, nil, nil)
+JWT.decode(jwt, nil, nil)
 ```
 
 ## Support for reserved claim names
@@ -85,19 +99,19 @@ From [draft 01 of the JWT spec](http://self-issued.info/docs/draft-jones-json-we
 You pass the expiration time as a UTC UNIX timestamp (an int). For example:
 
 ```ruby
-    JWT.encode({"exp": 1371720939}, "secret")
-    JWT.encode({"exp": Time.now.to_i()}, "secret")
+JWT.encode({"exp": 1371720939}, "secret")
+JWT.encode({"exp": Time.now.to_i()}, "secret")
 ```
 
 Expiration time is automatically verified in `JWT.decode()` and raises
 `JWT::ExpiredSignature` if the expiration time is in the past:
 
 ```ruby
-    begin
-        JWT.decode("JWT_STRING", "secret")
-    rescue JWT::ExpiredSignature
-        # Signature has expired
-	end
+begin
+    JWT.decode("JWT_STRING", "secret")
+rescue JWT::ExpiredSignature
+    # Signature has expired
+end
 ```
 
 Expiration time will be compared to the current UTC time (as given by
@@ -112,11 +126,11 @@ after creation but you know that sometimes you will process it after 30 seconds,
 you can set a leeway of 10 seconds in order to have some margin:
 
 ```ruby
-    jwt_payload = JWT.encode({'exp': Time.now.to_i + 30}, 'secret')
-    sleep(32)
-    # jwt_payload is now expired
-    # But with some leeway, it will still validate
-    JWT.decode(jwt_payload, 'secret', true, leeway=10)
+jwt_payload = JWT.encode({'exp': Time.now.to_i + 30}, 'secret')
+sleep(32)
+# jwt_payload is now expired
+# But with some leeway, it will still validate
+JWT.decode(jwt_payload, 'secret', true, leeway=10)
 ```
 
 ## Development and Tests
@@ -124,13 +138,13 @@ you can set a leeway of 10 seconds in order to have some margin:
 We depend on [Echoe](http://rubygems.org/gems/echoe) for defining gemspec and performing releases to rubygems.org, which can be done with
 
 ```bash
-    rake release
+rake release
 ```
 
 The tests are written with rspec. Given you have rake and rspec, you can run tests with
 
 ```bash
-    rake test
+rake test
 ```
 
 **If you want a release cut with your PR, please include a version bump according to [Semantic Versioning](http://semver.org/)**
