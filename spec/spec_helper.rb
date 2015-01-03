@@ -4,7 +4,10 @@ CodeClimate::TestReporter.start
 SimpleCov.configure do
   root File.join(File.dirname(__FILE__), '..')
   project_name 'Ruby JWT - Ruby JSON Web Token implementation'
-  formatter SimpleCov::Formatter::HTMLFormatter
+  SimpleCov.formatter = SimpleCov::Formatter::MultiFormatter[
+    CodeClimate::TestReporter::Formatter,
+    SimpleCov::Formatter::HTMLFormatter
+  ]
 
   add_filter 'spec'
 end
