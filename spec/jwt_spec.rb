@@ -129,7 +129,15 @@ describe JWT do
     jwt = JWT.encode(expired_payload, secret)
     expect { JWT.decode(jwt, secret) }.to raise_error(JWT::ExpiredSignature)
   end
-  
+
+  it "raise ExpiredSignature even when exp claims is a string" do
+    expired_payload = @payload.clone
+    expired_payload['exp'] = (Time.now.to_i).to_s
+    secret = "secret"
+    jwt = JWT.encode(expired_payload, secret)
+    expect { JWT.decode(jwt, secret) }.to raise_error(JWT::ExpiredSignature)
+  end
+
   it "performs normal decode with skipped expiration check" do
     expired_payload = @payload.clone
     expired_payload['exp'] = Time.now.to_i - 1
@@ -138,7 +146,7 @@ describe JWT do
     decoded_payload = JWT.decode(jwt, secret, true, {:verify_expiration => false})
     expect(decoded_payload).to include(expired_payload)
   end
-  
+
   it "performs normal decode using leeway" do
     expired_payload = @payload.clone
     expired_payload['exp'] = Time.now.to_i - 2
