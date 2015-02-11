@@ -92,7 +92,7 @@ you can set a leeway of 10 seconds in order to have some margin:
     sleep(32)
     # jwt_payload is now expired
     # But with some leeway, it will still validate
-    JWT.decode(jwt_payload, 'secret', true, leeway=10)
+    JWT.decode(jwt_payload, 'secret', true, {:leeway => 10})
 
 ## Development and Tests
 
