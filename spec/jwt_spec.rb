@@ -2,7 +2,7 @@ require 'helper'
 
 describe JWT do
   before do
-    @payload = {"foo" => "bar", "exp" => Time.now.to_i + 1}
+    @payload = {"foo" => "bar", "exp" => Time.now.to_i + 1, "nbf" => Time.now.to_i - 1 }
   end
 
   it "encodes and decodes JWTs" do
@@ -154,6 +154,48 @@ describe JWT do
     jwt = JWT.encode(expired_payload, secret)
     decoded_payload = JWT.decode(jwt, secret, true, {:leeway => 3})
     expect(decoded_payload).to include(expired_payload)
+  end
+
+  it "raises error when before nbf" do
+    immature_payload = @payload.clone
+    immature_payload['nbf'] = Time.now.to_i + 1
+    secret = "secret"
+    jwt = JWT.encode(immature_payload, secret)
+    expect { JWT.decode(jwt, secret) }.to raise_error(JWT::ImmatureSignature)
+  end
+
+  it "doesnt raise error when after nbf" do
+    mature_payload = @payload.clone
+    secret = "secret"
+    jwt = JWT.encode(mature_payload, secret)
+    decoded_payload = JWT.decode(jwt, secret, true, {:verify_expiration => false})
+    expect(decoded_payload).to include(mature_payload)
+  end
+
+  it "raise ImmatureSignature even when nbf claim is a string" do
+    immature_payload = @payload.clone
+    immature_payload['nbf'] = (Time.now.to_i).to_s
+    secret = "secret"
+    jwt = JWT.encode(immature_payload, secret)
+    expect { JWT.decode(jwt, secret) }.to raise_error(JWT::ImmatureSignature)
+  end
+
+  it "performs normal decode with skipped not before check" do
+    immature_payload = @payload.clone
+    immature_payload['nbf'] = Time.now.to_i + 2
+    secret = "secret"
+    jwt = JWT.encode(immature_payload, secret)
+    decoded_payload = JWT.decode(jwt, secret, true, {:verify_not_before => false})
+    expect(decoded_payload).to include(immature_payload)
+  end
+
+  it "performs normal decode using leeway" do
+    immature_payload = @payload.clone
+    immature_payload['nbf'] = Time.now.to_i - 2
+    secret = "secret"
+    jwt = JWT.encode(immature_payload, secret)
+    decoded_payload = JWT.decode(jwt, secret, true, {:leeway => 3})
+    expect(decoded_payload).to include(immature_payload)
   end
 
   describe "secure comparison" do
