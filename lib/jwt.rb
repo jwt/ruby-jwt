@@ -11,6 +11,7 @@ require "jwt/json"
 module JWT
   class DecodeError < StandardError; end
   class ExpiredSignature < StandardError; end
+  class ImmatureSignature < StandardError; end
   extend JWT::Json
 
   module_function
@@ -102,6 +103,7 @@ module JWT
 
     default_options = {
       :verify_expiration => true,
+      :verify_not_before => true,
       :leeway => 0
     }
     options = default_options.merge(options)
@@ -110,8 +112,12 @@ module JWT
       algo, key = signature_algorithm_and_key(header, key, &keyfinder)
       verify_signature(algo, key, signing_input, signature)
     end
+
     if options[:verify_expiration] && payload.include?('exp')
       raise JWT::ExpiredSignature.new("Signature has expired") unless payload['exp'].to_i > (Time.now.to_i - options[:leeway])
+    end
+    if options[:verify_not_before] && payload.include?('nbf')
+      raise JWT::ImmatureSignature.new("Signature nbf has not been reached") unless payload['nbf'].to_i < (Time.now.to_i + options[:leeway])
     end
     return payload,header
   end
