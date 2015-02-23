@@ -37,42 +37,42 @@ describe JWT do
     expect(decoded_payload).to include(example_payload)
   end
 
-  it "raises exception when the token is invalid" do
+  it "raises decode exception when the token is invalid" do
     example_secret = 'secret'
     # Same as above exmaple with some random bytes replaced
     example_jwt = 'eyJhbGciOiAiSFMyNTYiLCAidHiMomlwIjogIkJ9.eyJoZWxsbyI6ICJ3b3JsZCJ9.tvagLDLoaiJKxOKqpBXSEGy7SYSifZhjntgm9ctpyj8'
     expect { JWT.decode(example_jwt, example_secret) }.to raise_error(JWT::DecodeError)
   end
 
-  it "raises exception with wrong hmac key" do
+  it "raises verification exception with wrong hmac key" do
     right_secret = 'foo'
     bad_secret = 'bar'
     jwt_message = JWT.encode(@payload, right_secret, "HS256")
-    expect { JWT.decode(jwt_message, bad_secret) }.to raise_error(JWT::DecodeError)
+    expect { JWT.decode(jwt_message, bad_secret) }.to raise_error(JWT::VerificationError)
   end
 
-  it "raises exception with wrong rsa key" do
+  it "raises verification exception with wrong rsa key" do
     right_private_key = OpenSSL::PKey::RSA.generate(512)
     bad_private_key = OpenSSL::PKey::RSA.generate(512)
     jwt = JWT.encode(@payload, right_private_key, "RS256")
-    expect { JWT.decode(jwt, bad_private_key.public_key) }.to raise_error(JWT::DecodeError)
+    expect { JWT.decode(jwt, bad_private_key.public_key) }.to raise_error(JWT::VerificationError)
   end
 
-  it "raises exception with invalid signature" do
+  it "raises decode exception with invalid signature" do
     example_secret = 'secret'
     example_jwt = 'eyJhbGciOiAiSFMyNTYiLCAidHlwIjogIkpXVCJ9.eyJoZWxsbyI6ICJ3b3JsZCJ9.'
     expect { JWT.decode(example_jwt, example_secret) }.to raise_error(JWT::DecodeError)
   end
 
-  it "raises exception with nonexistent header" do
+  it "raises decode exception with nonexistent header" do
     expect { JWT.decode("..stuff") }.to raise_error(JWT::DecodeError)
   end
 
-  it "raises exception with nonexistent payload" do
+  it "raises decode exception with nonexistent payload" do
     expect { JWT.decode("eyJhbGciOiAiSFMyNTYiLCAidHlwIjogIkpXVCJ9..stuff") }.to raise_error(JWT::DecodeError)
   end
 
-  it "raises exception with nil jwt" do
+  it "raises decode exception with nil jwt" do
     expect { JWT.decode(nil) }.to raise_error(JWT::DecodeError)
   end
 
