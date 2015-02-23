@@ -10,6 +10,7 @@ require "jwt/json"
 
 module JWT
   class DecodeError < StandardError; end
+  class VerificationError < DecodeError; end
   class ExpiredSignature < StandardError; end
   class ImmatureSignature < StandardError; end
   extend JWT::Json
@@ -132,14 +133,14 @@ module JWT
   def verify_signature(algo, key, signing_input, signature)
     begin
       if ["HS256", "HS384", "HS512"].include?(algo)
-        raise JWT::DecodeError.new("Signature verification failed") unless secure_compare(signature, sign_hmac(algo, signing_input, key))
+        raise JWT::VerificationError.new("Signature verification failed") unless secure_compare(signature, sign_hmac(algo, signing_input, key))
       elsif ["RS256", "RS384", "RS512"].include?(algo)
-        raise JWT::DecodeError.new("Signature verification failed") unless verify_rsa(algo, key, signing_input, signature)
+        raise JWT::VerificationError.new("Signature verification failed") unless verify_rsa(algo, key, signing_input, signature)
       else
-        raise JWT::DecodeError.new("Algorithm not supported")
+        raise JWT::VerificationError.new("Algorithm not supported")
       end
     rescue OpenSSL::PKey::PKeyError
-      raise JWT::DecodeError.new("Signature verification failed")
+      raise JWT::VerificationError.new("Signature verification failed")
     ensure
       OpenSSL.errors.clear
     end
