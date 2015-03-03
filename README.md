@@ -7,7 +7,8 @@ A Ruby implementation of [JSON Web Token draft 06](http://self-issued.info/docs/
 
 ## Usage
 
-    JWT.encode({"some" => "payload"}, "secret")
+    payload = {"some" => "payload"}
+    JWT.encode(payload, "secret")
 
 Note the resulting JWT will not be encrypted, but verifiable with a secret key.
 
@@ -16,6 +17,10 @@ Note the resulting JWT will not be encrypted, but verifiable with a secret key.
 If the secret is wrong, it will raise a `JWT::DecodeError` telling you as such. You can still get at the payload by setting the verify argument to false.
 
     JWT.decode("someJWTstring", nil, false)
+
+`encode` also allows for different signing algorithms as well as customer headers.
+
+    JWT.encode(payload, secret, "RS256", {"some" => "header"})
 
 ## Algorithms
 
