@@ -12,11 +12,11 @@ A Ruby implementation of [JSON Web Token draft 06](http://self-issued.info/docs/
 
 Note the resulting JWT will not be encrypted, but verifiable with a secret key.
 
-    JWT.decode("someJWTstring", "secret")
+    JWT.decode('someJWTstring', 'secret')
 
 If the secret is wrong, it will raise a `JWT::DecodeError` telling you as such. You can still get at the payload by setting the verify argument to false.
 
-    JWT.decode("someJWTstring", nil, false)
+    JWT.decode('someJWTstring', nil, false)
 
 `encode` also allows for different signing algorithms as well as customer headers.
 
@@ -40,21 +40,21 @@ The JWT spec supports several algorithms for cryptographic signing. This library
 
 Change the algorithm with by setting it in encode:
 
-    JWT.encode({"some" => "payload"}, "secret", "HS512")
+    JWT.encode({'some' => 'payload'}, 'secret', 'HS512')
 
 **Plaintext**
 
 We also support unsigned plaintext JWTs as introduced by draft 03 by explicitly specifying `nil` as the key and algorithm:
 
-    jwt = JWT.encode({"some" => "payload"}, nil, nil)
+    jwt = JWT.encode({'some' => 'payload'}, nil, nil)
     JWT.decode(jwt, nil, nil)
 
 ## Support for reserved claim names
 JSON Web Token defines some reserved claim names and defines how they should be
 used. JWT supports these reserved claim names:
 
- - "exp" (Expiration Time) Claim
- - "nbf" (Not Before Time) Claim
+ - 'exp' (Expiration Time) Claim
+ - 'nbf' (Not Before Time) Claim
 
 ### Expiration Time Claim
 
@@ -70,15 +70,15 @@ From [draft 01 of the JWT spec](http://self-issued.info/docs/draft-jones-json-we
 
 You pass the expiration time as a UTC UNIX timestamp (an int). For example:
 
-    JWT.encode({"exp": 1371720939}, "secret")
+    JWT.encode({'exp': 1371720939}, 'secret')
 
-    JWT.encode({"exp": Time.now.to_i()}, "secret")
+    JWT.encode({'exp': Time.now.to_i()}, 'secret')
 
 Expiration time is automatically verified in `JWT.decode()` and raises
 `JWT::ExpiredSignature` if the expiration time is in the past:
 
     begin
-        JWT.decode("JWT_STRING", "secret")
+        JWT.decode('JWT_STRING', 'secret')
     rescue JWT::ExpiredSignature
         # Signature has expired
 	end
@@ -113,15 +113,15 @@ From [draft-ietf-oauth-json-web-token-32](http://self-issued.info/docs/draft-iet
 
 You pass the not before time as a UTC UNIX timestamp (an int). For example:
 
-    JWT.encode({"nbf": 1371720939}, "secret")
+    JWT.encode({'nbf': 1371720939}, 'secret')
 
-    JWT.encode({"nbf": Time.now.to_i()}, "secret")
+    JWT.encode({'nbf': Time.now.to_i()}, 'secret')
 
 Not before time is automatically verified in `JWT.decode()` and raises
 `JWT::ImmatureSignature` if the not before time is in the future:
 
     begin
-        JWT.decode("JWT_STRING", "secret")
+        JWT.decode('JWT_STRING', 'secret')
     rescue JWT::ImmatureSignature
         # Signature is immature
 	end
