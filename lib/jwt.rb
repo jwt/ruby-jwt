@@ -11,9 +11,9 @@ require "jwt/json"
 module JWT
   class DecodeError < StandardError; end
   class VerificationError < DecodeError; end
-  class ExpiredSignature < StandardError; end
-  class ImmatureSignature < StandardError; end
-  class InvalidIssuerError < StandardError; end
+  class ExpiredSignature < DecodeError; end
+  class ImmatureSignature < DecodeError; end
+  class InvalidIssuerError < DecodeError; end
   extend JWT::Json
 
   module_function
