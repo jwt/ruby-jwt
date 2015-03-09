@@ -106,6 +106,7 @@ module JWT
     default_options = {
       :verify_expiration => true,
       :verify_not_before => true,
+      :verify_iss => true,
       :leeway => 0
     }
 
@@ -122,7 +123,7 @@ module JWT
     if options[:verify_not_before] && payload.include?('nbf')
       raise JWT::ImmatureSignature.new("Signature nbf has not been reached") unless payload['nbf'].to_i < (Time.now.to_i + options[:leeway])
     end
-    if options[:iss] && payload.include?('iss')
+    if options[:verify_iss] && payload.include?('iss')
       raise JWT::InvalidIssuerError.new("Invalid issuer") unless payload['iss'].to_s == options[:iss].to_s
     end
     return payload,header
