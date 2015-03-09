@@ -14,6 +14,9 @@ module JWT
   class ExpiredSignature < DecodeError; end
   class ImmatureSignature < DecodeError; end
   class InvalidIssuerError < DecodeError; end
+  class InvalidIatError < DecodeError; end
+  class InvalidAudError < DecodeError; end
+  class InvalidSubError < DecodeError; end
   extend JWT::Json
 
   module_function
@@ -107,6 +110,9 @@ module JWT
       :verify_expiration => true,
       :verify_not_before => true,
       :verify_iss => true,
+      :verify_iat => true,
+      :verify_aud => true,
+      :verify_sub => true,
       :leeway => 0
     }
 
@@ -126,6 +132,20 @@ module JWT
     if options[:verify_iss] && payload.include?('iss')
       raise JWT::InvalidIssuerError.new("Invalid issuer") unless payload['iss'].to_s == options[:iss].to_s
     end
+    if options[:verify_iat] && payload.include?('iat')
+      raise JWT::InvalidIatError.new("Invalid iat") unless payload['iat'].is_a?(Numeric)
+    end
+    if options[:verify_aud] && payload.include?('aud')
+      if payload['aud'].is_a?(Array)
+        raise JWT::InvalidAudError.new("Invalid audience") unless payload['aud'].include?(options[:aud])
+      else
+        raise JWT::InvalidAudError.new("Invalid audience") unless payload['aud'].to_s == options[:aud].to_s
+      end
+    end
+    if options[:verify_sub] && payload.include?('sub')
+      raise JWT::InvalidSubError.new("Invalid subject") unless payload['sub'].to_s == options[:sub].to_s
+    end
+
     return payload,header
   end
 
