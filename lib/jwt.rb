@@ -152,7 +152,6 @@ module JWT
       raise JWT::InvalidJtiError.new("Not a uniq jwt id") unless options[:jti].to_s == Digest::MD5.hexdigest("#{key}:#{payload['iat']}")
     end
 
-
     return payload,header
   end
 
