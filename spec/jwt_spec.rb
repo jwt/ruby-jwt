@@ -37,6 +37,29 @@ describe JWT do
     expect(decoded_payload).to include(example_payload)
   end
 
+  it "decodes valid JWTs with iss" do
+    example_payload = {"hello" => "world", "iss" => 'jwtiss'}
+    example_secret = 'secret'
+    example_jwt = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJoZWxsbyI6IndvcmxkIiwiaXNzIjoiand0aXNzIn0.nTZkyYfpGUyKULaj45lXw_1gXXjHvGW4h5V7okHdUqQ'
+    decoded_payload = JWT.decode(example_jwt, example_secret, true, {iss: 'jwtiss'})
+    expect(decoded_payload).to include(example_payload)
+  end
+
+  it "raises invalid issuer" do
+    example_payload = {"hello" => "world", "iss" => 'jwtiss'}
+    example_payload2 = {"hello" => "world"}
+
+    example_secret = 'secret'
+
+    example_jwt = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJoZWxsbyI6IndvcmxkIiwiaXNzIjoiand0aXNzIn0.nTZkyYfpGUyKULaj45lXw_1gXXjHvGW4h5V7okHdUqQ'
+    expect{ JWT.decode(example_jwt, example_secret, true, {iss: 'jwt_iss'}) }.to raise_error(JWT::InvalidIssuerError)
+
+    example_jwt2 = 'eyJhbGciOiAiSFMyNTYiLCAidHlwIjogIkpXVCJ9.eyJoZWxsbyI6ICJ3b3JsZCJ9.tvagLDLoaiJKxOKqpBXSEGy7SYSifZhjntgm9ctpyj8'
+    decode_payload2 = JWT.decode(example_jwt2, example_secret, true, {iss: 'jwt_iss'})
+    expect(decode_payload2).to include(example_payload2)
+  end
+
+
   it "raises decode exception when the token is invalid" do
     example_secret = 'secret'
     # Same as above exmaple with some random bytes replaced

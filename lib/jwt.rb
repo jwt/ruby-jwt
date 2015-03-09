@@ -13,6 +13,7 @@ module JWT
   class VerificationError < DecodeError; end
   class ExpiredSignature < StandardError; end
   class ImmatureSignature < StandardError; end
+  class InvalidIssuerError < StandardError; end
   extend JWT::Json
 
   module_function
@@ -107,6 +108,7 @@ module JWT
       :verify_not_before => true,
       :leeway => 0
     }
+
     options = default_options.merge(options)
 
     if verify
@@ -119,6 +121,11 @@ module JWT
     end
     if options[:verify_not_before] && payload.include?('nbf')
       raise JWT::ImmatureSignature.new("Signature nbf has not been reached") unless payload['nbf'].to_i < (Time.now.to_i + options[:leeway])
+    end
+    if options[:iss] && payload.include?('iss')
+      puts "----payload: #{payload.inspect}"
+      puts "----options: #{options.inspect}"
+      raise JWT::InvalidIssuerError.new("Invalid issuer") unless payload['iss'].to_s == options[:iss].to_s
     end
     return payload,header
   end
