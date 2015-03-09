@@ -123,8 +123,6 @@ module JWT
       raise JWT::ImmatureSignature.new("Signature nbf has not been reached") unless payload['nbf'].to_i < (Time.now.to_i + options[:leeway])
     end
     if options[:iss] && payload.include?('iss')
-      puts "----payload: #{payload.inspect}"
-      puts "----options: #{options.inspect}"
       raise JWT::InvalidIssuerError.new("Invalid issuer") unless payload['iss'].to_s == options[:iss].to_s
     end
     return payload,header
