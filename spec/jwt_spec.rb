@@ -68,10 +68,33 @@ describe JWT do
   end
 
   it "raises decode exception when iat is invalid" do
-    example_payload = {"hello" => "world", "iat" => "1425917209"}
+    example_payload = {"hello" => "world", "iat" => "abc"}
     example_secret = 'secret'
     example_jwt = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJoZWxsbyI6IndvcmxkIiwiaWF0IjoiMTQyNTkxNzIwOSJ9.Mn_vk61xWjIhbXFqAB0nFmNkDiCmfzUgl_LaCKRT6S8"
     expect{ JWT.decode(example_jwt, example_secret, true, {iat: 1425917209}) }.to raise_error(JWT::InvalidIatError)
+  end
+
+  it "decodes valid JWTs with jti" do
+    example_payload = {"hello" => "world", "iat" => 1425917209, "jti" => Digest::MD5.hexdigest("secret:1425917209")}
+    example_secret = 'secret'
+    example_jwt = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJoZWxsbyI6IndvcmxkIiwiaWF0IjoxNDI1OTE3MjA5LCJqdGkiOiI1NWM3NzZlMjFmN2NiZDg3OWMwNmZhYzAxOGRhYzQwMiJ9.ET0hb-VTUOL3M22oG13ofzvGPLMAncbF8rdNDIqo8tg'
+    decoded_payload = JWT.decode(example_jwt, example_secret, true, {jti: Digest::MD5.hexdigest("secret:1425917209")})
+    expect(decoded_payload).to include(example_payload)
+  end
+
+  it "raises decode exception when jti is invalid" do
+    example_payload = {"hello" => "world", "iat" => 1425917209, "jti" => Digest::MD5.hexdigest("secret:1425917209")}
+    example_secret = 'secret'
+    example_jwt = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJoZWxsbyI6IndvcmxkIiwiaWF0IjoxNDI1OTE3MjA5LCJqdGkiOiI1NWM3NzZlMjFmN2NiZDg3OWMwNmZhYzAxOGRhYzQwMiJ9.ET0hb-VTUOL3M22oG13ofzvGPLMAncbF8rdNDIqo8tg'
+    expect{ JWT.decode(example_jwt, example_secret, true, {jti: Digest::MD5.hexdigest("secret:1425922032")}) }.to raise_error(JWT::InvalidJtiError)
+    expect{ JWT.decode(example_jwt, example_secret) }.to raise_error(JWT::InvalidJtiError)
+  end
+
+  it "raises decode exception when jti without iat" do
+    example_payload = {"hello" => "world", "jti" => Digest::MD5.hexdigest("secret:1425917209")}
+    example_secret = 'secret'
+    example_jwt = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJoZWxsbyI6IndvcmxkIiwianRpIjoiNTVjNzc2ZTIxZjdjYmQ4NzljMDZmYWMwMThkYWM0MDIifQ.n0foJCnCM_-_xUvG_TOmR9mYpL2y0UqZOD_gv33djeE'
+    expect{ JWT.decode(example_jwt, example_secret, true, {jti: Digest::MD5.hexdigest("secret:1425922032")}) }.to raise_error(JWT::InvalidJtiError)
   end
 
   it "decodes valid JWTs with aud" do
