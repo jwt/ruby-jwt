@@ -132,24 +132,24 @@ module JWT
       raise JWT::ImmatureSignature.new("Signature nbf has not been reached") unless payload['nbf'].to_i < (Time.now.to_i + options[:leeway])
     end
     if options[:verify_iss] && payload.include?('iss')
-      raise JWT::InvalidIssuerError.new("Invalid issuer") unless payload['iss'].to_s == options[:iss].to_s
+      raise JWT::InvalidIssuerError.new("Invalid issuer") unless payload['iss'].to_s == options['iss'].to_s
     end
     if options[:verify_iat] && payload.include?('iat')
       raise JWT::InvalidIatError.new("Invalid iat") unless (payload['iat'].is_a?(Integer) and payload['iat'].to_i <= Time.now.to_i)
     end
     if options[:verify_aud] && payload.include?('aud')
       if payload['aud'].is_a?(Array)
-        raise JWT::InvalidAudError.new("Invalid audience") unless payload['aud'].include?(options[:aud])
+        raise JWT::InvalidAudError.new("Invalid audience") unless payload['aud'].include?(options['aud'])
       else
-        raise JWT::InvalidAudError.new("Invalid audience") unless payload['aud'].to_s == options[:aud].to_s
+        raise JWT::InvalidAudError.new("Invalid audience") unless payload['aud'].to_s == options['aud'].to_s
       end
     end
     if options[:verify_sub] && payload.include?('sub')
-      raise JWT::InvalidSubError.new("Invalid subject") unless payload['sub'].to_s == options[:sub].to_s
+      raise JWT::InvalidSubError.new("Invalid subject") unless payload['sub'].to_s == options['sub'].to_s
     end
     if options[:verify_jti] && payload.include?('jti')
       raise JWT::InvalidJtiError.new("need iat for verify jwt id") unless payload.include?('iat')
-      raise JWT::InvalidJtiError.new("Not a uniq jwt id") unless options[:jti].to_s == Digest::MD5.hexdigest("#{key}:#{payload['iat']}")
+      raise JWT::InvalidJtiError.new("Not a uniq jwt id") unless options['jti'].to_s == Digest::MD5.hexdigest("#{key}:#{payload['iat']}")
     end
 
     return payload,header

@@ -55,6 +55,11 @@ used. JWT supports these reserved claim names:
 
  - 'exp' (Expiration Time) Claim
  - 'nbf' (Not Before Time) Claim
+ - 'iss' (Issuer) Claim
+ - 'aud' (Audience) Claim
+ - 'jti' (JWT ID) Claim
+ - 'iat' (Issued At) Claim
+ - 'sub' (Subject) Claim
 
 ### Expiration Time Claim
 
@@ -140,7 +145,7 @@ the leeway option.
     # But with some leeway, it will still validate
     JWT.decode(jwt_payload, 'secret', true, {:leeway => 10})
 
-## Development and Tests
+# Development and Tests
 
 We depend on [Echoe](http://rubygems.org/gems/echoe) for defining gemspec and performing releases to rubygems.org, which can be done with
 
@@ -165,6 +170,8 @@ The tests are written with rspec. Given you have rake and rspec, you can run tes
  * Paul Battley <pbattley@gmail.com>
  * Zane Shannon [@zshannon](https://github.com/zshannon)
  * Brian Fletcher [@punkle](https://github.com/punkle)
+ * Alex [@ZhangHanDong](https://github.com/ZhangHanDong)
+ * Tim Rudat [@excpt](https://github.com/excpt) <timrudat@gmail.com> - Maintainer
 
 ## License
 
