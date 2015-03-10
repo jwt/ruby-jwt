@@ -165,6 +165,8 @@ The tests are written with rspec. Given you have rake and rspec, you can run tes
  * Paul Battley <pbattley@gmail.com>
  * Zane Shannon [@zshannon](https://github.com/zshannon)
  * Brian Fletcher [@punkle](https://github.com/punkle)
+ * Alex [@ZhangHanDong](https://github.com/ZhangHanDong)
+ * Tim Rudat [@excpt](https://github.com/excpt) <timrudat@gmail.com> - Maintainer
 
 ## License
 
