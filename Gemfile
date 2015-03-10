@@ -1,4 +1,4 @@
-source "https://rubygems.org"
+source 'https://rubygems.org'
 
 gem 'json', '>= 1.2.4'
 gem 'multi_json', '~> 1.0', :platforms => :ruby_18
