@@ -30,7 +30,7 @@ describe JWT do
   end
 
   it 'decodes valid JWTs' do
-    # example_payload = {'hello' => 'world'}
+    example_payload = {'hello' => 'world'}
     example_secret = 'secret'
     example_jwt = 'eyJhbGciOiAiSFMyNTYiLCAidHlwIjogIkpXVCJ9.eyJoZWxsbyI6ICJ3b3JsZCJ9.tvagLDLoaiJKxOKqpBXSEGy7SYSifZhjntgm9ctpyj8'
     decoded_payload = JWT.decode(example_jwt, example_secret)
@@ -38,7 +38,7 @@ describe JWT do
   end
 
   it 'decodes valid JWTs with iss' do
-    # example_payload = {'hello' => 'world', 'iss' => 'jwtiss'}
+    example_payload = {'hello' => 'world', 'iss' => 'jwtiss'}
     example_secret = 'secret'
     example_jwt = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJoZWxsbyI6IndvcmxkIiwiaXNzIjoiand0aXNzIn0.nTZkyYfpGUyKULaj45lXw_1gXXjHvGW4h5V7okHdUqQ'
     decoded_payload = JWT.decode(example_jwt, example_secret, true, {'iss' => 'jwtiss'})
@@ -47,7 +47,7 @@ describe JWT do
 
   it 'raises invalid issuer' do
     # example_payload = {'hello' => 'world', 'iss' => 'jwtiss'}
-    # example_payload2 = {'hello' => 'world'}
+    example_payload2 = {'hello' => 'world'}
 
     example_secret = 'secret'
 
@@ -60,7 +60,7 @@ describe JWT do
   end
 
   it 'decodes valid JWTs with iat' do
-    # example_payload = {'hello' => 'world', 'iat' => 1425917209}
+    example_payload = {'hello' => 'world', 'iat' => 1425917209}
     example_secret = 'secret'
     example_jwt = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJoZWxsbyI6IndvcmxkIiwiaWF0IjoxNDI1OTE3MjA5fQ.m4F-Ugo7aLnLunBBO3BeDidyWMx8T9eoJz6FW2rgQhU'
     decoded_payload = JWT.decode(example_jwt, example_secret, true, {'iat' => true})
@@ -75,7 +75,7 @@ describe JWT do
   end
 
   it 'decodes valid JWTs with jti' do
-    # example_payload = {'hello' => 'world', 'iat' => 1425917209, 'jti' => Digest::MD5.hexdigest('secret:1425917209')}
+    example_payload = {'hello' => 'world', 'iat' => 1425917209, 'jti' => Digest::MD5.hexdigest('secret:1425917209')}
     example_secret = 'secret'
     example_jwt = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJoZWxsbyI6IndvcmxkIiwiaWF0IjoxNDI1OTE3MjA5LCJqdGkiOiI1NWM3NzZlMjFmN2NiZDg3OWMwNmZhYzAxOGRhYzQwMiJ9.ET0hb-VTUOL3M22oG13ofzvGPLMAncbF8rdNDIqo8tg'
     decoded_payload = JWT.decode(example_jwt, example_secret, true, {'jti' => Digest::MD5.hexdigest('secret:1425917209')})
@@ -98,8 +98,8 @@ describe JWT do
   end
 
   it 'decodes valid JWTs with aud' do
-    # example_payload = {'hello' => 'world', 'aud' => 'url:pnd'}
-    # example_payload2 = {'hello' => 'world', 'aud' => ['url:pnd', 'aud:yes']}
+    example_payload = {'hello' => 'world', 'aud' => 'url:pnd'}
+    example_payload2 = {'hello' => 'world', 'aud' => ['url:pnd', 'aud:yes']}
     example_secret = 'secret'
     example_jwt = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJoZWxsbyI6IndvcmxkIiwiYXVkIjoidXJsOnBuZCJ9._gT5veUtNiZD7wLEC6Gd0-nkQV3cl1z8G0zXq8qcd-8'
     example_jwt2 = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJoZWxsbyI6IndvcmxkIiwiYXVkIjpbInVybDpwbmQiLCJhdWQ6eWVzIl19.qNPNcT4X9B5uI91rIwbW2bIPTsp8wbRYW3jkZkrmqbQ'
@@ -117,7 +117,7 @@ describe JWT do
   end
 
   it 'decodes valid JWTs with sub' do
-    # example_payload = {'hello' => 'world', 'sub' => 'subject'}
+    example_payload = {'hello' => 'world', 'sub' => 'subject'}
     example_secret = 'secret'
     example_jwt = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJoZWxsbyI6IndvcmxkIiwic3ViIjoic3ViamVjdCJ9.QUnNVZm4SPB4vP2zY9m1LoUSOx-5oGXBhj7R89D_UtA'
     decoded_payload = JWT.decode(example_jwt, example_secret, true, {'sub' => 'subject'})
