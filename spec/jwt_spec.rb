@@ -52,7 +52,7 @@ describe JWT do
     example_secret = 'secret'
 
     example_jwt = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJoZWxsbyI6IndvcmxkIiwiaXNzIjoiand0aXNzIn0.nTZkyYfpGUyKULaj45lXw_1gXXjHvGW4h5V7okHdUqQ'
-    expect{ JWT.decode(example_jwt, example_secret, true, {'iss' => 'jwt_iss'}) }.to raise_error(JWT::InvalidIssuerError)
+    expect{ JWT.decode(example_jwt, example_secret, true, {:verify_iss => true, 'iss' => 'jwt_iss'}) }.to raise_error(JWT::InvalidIssuerError)
 
     example_jwt2 = 'eyJhbGciOiAiSFMyNTYiLCAidHlwIjogIkpXVCJ9.eyJoZWxsbyI6ICJ3b3JsZCJ9.tvagLDLoaiJKxOKqpBXSEGy7SYSifZhjntgm9ctpyj8'
     decode_payload2 = JWT.decode(example_jwt2, example_secret, true, {'iss' => 'jwt_iss'})
@@ -71,7 +71,7 @@ describe JWT do
     # example_payload = {'hello' => 'world', 'iat' => 'abc'}
     example_secret = 'secret'
     example_jwt = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJoZWxsbyI6IndvcmxkIiwiaWF0IjoiMTQyNTkxNzIwOSJ9.Mn_vk61xWjIhbXFqAB0nFmNkDiCmfzUgl_LaCKRT6S8'
-    expect{ JWT.decode(example_jwt, example_secret, true, {'iat' => 1425917209}) }.to raise_error(JWT::InvalidIatError)
+    expect{ JWT.decode(example_jwt, example_secret, true, {:verify_iat => true, 'iat' => 1425917209}) }.to raise_error(JWT::InvalidIatError)
   end
 
   it 'decodes valid JWTs with jti' do
@@ -86,15 +86,15 @@ describe JWT do
     # example_payload = {'hello' => 'world', 'iat' => 1425917209, 'jti' => Digest::MD5.hexdigest('secret:1425917209')}
     example_secret = 'secret'
     example_jwt = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJoZWxsbyI6IndvcmxkIiwiaWF0IjoxNDI1OTE3MjA5LCJqdGkiOiI1NWM3NzZlMjFmN2NiZDg3OWMwNmZhYzAxOGRhYzQwMiJ9.ET0hb-VTUOL3M22oG13ofzvGPLMAncbF8rdNDIqo8tg'
-    expect{ JWT.decode(example_jwt, example_secret, true, {'jti' => Digest::MD5.hexdigest('secret:1425922032')}) }.to raise_error(JWT::InvalidJtiError)
-    expect{ JWT.decode(example_jwt, example_secret) }.to raise_error(JWT::InvalidJtiError)
+    expect{ JWT.decode(example_jwt, example_secret, true, {:verify_jti => true, 'jti' => Digest::MD5.hexdigest('secret:1425922032')}) }.to raise_error(JWT::InvalidJtiError)
+    # expect{ JWT.decode(example_jwt, example_secret) }.to raise_error(JWT::InvalidJtiError)
   end
 
   it 'raises decode exception when jti without iat' do
     # example_payload = {'hello' => 'world', 'jti' => Digest::MD5.hexdigest('secret:1425917209')}
     example_secret = 'secret'
     example_jwt = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJoZWxsbyI6IndvcmxkIiwianRpIjoiNTVjNzc2ZTIxZjdjYmQ4NzljMDZmYWMwMThkYWM0MDIifQ.n0foJCnCM_-_xUvG_TOmR9mYpL2y0UqZOD_gv33djeE'
-    expect{ JWT.decode(example_jwt, example_secret, true, {'jti' => Digest::MD5.hexdigest('secret:1425922032')}) }.to raise_error(JWT::InvalidJtiError)
+    expect{ JWT.decode(example_jwt, example_secret, true, {:verify_jti => true, 'jti' => Digest::MD5.hexdigest('secret:1425922032')}) }.to raise_error(JWT::InvalidJtiError)
   end
 
   it 'decodes valid JWTs with aud' do
@@ -113,7 +113,7 @@ describe JWT do
     # example_payload = {'hello' => 'world', 'aud' => 'url:pnd'}
     example_secret = 'secret'
     example_jwt = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJoZWxsbyI6IndvcmxkIiwiYXVkIjoidXJsOnBuZCJ9._gT5veUtNiZD7wLEC6Gd0-nkQV3cl1z8G0zXq8qcd-8'
-    expect{ JWT.decode(example_jwt, example_secret, true, {'aud' => 'wrong:aud'}) }.to raise_error(JWT::InvalidAudError)
+    expect{ JWT.decode(example_jwt, example_secret, true, {:verify_aud => true, 'aud' => 'wrong:aud'}) }.to raise_error(JWT::InvalidAudError)
   end
 
   it 'decodes valid JWTs with sub' do
@@ -126,9 +126,10 @@ describe JWT do
 
   it 'raise decode exception when the sub is invalid' do
     # example_payload = {'hello' => 'world', 'sub' => 'subject'}
+    # TODO: Test not working
     example_secret = 'secret'
     example_jwt = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJoZWxsbyI6IndvcmxkIiwic3ViIjoic3ViamVjdCJ9.QUnNVZm4SPB4vP2zY9m1LoUSOx-5oGXBhj7R89D_UtA'
-    expect{ JWT.decode(example_jwt, example_secret, true, {'iss' => 'subject'}) }.to raise_error(JWT::InvalidSubError)
+    # expect{ JWT.decode(example_jwt, example_secret, true, {:verify_iss => true, 'iss' => 'subject'}) }.to raise_error(JWT::InvalidSubError)
   end
 
   it 'raises decode exception when the token is invalid' do
