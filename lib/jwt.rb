@@ -125,34 +125,48 @@ module JWT
       verify_signature(algo, key, signing_input, signature)
     end
 
-    if options[:verify_expiration] && payload.include?('exp')
-      raise JWT::ExpiredSignature.new('Signature has expired') unless payload['exp'].to_i > (Time.now.to_i - options[:leeway])
-    end
-    if options[:verify_not_before] && payload.include?('nbf')
-      raise JWT::ImmatureSignature.new('Signature nbf has not been reached') unless payload['nbf'].to_i < (Time.now.to_i + options[:leeway])
-    end
-    if options[:verify_iss] && payload.include?('iss')
-      raise JWT::InvalidIssuerError.new("Invalid issuer. Expected #{options['iss']}, received #{payload['iss']}") unless payload['iss'].to_s == options['iss'].to_s
-    end
-    if options[:verify_iat] && payload.include?('iat')
-      raise JWT::InvalidIatError.new('Invalid iat') unless (payload['iat'].is_a?(Integer) and payload['iat'].to_i <= Time.now.to_i)
-    end
-    if options[:verify_aud] && payload.include?('aud')
-      if payload['aud'].is_a?(Array)
-        raise JWT::InvalidAudError.new('Invalid audience') unless payload['aud'].include?(options['aud'])
-      else
-        raise JWT::InvalidAudError.new("Invalid audience. Expected #{options['aud']}, received #{payload['aud']}") unless payload['aud'].to_s == options['aud'].to_s
-      end
-    end
-    if options[:verify_sub] && payload.include?('sub')
-      raise JWT::InvalidSubError.new("Invalid subject. Expected #{options['sub']}, received #{payload['sub']}") unless payload['sub'].to_s == options['sub'].to_s
-    end
-    if options[:verify_jti] && payload.include?('jti')
-      raise JWT::InvalidJtiError.new('need iat for verify jwt id') unless payload.include?('iat')
-      raise JWT::InvalidJtiError.new('Not a uniq jwt id') unless options['jti'].to_s == Digest::MD5.hexdigest("#{key}:#{payload['iat']}")
-    end
+    validate_signature(payload, options) if options[:verify_expiration] && payload.include?('exp')
+    validate_nbf(payload, options) if options[:verify_not_before] && payload.include?('nbf')
+    validate_iss(payload, options) if options[:verify_iss] && payload.include?('iss')
+    validate_iat(payload, options) if options[:verify_iat] && payload.include?('iat')
+    validate_aud(payload, options) if options[:verify_aud] && payload.include?('aud')
+    validate_sub(payload, options) if options[:verify_sub] && payload.include?('sub')
+    validate_jti(payload, options, key) if options[:verify_jti] && payload.include?('jti')
 
     return payload,header
+  end
+
+  def validate_jti(payload, options, key)
+    raise JWT::InvalidJtiError.new('need iat for verify jwt id') unless payload.include?('iat')
+    raise JWT::InvalidJtiError.new('Not a uniq jwt id') unless options['jti'].to_s == Digest::MD5.hexdigest("#{key}:#{payload['iat']}")
+  end
+
+  def validate_sub(payload, options)
+    raise JWT::InvalidSubError.new("Invalid subject. Expected #{options['sub']}, received #{payload['sub']}") unless payload['sub'].to_s == options['sub'].to_s
+  end
+
+  def validate_aud(payload, options)
+    if payload['aud'].is_a?(Array)
+      raise JWT::InvalidAudError.new('Invalid audience') unless payload['aud'].include?(options['aud'])
+    else
+      raise JWT::InvalidAudError.new("Invalid audience. Expected #{options['aud']}, received #{payload['aud']}") unless payload['aud'].to_s == options['aud'].to_s
+    end
+  end
+
+  def validate_iat(payload, options)
+    raise JWT::InvalidIatError.new('Invalid iat') unless (payload['iat'].is_a?(Integer) and payload['iat'].to_i <= Time.now.to_i)
+  end
+
+  def validate_signature(payload, options)
+    raise JWT::ExpiredSignature.new('Signature has expired') unless payload['exp'].to_i > (Time.now.to_i - options[:leeway])
+  end
+
+  def validate_nbf(payload, options)
+    raise JWT::ImmatureSignature.new('Signature nbf has not been reached') unless payload['nbf'].to_i < (Time.now.to_i + options[:leeway])
+  end
+
+  def validate_iss(payload, options)
+    raise JWT::InvalidIssuerError.new("Invalid issuer. Expected #{options['iss']}, received #{payload['iss']}") unless payload['iss'].to_s == options['iss'].to_s
   end
 
   def signature_algorithm_and_key(header, key, &keyfinder)
