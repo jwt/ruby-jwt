@@ -12,6 +12,7 @@ module JWT
   class DecodeError < StandardError; end
   class VerificationError < DecodeError; end
   class ExpiredSignature < DecodeError; end
+  class IncorrectAlgorithm < DecodeError; end
   class ImmatureSignature < DecodeError; end
   class InvalidIssuerError < DecodeError; end
   class InvalidIatError < DecodeError; end
@@ -122,6 +123,9 @@ module JWT
 
     if verify
       algo, key = signature_algorithm_and_key(header, key, &keyfinder)
+      if options[:algorithm] && algo != options[:algorithm]
+        raise JWT::IncorrectAlgorithm.new('Expected a different algorithm')
+      end
       verify_signature(algo, key, signing_input, signature)
     end
 
