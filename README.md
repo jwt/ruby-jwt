@@ -75,9 +75,9 @@ From [draft 01 of the JWT spec](http://self-issued.info/docs/draft-jones-json-we
 
 You pass the expiration time as a UTC UNIX timestamp (an int). For example:
 
-    JWT.encode({'exp': 1371720939}, 'secret')
+    JWT.encode({'exp' => 1371720939}, 'secret')
 
-    JWT.encode({'exp': Time.now.to_i()}, 'secret')
+    JWT.encode({'exp' => Time.now.to_i()}, 'secret')
 
 Expiration time is automatically verified in `JWT.decode()` and raises
 `JWT::ExpiredSignature` if the expiration time is in the past:
@@ -99,7 +99,7 @@ For example, if you have a JWT payload with a expiration time set to 30 seconds
 after creation but you know that sometimes you will process it after 30 seconds,
 you can set a leeway of 10 seconds in order to have some margin:
 
-    jwt_payload = JWT.encode({'exp': Time.now.to_i + 30}, 'secret')
+    jwt_payload = JWT.encode({'exp' => Time.now.to_i + 30}, 'secret')
     sleep(32)
     # jwt_payload is now expired
     # But with some leeway, it will still validate
@@ -118,9 +118,9 @@ From [draft-ietf-oauth-json-web-token-32](http://self-issued.info/docs/draft-iet
 
 You pass the not before time as a UTC UNIX timestamp (an int). For example:
 
-    JWT.encode({'nbf': 1371720939}, 'secret')
+    JWT.encode({'nbf' => 1371720939}, 'secret')
 
-    JWT.encode({'nbf': Time.now.to_i()}, 'secret')
+    JWT.encode({'nbf' => Time.now.to_i()}, 'secret')
 
 Not before time is automatically verified in `JWT.decode()` and raises
 `JWT::ImmatureSignature` if the not before time is in the future:
@@ -139,7 +139,7 @@ You can turn off not before time verification with the `verify_not_before` optio
 In a similar way to the expiration time claim, the not before time claim supports
 the leeway option.
 
-    jwt_payload = JWT.encode({'nbf': Time.now.to_i + 30}, 'secret')
+    jwt_payload = JWT.encode({'nbf' => Time.now.to_i + 30}, 'secret')
     sleep(25)
     # jwt_payload is now immature
     # But with some leeway, it will still validate
