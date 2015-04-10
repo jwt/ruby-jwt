@@ -193,12 +193,12 @@ describe JWT do
 
   it 'raises exception when decoded with a different algorithm than it was encoded with' do
     jwt = JWT.encode(@payload, 'foo', 'HS384')
-    expect { JWT.decode(jwt, 'foo', true, algorithm: 'HS512') }.to raise_error(JWT::IncorrectAlgorithm)
+    expect { JWT.decode(jwt, 'foo', true, :algorithm => 'HS512') }.to raise_error(JWT::IncorrectAlgorithm)
   end
 
   it 'does not raise exception when encoded with the expected algorithm' do
     jwt = JWT.encode(@payload, 'foo', 'HS512')
-    JWT.decode(jwt, 'foo', true, algorithm: 'HS512')
+    JWT.decode(jwt, 'foo', true, :algorithm => 'HS512')
   end
 
   it 'encodes and decodes plaintext JWTs' do
