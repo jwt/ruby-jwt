@@ -78,9 +78,9 @@ JSON Web Token defines some reserved claim names and defines how they should be 
 You pass the expiration time as a UTC UNIX timestamp (an int). For example:
 
 ```ruby
-token = JWT.encode({'exp': 1371720939}, 'secret')
+token = JWT.encode({'exp' => 1371720939}, 'secret')
 # or
-token = JWT.encode({'exp': Time.now.to_i}, 'secret')
+token = JWT.encode({'exp' => Time.now.to_i}, 'secret')
 ```
 
 Expiration time is automatically verified in `JWT.decode()` and raises `JWT::ExpiredSignature` if the expiration time is in the past:
@@ -100,7 +100,7 @@ You can turn off expiration time verification with the `verify_expiration` optio
 JWT also supports the leeway part of the expiration time definition, which means you can validate a expiration time which is in the past but not very far. For example, if you have a JWT payload with a expiration time set to 30 seconds after creation but you know that sometimes you will process it after 30 seconds, you can set a leeway of 10 seconds in order to have some margin:
 
 ```ruby
-token = JWT.encode({'exp': Time.now.to_i + 30}, 'secret')
+token = JWT.encode({'exp' => Time.now.to_i + 30}, 'secret')
 sleep(32)
 # token is now expired
 # but with some leeway, it will still validate
@@ -111,12 +111,10 @@ JWT.decode(token, 'secret', true, {:leeway => 10})
 
 You pass the not before time as a UTC UNIX timestamp (an int). For example:
 ```ruby
-token = JWT.encode({'nbf': 1371720939}, 'secret')
+token = JWT.encode({'nbf' => 1371720939}, 'secret')
 # or
-token = JWT.encode({'nbf': Time.now.to_i}, 'secret')
+token = JWT.encode({'nbf' => Time.now.to_i}, 'secret')
 ```
-
-Not before time is automatically verified in `JWT.decode()` and raises `JWT::ImmatureSignature` if the not before time is in the future:
 
 ```ruby
 begin
@@ -133,7 +131,7 @@ You can turn off not before time verification with the `verify_not_before` optio
 In a similar way to the expiration time claim, the not before time claim supports the leeway option.
 
 ```ruby
-token = JWT.encode({'nbf': Time.now.to_i + 30}, 'secret')
+token = JWT.encode({'nbf' => Time.now.to_i + 30}, 'secret')
 sleep(25)
 # token is now immature
 # but with some leeway, it will still validate
