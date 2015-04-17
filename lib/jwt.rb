@@ -21,6 +21,12 @@ module JWT
   class InvalidJtiError < DecodeError; end
   extend JWT::Json
 
+  NAMED_CURVES = {
+    'prime256v1' => 'ES256',
+    'secp384r1' => 'ES384',
+    'secp521r1' => 'ES512',
+  }
+
   module_function
 
   def sign(algorithm, msg, key)
@@ -28,6 +34,8 @@ module JWT
       sign_hmac(algorithm, msg, key)
     elsif ['RS256', 'RS384', 'RS512'].include?(algorithm)
       sign_rsa(algorithm, msg, key)
+    elsif ['ES256', 'ES384', 'ES512'].include?(algorithm)
+      sign_ecdsa(algorithm, msg, key)
     else
       raise NotImplementedError.new('Unsupported signing method')
     end
@@ -37,8 +45,28 @@ module JWT
     private_key.sign(OpenSSL::Digest.new(algorithm.sub('RS', 'sha')), msg)
   end
 
+  def sign_ecdsa(algorithm, msg, private_key)
+    key_algorithm = NAMED_CURVES[private_key.group.curve_name]
+    if algorithm != key_algorithm
+      raise IncorrectAlgorithm.new("payload algorithm is #{algorithm} but #{key_algorithm} signing key was provided")
+    end
+
+    digest = OpenSSL::Digest.new(algorithm.sub('ES', 'sha'))
+    private_key.dsa_sign_asn1(digest.digest(msg))
+  end
+
   def verify_rsa(algorithm, public_key, signing_input, signature)
     public_key.verify(OpenSSL::Digest.new(algorithm.sub('RS', 'sha')), signature, signing_input)
+  end
+
+  def verify_ecdsa(algorithm, public_key, signing_input, signature)
+    key_algorithm = NAMED_CURVES[public_key.group.curve_name]
+    if algorithm != key_algorithm
+      raise IncorrectAlgorithm.new("payload algorithm is #{algorithm} but #{key_algorithm} verification key was provided")
+    end
+
+    digest = OpenSSL::Digest.new(algorithm.sub('ES', 'sha'))
+    public_key.dsa_verify_asn1(digest.digest(signing_input), signature)
   end
 
   def sign_hmac(algorithm, msg, key)
@@ -172,6 +200,8 @@ module JWT
         raise JWT::VerificationError.new('Signature verification failed') unless secure_compare(signature, sign_hmac(algo, signing_input, key))
       elsif ['RS256', 'RS384', 'RS512'].include?(algo)
         raise JWT::VerificationError.new('Signature verification failed') unless verify_rsa(algo, key, signing_input, signature)
+      elsif ['ES256', 'ES384', 'ES512'].include?(algo)
+        raise JWT::VerificationError.new('Signature verification failed') unless verify_ecdsa(algo, key, signing_input, signature)
       else
         raise JWT::VerificationError.new('Algorithm not supported')
       end

@@ -19,6 +19,36 @@ describe JWT do
     expect(decoded_payload).to include(@payload)
   end
 
+  it 'encodes and decodes JWTs for ECDSA P-256 signatures' do
+    private_key = OpenSSL::PKey::EC.new('prime256v1')
+    private_key.generate_key
+    public_key = OpenSSL::PKey::EC.new(private_key)
+    public_key.private_key = nil
+    jwt = JWT.encode(@payload, private_key, 'ES256')
+    decoded_payload = JWT.decode(jwt, public_key)
+    expect(decoded_payload).to include(@payload)
+  end
+
+  it 'encodes and decodes JWTs for ECDSA P-384 signatures' do
+    private_key = OpenSSL::PKey::EC.new('secp384r1')
+    private_key.generate_key
+    public_key = OpenSSL::PKey::EC.new(private_key)
+    public_key.private_key = nil
+    jwt = JWT.encode(@payload, private_key, 'ES384')
+    decoded_payload = JWT.decode(jwt, public_key)
+    expect(decoded_payload).to include(@payload)
+  end
+
+  it 'encodes and decodes JWTs for ECDSA P-521 signatures' do
+    private_key = OpenSSL::PKey::EC.new('secp521r1')
+    private_key.generate_key
+    public_key = OpenSSL::PKey::EC.new(private_key)
+    public_key.private_key = nil
+    jwt = JWT.encode(@payload, private_key, 'ES512')
+    decoded_payload = JWT.decode(jwt, public_key)
+    expect(decoded_payload).to include(@payload)
+  end
+
   it 'encodes and decodes JWTs with custom header fields' do
     private_key = OpenSSL::PKey::RSA.generate(512)
     jwt = JWT.encode(@payload, private_key, 'RS256', {'kid' => 'default'})
@@ -27,6 +57,14 @@ describe JWT do
       private_key.public_key
     end
     expect(decoded_payload).to include(@payload)
+  end
+
+  it 'raises encode exception when ECDSA algorithm does not match key' do
+    private_key = OpenSSL::PKey::EC.new('prime256v1')
+    private_key.generate_key
+    expect do
+      JWT.encode(@payload, private_key, 'ES512')
+    end.to raise_error(JWT::IncorrectAlgorithm, 'payload algorithm is ES512 but ES256 signing key was provided')
   end
 
   it 'decodes valid JWTs' do
@@ -146,11 +184,37 @@ describe JWT do
     expect { JWT.decode(jwt_message, bad_secret) }.to raise_error(JWT::VerificationError)
   end
 
+  it 'raises decode exception when ECDSA algorithm does not match key' do
+    right_private_key = OpenSSL::PKey::EC.new('prime256v1')
+    right_private_key.generate_key
+    right_public_key = OpenSSL::PKey::EC.new(right_private_key)
+    right_public_key.private_key = nil
+    bad_private_key = OpenSSL::PKey::EC.new('secp384r1')
+    bad_private_key.generate_key
+    bad_public_key = OpenSSL::PKey::EC.new(bad_private_key)
+    bad_public_key.private_key = nil
+    jwt = JWT.encode(@payload, right_private_key, 'ES256')
+    expect do
+      JWT.decode(jwt, bad_public_key)
+    end.to raise_error(JWT::IncorrectAlgorithm, 'payload algorithm is ES256 but ES384 verification key was provided')
+  end
+
   it 'raises verification exception with wrong rsa key' do
     right_private_key = OpenSSL::PKey::RSA.generate(512)
     bad_private_key = OpenSSL::PKey::RSA.generate(512)
     jwt = JWT.encode(@payload, right_private_key, 'RS256')
     expect { JWT.decode(jwt, bad_private_key.public_key) }.to raise_error(JWT::VerificationError)
+  end
+
+  it 'raises verification exception with wrong ECDSA key' do
+    right_private_key = OpenSSL::PKey::EC.new('prime256v1')
+    right_private_key.generate_key
+    bad_private_key = OpenSSL::PKey::EC.new('prime256v1')
+    bad_private_key.generate_key
+    bad_public_key = OpenSSL::PKey::EC.new(bad_private_key)
+    bad_public_key.private_key = nil
+    jwt = JWT.encode(@payload, right_private_key, 'ES256')
+    expect { JWT.decode(jwt, bad_public_key) }.to raise_error(JWT::VerificationError)
   end
 
   it 'raises decode exception with invalid signature' do
