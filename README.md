@@ -29,7 +29,10 @@ JWT.decode('someJWTstring', nil, false)
 `encode` also allows for different signing algorithms as well as customer headers.
 
 ```ruby
-JWT.encode(payload, secret, "RS256", {"some" => "header"})
+require 'openssl'
+# it's recommended to use RSA keys with at least 2048 bit
+some_private_key = OpenSSL::PKey::RSA.new File.read('path/to/my/private/and/secure.pem'), 'password_for_my_private_key'
+rsa_signed_token = JWT.encode({ "exp" => Time.now.to_i+3600, "name" => "some_name" }, some_private_key, "RS512")
 ```
 
 ## Algorithms
