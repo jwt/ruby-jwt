@@ -3,24 +3,34 @@ A Ruby implementation of [JSON Web Token draft 06](http://self-issued.info/docs/
 
 ## Installing
 
-    sudo gem install jwt
+```bash
+sudo gem install jwt
+```
 
 ## Usage
 
-    payload = {"some" => "payload"}
-    JWT.encode(payload, "secret")
+```ruby
+payload = {"some" => "payload"}
+JWT.encode(payload, "secret")
+```
 
 Note the resulting JWT will not be encrypted, but verifiable with a secret key.
 
-    JWT.decode('someJWTstring', 'secret')
+```ruby
+JWT.decode('someJWTstring', 'secret')
+```
 
 If the secret is wrong, it will raise a `JWT::DecodeError` telling you as such. You can still get at the payload by setting the verify argument to false.
 
-    JWT.decode('someJWTstring', nil, false)
+```ruby
+JWT.decode('someJWTstring', nil, false)
+```
 
 `encode` also allows for different signing algorithms as well as customer headers.
 
-    JWT.encode(payload, secret, "RS256", {"some" => "header"})
+```ruby
+JWT.encode(payload, secret, "RS256", {"some" => "header"})
+```
 
 ## Algorithms
 
@@ -40,14 +50,18 @@ The JWT spec supports several algorithms for cryptographic signing. This library
 
 Change the algorithm with by setting it in encode:
 
-    JWT.encode({'some' => 'payload'}, 'secret', 'HS512')
+```ruby
+JWT.encode({'some' => 'payload'}, 'secret', 'HS512')
+```
 
 **Plaintext**
 
 We also support unsigned plaintext JWTs as introduced by draft 03 by explicitly specifying `nil` as the key and algorithm:
 
-    jwt = JWT.encode({'some' => 'payload'}, nil, nil)
-    JWT.decode(jwt, nil, nil)
+```ruby
+jwt = JWT.encode({'some' => 'payload'}, nil, nil)
+JWT.decode(jwt, nil, nil)
+```
 
 ## Support for reserved claim names
 JSON Web Token defines some reserved claim names and defines how they should be
@@ -75,18 +89,21 @@ From [draft 01 of the JWT spec](http://self-issued.info/docs/draft-jones-json-we
 
 You pass the expiration time as a UTC UNIX timestamp (an int). For example:
 
-    JWT.encode({'exp' => 1371720939}, 'secret')
-
-    JWT.encode({'exp' => Time.now.to_i()}, 'secret')
+```ruby
+JWT.encode({'exp' => 1371720939}, 'secret')
+JWT.encode({'exp' => Time.now.to_i()}, 'secret')
+```
 
 Expiration time is automatically verified in `JWT.decode()` and raises
 `JWT::ExpiredSignature` if the expiration time is in the past:
 
-    begin
-        JWT.decode('JWT_STRING', 'secret')
-    rescue JWT::ExpiredSignature
-        # Signature has expired
-	end
+```ruby
+begin
+  JWT.decode('JWT_STRING', 'secret')
+rescue JWT::ExpiredSignature
+  # Signature has expired
+end
+```
 
 Expiration time will be compared to the current UTC time (as given by
 `Time.now.to_i`), so be sure to use a UTC timestamp or datetime in encoding.
@@ -99,11 +116,13 @@ For example, if you have a JWT payload with a expiration time set to 30 seconds
 after creation but you know that sometimes you will process it after 30 seconds,
 you can set a leeway of 10 seconds in order to have some margin:
 
-    jwt_payload = JWT.encode({'exp' => Time.now.to_i + 30}, 'secret')
-    sleep(32)
-    # jwt_payload is now expired
-    # But with some leeway, it will still validate
-    JWT.decode(jwt_payload, 'secret', true, {:leeway => 10})
+```ruby
+jwt_payload = JWT.encode({'exp' => Time.now.to_i + 30}, 'secret')
+sleep(32)
+# jwt_payload is now expired
+# But with some leeway, it will still validate
+JWT.decode(jwt_payload, 'secret', true, {:leeway => 10})
+```
 
 ### Not Before Time Claim
 
@@ -118,18 +137,21 @@ From [draft-ietf-oauth-json-web-token-32](http://self-issued.info/docs/draft-iet
 
 You pass the not before time as a UTC UNIX timestamp (an int). For example:
 
-    JWT.encode({'nbf' => 1371720939}, 'secret')
-
-    JWT.encode({'nbf' => Time.now.to_i()}, 'secret')
+```ruby
+JWT.encode({'nbf' => 1371720939}, 'secret')
+JWT.encode({'nbf' => Time.now.to_i()}, 'secret')
+```
 
 Not before time is automatically verified in `JWT.decode()` and raises
 `JWT::ImmatureSignature` if the not before time is in the future:
 
-    begin
-        JWT.decode('JWT_STRING', 'secret')
-    rescue JWT::ImmatureSignature
-        # Signature is immature
-	end
+```ruby
+begin
+  JWT.decode('JWT_STRING', 'secret')
+rescue JWT::ImmatureSignature
+  # Signature is immature
+end
+```
 
 Not before time will be compared to the current UTC time (as given by
 `Time.now.to_i`), so be sure to use a UTC timestamp or datetime in encoding.
@@ -139,21 +161,27 @@ You can turn off not before time verification with the `verify_not_before` optio
 In a similar way to the expiration time claim, the not before time claim supports
 the leeway option.
 
-    jwt_payload = JWT.encode({'nbf' => Time.now.to_i + 30}, 'secret')
-    sleep(25)
-    # jwt_payload is now immature
-    # But with some leeway, it will still validate
-    JWT.decode(jwt_payload, 'secret', true, {:leeway => 10})
+```ruby
+jwt_payload = JWT.encode({'nbf' => Time.now.to_i + 30}, 'secret')
+sleep(25)
+# jwt_payload is now immature
+# But with some leeway, it will still validate
+JWT.decode(jwt_payload, 'secret', true, {:leeway => 10})
+```
 
 # Development and Tests
 
 We depend on [Echoe](http://rubygems.org/gems/echoe) for defining gemspec and performing releases to rubygems.org, which can be done with
 
-    rake release
+```bash
+rake release
+```
 
 The tests are written with rspec. Given you have rake and rspec, you can run tests with
 
-    rake test
+```bash
+rake test
+```
 
 **If you want a release cut with your PR, please include a version bump according to [Semantic Versioning](http://semver.org/)**
 
@@ -176,3 +204,11 @@ The tests are written with rspec. Given you have rake and rspec, you can run tes
 ## License
 
 MIT
+
+Copyright (c) 2011 Jeff Lindsay
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
