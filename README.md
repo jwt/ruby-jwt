@@ -188,7 +188,7 @@ token = JWT.encode nbf_payload, hmac_secret, 'HS256'
 begin
   decoded_token = JWT.decode token, hmac_secret
 rescue JWT::ImmatureSignature
-  # Handle expired token, e.g. logout user or deny access
+  # Handle invalid token, e.g. logout user or deny access
 end
 ```
 
@@ -207,7 +207,7 @@ begin
   # add leeway to ensure the token is valid
   decoded_token = JWT.decode token, hmac_secret, true, { :leeway => leeway }
 rescue JWT::ImmatureSignature
-  # Handle expired token, e.g. logout user or deny access
+  # Handle invalid token, e.g. logout user or deny access
 end
 ```
 
@@ -218,7 +218,17 @@ From [Oauth JSON Web Token 4.1.1. "iss" (Issuer) Claim](http://self-issued.info/
 > The `iss` (issuer) claim identifies the principal that issued the JWT. The processing of this claim is generally application specific. The `iss` value is a case-sensitive string containing a ***StringOrURI*** value. Use of this claim is OPTIONAL.
 
 ```ruby
+iss = 'My Awesome Company Inc. or https://my.awesome.website/'
+iss_payload = { :data => 'data', :iss => iss }
 
+token = JWT.encode iss_payload, hmac_secret, 'HS256'
+
+begin
+  # Add iss to the validation to check if the token has been manipulated
+  decoded_token = JWT.decode token, hmac_secret, true, { :iss => iss }
+rescue JWT::InvalidIssuerError
+  # Handle invalid token, e.g. logout user or deny access
+end
 ```
 
 ### Audience Claim
@@ -228,7 +238,18 @@ From [Oauth JSON Web Token 4.1.3. "aud" (Audience) Claim](http://self-issued.inf
 > The `aud` (audience) claim identifies the recipients that the JWT is intended for. Each principal intended to process the JWT MUST identify itself with a value in the audience claim. If the principal processing the claim does not identify itself with a value in the `aud` claim when this claim is present, then the JWT MUST be rejected. In the general case, the `aud` value is an array of case-sensitive strings, each containing a ***StringOrURI*** value. In the special case when the JWT has one audience, the `aud` value MAY be a single case-sensitive string containing a ***StringOrURI*** value. The interpretation of audience values is generally application specific. Use of this claim is OPTIONAL.
 
 ```ruby
+aud = ['Young', 'Old']
+aud_payload = { :data => 'data', :aud => aud }
 
+token = JWT.encode aud_payload, hmac_secret, 'HS256'
+
+begin
+  # Add auf to the validation to check if the token has been manipulated
+  decoded_token = JWT.decode token, hmac_secret, true, { :aud => aud }
+rescue JWT::InvalidAudError
+  # Handle invalid token, e.g. logout user or deny access
+  puts 'Audience Error'
+end
 ```
 
 ### JWT ID Claim
@@ -238,7 +259,23 @@ From [Oauth JSON Web Token 4.1.7. "iss" (Issuer) Claim](http://self-issued.info/
 > The `jti` (JWT ID) claim provides a unique identifier for the JWT. The identifier value MUST be assigned in a manner that ensures that there is a negligible probability that the same value will be accidentally assigned to a different data object; if the application uses multiple issuers, collisions MUST be prevented among values produced by different issuers as well. The `jti` claim can be used to prevent the JWT from being replayed. The `jti` value is a case-sensitive string. Use of this claim is OPTIONAL.
 
 ```ruby
+user_id = 'email@address.tld'
+# in order to use JTI you have to add iat
+iat = Time.now.to_i
+jti_raw = [user_id, iat, hmac_secret].join(':').to_s
+# just an example to create a unique JWT ID for each request
+jti = Digest::MD5.hexdigest(jti_raw)
+jti_payload = { :data => 'data', :iat => iat, :jti => jti }
 
+token = JWT.encode jti_payload, hmac_secret, 'HS256'
+
+begin
+  # Add jti and iat to the validation to check if the token has been manipulated
+  decoded_token = JWT.decode token, hmac_secret, true, { :iat => iat, :jti => jti }
+  # Check if the JTI has already been used
+rescue JWT::InvalidJtiError
+  # Handle invalid token, e.g. logout user or deny access
+end
 ```
 
 ### Issued At Claim
@@ -248,7 +285,17 @@ From [Oauth JSON Web Token 4.1.6. "iat" (Issuer) Claim](http://self-issued.info/
 > The `iat` (issued at) claim identifies the time at which the JWT was issued. This claim can be used to determine the age of the JWT. Its value MUST be a number containing a ***NumericDate*** value. Use of this claim is OPTIONAL.
 
 ```ruby
+iat = Time.now.to_i
+iat_payload = { :data => 'data', :iat => iat }
 
+token = JWT.encode iat_payload, hmac_secret, 'HS256'
+
+begin
+  # Add iss to the validation to check if the token has been manipulated
+  decoded_token = JWT.decode token, hmac_secret, true, { :iat => iat }
+rescue JWT::InvalidIatError
+  # Handle invalid token, e.g. logout user or deny access
+end
 ```
 
 ### Subject Claim
@@ -258,7 +305,17 @@ From [Oauth JSON Web Token 4.1.2. "sub" (Subject) Claim](http://self-issued.info
 > The `sub` (subject) claim identifies the principal that is the subject of the JWT. The Claims in a JWT are normally statements about the subject. The subject value MUST either be scoped to be locally unique in the context of the issuer or be globally unique. The processing of this claim is generally application specific. The sub value is a case-sensitive string containing a ***StringOrURI*** value. Use of this claim is OPTIONAL.
 
 ```ruby
+sub = 'Subject'
+sub_payload = { :data => 'data', :sub => sub }
 
+token = JWT.encode jti_payload, hmac_secret, 'HS256'
+
+begin
+  # Add iss to the validation to check if the token has been manipulated
+  decoded_token = JWT.decode token, hmac_secret, true, { :sub => sub }
+rescue JWT::InvalidSubError
+  # Handle invalid token, e.g. logout user or deny access
+end
 ```
 
 # Development and Tests
