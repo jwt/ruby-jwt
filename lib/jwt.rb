@@ -24,7 +24,7 @@ module JWT
   NAMED_CURVES = {
     'prime256v1' => 'ES256',
     'secp384r1' => 'ES384',
-    'secp521r1' => 'ES512',
+    'secp521r1' => 'ES512'
   }
 
   module_function
