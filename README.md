@@ -26,7 +26,7 @@ token = JWT.encode payload, nil, 'none'
 # eyJ0eXAiOiJKV1QiLCJhbGciOiJub25lIn0.eyJ0ZXN0IjoiZGF0YSJ9.
 puts token
 
-# Turn of validation otherwise this won't work
+# Set password to nil and validation to false otherwise this won't work
 decoded_token = JWT.decode token, nil, false
 
 # Array
@@ -51,7 +51,7 @@ token = JWT.encode payload, hmac_secret, 'HS256'
 # eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0ZXN0IjoiZGF0YSJ9._sLPAGP-IXgho8BkMGQ86N2mah7vDyn0L5hOR4UkfoI
 puts token
 
-decoded_token = JWT.decode token, hmac_secret, 'HS256'
+decoded_token = JWT.decode token, hmac_secret
 
 # Array
 # [
@@ -76,7 +76,7 @@ token = JWT.encode payload, rsa_private, 'RS256'
 # eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJ0ZXN0IjoiZGF0YSJ9.c2FynXNyi6_PeKxrDGxfS3OLwQ8lTDbWBWdq7oMviCy2ZfFpzvW2E_odCWJrbLof-eplHCsKzW7MGAntHMALXgclm_Cs9i2Exi6BZHzpr9suYkrhIjwqV1tCgMBCQpdeMwIq6SyKVjgH3L51ivIt0-GDDPDH1Rcut3jRQzp3Q35bg3tcI2iVg7t3Msvl9QrxXAdYNFiS5KXH22aJZ8X_O2HgqVYBXfSB1ygTYUmKTIIyLbntPQ7R22rFko1knGWOgQCoYXwbtpuKRZVFrxX958L2gUWgb4jEQNf3fhOtkBm1mJpj-7BGst00o8g_3P2zHy-3aKgpPo1XlKQGjRrrxA
 puts token
 
-decoded_token = JWT.decode token, rsa_public, 'RS256'
+decoded_token = JWT.decode token, rsa_public
 
 # Array
 # [
@@ -103,7 +103,7 @@ token = JWT.encode payload, ecdsa_key, 'ES256'
 # eyJ0eXAiOiJKV1QiLCJhbGciOiJFUzI1NiJ9.eyJ0ZXN0IjoiZGF0YSJ9.MEQCIAtShrxRwP1L9SapqaT4f7hajDJH4t_rfm-YlZcNDsBNAiB64M4-JRfyS8nRMlywtQ9lHbvvec9U54KznzOe1YxTyA
 puts token
 
-decoded_token = JWT.decode token, ecdsa_public, 'ES256'
+decoded_token = JWT.decode token, ecdsa_public
 
 # Array
 # [
@@ -135,11 +135,19 @@ From [Oauth JSON Web Token 4.1.4. "exp" (Expiration Time) Claim](http://self-iss
 
 > The `exp` (expiration time) claim identifies the expiration time on or after which the JWT MUST NOT be accepted for processing. The processing of the `exp` claim requires that the current date/time MUST be before the expiration date/time listed in the `exp` claim. Implementers MAY provide for some small `leeway`, usually no more than a few minutes, to account for clock skew. Its value MUST be a number containing a ***NumericDate*** value. Use of this claim is OPTIONAL.
 
+```ruby
+
+```
+
 ### Not Before Time Claim
 
 From [Oauth JSON Web Token 4.1.5. "iss" (Issuer) Claim](http://self-issued.info/docs/draft-ietf-oauth-json-web-token.html#nbfDef):
 
 > The `nbf` (not before) claim identifies the time before which the JWT MUST NOT be accepted for processing. The processing of the `nbf` claim requires that the current date/time MUST be after or equal to the not-before date/time listed in the `nbf` claim. Implementers MAY provide for some small `leeway`, usually no more than a few minutes, to account for clock skew. Its value MUST be a number containing a ***NumericDate*** value. Use of this claim is OPTIONAL.
+
+```ruby
+
+```
 
 ### Issuer Claim
 
@@ -147,11 +155,19 @@ From [Oauth JSON Web Token 4.1.1. "iss" (Issuer) Claim](http://self-issued.info/
 
 > The `iss` (issuer) claim identifies the principal that issued the JWT. The processing of this claim is generally application specific. The `iss` value is a case-sensitive string containing a ***StringOrURI*** value. Use of this claim is OPTIONAL.
 
+```ruby
+
+```
+
 ### Audience Claim
 
 From [Oauth JSON Web Token 4.1.3. "aud" (Audience) Claim](http://self-issued.info/docs/draft-ietf-oauth-json-web-token.html#issDef):
 
 > The `aud` (audience) claim identifies the recipients that the JWT is intended for. Each principal intended to process the JWT MUST identify itself with a value in the audience claim. If the principal processing the claim does not identify itself with a value in the `aud` claim when this claim is present, then the JWT MUST be rejected. In the general case, the `aud` value is an array of case-sensitive strings, each containing a ***StringOrURI*** value. In the special case when the JWT has one audience, the `aud` value MAY be a single case-sensitive string containing a ***StringOrURI*** value. The interpretation of audience values is generally application specific. Use of this claim is OPTIONAL.
+
+```ruby
+
+```
 
 ### JWT ID Claim
 
@@ -159,17 +175,29 @@ From [Oauth JSON Web Token 4.1.7. "iss" (Issuer) Claim](http://self-issued.info/
 
 > The `jti` (JWT ID) claim provides a unique identifier for the JWT. The identifier value MUST be assigned in a manner that ensures that there is a negligible probability that the same value will be accidentally assigned to a different data object; if the application uses multiple issuers, collisions MUST be prevented among values produced by different issuers as well. The `jti` claim can be used to prevent the JWT from being replayed. The `jti` value is a case-sensitive string. Use of this claim is OPTIONAL.
 
+```ruby
+
+```
+
 ### Issued At Claim
 
 From [Oauth JSON Web Token 4.1.6. "iat" (Issuer) Claim](http://self-issued.info/docs/draft-ietf-oauth-json-web-token.html#iatDef):
 
 > The `iat` (issued at) claim identifies the time at which the JWT was issued. This claim can be used to determine the age of the JWT. Its value MUST be a number containing a ***NumericDate*** value. Use of this claim is OPTIONAL.
 
+```ruby
+
+```
+
 ### Subject Claim
 
 From [Oauth JSON Web Token 4.1.2. "sub" (Subject) Claim](http://self-issued.info/docs/draft-ietf-oauth-json-web-token.html#subDef):
 
-> The sub (subject) claim identifies the principal that is the subject of the JWT. The Claims in a JWT are normally statements about the subject. The subject value MUST either be scoped to be locally unique in the context of the issuer or be globally unique. The processing of this claim is generally application specific. The sub value is a case-sensitive string containing a StringOrURI value. Use of this claim is OPTIONAL.
+> The `sub` (subject) claim identifies the principal that is the subject of the JWT. The Claims in a JWT are normally statements about the subject. The subject value MUST either be scoped to be locally unique in the context of the issuer or be globally unique. The processing of this claim is generally application specific. The sub value is a case-sensitive string containing a ***StringOrURI*** value. Use of this claim is OPTIONAL.
+
+```ruby
+
+```
 
 # Development and Tests
 
