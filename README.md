@@ -7,49 +7,110 @@ A Ruby implementation of [JSON Web Token draft 06](http://self-issued.info/docs/
 sudo gem install jwt
 ```
 
-## Usage
-
-```ruby
-payload = {"some" => "payload"}
-JWT.encode(payload, "secret")
-```
-
-Note the resulting JWT will not be encrypted, but verifiable with a secret key.
-
-```ruby
-JWT.decode('someJWTstring', 'secret')
-```
-
-If the secret is wrong, it will raise a `JWT::DecodeError` telling you as such. You can still get at the payload by setting the verify argument to false.
-
-```ruby
-JWT.decode('someJWTstring', nil, false)
-```
-
-`encode` also allows for different signing algorithms as well as customer headers.
-
-```ruby
-require 'openssl'
-# it's recommended to use RSA keys with at least 2048 bit
-some_private_key = OpenSSL::PKey::RSA.new File.read('path/to/my/private/and/secure.pem'), 'password_for_my_private_key'
-rsa_signed_token = JWT.encode({ "exp" => Time.now.to_i+3600, "name" => "some_name" }, some_private_key, "RS512")
-```
-
-## Algorithms
+## Algorithms and Usage
 
 The JWT spec supports several algorithms for cryptographic signing. This library currently supports:
 
-**HMAC**
+**NONE**
+
+* NONE
+
+```ruby
+require 'jwt'
+
+payload = {:data => 'test'}
+
+token = JWT.encode payload, nil, 'none'
+
+# eyJ0eXAiOiJKV1QiLCJhbGciOiJub25lIn0.eyJ0ZXN0IjoiZGF0YSJ9.
+puts token
+
+# Turn of validation otherwise this won't work
+decoded_token = JWT.decode token, nil, false
+
+# Array
+# [
+#   {"test"=>"data"}, # payload
+#   {"typ"=>"JWT", "alg"=>"RS256"} # header
+# ]
+puts decoded_token
+```
+
+**HMAC** (default: HS256)
 
 * HS256	- HMAC using SHA-256 hash algorithm (default)
 * HS384	- HMAC using SHA-384 hash algorithm
 * HS512 - HMAC using SHA-512 hash algorithm
+
+```ruby
+hmac_secret = 'my$ecretK3y'
+
+token = JWT.encode payload, hmac_secret, 'HS256'
+
+# eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0ZXN0IjoiZGF0YSJ9._sLPAGP-IXgho8BkMGQ86N2mah7vDyn0L5hOR4UkfoI
+puts token
+
+decoded_token = JWT.decode token, hmac_secret, 'HS256'
+
+# Array
+# [
+#   {"test"=>"data"}, # payload
+#   {"typ"=>"JWT", "alg"=>"RS256"} # header
+# ]
+puts decoded_token
+```
 
 **RSA**
 
 * RS256 - RSA using SHA-256 hash algorithm
 * RS384 - RSA using SHA-384 hash algorithm
 * RS512 - RSA using SHA-512 hash algorithm
+
+```ruby
+rsa_private = OpenSSL::PKey::RSA.generate 2048
+rsa_public = rsa_private.public_key
+
+token = JWT.encode payload, rsa_private, 'RS256'
+
+# eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJ0ZXN0IjoiZGF0YSJ9.c2FynXNyi6_PeKxrDGxfS3OLwQ8lTDbWBWdq7oMviCy2ZfFpzvW2E_odCWJrbLof-eplHCsKzW7MGAntHMALXgclm_Cs9i2Exi6BZHzpr9suYkrhIjwqV1tCgMBCQpdeMwIq6SyKVjgH3L51ivIt0-GDDPDH1Rcut3jRQzp3Q35bg3tcI2iVg7t3Msvl9QrxXAdYNFiS5KXH22aJZ8X_O2HgqVYBXfSB1ygTYUmKTIIyLbntPQ7R22rFko1knGWOgQCoYXwbtpuKRZVFrxX958L2gUWgb4jEQNf3fhOtkBm1mJpj-7BGst00o8g_3P2zHy-3aKgpPo1XlKQGjRrrxA
+puts token
+
+decoded_token = JWT.decode token, rsa_public, 'RS256'
+
+# Array
+# [
+#   {"test"=>"data"}, # payload
+#   {"typ"=>"JWT", "alg"=>"RS256"} # header
+# ]
+puts decoded_token
+```
+
+**ECDSA**
+
+* ES256 - ECDSA using P-256 and SHA-256
+* ES384 - ECDSA using P-384 and SHA-384
+* ES512 - ECDSA using P-521 and SHA-512
+
+```ruby
+ecdsa_key = OpenSSL::PKey::EC.new 'prime256v1'
+ecdsa_key.generate_key
+ecdsa_public = OpenSSL::PKey::EC.new ecdsa_key
+ecdsa_public.private_key = nil
+
+token = JWT.encode payload, ecdsa_key, 'ES256'
+
+# eyJ0eXAiOiJKV1QiLCJhbGciOiJFUzI1NiJ9.eyJ0ZXN0IjoiZGF0YSJ9.MEQCIAtShrxRwP1L9SapqaT4f7hajDJH4t_rfm-YlZcNDsBNAiB64M4-JRfyS8nRMlywtQ9lHbvvec9U54KznzOe1YxTyA
+puts token
+
+decoded_token = JWT.decode token, ecdsa_public, 'ES256'
+
+# Array
+# [
+#    {"test"=>"data"}, # payload
+#    {"typ"=>"JWT", "alg"=>"ES256"} # header
+# ]
+puts decoded_token
+```
 
 Change the algorithm with by setting it in encode:
 
