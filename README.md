@@ -9,7 +9,9 @@ sudo gem install jwt
 
 ## Algorithms and Usage
 
-The JWT spec supports NONE, HMAC, RSA and ECDSA algorithms for cryptographic signing. See: [ JSON Web Algorithms (JWA) 3.1. "alg" (Algorithm) Header Parameter Values for JWS](https://tools.ietf.org/html/draft-ietf-jose-json-web-algorithms-40#section-3.1)
+The JWT spec supports NONE, HMAC, RSASSA, ECDSA and RSASSA-PSS algorithms for cryptographic signing. Currently the jwt gem supports NONE, HMAC, RSASSA and ECDSA.
+
+See: [ JSON Web Algorithms (JWA) 3.1. "alg" (Algorithm) Header Parameter Values for JWS](https://tools.ietf.org/html/draft-ietf-jose-json-web-algorithms-40#section-3.1)
 
 **NONE**
 
@@ -135,8 +137,38 @@ From [Oauth JSON Web Token 4.1.4. "exp" (Expiration Time) Claim](http://self-iss
 
 > The `exp` (expiration time) claim identifies the expiration time on or after which the JWT MUST NOT be accepted for processing. The processing of the `exp` claim requires that the current date/time MUST be before the expiration date/time listed in the `exp` claim. Implementers MAY provide for some small `leeway`, usually no more than a few minutes, to account for clock skew. Its value MUST be a number containing a ***NumericDate*** value. Use of this claim is OPTIONAL.
 
-```ruby
+**Handle Expiration Claim**
 
+```ruby
+exp = Time.now.to_i + 4 * 3600
+exp_payload = { :data => 'data', :exp => exp }
+
+token = JWT.encode exp_payload, hmac_secret, 'HS256'
+
+begin
+  decoded_token = JWT.decode token, hmac_secret
+rescue JWT::ExpiredSignature
+  # Handle expired token, e.g. logout user or deny access
+end
+```
+
+**Adding Leeway**
+
+```ruby
+exp = Time.now.to_i - 10
+leeway = 30 # seconds
+
+exp_payload = { :data => 'data', :exp => exp }
+
+# build expired token
+token = JWT.encode exp_payload, hmac_secret, 'HS256'
+
+begin
+  # add leeway to ensure the token is still accepted
+  decoded_token = JWT.decode token, hmac_secret, true, { :leeway => leeway }
+rescue JWT::ExpiredSignature
+  # Handle expired token, e.g. logout user or deny access
+end
 ```
 
 ### Not Before Time Claim
@@ -145,8 +177,38 @@ From [Oauth JSON Web Token 4.1.5. "iss" (Issuer) Claim](http://self-issued.info/
 
 > The `nbf` (not before) claim identifies the time before which the JWT MUST NOT be accepted for processing. The processing of the `nbf` claim requires that the current date/time MUST be after or equal to the not-before date/time listed in the `nbf` claim. Implementers MAY provide for some small `leeway`, usually no more than a few minutes, to account for clock skew. Its value MUST be a number containing a ***NumericDate*** value. Use of this claim is OPTIONAL.
 
-```ruby
+**Handle Not Before Claim**
 
+```ruby
+nbf = Time.now.to_i - 3600
+nbf_payload = { :data => 'data', :nbf => nbf }
+
+token = JWT.encode nbf_payload, hmac_secret, 'HS256'
+
+begin
+  decoded_token = JWT.decode token, hmac_secret
+rescue JWT::ImmatureSignature
+  # Handle expired token, e.g. logout user or deny access
+end
+```
+
+**Adding Leeway**
+
+```ruby
+nbf = Time.now.to_i + 10
+leeway = 30
+
+nbf_payload = { :data => 'data', :nbf => nbf }
+
+# build expired token
+token = JWT.encode nbf_payload, hmac_secret, 'HS256'
+
+begin
+  # add leeway to ensure the token is valid
+  decoded_token = JWT.decode token, hmac_secret, true, { :leeway => leeway }
+rescue JWT::ImmatureSignature
+  # Handle expired token, e.g. logout user or deny access
+end
 ```
 
 ### Issuer Claim
