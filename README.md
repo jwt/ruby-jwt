@@ -1,5 +1,5 @@
 # JWT
-A Ruby implementation of [JSON Web Token draft 06](http://self-issued.info/docs/draft-jones-json-web-token-06.html).
+A Ruby implementation of [JSON Web Token](http://self-issued.info/docs/draft-ietf-oauth-json-web-token.html).
 
 ## Installing
 
@@ -9,17 +9,18 @@ sudo gem install jwt
 
 ## Algorithms and Usage
 
-The JWT spec supports several algorithms for cryptographic signing. This library currently supports:
+The JWT spec supports NONE, HMAC, RSA and ECDSA algorithms for cryptographic signing. See: [ JSON Web Algorithms (JWA) 3.1. "alg" (Algorithm) Header Parameter Values for JWS](https://tools.ietf.org/html/draft-ietf-jose-json-web-algorithms-40#section-3.1)
 
 **NONE**
 
-* NONE
+* none - unsigned token
 
 ```ruby
 require 'jwt'
 
 payload = {:data => 'test'}
 
+# IMPORTANT: set nil as password parameter
 token = JWT.encode payload, nil, 'none'
 
 # eyJ0eXAiOiJKV1QiLCJhbGciOiJub25lIn0.eyJ0ZXN0IjoiZGF0YSJ9.
@@ -112,20 +113,9 @@ decoded_token = JWT.decode token, ecdsa_public, 'ES256'
 puts decoded_token
 ```
 
-Change the algorithm with by setting it in encode:
+**RSASSA-PSS**
 
-```ruby
-JWT.encode({'some' => 'payload'}, 'secret', 'HS512')
-```
-
-**Plaintext**
-
-We also support unsigned plaintext JWTs as introduced by draft 03 by explicitly specifying `nil` as the key and algorithm:
-
-```ruby
-jwt = JWT.encode({'some' => 'payload'}, nil, nil)
-JWT.decode(jwt, nil, nil)
-```
+Not implemented.
 
 ## Support for reserved claim names
 JSON Web Token defines some reserved claim names and defines how they should be
@@ -141,97 +131,45 @@ used. JWT supports these reserved claim names:
 
 ### Expiration Time Claim
 
-From [draft 01 of the JWT spec](http://self-issued.info/docs/draft-jones-json-web-token-01.html#ReservedClaimName):
+From [Oauth JSON Web Token 4.1.4. "exp" (Expiration Time) Claim](http://self-issued.info/docs/draft-ietf-oauth-json-web-token.html#expDef):
 
-> The exp (expiration time) claim identifies the expiration time on or after
-> which the JWT MUST NOT be accepted for processing. The processing of the exp
-> claim requires that the current date/time MUST be before the expiration
-> date/time listed in the exp claim. Implementers MAY provide for some small
-> leeway, usually no more than a few minutes, to account for clock skew. Its
-> value MUST be a number containing an IntDate value. Use of this claim is
-> OPTIONAL.
-
-You pass the expiration time as a UTC UNIX timestamp (an int). For example:
-
-```ruby
-JWT.encode({'exp' => 1371720939}, 'secret')
-JWT.encode({'exp' => Time.now.to_i()}, 'secret')
-```
-
-Expiration time is automatically verified in `JWT.decode()` and raises
-`JWT::ExpiredSignature` if the expiration time is in the past:
-
-```ruby
-begin
-  JWT.decode('JWT_STRING', 'secret')
-rescue JWT::ExpiredSignature
-  # Signature has expired
-end
-```
-
-Expiration time will be compared to the current UTC time (as given by
-`Time.now.to_i`), so be sure to use a UTC timestamp or datetime in encoding.
-
-You can turn off expiration time verification with the `verify_expiration` option.
-
-JWT also supports the leeway part of the expiration time definition, which
-means you can validate a expiration time which is in the past but not very far.
-For example, if you have a JWT payload with a expiration time set to 30 seconds
-after creation but you know that sometimes you will process it after 30 seconds,
-you can set a leeway of 10 seconds in order to have some margin:
-
-```ruby
-jwt_payload = JWT.encode({'exp' => Time.now.to_i + 30}, 'secret')
-sleep(32)
-# jwt_payload is now expired
-# But with some leeway, it will still validate
-JWT.decode(jwt_payload, 'secret', true, {:leeway => 10})
-```
+> The `exp` (expiration time) claim identifies the expiration time on or after which the JWT MUST NOT be accepted for processing. The processing of the `exp` claim requires that the current date/time MUST be before the expiration date/time listed in the `exp` claim. Implementers MAY provide for some small `leeway`, usually no more than a few minutes, to account for clock skew. Its value MUST be a number containing a ***NumericDate*** value. Use of this claim is OPTIONAL.
 
 ### Not Before Time Claim
 
-From [draft-ietf-oauth-json-web-token-32](http://self-issued.info/docs/draft-ietf-oauth-json-web-token.html#nbfDef):
+From [Oauth JSON Web Token 4.1.5. "iss" (Issuer) Claim](http://self-issued.info/docs/draft-ietf-oauth-json-web-token.html#nbfDef):
 
-> The nbf (not before) claim identifies the time before which the JWT MUST NOT
-> be accepted for processing. The processing of the nbf claim requires that the
-> current date/time MUST be after or equal to the not-before date/time listed
-> in the nbf claim. Implementers MAY provide for some small leeway, usually no
-> more than a few minutes, to account for clock skew. Its value MUST be a number
-> containing a NumericDate value. Use of this claim is OPTIONAL.
+> The `nbf` (not before) claim identifies the time before which the JWT MUST NOT be accepted for processing. The processing of the `nbf` claim requires that the current date/time MUST be after or equal to the not-before date/time listed in the `nbf` claim. Implementers MAY provide for some small `leeway`, usually no more than a few minutes, to account for clock skew. Its value MUST be a number containing a ***NumericDate*** value. Use of this claim is OPTIONAL.
 
-You pass the not before time as a UTC UNIX timestamp (an int). For example:
+### Issuer Claim
 
-```ruby
-JWT.encode({'nbf' => 1371720939}, 'secret')
-JWT.encode({'nbf' => Time.now.to_i()}, 'secret')
-```
+From [Oauth JSON Web Token 4.1.1. "iss" (Issuer) Claim](http://self-issued.info/docs/draft-ietf-oauth-json-web-token.html#issDef):
 
-Not before time is automatically verified in `JWT.decode()` and raises
-`JWT::ImmatureSignature` if the not before time is in the future:
+> The `iss` (issuer) claim identifies the principal that issued the JWT. The processing of this claim is generally application specific. The `iss` value is a case-sensitive string containing a ***StringOrURI*** value. Use of this claim is OPTIONAL.
 
-```ruby
-begin
-  JWT.decode('JWT_STRING', 'secret')
-rescue JWT::ImmatureSignature
-  # Signature is immature
-end
-```
+### Audience Claim
 
-Not before time will be compared to the current UTC time (as given by
-`Time.now.to_i`), so be sure to use a UTC timestamp or datetime in encoding.
+From [Oauth JSON Web Token 4.1.3. "aud" (Audience) Claim](http://self-issued.info/docs/draft-ietf-oauth-json-web-token.html#issDef):
 
-You can turn off not before time verification with the `verify_not_before` option.
+> The `aud` (audience) claim identifies the recipients that the JWT is intended for. Each principal intended to process the JWT MUST identify itself with a value in the audience claim. If the principal processing the claim does not identify itself with a value in the `aud` claim when this claim is present, then the JWT MUST be rejected. In the general case, the `aud` value is an array of case-sensitive strings, each containing a ***StringOrURI*** value. In the special case when the JWT has one audience, the `aud` value MAY be a single case-sensitive string containing a ***StringOrURI*** value. The interpretation of audience values is generally application specific. Use of this claim is OPTIONAL.
 
-In a similar way to the expiration time claim, the not before time claim supports
-the leeway option.
+### JWT ID Claim
 
-```ruby
-jwt_payload = JWT.encode({'nbf' => Time.now.to_i + 30}, 'secret')
-sleep(25)
-# jwt_payload is now immature
-# But with some leeway, it will still validate
-JWT.decode(jwt_payload, 'secret', true, {:leeway => 10})
-```
+From [Oauth JSON Web Token 4.1.7. "iss" (Issuer) Claim](http://self-issued.info/docs/draft-ietf-oauth-json-web-token.html#jtiDef):
+
+> The `jti` (JWT ID) claim provides a unique identifier for the JWT. The identifier value MUST be assigned in a manner that ensures that there is a negligible probability that the same value will be accidentally assigned to a different data object; if the application uses multiple issuers, collisions MUST be prevented among values produced by different issuers as well. The `jti` claim can be used to prevent the JWT from being replayed. The `jti` value is a case-sensitive string. Use of this claim is OPTIONAL.
+
+### Issued At Claim
+
+From [Oauth JSON Web Token 4.1.6. "iat" (Issuer) Claim](http://self-issued.info/docs/draft-ietf-oauth-json-web-token.html#iatDef):
+
+> The `iat` (issued at) claim identifies the time at which the JWT was issued. This claim can be used to determine the age of the JWT. Its value MUST be a number containing a ***NumericDate*** value. Use of this claim is OPTIONAL.
+
+### Subject Claim
+
+From [Oauth JSON Web Token 4.1.2. "sub" (Subject) Claim](http://self-issued.info/docs/draft-ietf-oauth-json-web-token.html#subDef):
+
+> The sub (subject) claim identifies the principal that is the subject of the JWT. The Claims in a JWT are normally statements about the subject. The subject value MUST either be scoped to be locally unique in the context of the issuer or be globally unique. The processing of this claim is generally application specific. The sub value is a case-sensitive string containing a StringOrURI value. Use of this claim is OPTIONAL.
 
 # Development and Tests
 
