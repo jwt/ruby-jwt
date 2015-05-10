@@ -201,6 +201,7 @@ rake test
  * Zane Shannon [@zshannon](https://github.com/zshannon)
  * Brian Fletcher [@punkle](https://github.com/punkle)
  * Alex [@ZhangHanDong](https://github.com/ZhangHanDong)
+ * John Downey [jtdowney](https://github.com/jtdowney)
  * Tim Rudat [@excpt](https://github.com/excpt) <timrudat@gmail.com> - Maintainer
 
 ## License
