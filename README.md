@@ -225,7 +225,7 @@ token = JWT.encode iss_payload, hmac_secret, 'HS256'
 
 begin
   # Add iss to the validation to check if the token has been manipulated
-  decoded_token = JWT.decode token, hmac_secret, true, { :iss => iss }
+  decoded_token = JWT.decode token, hmac_secret, true, { 'iss' => iss, :verify_iss => true }
 rescue JWT::InvalidIssuerError
   # Handle invalid token, e.g. logout user or deny access
 end
@@ -245,7 +245,7 @@ token = JWT.encode aud_payload, hmac_secret, 'HS256'
 
 begin
   # Add auf to the validation to check if the token has been manipulated
-  decoded_token = JWT.decode token, hmac_secret, true, { :aud => aud }
+  decoded_token = JWT.decode token, hmac_secret, true, { 'aud' => aud, :verify_aud => true }
 rescue JWT::InvalidAudError
   # Handle invalid token, e.g. logout user or deny access
   puts 'Audience Error'
@@ -262,8 +262,8 @@ From [Oauth JSON Web Token 4.1.7. "iss" (Issuer) Claim](http://self-issued.info/
 user_id = 'email@address.tld'
 # in order to use JTI you have to add iat
 iat = Time.now.to_i
-jti_raw = [user_id, iat, hmac_secret].join(':').to_s
-# just an example to create a unique JWT ID for each request
+# Use the secret and iat to create a unique key per request to prevent replay attacks
+jti_raw = [hmac_secret, iat].join(':').to_s
 jti = Digest::MD5.hexdigest(jti_raw)
 jti_payload = { :data => 'data', :iat => iat, :jti => jti }
 
@@ -271,11 +271,13 @@ token = JWT.encode jti_payload, hmac_secret, 'HS256'
 
 begin
   # Add jti and iat to the validation to check if the token has been manipulated
-  decoded_token = JWT.decode token, hmac_secret, true, { :iat => iat, :jti => jti }
+  decoded_token = JWT.decode token, hmac_secret, true, { 'iat' => iat, 'jti' => jti, :verify_jti => true }
   # Check if the JTI has already been used
 rescue JWT::InvalidJtiError
   # Handle invalid token, e.g. logout user or deny access
+  puts 'Error'
 end
+
 ```
 
 ### Issued At Claim
@@ -292,7 +294,7 @@ token = JWT.encode iat_payload, hmac_secret, 'HS256'
 
 begin
   # Add iss to the validation to check if the token has been manipulated
-  decoded_token = JWT.decode token, hmac_secret, true, { :iat => iat }
+  decoded_token = JWT.decode token, hmac_secret, true, { 'iat' => iat, :verify_iat => true }
 rescue JWT::InvalidIatError
   # Handle invalid token, e.g. logout user or deny access
 end
@@ -308,11 +310,11 @@ From [Oauth JSON Web Token 4.1.2. "sub" (Subject) Claim](http://self-issued.info
 sub = 'Subject'
 sub_payload = { :data => 'data', :sub => sub }
 
-token = JWT.encode jti_payload, hmac_secret, 'HS256'
+token = JWT.encode sub_payload, hmac_secret, 'HS256'
 
 begin
   # Add iss to the validation to check if the token has been manipulated
-  decoded_token = JWT.decode token, hmac_secret, true, { :sub => sub }
+  decoded_token = JWT.decode token, hmac_secret, true, { 'sub' => sub, :verify_sub => true }
 rescue JWT::InvalidSubError
   # Handle invalid token, e.g. logout user or deny access
 end
