@@ -13,4 +13,6 @@ end
 group :test, :development do
   gem 'rake'
   gem 'rspec', '~> 3'
+  gem 'simplecov'
+  gem 'simplecov-json'
 end
