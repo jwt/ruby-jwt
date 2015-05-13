@@ -34,6 +34,10 @@ describe JWT do
     }
   end
 
+  after(:each) do
+    expect(OpenSSL.errors).to be_empty
+  end
+
   context 'alg: NONE' do
     let :alg do
       'none'
@@ -67,6 +71,18 @@ describe JWT do
         expect(header['alg']).to eq alg
         expect(payload).to eq payload
       end
+
+      it 'wrong secret should raise JWT::DecodeError' do
+        expect do
+          JWT.decode data[alg], 'wrong_secret'
+        end.to raise_error JWT::DecodeError
+      end
+
+      it 'wrong secret and verify = false should not raise JWT::DecodeError' do
+        expect do
+          JWT.decode data[alg], 'wrong_secret', false
+        end.not_to raise_error
+      end
     end
   end
 
@@ -84,13 +100,36 @@ describe JWT do
         expect(header['alg']).to eq alg
         expect(payload).to eq payload
       end
+
+      it 'wrong key should raise JWT::DecodeError' do
+        key = OpenSSL::PKey.read File.read(File.join(CERT_PATH, 'rsa-2048-wrong-public.pem'))
+
+        expect do
+          JWT.decode data[alg], key
+        end.to raise_error JWT::DecodeError
+      end
+
+      it 'wrong key and verify = false should not raise JWT::DecodeError' do
+        key = OpenSSL::PKey.read File.read(File.join(CERT_PATH, 'rsa-2048-wrong-public.pem'))
+
+        expect do
+          JWT.decode data[alg], key, false
+        end.not_to raise_error
+      end
     end
   end
 
   %w(ES256 ES384 ES512).each do |alg|
     context "alg: #{alg}" do
-      it 'should generate a valid token' do
+      before(:each) do
         data[alg] = JWT.encode payload, data["#{alg}_private"], alg
+      end
+
+      let :wrong_key do
+        OpenSSL::PKey.read File.read(File.join(CERT_PATH, 'ec256-wrong-public.pem'))
+      end
+
+      it 'should generate a valid token' do
         payload, header = JWT.decode data[alg], data["#{alg}_public"]
 
         expect(header['alg']).to eq alg
@@ -98,11 +137,22 @@ describe JWT do
       end
 
       it 'should decode a valid token' do
-        data[alg] = JWT.encode payload, data["#{alg}_private"], alg
         payload, header = JWT.decode data[alg], data["#{alg}_public"]
 
         expect(header['alg']).to eq alg
         expect(payload).to eq payload
+      end
+
+      it 'wrong key should raise JWT::DecodeError' do
+        expect do
+          JWT.decode data[alg], wrong_key
+        end.to raise_error JWT::DecodeError
+      end
+
+      it 'wrong key and verify = false should not raise JWT::DecodeError' do
+        expect do
+          JWT.decode data[alg], wrong_key, false
+        end.not_to raise_error
       end
     end
   end
@@ -199,6 +249,30 @@ describe JWT do
           JWT.decode token, data[:secret], true, leeway: leeway
         end.not_to raise_error
       end
+    end
+  end
+
+  context 'Base64' do
+    it 'urlsafe replace + / with - _' do
+      allow(Base64).to receive(:encode64) { 'string+with/non+url-safe/characters_' }
+      expect(JWT.base64url_encode('foo')).to eq('string-with_non-url-safe_characters_')
+    end
+  end
+
+  describe 'secure comparison' do
+    it 'returns true if strings are equal' do
+      expect(JWT.secure_compare('Foo', 'Foo')).to eq true
+    end
+
+    it 'returns false if either input is nil or empty' do
+      [nil, ''].each do |bad|
+        expect(JWT.secure_compare(bad, 'Foo')).to eq false
+        expect(JWT.secure_compare('Foo', bad)).to eq false
+      end
+    end
+
+    it 'retuns false if the strings are different' do
+      expect(JWT.secure_compare('Foo', 'Bar')).to eq false
     end
   end
 end
