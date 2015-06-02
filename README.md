@@ -1,6 +1,8 @@
 # JWT
 A Ruby implementation of [JSON Web Token](http://self-issued.info/docs/draft-ietf-oauth-json-web-token.html).
 
+If you have further questions releated to development or usage, join us: [ruby-jwt google group](https://groups.google.com/forum/#!forum/ruby-jwt).
+
 ## Installing
 
 ```bash
