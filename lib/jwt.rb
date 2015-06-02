@@ -163,17 +163,17 @@ module JWT
     if options[:verify_not_before] && payload.include?('nbf')
       raise JWT::ImmatureSignature.new('Signature nbf has not been reached') unless payload['nbf'].to_i < (Time.now.to_i + options[:leeway])
     end
-    if options[:verify_iss] && payload.include?('iss')
-      raise JWT::InvalidIssuerError.new("Invalid issuer. Expected #{options['iss']}, received #{payload['iss']}") unless payload['iss'].to_s == options['iss'].to_s
+    if options[:verify_iss] && options['iss']
+      raise JWT::InvalidIssuerError.new("Invalid issuer. Expected #{options['iss']}, received #{payload['iss'] || '<none>'}") unless payload['iss'].to_s == options['iss'].to_s
     end
     if options[:verify_iat] && payload.include?('iat')
       raise JWT::InvalidIatError.new('Invalid iat') unless (payload['iat'].is_a?(Integer) and payload['iat'].to_i <= Time.now.to_i)
     end
-    if options[:verify_aud] && payload.include?('aud')
+    if options[:verify_aud] && options['aud']
       if payload['aud'].is_a?(Array)
-        raise JWT::InvalidAudError.new('Invalid audience') unless payload['aud'].include?(options['aud'])
+        raise JWT::InvalidAudError.new('Invalid audience') unless payload['aud'].include?(options['aud'].to_s)
       else
-        raise JWT::InvalidAudError.new("Invalid audience. Expected #{options['aud']}, received #{payload['aud']}") unless payload['aud'].to_s == options['aud'].to_s
+        raise JWT::InvalidAudError.new("Invalid audience. Expected #{options['aud']}, received #{payload['aud'] || '<none>'}") unless payload['aud'].to_s == options['aud'].to_s
       end
     end
     if options[:verify_sub] && payload.include?('sub')
