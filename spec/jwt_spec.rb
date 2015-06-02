@@ -83,18 +83,38 @@ describe JWT do
     expect(decoded_payload).to include(example_payload)
   end
 
-  it 'raises invalid issuer' do
-    # example_payload = {'hello' => 'world', 'iss' => 'jwtiss'}
-    example_payload2 = {'hello' => 'world'}
+  context 'issuer claim verifications' do
+    it 'raises invalid issuer when "iss" claim does not match' do
+      example_payload = {'hello' => 'world', 'iss' => 'jwtiss'}
+      example_secret = 'secret'
 
-    example_secret = 'secret'
+      example_jwt = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJoZWxsbyI6IndvcmxkIiwiaXNzIjoiand0aXNzIn0.nTZkyYfpGUyKULaj45lXw_1gXXjHvGW4h5V7okHdUqQ'
+      expect{ JWT.decode(example_jwt, example_secret, true, {:verify_iss => true, 'iss' => 'jwt_iss'}) }.to raise_error(JWT::InvalidIssuerError, /Expected jwt_iss, received jwtiss/)
+    end
 
-    example_jwt = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJoZWxsbyI6IndvcmxkIiwiaXNzIjoiand0aXNzIn0.nTZkyYfpGUyKULaj45lXw_1gXXjHvGW4h5V7okHdUqQ'
-    expect{ JWT.decode(example_jwt, example_secret, true, {:verify_iss => true, 'iss' => 'jwt_iss'}) }.to raise_error(JWT::InvalidIssuerError)
+    it 'raises invalid issuer when "iss" claim is missing in payload' do
+      example_payload = {'hello' => 'world'}
+      example_secret = 'secret'
 
-    example_jwt2 = 'eyJhbGciOiAiSFMyNTYiLCAidHlwIjogIkpXVCJ9.eyJoZWxsbyI6ICJ3b3JsZCJ9.tvagLDLoaiJKxOKqpBXSEGy7SYSifZhjntgm9ctpyj8'
-    decode_payload2 = JWT.decode(example_jwt2, example_secret, true, {'iss' => 'jwt_iss'})
-    expect(decode_payload2).to include(example_payload2)
+      example_jwt = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJoZWxsbyI6IndvcmxkIn0.bqxXg9VwcbXKoiWtp-osd0WKPX307RjcN7EuXbdq-CE'
+      expect{ JWT.decode(example_jwt, example_secret, true, {:verify_iss => true, 'iss' => 'jwt_iss'}) }.to raise_error(JWT::InvalidIssuerError, /received <none>/)
+    end
+
+    it 'does not raise invalid issuer when verify_iss is set to false (default option)' do
+      example_payload = {'hello' => 'world', 'iss' => 'jwtiss'}
+      example_secret = 'secret'
+
+      example_jwt = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJoZWxsbyI6IndvcmxkIiwiaXNzIjoiand0aXNzIn0.nTZkyYfpGUyKULaj45lXw_1gXXjHvGW4h5V7okHdUqQ'
+      expect{ JWT.decode(example_jwt, example_secret, true, {'iss' => 'jwt_iss'}) }.not_to raise_error
+    end
+
+    it 'does not raise invalid issuer when correct "iss" is in payload' do
+      example_payload = {'hello' => 'world', 'iss' => 'jwt_iss'}
+      example_secret = 'secret'
+
+      example_jwt = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJoZWxsbyI6IndvcmxkIiwiaXNzIjoiand0X2lzcyJ9.mwbyRJJZJR1C5lBt8WOLg0ZMuwP9VGDf5HiQtFhd-eA'
+      expect{ JWT.decode(example_jwt, example_secret, true, {:verify_iss => true, 'iss' => 'jwt_iss'}) }.not_to raise_error
+    end
   end
 
   it 'decodes valid JWTs with iat' do
@@ -135,23 +155,32 @@ describe JWT do
     expect{ JWT.decode(example_jwt, example_secret, true, {:verify_jti => true, 'jti' => Digest::MD5.hexdigest('secret:1425922032')}) }.to raise_error(JWT::InvalidJtiError)
   end
 
-  it 'decodes valid JWTs with aud' do
-    example_payload = {'hello' => 'world', 'aud' => 'url:pnd'}
-    example_payload2 = {'hello' => 'world', 'aud' => ['url:pnd', 'aud:yes']}
-    example_secret = 'secret'
-    example_jwt = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJoZWxsbyI6IndvcmxkIiwiYXVkIjoidXJsOnBuZCJ9._gT5veUtNiZD7wLEC6Gd0-nkQV3cl1z8G0zXq8qcd-8'
-    example_jwt2 = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJoZWxsbyI6IndvcmxkIiwiYXVkIjpbInVybDpwbmQiLCJhdWQ6eWVzIl19.qNPNcT4X9B5uI91rIwbW2bIPTsp8wbRYW3jkZkrmqbQ'
-    decoded_payload = JWT.decode(example_jwt, example_secret, true, {'aud' => 'url:pnd'})
-    decoded_payload2 = JWT.decode(example_jwt2, example_secret, true, {'aud' => 'url:pnd'})
-    expect(decoded_payload).to include(example_payload)
-    expect(decoded_payload2).to include(example_payload2)
-  end
+  context "aud claim verifications" do
+    it 'decodes valid JWTs with aud' do
+      example_payload = {'hello' => 'world', 'aud' => 'url:pnd'}
+      example_payload2 = {'hello' => 'world', 'aud' => ['url:pnd', 'aud:yes']}
+      example_secret = 'secret'
+      example_jwt = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJoZWxsbyI6IndvcmxkIiwiYXVkIjoidXJsOnBuZCJ9._gT5veUtNiZD7wLEC6Gd0-nkQV3cl1z8G0zXq8qcd-8'
+      example_jwt2 = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJoZWxsbyI6IndvcmxkIiwiYXVkIjpbInVybDpwbmQiLCJhdWQ6eWVzIl19.qNPNcT4X9B5uI91rIwbW2bIPTsp8wbRYW3jkZkrmqbQ'
+      decoded_payload = JWT.decode(example_jwt, example_secret, true, {:verify_aud => true, 'aud' => 'url:pnd'})
+      decoded_payload2 = JWT.decode(example_jwt2, example_secret, true, {:verify_aud => true, 'aud' => 'url:pnd'})
+      expect(decoded_payload).to include(example_payload)
+      expect(decoded_payload2).to include(example_payload2)
+    end
 
-  it 'raises deode exception when aud is invalid' do
-    # example_payload = {'hello' => 'world', 'aud' => 'url:pnd'}
-    example_secret = 'secret'
-    example_jwt = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJoZWxsbyI6IndvcmxkIiwiYXVkIjoidXJsOnBuZCJ9._gT5veUtNiZD7wLEC6Gd0-nkQV3cl1z8G0zXq8qcd-8'
-    expect{ JWT.decode(example_jwt, example_secret, true, {:verify_aud => true, 'aud' => 'wrong:aud'}) }.to raise_error(JWT::InvalidAudError)
+    it 'raises deode exception when aud is invalid' do
+      # example_payload = {'hello' => 'world', 'aud' => 'url:pnd'}
+      example_secret = 'secret'
+      example_jwt = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJoZWxsbyI6IndvcmxkIiwiYXVkIjoidXJsOnBuZCJ9._gT5veUtNiZD7wLEC6Gd0-nkQV3cl1z8G0zXq8qcd-8'
+      expect{ JWT.decode(example_jwt, example_secret, true, {:verify_aud => true, 'aud' => 'wrong:aud'}) }.to raise_error(JWT::InvalidAudError)
+    end
+
+    it 'raises deode exception when aud is missing' do
+      # JWT.encode('hello' => 'world', 'secret')
+      example_secret = 'secret'
+      example_jwt = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJoZWxsbyI6IndvcmxkIn0.bqxXg9VwcbXKoiWtp-osd0WKPX307RjcN7EuXbdq-CE'
+      expect{ JWT.decode(example_jwt, example_secret, true, {:verify_aud => true, 'aud' => 'url:pnd'}) }.to raise_error(JWT::InvalidAudError)
+    end
   end
 
   it 'decodes valid JWTs with sub' do
