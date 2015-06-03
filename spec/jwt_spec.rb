@@ -50,7 +50,7 @@ describe JWT do
     end
 
     it 'should decode a valid token' do
-      payload, header = JWT.decode data['NONE']
+      payload, header = JWT.decode data['NONE'], nil, false
 
       expect(header['alg']).to eq alg
       expect(payload).to eq payload
@@ -244,11 +244,61 @@ describe JWT do
           JWT.decode token, data[:secret]
         end.to raise_error JWT::ImmatureSignature
       end
+
       it 'should handle leeway' do
         expect do
           JWT.decode token, data[:secret], true, leeway: leeway
         end.not_to raise_error
       end
+    end
+
+    context 'issuer claim' do
+      let :iss do
+        'ruby-jwt-gem'
+      end
+
+      let :token do
+        iss_payload = payload.merge({
+          iss: iss
+        })
+
+        JWT.encode iss_payload, data[:secret]
+      end
+
+      let :invalid_token do
+        JWT.encode payload, data[:secret]
+      end
+
+      it 'invalid iss should raise JWT::InvalidIssuerError' do
+        expect do
+          JWT.decode token, data[:secret], true, {
+            'iss' => 'wrong-issuer',
+            :verify_iss => true
+          }
+        end.to raise_error JWT::InvalidIssuerError
+      end
+
+      it 'valid iss should not raise JWT::InvalidIssuerError' do
+        expect do
+          JWT.decode token, data[:secret], true, {
+            'iss' => iss,
+            :verify_iss => true
+          }
+        end.not_to raise_error
+      end
+    end
+
+    context 'issued at claim' do
+
+    end
+
+    context 'audience claim' do
+    end
+
+    context 'subject claim' do
+    end
+
+    context 'jwt id claim' do
     end
   end
 
