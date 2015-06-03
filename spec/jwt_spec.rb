@@ -338,9 +338,61 @@ describe JWT do
     end
 
     context 'audience claim' do
-      it 'invalid aud should raise JWT::InvalidAudError'
-      it 'valid aud should not raise JWT::InvalidAudError'
-      it 'should work with arrays'
+      let :simple_aud do
+        'ruby-jwt-audience'
+      end
+
+      let :array_aud do
+        %w(ruby-jwt-aud test-aud ruby-ruby-ruby)
+      end
+
+      let :simple_token do
+        new_payload = payload.merge({
+          'aud' => simple_aud
+        })
+
+        JWT.encode new_payload, data[:secret]
+      end
+
+      let :array_token do
+        new_payload = payload.merge({
+          'aud' => array_aud
+        })
+
+        JWT.encode new_payload, data[:secret]
+      end
+
+      it 'invalid aud should raise JWT::InvalidAudError' do
+        expect do
+          JWT.decode simple_token, data[:secret], true, {
+            'aud' => 'wrong audience',
+            :verify_aud => true
+          }
+        end.to raise_error JWT::InvalidAudError
+
+        expect do
+          JWT.decode array_token, data[:secret], true, {
+            'aud' => %w(wrong audience),
+            :verify_aud => true
+          }
+        end.to raise_error JWT::InvalidAudError
+      end
+
+      it 'valid aud should not raise JWT::InvalidAudError' do
+        expect do
+          JWT.decode simple_token, data[:secret], true, {
+            'aud' => simple_aud,
+            :verify_aud => true
+          }
+        end.to_not raise_error
+
+        expect do
+          JWT.decode array_token, data[:secret], true, {
+            'aud' => array_aud.first,
+            :verify_aud => true
+          }
+        end.to_not raise_error
+      end
     end
 
     context 'subject claim' do
