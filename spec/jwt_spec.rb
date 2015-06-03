@@ -259,7 +259,7 @@ describe JWT do
 
       let :token do
         iss_payload = payload.merge({
-          iss: iss
+          :iss => iss
         })
 
         JWT.encode iss_payload, data[:secret]
@@ -289,16 +289,68 @@ describe JWT do
     end
 
     context 'issued at claim' do
+      let :iat do
+        Time.now.to_i
+      end
 
+      let :new_payload do
+        payload.merge({
+          :iat => iat
+        })
+      end
+
+      let :token do
+        JWT.encode new_payload, data[:secret]
+      end
+
+      let :invalid_token do
+        JWT.encode new_payload.merge({ 'iat' => iat + 60 }), data[:secret]
+      end
+
+      let :leeway do
+        30
+      end
+
+      it 'invalid iat should raise JWT::InvalidIatError' do
+        expect do
+          JWT.decode invalid_token, data[:secret], true, {
+            :verify_iat => true
+          }
+        end.to raise_error JWT::InvalidIatError
+      end
+
+      it 'should ignore leeway' do
+        expect do
+          JWT.decode invalid_token, data[:secret], true, {
+            :verify_iat => true,
+            :leeway => 70
+          }
+        end.to raise_error JWT::InvalidIatError
+      end
+
+      it 'valid iat should not raise JWT::InvalidIatError' do
+        expect do
+          JWT.decode token, data[:secret], true, {
+            :verify_iat => true
+          }
+        end.to_not raise_error
+      end
     end
 
     context 'audience claim' do
+      it 'invalid aud should raise JWT::InvalidAudError'
+      it 'valid aud should not raise JWT::InvalidAudError'
+      it 'should work with arrays'
     end
 
     context 'subject claim' do
+      it 'invalid sub should raise JWT::InvalidSubError'
+      it 'valid sub should not raise JWT::InvalidSubError'
     end
 
     context 'jwt id claim' do
+      it 'invalid jit should raise JWT::InvalidJtiError'
+      it 'valid jit should not raise JWT::InvalidJtiError'
     end
   end
 
