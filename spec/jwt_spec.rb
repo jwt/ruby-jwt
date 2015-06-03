@@ -396,8 +396,43 @@ describe JWT do
     end
 
     context 'subject claim' do
-      it 'invalid sub should raise JWT::InvalidSubError'
-      it 'valid sub should not raise JWT::InvalidSubError'
+      let :sub do
+        'ruby jwt subject'
+      end
+
+      let :token do
+        new_payload = payload.merge({
+          'sub' => sub
+        })
+
+        JWT.encode new_payload, data[:secret]
+      end
+
+      let :invalid_token do
+        new_payload = payload.merge({
+          'sub' => 'we are not the druids you are looking for'
+        })
+
+        JWT.encode new_payload, data[:secret]
+      end
+
+      it 'invalid sub should raise JWT::InvalidSubError' do
+        expect do
+          JWT.decode invalid_token, data[:secret], true, {
+            'sub' => sub,
+            :verify_sub => true
+          }
+        end.to raise_error JWT::InvalidSubError
+      end
+
+      it 'valid sub should not raise JWT::InvalidSubError' do
+        expect do
+          JWT.decode token, data[:secret], true, {
+            'sub' => sub,
+            :verify_sub => true
+          }
+        end.to_not raise_error
+      end
     end
 
     context 'jwt id claim' do
