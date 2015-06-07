@@ -1,3 +1,4 @@
+# encoding: utf-8
 require 'rspec'
 require 'simplecov'
 require 'simplecov-json'
