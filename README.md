@@ -1,141 +1,325 @@
 # JWT
-A Ruby implementation of [JSON Web Token](http://self-issued.info/docs/draft-ietf-oauth-json-web-token.html)
+A Ruby implementation of [JSON Web Token](http://self-issued.info/docs/draft-ietf-oauth-json-web-token.html).
+
+If you have further questions releated to development or usage, join us: [ruby-jwt google group](https://groups.google.com/forum/#!forum/ruby-jwt).
 
 ## Installing
+
 ```bash
-gem install jwt
+sudo gem install jwt
 ```
 
-## Usage
+## Algorithms and Usage
+
+The JWT spec supports NONE, HMAC, RSASSA, ECDSA and RSASSA-PSS algorithms for cryptographic signing. Currently the jwt gem supports NONE, HMAC, RSASSA and ECDSA.
+
+See: [ JSON Web Algorithms (JWA) 3.1. "alg" (Algorithm) Header Parameter Values for JWS](https://tools.ietf.org/html/draft-ietf-jose-json-web-algorithms-40#section-3.1)
+
+**NONE**
+
+* none - unsigned token
 
 ```ruby
-payload = {'some' => 'payload'}
-token = JWT.encode(payload, 'secret')
+require 'jwt'
+
+payload = {:data => 'test'}
+
+# IMPORTANT: set nil as password parameter
+token = JWT.encode payload, nil, 'none'
+
+# eyJ0eXAiOiJKV1QiLCJhbGciOiJub25lIn0.eyJ0ZXN0IjoiZGF0YSJ9.
+puts token
+
+# Set password to nil and validation to false otherwise this won't work
+decoded_token = JWT.decode token, nil, false
+
+# Array
+# [
+#   {"test"=>"data"}, # payload
+#   {"typ"=>"JWT", "alg"=>"RS256"} # header
+# ]
+puts decoded_token
 ```
 
-Note the resulting JWT will not be encrypted, but verifiable with a secret key.
-
-```ruby
-decoded_token = JWT.decode(token, 'secret')
-```
-
-If the secret is wrong, it will raise a `JWT::DecodeError` telling you as such. You can still get at the payload by setting the verify argument to false.
-
-```ruby
-decoded_token = JWT.decode(token, nil, false) # returns the decoded token, skipped verify process
-```
-
-`encode` also allows for different signing algorithms as well as customer headers.
-
-```ruby
-token = JWT.encode(payload, secret_key, 'RS256', {'some' => 'header'})
-```
-
-## Algorithms
-
-The JWT spec supports several algorithms for cryptographic signing. This library currently supports:
-
-#### HMAC
+**HMAC** (default: HS256)
 
 * HS256	- HMAC using SHA-256 hash algorithm (default)
 * HS384	- HMAC using SHA-384 hash algorithm
 * HS512 - HMAC using SHA-512 hash algorithm
 
-#### RSA
+```ruby
+hmac_secret = 'my$ecretK3y'
+
+token = JWT.encode payload, hmac_secret, 'HS256'
+
+# eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0ZXN0IjoiZGF0YSJ9._sLPAGP-IXgho8BkMGQ86N2mah7vDyn0L5hOR4UkfoI
+puts token
+
+decoded_token = JWT.decode token, hmac_secret
+
+# Array
+# [
+#   {"test"=>"data"}, # payload
+#   {"typ"=>"JWT", "alg"=>"RS256"} # header
+# ]
+puts decoded_token
+```
+
+**RSA**
 
 * RS256 - RSA using SHA-256 hash algorithm
 * RS384 - RSA using SHA-384 hash algorithm
 * RS512 - RSA using SHA-512 hash algorithm
 
-Change the algorithm with by setting it in encode:
-
 ```ruby
-token = JWT.encode({'some' => 'payload'}, 'secret', 'HS512')
+rsa_private = OpenSSL::PKey::RSA.generate 2048
+rsa_public = rsa_private.public_key
+
+token = JWT.encode payload, rsa_private, 'RS256'
+
+# eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJ0ZXN0IjoiZGF0YSJ9.c2FynXNyi6_PeKxrDGxfS3OLwQ8lTDbWBWdq7oMviCy2ZfFpzvW2E_odCWJrbLof-eplHCsKzW7MGAntHMALXgclm_Cs9i2Exi6BZHzpr9suYkrhIjwqV1tCgMBCQpdeMwIq6SyKVjgH3L51ivIt0-GDDPDH1Rcut3jRQzp3Q35bg3tcI2iVg7t3Msvl9QrxXAdYNFiS5KXH22aJZ8X_O2HgqVYBXfSB1ygTYUmKTIIyLbntPQ7R22rFko1knGWOgQCoYXwbtpuKRZVFrxX958L2gUWgb4jEQNf3fhOtkBm1mJpj-7BGst00o8g_3P2zHy-3aKgpPo1XlKQGjRrrxA
+puts token
+
+decoded_token = JWT.decode token, rsa_public
+
+# Array
+# [
+#   {"test"=>"data"}, # payload
+#   {"typ"=>"JWT", "alg"=>"RS256"} # header
+# ]
+puts decoded_token
 ```
 
-#### Plaintext
+**ECDSA**
 
-We also support unsigned plaintext JWTs as introduced by draft 03 by explicitly specifying `nil` as the key and algorithm:
+* ES256 - ECDSA using P-256 and SHA-256
+* ES384 - ECDSA using P-384 and SHA-384
+* ES512 - ECDSA using P-521 and SHA-512
 
 ```ruby
-token = JWT.encode({'some' => 'payload'}, nil, nil)
-decoded_token = JWT.decode(token, nil, nil)
+ecdsa_key = OpenSSL::PKey::EC.new 'prime256v1'
+ecdsa_key.generate_key
+ecdsa_public = OpenSSL::PKey::EC.new ecdsa_key
+ecdsa_public.private_key = nil
+
+token = JWT.encode payload, ecdsa_key, 'ES256'
+
+# eyJ0eXAiOiJKV1QiLCJhbGciOiJFUzI1NiJ9.eyJ0ZXN0IjoiZGF0YSJ9.MEQCIAtShrxRwP1L9SapqaT4f7hajDJH4t_rfm-YlZcNDsBNAiB64M4-JRfyS8nRMlywtQ9lHbvvec9U54KznzOe1YxTyA
+puts token
+
+decoded_token = JWT.decode token, ecdsa_public
+
+# Array
+# [
+#    {"test"=>"data"}, # payload
+#    {"typ"=>"JWT", "alg"=>"ES256"} # header
+# ]
+puts decoded_token
 ```
+
+**RSASSA-PSS**
+
+Not implemented.
 
 ## Support for reserved claim names
-JSON Web Token defines some reserved claim names and defines how they should be used. JWT supports these reserved claim names:
+JSON Web Token defines some reserved claim names and defines how they should be
+used. JWT supports these reserved claim names:
 
- - `exp` Expiration Time Claim
- - `nbf` Not Before Time Claim
- - `iss` Issuer Claim
- - `aud` Audience Claim
- - `jti` JWT ID Claim
- - `iat` Issued At Claim
- - `sub` Subject Claim
+ - 'exp' (Expiration Time) Claim
+ - 'nbf' (Not Before Time) Claim
+ - 'iss' (Issuer) Claim
+ - 'aud' (Audience) Claim
+ - 'jti' (JWT ID) Claim
+ - 'iat' (Issued At) Claim
+ - 'sub' (Subject) Claim
 
 ### Expiration Time Claim
 
-You pass the expiration time as a UTC UNIX timestamp (an int). For example:
+From [Oauth JSON Web Token 4.1.4. "exp" (Expiration Time) Claim](http://self-issued.info/docs/draft-ietf-oauth-json-web-token.html#expDef):
+
+> The `exp` (expiration time) claim identifies the expiration time on or after which the JWT MUST NOT be accepted for processing. The processing of the `exp` claim requires that the current date/time MUST be before the expiration date/time listed in the `exp` claim. Implementers MAY provide for some small `leeway`, usually no more than a few minutes, to account for clock skew. Its value MUST be a number containing a ***NumericDate*** value. Use of this claim is OPTIONAL.
+
+**Handle Expiration Claim**
 
 ```ruby
-token = JWT.encode({'exp' => 1371720939}, 'secret')
-# or
-token = JWT.encode({'exp' => Time.now.to_i}, 'secret')
-```
+exp = Time.now.to_i + 4 * 3600
+exp_payload = { :data => 'data', :exp => exp }
 
-Expiration time is automatically verified in `JWT.decode()` and raises `JWT::ExpiredSignature` if the expiration time is in the past:
+token = JWT.encode exp_payload, hmac_secret, 'HS256'
 
-```ruby
 begin
-    decoded_token = JWT.decode(token, 'secret')
+  decoded_token = JWT.decode token, hmac_secret
 rescue JWT::ExpiredSignature
-    # Signature has expired
+  # Handle expired token, e.g. logout user or deny access
 end
 ```
 
-Expiration time will be compared to the current UTC time (as given by Time.now.to_i`), so be sure to use a UTC timestamp or datetime in encoding.
-
-You can turn off expiration time verification with the `verify_expiration` option.
-
-JWT also supports the leeway part of the expiration time definition, which means you can validate a expiration time which is in the past but not very far. For example, if you have a JWT payload with a expiration time set to 30 seconds after creation but you know that sometimes you will process it after 30 seconds, you can set a leeway of 10 seconds in order to have some margin:
+**Adding Leeway**
 
 ```ruby
-token = JWT.encode({'exp' => Time.now.to_i + 30}, 'secret')
-sleep(32)
-# token is now expired
-# but with some leeway, it will still validate
-JWT.decode(token, 'secret', true, {:leeway => 10})
+exp = Time.now.to_i - 10
+leeway = 30 # seconds
+
+exp_payload = { :data => 'data', :exp => exp }
+
+# build expired token
+token = JWT.encode exp_payload, hmac_secret, 'HS256'
+
+begin
+  # add leeway to ensure the token is still accepted
+  decoded_token = JWT.decode token, hmac_secret, true, { :leeway => leeway }
+rescue JWT::ExpiredSignature
+  # Handle expired token, e.g. logout user or deny access
+end
 ```
 
 ### Not Before Time Claim
 
-You pass the not before time as a UTC UNIX timestamp (an int). For example:
-```ruby
-token = JWT.encode({'nbf' => 1371720939}, 'secret')
-# or
-token = JWT.encode({'nbf' => Time.now.to_i}, 'secret')
-```
+From [Oauth JSON Web Token 4.1.5. "iss" (Issuer) Claim](http://self-issued.info/docs/draft-ietf-oauth-json-web-token.html#nbfDef):
+
+> The `nbf` (not before) claim identifies the time before which the JWT MUST NOT be accepted for processing. The processing of the `nbf` claim requires that the current date/time MUST be after or equal to the not-before date/time listed in the `nbf` claim. Implementers MAY provide for some small `leeway`, usually no more than a few minutes, to account for clock skew. Its value MUST be a number containing a ***NumericDate*** value. Use of this claim is OPTIONAL.
+
+**Handle Not Before Claim**
 
 ```ruby
+nbf = Time.now.to_i - 3600
+nbf_payload = { :data => 'data', :nbf => nbf }
+
+token = JWT.encode nbf_payload, hmac_secret, 'HS256'
+
 begin
-    decoded_token = JWT.decode(token, 'secret')
+  decoded_token = JWT.decode token, hmac_secret
 rescue JWT::ImmatureSignature
-    # Signature is immature
+  # Handle invalid token, e.g. logout user or deny access
 end
 ```
 
-Not before time will be compared to the current UTC time (as given by `Time.now.to_i`), so be sure to use a UTC timestamp or datetime in encoding.
-
-You can turn off not before time verification with the `verify_not_before` option.
-
-In a similar way to the expiration time claim, the not before time claim supports the leeway option.
+**Adding Leeway**
 
 ```ruby
-token = JWT.encode({'nbf' => Time.now.to_i + 30}, 'secret')
-sleep(25)
-# token is now immature
-# but with some leeway, it will still validate
-JWT.decode(token, 'secret', true, {:leeway => 10})
+nbf = Time.now.to_i + 10
+leeway = 30
+
+nbf_payload = { :data => 'data', :nbf => nbf }
+
+# build expired token
+token = JWT.encode nbf_payload, hmac_secret, 'HS256'
+
+begin
+  # add leeway to ensure the token is valid
+  decoded_token = JWT.decode token, hmac_secret, true, { :leeway => leeway }
+rescue JWT::ImmatureSignature
+  # Handle invalid token, e.g. logout user or deny access
+end
+```
+
+### Issuer Claim
+
+From [Oauth JSON Web Token 4.1.1. "iss" (Issuer) Claim](http://self-issued.info/docs/draft-ietf-oauth-json-web-token.html#issDef):
+
+> The `iss` (issuer) claim identifies the principal that issued the JWT. The processing of this claim is generally application specific. The `iss` value is a case-sensitive string containing a ***StringOrURI*** value. Use of this claim is OPTIONAL.
+
+```ruby
+iss = 'My Awesome Company Inc. or https://my.awesome.website/'
+iss_payload = { :data => 'data', :iss => iss }
+
+token = JWT.encode iss_payload, hmac_secret, 'HS256'
+
+begin
+  # Add iss to the validation to check if the token has been manipulated
+  decoded_token = JWT.decode token, hmac_secret, true, { 'iss' => iss, :verify_iss => true }
+rescue JWT::InvalidIssuerError
+  # Handle invalid token, e.g. logout user or deny access
+end
+```
+
+### Audience Claim
+
+From [Oauth JSON Web Token 4.1.3. "aud" (Audience) Claim](http://self-issued.info/docs/draft-ietf-oauth-json-web-token.html#issDef):
+
+> The `aud` (audience) claim identifies the recipients that the JWT is intended for. Each principal intended to process the JWT MUST identify itself with a value in the audience claim. If the principal processing the claim does not identify itself with a value in the `aud` claim when this claim is present, then the JWT MUST be rejected. In the general case, the `aud` value is an array of case-sensitive strings, each containing a ***StringOrURI*** value. In the special case when the JWT has one audience, the `aud` value MAY be a single case-sensitive string containing a ***StringOrURI*** value. The interpretation of audience values is generally application specific. Use of this claim is OPTIONAL.
+
+```ruby
+aud = ['Young', 'Old']
+aud_payload = { :data => 'data', :aud => aud }
+
+token = JWT.encode aud_payload, hmac_secret, 'HS256'
+
+begin
+  # Add auf to the validation to check if the token has been manipulated
+  decoded_token = JWT.decode token, hmac_secret, true, { 'aud' => aud, :verify_aud => true }
+rescue JWT::InvalidAudError
+  # Handle invalid token, e.g. logout user or deny access
+  puts 'Audience Error'
+end
+```
+
+### JWT ID Claim
+
+From [Oauth JSON Web Token 4.1.7. "iss" (Issuer) Claim](http://self-issued.info/docs/draft-ietf-oauth-json-web-token.html#jtiDef):
+
+> The `jti` (JWT ID) claim provides a unique identifier for the JWT. The identifier value MUST be assigned in a manner that ensures that there is a negligible probability that the same value will be accidentally assigned to a different data object; if the application uses multiple issuers, collisions MUST be prevented among values produced by different issuers as well. The `jti` claim can be used to prevent the JWT from being replayed. The `jti` value is a case-sensitive string. Use of this claim is OPTIONAL.
+
+```ruby
+user_id = 'email@address.tld'
+# in order to use JTI you have to add iat
+iat = Time.now.to_i
+# Use the secret and iat to create a unique key per request to prevent replay attacks
+jti_raw = [hmac_secret, iat].join(':').to_s
+jti = Digest::MD5.hexdigest(jti_raw)
+jti_payload = { :data => 'data', :iat => iat, :jti => jti }
+
+token = JWT.encode jti_payload, hmac_secret, 'HS256'
+
+begin
+  # Add jti and iat to the validation to check if the token has been manipulated
+  decoded_token = JWT.decode token, hmac_secret, true, { 'iat' => iat, 'jti' => jti, :verify_jti => true }
+  # Check if the JTI has already been used
+rescue JWT::InvalidJtiError
+  # Handle invalid token, e.g. logout user or deny access
+  puts 'Error'
+end
+
+```
+
+### Issued At Claim
+
+From [Oauth JSON Web Token 4.1.6. "iat" (Issuer) Claim](http://self-issued.info/docs/draft-ietf-oauth-json-web-token.html#iatDef):
+
+> The `iat` (issued at) claim identifies the time at which the JWT was issued. This claim can be used to determine the age of the JWT. Its value MUST be a number containing a ***NumericDate*** value. Use of this claim is OPTIONAL.
+
+```ruby
+iat = Time.now.to_i
+iat_payload = { :data => 'data', :iat => iat }
+
+token = JWT.encode iat_payload, hmac_secret, 'HS256'
+
+begin
+  # Add iss to the validation to check if the token has been manipulated
+  decoded_token = JWT.decode token, hmac_secret, true, { 'iat' => iat, :verify_iat => true }
+rescue JWT::InvalidIatError
+  # Handle invalid token, e.g. logout user or deny access
+end
+```
+
+### Subject Claim
+
+From [Oauth JSON Web Token 4.1.2. "sub" (Subject) Claim](http://self-issued.info/docs/draft-ietf-oauth-json-web-token.html#subDef):
+
+> The `sub` (subject) claim identifies the principal that is the subject of the JWT. The Claims in a JWT are normally statements about the subject. The subject value MUST either be scoped to be locally unique in the context of the issuer or be globally unique. The processing of this claim is generally application specific. The sub value is a case-sensitive string containing a ***StringOrURI*** value. Use of this claim is OPTIONAL.
+
+```ruby
+sub = 'Subject'
+sub_payload = { :data => 'data', :sub => sub }
+
+token = JWT.encode sub_payload, hmac_secret, 'HS256'
+
+begin
+  # Add iss to the validation to check if the token has been manipulated
+  decoded_token = JWT.decode token, hmac_secret, true, { 'sub' => sub, :verify_sub => true }
+rescue JWT::InvalidSubError
+  # Handle invalid token, e.g. logout user or deny access
+end
 ```
 
 # Development and Tests
@@ -168,8 +352,17 @@ rake test
  * Zane Shannon [@zshannon](https://github.com/zshannon)
  * Brian Fletcher [@punkle](https://github.com/punkle)
  * Alex [@ZhangHanDong](https://github.com/ZhangHanDong)
+ * John Downey [jtdowney](https://github.com/jtdowney)
  * Tim Rudat [@excpt](https://github.com/excpt) <timrudat@gmail.com> - Maintainer
 
 ## License
 
 MIT
+
+Copyright (c) 2011 Jeff Lindsay
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
