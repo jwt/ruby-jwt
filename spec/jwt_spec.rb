@@ -435,9 +435,40 @@ describe JWT do
       end
     end
 
-    context 'jwt id claim' do
-      it 'invalid jit should raise JWT::InvalidJtiError'
-      it 'valid jit should not raise JWT::InvalidJtiError'
+    context 'jwt id claim', :focus do
+      let :jti do
+        new_payload = payload.merge({
+          'iat' => Time.now.to_i
+        })
+
+        key = data[:secret]
+
+        new_payload.merge({
+          'jti' => Digest::MD5.hexdigest("#{key}:#{new_payload['iat']}")
+        })
+      end
+
+      let :token do
+        JWT.encode jti, data[:secret]
+      end
+
+      let :invalid_token do
+        jti.delete('iat')
+
+        JWT.encode jti, data[:secret]
+      end
+
+      it 'invalid jti should raise JWT::InvalidJtiError' do
+        expect do
+          JWT.decode invalid_token, data[:secret], true, { :verify_jti => true, 'jti' => jti['jti'] }
+        end.to raise_error JWT::InvalidJtiError
+      end
+
+      it 'valid jti should not raise JWT::InvalidJtiError' do
+        expect do
+          JWT.decode token, data[:secret], true, { :verify_jti => true, 'jti' => jti['jti'] }
+        end.to_not raise_error
+      end
     end
   end
 
