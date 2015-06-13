@@ -35,8 +35,8 @@ decoded_token = JWT.decode token, nil, false
 
 # Array
 # [
-#   {"test"=>"data"}, # payload
-#   {"typ"=>"JWT", "alg"=>"RS256"} # header
+#   {"data"=>"test"}, # payload
+#   {"typ"=>"JWT", "alg"=>"none"} # header
 # ]
 puts decoded_token
 ```
@@ -59,8 +59,8 @@ decoded_token = JWT.decode token, hmac_secret
 
 # Array
 # [
-#   {"test"=>"data"}, # payload
-#   {"typ"=>"JWT", "alg"=>"RS256"} # header
+#   {"data"=>"test"}, # payload
+#   {"typ"=>"JWT", "alg"=>"HS256"} # header
 # ]
 puts decoded_token
 ```
@@ -84,7 +84,7 @@ decoded_token = JWT.decode token, rsa_public
 
 # Array
 # [
-#   {"test"=>"data"}, # payload
+#   {"data"=>"test"}, # payload
 #   {"typ"=>"JWT", "alg"=>"RS256"} # header
 # ]
 puts decoded_token
