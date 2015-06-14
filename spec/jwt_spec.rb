@@ -76,6 +76,15 @@ describe JWT do
     expect(decoded_payload).to include(example_payload)
   end
 
+  it 'decodes valid ES512 JWTs' do
+    example_payload = { 'hello' => 'world' }
+    example_jwt = 'eyJhbGciOiJFUzUxMiIsInR5cCI6IkpXVCJ9.eyJoZWxsbyI6IndvcmxkIn0.AQx1MqdTni6KuzfOoedg2-7NUiwe-b88SWbdmviz40GTwrM0Mybp1i1tVtmTSQ91oEXGXBdtwsN6yalzP9J-sp2YATX_Tv4h-BednbdSvYxZsYnUoZ--ZUdL10t7g8Yt3y9hdY_diOjIptcha6ajX8yzkDGYG42iSe3f5LywSuD6FO5c'
+    pubkey_pem = "-----BEGIN PUBLIC KEY-----\nMIGbMBAGByqGSM49AgEGBSuBBAAjA4GGAAQAcpkss6wI7PPlxj3t7A1RqMH3nvL4\nL5Tzxze/XeeYZnHqxiX+gle70DlGRMqqOq+PJ6RYX7vK0PJFdiAIXlyPQq0B3KaU\ne86IvFeQSFrJdCc0K8NfiH2G1loIk3fiR+YLqlXk6FAeKtpXJKxR1pCQCAM+vBCs\nmZudf1zCUZ8/4eodlHU=\n-----END PUBLIC KEY-----"
+    pubkey = OpenSSL::PKey::EC.new pubkey_pem
+    decoded_payload = JWT.decode(example_jwt, pubkey)
+    expect(decoded_payload).to include(example_payload)
+  end
+
   it 'decodes valid JWTs with iss' do
     example_payload = { 'hello' => 'world', 'iss' => 'jwtiss' }
     example_secret = 'secret'
