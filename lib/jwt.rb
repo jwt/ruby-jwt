@@ -52,7 +52,7 @@ module JWT
     end
 
     digest = OpenSSL::Digest.new(algorithm.sub('ES', 'sha'))
-    private_key.dsa_sign_asn1(digest.digest(msg))
+    asn1_to_raw(private_key.dsa_sign_asn1(digest.digest(msg)), private_key)
   end
 
   def verify_rsa(algorithm, public_key, signing_input, signature)
@@ -66,7 +66,7 @@ module JWT
     end
 
     digest = OpenSSL::Digest.new(algorithm.sub('ES', 'sha'))
-    public_key.dsa_verify_asn1(digest.digest(signing_input), signature)
+    public_key.dsa_verify_asn1(digest.digest(signing_input), raw_to_asn1(signature, public_key))
   end
 
   def sign_hmac(algorithm, msg, key)
@@ -217,5 +217,17 @@ module JWT
     res = 0
     b.each_byte { |byte| res |= byte ^ l.shift }
     res == 0
+  end
+
+  def raw_to_asn1(signature, private_key)
+    byte_size = (private_key.group.degree / 8.0).ceil
+    r = signature[0..(byte_size - 1)]
+    s = signature[byte_size..-1]
+    OpenSSL::ASN1::Sequence.new([r, s].map { |int| OpenSSL::ASN1::Integer.new(OpenSSL::BN.new(int, 2)) }).to_der
+  end
+
+  def asn1_to_raw(signature, public_key)
+    byte_size = (public_key.group.degree / 8.0).ceil
+    OpenSSL::ASN1.decode(signature).value.map { |value| value.value.to_s(2).rjust(byte_size, "\x00") }.join
   end
 end
