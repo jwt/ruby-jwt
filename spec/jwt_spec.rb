@@ -362,6 +362,15 @@ describe JWT do
     expect { JWT.decode(jwt, secret) }.to raise_error(JWT::ImmatureSignature)
   end
 
+  it 'doesnt raise error when equal to nbf' do
+    mature_payload = @payload.clone
+    mature_payload['nbf'] = Time.now.to_i
+    secret = 'secret'
+    jwt = JWT.encode(mature_payload, secret)
+    decoded_payload = JWT.decode(jwt, secret, true, :verify_expiration => false)
+    expect(decoded_payload).to include(mature_payload)
+  end
+
   it 'doesnt raise error when after nbf' do
     mature_payload = @payload.clone
     secret = 'secret'
@@ -372,7 +381,7 @@ describe JWT do
 
   it 'raise ImmatureSignature even when nbf claim is a string' do
     immature_payload = @payload.clone
-    immature_payload['nbf'] = (Time.now.to_i).to_s
+    immature_payload['nbf'] = (Time.now.to_i + 1).to_s
     secret = 'secret'
     jwt = JWT.encode(immature_payload, secret)
     expect { JWT.decode(jwt, secret) }.to raise_error(JWT::ImmatureSignature)

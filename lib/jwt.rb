@@ -161,7 +161,7 @@ module JWT
       fail JWT::ExpiredSignature.new('Signature has expired') unless payload['exp'].to_i > (Time.now.to_i - options[:leeway])
     end
     if options[:verify_not_before] && payload.include?('nbf')
-      fail JWT::ImmatureSignature.new('Signature nbf has not been reached') unless payload['nbf'].to_i < (Time.now.to_i + options[:leeway])
+      fail JWT::ImmatureSignature.new('Signature nbf has not been reached') unless payload['nbf'].to_i <= (Time.now.to_i + options[:leeway])
     end
     if options[:verify_iss] && options['iss']
       fail JWT::InvalidIssuerError.new("Invalid issuer. Expected #{options['iss']}, received #{payload['iss'] || '<none>'}") unless payload['iss'].to_s == options['iss'].to_s
