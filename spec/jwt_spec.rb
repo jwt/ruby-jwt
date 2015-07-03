@@ -138,6 +138,22 @@ describe JWT do
     expect { JWT.decode(example_jwt, example_secret, true, :verify_iat => true, 'iat' => 1425917209) }.to raise_error(JWT::InvalidIatError)
   end
 
+  it 'raises decode exception when iat is in the future' do
+    invalid_payload = @payload.clone
+    invalid_payload['iat'] = Time.now.to_i + 3
+    secret = 'secret'
+    jwt = JWT.encode(invalid_payload, secret)
+    expect { JWT.decode(jwt, secret, true, :verify_iat => true) }.to raise_error(JWT::InvalidIatError)
+  end
+
+  it 'performs normal decode if iat is within leeway' do
+    invalid_payload = @payload.clone
+    invalid_payload['iat'] = Time.now.to_i + 3
+    secret = 'secret'
+    jwt = JWT.encode(invalid_payload, secret)
+    expect { JWT.decode(jwt, secret, true, :verify_iat => true, :leeway => 3) }.to_not raise_error
+  end
+
   it 'decodes valid JWTs with jti' do
     example_payload = { 'hello' => 'world', 'iat' => 1425917209, 'jti' => Digest::MD5.hexdigest('secret:1425917209') }
     example_secret = 'secret'

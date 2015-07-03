@@ -167,7 +167,7 @@ module JWT
       fail JWT::InvalidIssuerError.new("Invalid issuer. Expected #{options['iss']}, received #{payload['iss'] || '<none>'}") unless payload['iss'].to_s == options['iss'].to_s
     end
     if options[:verify_iat] && payload.include?('iat')
-      fail JWT::InvalidIatError.new('Invalid iat') unless payload['iat'].is_a?(Integer) && payload['iat'].to_i <= Time.now.to_i
+      fail JWT::InvalidIatError.new('Invalid iat') unless payload['iat'].is_a?(Integer) && payload['iat'].to_i <= (Time.now.to_i + options[:leeway])
     end
     if options[:verify_aud] && options['aud']
       if payload['aud'].is_a?(Array)
