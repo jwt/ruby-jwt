@@ -148,7 +148,7 @@ exp_payload = { :data => 'data', :exp => exp }
 token = JWT.encode exp_payload, hmac_secret, 'HS256'
 
 begin
-  decoded_token = JWT.decode token, hmac_secret
+  decoded_token = JWT.decode token, hmac_secret, true
 rescue JWT::ExpiredSignature
   # Handle expired token, e.g. logout user or deny access
 end
