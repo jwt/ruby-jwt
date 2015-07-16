@@ -246,7 +246,7 @@ aud_payload = { :data => 'data', :aud => aud }
 token = JWT.encode aud_payload, hmac_secret, 'HS256'
 
 begin
-  # Add auf to the validation to check if the token has been manipulated
+  # Add aud to the validation to check if the token has been manipulated
   decoded_token = JWT.decode token, hmac_secret, true, { 'aud' => aud, :verify_aud => true }
 rescue JWT::InvalidAudError
   # Handle invalid token, e.g. logout user or deny access
