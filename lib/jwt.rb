@@ -7,7 +7,7 @@ require 'jwt/json'
 # JSON Web Token implementation
 #
 # Should be up to date with the latest spec:
-# http://self-issued.info/docs/draft-jones-json-web-token-06.html
+# https://tools.ietf.org/html/rfc7519#section-4.1.5
 module JWT
   class DecodeError < StandardError; end
   class VerificationError < DecodeError; end
