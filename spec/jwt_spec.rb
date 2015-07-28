@@ -243,7 +243,6 @@ describe JWT do
         JWT.encode iss_payload, data[:secret]
       end
 
-
       it 'invalid iss should raise JWT::InvalidIssuerError' do
         expect do
           JWT.decode token, data[:secret], true, {
