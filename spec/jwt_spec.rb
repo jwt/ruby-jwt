@@ -4,7 +4,7 @@ require 'jwt'
 describe JWT do
   let :payload do
     {
-      :user_id => 'some@user.tld'
+      'user_id' => 'some@user.tld'
     }
   end
 
@@ -50,10 +50,10 @@ describe JWT do
     end
 
     it 'should decode a valid token' do
-      payload, header = JWT.decode data['NONE'], nil, false
+      jwt_payload, header = JWT.decode data['NONE'], nil, false
 
       expect(header['alg']).to eq alg
-      expect(payload).to eq payload
+      expect(jwt_payload).to eq payload
     end
   end
 
@@ -66,10 +66,10 @@ describe JWT do
       end
 
       it 'should decode a valid token' do
-        payload, header = JWT.decode data[alg], data[:secret]
+        jwt_payload, header = JWT.decode data[alg], data[:secret]
 
         expect(header['alg']).to eq alg
-        expect(payload).to eq payload
+        expect(jwt_payload).to eq payload
       end
 
       it 'wrong secret should raise JWT::DecodeError' do
@@ -95,10 +95,10 @@ describe JWT do
       end
 
       it 'should decode a valid token' do
-        payload, header = JWT.decode data[alg], data[:rsa_public]
+        jwt_payload, header = JWT.decode data[alg], data[:rsa_public]
 
         expect(header['alg']).to eq alg
-        expect(payload).to eq payload
+        expect(jwt_payload).to eq payload
       end
 
       it 'wrong key should raise JWT::DecodeError' do
@@ -130,17 +130,17 @@ describe JWT do
       end
 
       it 'should generate a valid token' do
-        payload, header = JWT.decode data[alg], data["#{alg}_public"]
+        jwt_payload, header = JWT.decode data[alg], data["#{alg}_public"]
 
         expect(header['alg']).to eq alg
-        expect(payload).to eq payload
+        expect(jwt_payload).to eq payload
       end
 
       it 'should decode a valid token' do
-        payload, header = JWT.decode data[alg], data["#{alg}_public"]
+        jwt_payload, header = JWT.decode data[alg], data["#{alg}_public"]
 
         expect(header['alg']).to eq alg
-        expect(payload).to eq payload
+        expect(jwt_payload).to eq payload
       end
 
       it 'wrong key should raise JWT::DecodeError' do
