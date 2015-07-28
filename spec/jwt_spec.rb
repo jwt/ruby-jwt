@@ -2,11 +2,7 @@ require 'spec_helper'
 require 'jwt'
 
 describe JWT do
-  let :payload do
-    {
-      'user_id' => 'some@user.tld'
-    }
-  end
+  let(:payload) { { 'user_id' => 'some@user.tld' } }
 
   let :data do
     {
@@ -39,9 +35,7 @@ describe JWT do
   end
 
   context 'alg: NONE' do
-    let :alg do
-      'none'
-    end
+    let(:alg) { 'none' }
 
     it 'should generate a valid token' do
       token = JWT.encode payload, nil, alg
@@ -125,9 +119,7 @@ describe JWT do
         data[alg] = JWT.encode payload, data["#{alg}_private"], alg
       end
 
-      let :wrong_key do
-        OpenSSL::PKey.read File.read(File.join(CERT_PATH, 'ec256-wrong-public.pem'))
-      end
+      let(:wrong_key) { OpenSSL::PKey.read(File.read(File.join(CERT_PATH, 'ec256-wrong-public.pem'))) }
 
       it 'should generate a valid token' do
         jwt_payload, header = JWT.decode data[alg], data["#{alg}_public"]
@@ -197,13 +189,8 @@ describe JWT do
     end
 
     context 'expiration claim' do
-      let :exp do
-        Time.now.to_i - 5
-      end
-
-      let :leeway do
-        10
-      end
+      let(:exp) { Time.now.to_i - 5 }
+      let(:leeway) { 10 }
 
       let :token do
         payload.merge!(exp: exp)
@@ -225,13 +212,8 @@ describe JWT do
     end
 
     context 'not before claim' do
-      let :nbf do
-        Time.now.to_i + 5
-      end
-
-      let :leeway do
-        10
-      end
+      let(:nbf) { Time.now.to_i + 5 }
+      let(:leeway) { 10 }
 
       let :token do
         payload.merge!(nbf: nbf)
@@ -253,21 +235,14 @@ describe JWT do
     end
 
     context 'issuer claim' do
-      let :iss do
-        'ruby-jwt-gem'
-      end
+      let(:iss) { 'ruby-jwt-gem' }
+      let(:invalid_token) { JWT.encode payload, data[:secret] }
 
       let :token do
-        iss_payload = payload.merge({
-          :iss => iss
-        })
-
+        iss_payload = payload.merge({ :iss => iss })
         JWT.encode iss_payload, data[:secret]
       end
 
-      let :invalid_token do
-        JWT.encode payload, data[:secret]
-      end
 
       it 'invalid iss should raise JWT::InvalidIssuerError' do
         expect do
@@ -289,27 +264,11 @@ describe JWT do
     end
 
     context 'issued at claim' do
-      let :iat do
-        Time.now.to_i
-      end
-
-      let :new_payload do
-        payload.merge({
-          :iat => iat
-        })
-      end
-
-      let :token do
-        JWT.encode new_payload, data[:secret]
-      end
-
-      let :invalid_token do
-        JWT.encode new_payload.merge({ 'iat' => iat + 60 }), data[:secret]
-      end
-
-      let :leeway do
-        30
-      end
+      let(:iat) { Time.now.to_i }
+      let(:new_payload) { payload.merge({ :iat => iat }) }
+      let(:token) { JWT.encode new_payload, data[:secret] }
+      let(:invalid_token) { JWT.encode new_payload.merge({ 'iat' => iat + 60 }), data[:secret] }
+      let(:leeway) { 30 }
 
       it 'invalid iat should raise JWT::InvalidIatError' do
         expect do
@@ -338,27 +297,16 @@ describe JWT do
     end
 
     context 'audience claim' do
-      let :simple_aud do
-        'ruby-jwt-audience'
-      end
-
-      let :array_aud do
-        %w(ruby-jwt-aud test-aud ruby-ruby-ruby)
-      end
+      let(:simple_aud) { 'ruby-jwt-audience' }
+      let(:array_aud) { %w(ruby-jwt-aud test-aud ruby-ruby-ruby) }
 
       let :simple_token do
-        new_payload = payload.merge({
-          'aud' => simple_aud
-        })
-
+        new_payload = payload.merge({ 'aud' => simple_aud })
         JWT.encode new_payload, data[:secret]
       end
 
       let :array_token do
-        new_payload = payload.merge({
-          'aud' => array_aud
-        })
-
+        new_payload = payload.merge({ 'aud' => array_aud })
         JWT.encode new_payload, data[:secret]
       end
 
@@ -396,23 +344,15 @@ describe JWT do
     end
 
     context 'subject claim' do
-      let :sub do
-        'ruby jwt subject'
-      end
+      let(:sub) { 'ruby jwt subject' }
 
       let :token do
-        new_payload = payload.merge({
-          'sub' => sub
-        })
-
+        new_payload = payload.merge({ 'sub' => sub })
         JWT.encode new_payload, data[:secret]
       end
 
       let :invalid_token do
-        new_payload = payload.merge({
-          'sub' => 'we are not the druids you are looking for'
-        })
-
+        new_payload = payload.merge({ 'sub' => 'we are not the druids you are looking for' })
         JWT.encode new_payload, data[:secret]
       end
 
@@ -437,24 +377,15 @@ describe JWT do
 
     context 'jwt id claim' do
       let :jti do
-        new_payload = payload.merge({
-          'iat' => Time.now.to_i
-        })
-
+        new_payload = payload.merge({ 'iat' => Time.now.to_i })
         key = data[:secret]
-
-        new_payload.merge({
-          'jti' => Digest::MD5.hexdigest("#{key}:#{new_payload['iat']}")
-        })
+        new_payload.merge({ 'jti' => Digest::MD5.hexdigest("#{key}:#{new_payload['iat']}") })
       end
 
-      let :token do
-        JWT.encode jti, data[:secret]
-      end
+      let(:token) { JWT.encode jti, data[:secret] }
 
       let :invalid_token do
         jti.delete('iat')
-
         JWT.encode jti, data[:secret]
       end
 
