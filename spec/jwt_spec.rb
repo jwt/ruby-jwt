@@ -4,7 +4,7 @@ require 'jwt'
 describe JWT do
   let :payload do
     {
-      user_id: 'some@user.tld'
+      :user_id => 'some@user.tld'
     }
   end
 
