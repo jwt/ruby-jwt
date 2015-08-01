@@ -295,7 +295,7 @@ iat_payload = { :data => 'data', :iat => iat }
 token = JWT.encode iat_payload, hmac_secret, 'HS256'
 
 begin
-  # Add iss to the validation to check if the token has been manipulated
+  # Add iat to the validation to check if the token has been manipulated
   decoded_token = JWT.decode token, hmac_secret, true, { 'iat' => iat, :verify_iat => true }
 rescue JWT::InvalidIatError
   # Handle invalid token, e.g. logout user or deny access
@@ -315,7 +315,7 @@ sub_payload = { :data => 'data', :sub => sub }
 token = JWT.encode sub_payload, hmac_secret, 'HS256'
 
 begin
-  # Add iss to the validation to check if the token has been manipulated
+  # Add sub to the validation to check if the token has been manipulated
   decoded_token = JWT.decode token, hmac_secret, true, { 'sub' => sub, :verify_sub => true }
 rescue JWT::InvalidSubError
   # Handle invalid token, e.g. logout user or deny access
