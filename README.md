@@ -296,7 +296,7 @@ token = JWT.encode iat_payload, hmac_secret, 'HS256'
 
 begin
   # Add iat to the validation to check if the token has been manipulated
-  decoded_token = JWT.decode token, hmac_secret, true, { 'iat' => iat, :verify_iat => true }
+  decoded_token = JWT.decode token, hmac_secret, true, { :verify_iat => true }
 rescue JWT::InvalidIatError
   # Handle invalid token, e.g. logout user or deny access
 end
