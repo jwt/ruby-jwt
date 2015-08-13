@@ -261,7 +261,6 @@ From [Oauth JSON Web Token 4.1.7. "jti" (JWT ID) Claim](https://tools.ietf.org/h
 > The `jti` (JWT ID) claim provides a unique identifier for the JWT. The identifier value MUST be assigned in a manner that ensures that there is a negligible probability that the same value will be accidentally assigned to a different data object; if the application uses multiple issuers, collisions MUST be prevented among values produced by different issuers as well. The `jti` claim can be used to prevent the JWT from being replayed. The `jti` value is a case-sensitive string. Use of this claim is OPTIONAL.
 
 ```ruby
-user_id = 'email@address.tld'
 # in order to use JTI you have to add iat
 iat = Time.now.to_i
 # Use the secret and iat to create a unique key per request to prevent replay attacks
