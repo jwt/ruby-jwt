@@ -16,4 +16,5 @@ group :test, :development do
   gem 'rspec', '~> 3'
   gem 'simplecov'
   gem 'simplecov-json'
+  gem 'codeclimate-test-reporter', require: nil
 end
