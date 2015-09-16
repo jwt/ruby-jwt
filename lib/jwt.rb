@@ -30,14 +30,14 @@ module JWT
   module_function
 
   def sign(algorithm, msg, key)
-    if ['HS256', 'HS384', 'HS512'].include?(algorithm)
+    if %w(HS256 HS384 HS512).include?(algorithm)
       sign_hmac(algorithm, msg, key)
-    elsif ['RS256', 'RS384', 'RS512'].include?(algorithm)
+    elsif %w(RS256 RS384 RS512).include?(algorithm)
       sign_rsa(algorithm, msg, key)
-    elsif ['ES256', 'ES384', 'ES512'].include?(algorithm)
+    elsif %w(ES256 ES384 ES512).include?(algorithm)
       sign_ecdsa(algorithm, msg, key)
     else
-      fail NotImplementedError.new('Unsupported signing method')
+      fail NotImplementedError, 'Unsupported signing method'
     end
   end
 
@@ -48,7 +48,7 @@ module JWT
   def sign_ecdsa(algorithm, msg, private_key)
     key_algorithm = NAMED_CURVES[private_key.group.curve_name]
     if algorithm != key_algorithm
-      fail IncorrectAlgorithm.new("payload algorithm is #{algorithm} but #{key_algorithm} signing key was provided")
+      fail IncorrectAlgorithm, "payload algorithm is #{algorithm} but #{key_algorithm} signing key was provided"
     end
 
     digest = OpenSSL::Digest.new(algorithm.sub('ES', 'sha'))
@@ -62,7 +62,7 @@ module JWT
   def verify_ecdsa(algorithm, public_key, signing_input, signature)
     key_algorithm = NAMED_CURVES[public_key.group.curve_name]
     if algorithm != key_algorithm
-      fail IncorrectAlgorithm.new("payload algorithm is #{algorithm} but #{key_algorithm} verification key was provided")
+      fail IncorrectAlgorithm, "payload algorithm is #{algorithm} but #{key_algorithm} verification key was provided"
     end
 
     digest = OpenSSL::Digest.new(algorithm.sub('ES', 'sha'))
@@ -82,7 +82,7 @@ module JWT
     Base64.encode64(str).tr('+/', '-_').gsub(/[\n=]/, '')
   end
 
-  def encoded_header(algorithm='HS256', header_fields={})
+  def encoded_header(algorithm = 'HS256', header_fields = {})
     header = { 'typ' => 'JWT', 'alg' => algorithm }.merge(header_fields)
     base64url_encode(encode_json(header))
   end
@@ -100,7 +100,7 @@ module JWT
     end
   end
 
-  def encode(payload, key, algorithm='HS256', header_fields={})
+  def encode(payload, key, algorithm = 'HS256', header_fields = {})
     algorithm ||= 'none'
     segments = []
     segments << encoded_header(algorithm, header_fields)
@@ -109,10 +109,10 @@ module JWT
     segments.join('.')
   end
 
-  def raw_segments(jwt, verify=true)
+  def raw_segments(jwt, verify = true)
     segments = jwt.split('.')
     required_num_segments = verify ? [3] : [2, 3]
-    fail JWT::DecodeError.new('Not enough or too many segments') unless required_num_segments.include? segments.length
+    fail(JWT::DecodeError, 'Not enough or too many segments') unless required_num_segments.include? segments.length
     segments
   end
 
@@ -122,7 +122,7 @@ module JWT
     [header, payload]
   end
 
-  def decoded_segments(jwt, verify=true)
+  def decoded_segments(jwt, verify = true)
     header_segment, payload_segment, crypto_segment = raw_segments(jwt, verify)
     header, payload = decode_header_and_payload(header_segment, payload_segment)
     signature = base64url_decode(crypto_segment.to_s) if verify
@@ -130,21 +130,21 @@ module JWT
     [header, payload, signature, signing_input]
   end
 
-  def decode(jwt, key=nil, verify=true, options={}, &keyfinder)
-    fail JWT::DecodeError.new('Nil JSON web token') unless jwt
+  def decode(jwt, key = nil, verify = true, options = {}, &keyfinder)
+    fail(JWT::DecodeError, 'Nil JSON web token') unless jwt
 
     header, payload, signature, signing_input = decoded_segments(jwt, verify)
-    fail JWT::DecodeError.new('Not enough or too many segments') unless header && payload
+    fail(JWT::DecodeError, 'Not enough or too many segments') unless header && payload
 
     default_options = {
-      :verify_expiration => true,
-      :verify_not_before => true,
-      :verify_iss => false,
-      :verify_iat => false,
-      :verify_jti => false,
-      :verify_aud => false,
-      :verify_sub => false,
-      :leeway => 0
+      verify_expiration: true,
+      verify_not_before: true,
+      verify_iss: false,
+      verify_iat: false,
+      verify_jti: false,
+      verify_aud: false,
+      verify_sub: false,
+      leeway: 0
     }
 
     options = default_options.merge(options)
@@ -152,36 +152,36 @@ module JWT
     if verify
       algo, key = signature_algorithm_and_key(header, key, &keyfinder)
       if options[:algorithm] && algo != options[:algorithm]
-        fail JWT::IncorrectAlgorithm.new('Expected a different algorithm')
+        fail JWT::IncorrectAlgorithm, 'Expected a different algorithm'
       end
       verify_signature(algo, key, signing_input, signature)
     end
 
     if options[:verify_expiration] && payload.include?('exp')
-      fail JWT::ExpiredSignature.new('Signature has expired') unless payload['exp'].to_i > (Time.now.to_i - options[:leeway])
+      fail(JWT::ExpiredSignature, 'Signature has expired') unless payload['exp'].to_i > (Time.now.to_i - options[:leeway])
     end
     if options[:verify_not_before] && payload.include?('nbf')
-      fail JWT::ImmatureSignature.new('Signature nbf has not been reached') unless payload['nbf'].to_i <= (Time.now.to_i + options[:leeway])
+      fail(JWT::ImmatureSignature, 'Signature nbf has not been reached') unless payload['nbf'].to_i <= (Time.now.to_i + options[:leeway])
     end
-    if options[:verify_iss] && options['iss']
-      fail JWT::InvalidIssuerError.new("Invalid issuer. Expected #{options['iss']}, received #{payload['iss'] || '<none>'}") unless payload['iss'].to_s == options['iss'].to_s
+    if options[:verify_iss] && options[:iss]
+      fail(JWT::InvalidIssuerError, "Invalid issuer. Expected #{options[:iss]}, received #{payload['iss'] || '<none>'}") unless payload['iss'].to_s == options[:iss].to_s
     end
     if options[:verify_iat] && payload.include?('iat')
-      fail JWT::InvalidIatError.new('Invalid iat') unless payload['iat'].is_a?(Integer) && payload['iat'].to_i <= (Time.now.to_i + options[:leeway])
+      fail(JWT::InvalidIatError, 'Invalid iat') unless payload['iat'].is_a?(Integer) && payload['iat'].to_i <= (Time.now.to_i + options[:leeway])
     end
-    if options[:verify_aud] && options['aud']
-      if payload['aud'].is_a?(Array)
-        fail JWT::InvalidAudError.new('Invalid audience') unless payload['aud'].include?(options['aud'].to_s)
+    if options[:verify_aud] && options[:aud]
+      if payload[:aud].is_a?(Array)
+        fail(JWT::InvalidAudError, 'Invalid audience') unless payload['aud'].include?(options[:aud].to_s)
       else
-        fail JWT::InvalidAudError.new("Invalid audience. Expected #{options['aud']}, received #{payload['aud'] || '<none>'}") unless payload['aud'].to_s == options['aud'].to_s
+        fail(JWT::InvalidAudError, "Invalid audience. Expected #{options[:aud]}, received #{payload['aud'] || '<none>'}") unless payload['aud'].to_s == options[:aud].to_s
       end
     end
     if options[:verify_sub] && payload.include?('sub')
-      fail JWT::InvalidSubError.new("Invalid subject. Expected #{options['sub']}, received #{payload['sub']}") unless payload['sub'].to_s == options['sub'].to_s
+      fail(JWT::InvalidSubError, "Invalid subject. Expected #{options[:sub]}, received #{payload['sub'] || '<none>'}") unless payload['sub'].to_s == options[:sub].to_s
     end
     if options[:verify_jti] && payload.include?('jti')
-      fail JWT::InvalidJtiError.new('need iat for verify jwt id') unless payload.include?('iat')
-      fail JWT::InvalidJtiError.new('Not a uniq jwt id') unless options['jti'].to_s == Digest::MD5.hexdigest("#{key}:#{payload['iat']}")
+      fail(JWT::InvalidJtiError, 'need iat for verify jwt id') unless payload.include?('iat')
+      fail(JWT::InvalidJtiError, 'Not a uniq jwt id') unless options[:jti].to_s == Digest::MD5.hexdigest("#{key}:#{payload['iat']}")
     end
 
     [payload, header]
@@ -193,17 +193,17 @@ module JWT
   end
 
   def verify_signature(algo, key, signing_input, signature)
-    if ['HS256', 'HS384', 'HS512'].include?(algo)
-      fail JWT::VerificationError.new('Signature verification failed') unless secure_compare(signature, sign_hmac(algo, signing_input, key))
-    elsif ['RS256', 'RS384', 'RS512'].include?(algo)
-      fail JWT::VerificationError.new('Signature verification failed') unless verify_rsa(algo, key, signing_input, signature)
-    elsif ['ES256', 'ES384', 'ES512'].include?(algo)
-      fail JWT::VerificationError.new('Signature verification failed') unless verify_ecdsa(algo, key, signing_input, signature)
+    if %w(HS256 HS384 HS512).include?(algo)
+      fail(JWT::VerificationError, 'Signature verification raiseed') unless secure_compare(signature, sign_hmac(algo, signing_input, key))
+    elsif %w(RS256 RS384 RS512).include?(algo)
+      fail(JWT::VerificationError, 'Signature verification raiseed') unless verify_rsa(algo, key, signing_input, signature)
+    elsif %w(ES256 ES384 ES512).include?(algo)
+      fail(JWT::VerificationError, 'Signature verification raiseed') unless verify_ecdsa(algo, key, signing_input, signature)
     else
-      fail JWT::VerificationError.new('Algorithm not supported')
+      fail JWT::VerificationError, 'Algorithm not supported'
     end
   rescue OpenSSL::PKey::PKeyError
-    raise JWT::VerificationError.new('Signature verification failed')
+    fail JWT::VerificationError, 'Signature verification raised'
   ensure
     OpenSSL.errors.clear
   end

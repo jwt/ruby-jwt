@@ -98,14 +98,14 @@ describe JWT do
       example_secret = 'secret'
 
       example_jwt = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJoZWxsbyI6IndvcmxkIiwiaXNzIjoiand0aXNzIn0.nTZkyYfpGUyKULaj45lXw_1gXXjHvGW4h5V7okHdUqQ'
-      expect { JWT.decode(example_jwt, example_secret, true, :verify_iss => true, 'iss' => 'jwt_iss') }.to raise_error(JWT::InvalidIssuerError, /Expected jwt_iss, received jwtiss/)
+      expect { JWT.decode(example_jwt, example_secret, true, verify_iss: true, iss: 'jwt_iss') }.to raise_error(JWT::InvalidIssuerError, /Expected jwt_iss, received jwtiss/)
     end
 
     it 'raises invalid issuer when "iss" claim is missing in payload' do
       example_secret = 'secret'
 
       example_jwt = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJoZWxsbyI6IndvcmxkIn0.bqxXg9VwcbXKoiWtp-osd0WKPX307RjcN7EuXbdq-CE'
-      expect { JWT.decode(example_jwt, example_secret, true, :verify_iss => true, 'iss' => 'jwt_iss') }.to raise_error(JWT::InvalidIssuerError, /received <none>/)
+      expect { JWT.decode(example_jwt, example_secret, true, verify_iss: true, iss: 'jwt_iss') }.to raise_error(JWT::InvalidIssuerError, /received <none>/)
     end
 
     it 'does not raise invalid issuer when verify_iss is set to false (default option)' do
@@ -124,10 +124,10 @@ describe JWT do
   end
 
   it 'decodes valid JWTs with iat' do
-    example_payload = { 'hello' => 'world', 'iat' => 1425917209 }
+    example_payload = { 'hello' => 'world', 'iat' => 1_425_917_209 }
     example_secret = 'secret'
     example_jwt = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJoZWxsbyI6IndvcmxkIiwiaWF0IjoxNDI1OTE3MjA5fQ.m4F-Ugo7aLnLunBBO3BeDidyWMx8T9eoJz6FW2rgQhU'
-    decoded_payload = JWT.decode(example_jwt, example_secret, true, 'iat' => true)
+    decoded_payload = JWT.decode(example_jwt, example_secret, true, iat: true)
     expect(decoded_payload).to include(example_payload)
   end
 
@@ -135,7 +135,7 @@ describe JWT do
     # example_payload = {'hello' => 'world', 'iat' => 'abc'}
     example_secret = 'secret'
     example_jwt = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJoZWxsbyI6IndvcmxkIiwiaWF0IjoiMTQyNTkxNzIwOSJ9.Mn_vk61xWjIhbXFqAB0nFmNkDiCmfzUgl_LaCKRT6S8'
-    expect { JWT.decode(example_jwt, example_secret, true, :verify_iat => true, 'iat' => 1425917209) }.to raise_error(JWT::InvalidIatError)
+    expect { JWT.decode(example_jwt, example_secret, true, verify_iat: true, 'iat' => 1_425_917_209) }.to raise_error(JWT::InvalidIatError)
   end
 
   it 'raises decode exception when iat is in the future' do
@@ -143,7 +143,7 @@ describe JWT do
     invalid_payload['iat'] = Time.now.to_i + 3
     secret = 'secret'
     jwt = JWT.encode(invalid_payload, secret)
-    expect { JWT.decode(jwt, secret, true, :verify_iat => true) }.to raise_error(JWT::InvalidIatError)
+    expect { JWT.decode(jwt, secret, true, verify_iat: true) }.to raise_error(JWT::InvalidIatError)
   end
 
   it 'performs normal decode if iat is within leeway' do
@@ -151,11 +151,11 @@ describe JWT do
     invalid_payload['iat'] = Time.now.to_i + 3
     secret = 'secret'
     jwt = JWT.encode(invalid_payload, secret)
-    expect { JWT.decode(jwt, secret, true, :verify_iat => true, :leeway => 3) }.to_not raise_error
+    expect { JWT.decode(jwt, secret, true, verify_iat: true, leeway: 3) }.to_not raise_error
   end
 
   it 'decodes valid JWTs with jti' do
-    example_payload = { 'hello' => 'world', 'iat' => 1425917209, 'jti' => Digest::MD5.hexdigest('secret:1425917209') }
+    example_payload = { 'hello' => 'world', 'iat' => 1_425_917_209, 'jti' => Digest::MD5.hexdigest('secret:1425917209') }
     example_secret = 'secret'
     example_jwt = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJoZWxsbyI6IndvcmxkIiwiaWF0IjoxNDI1OTE3MjA5LCJqdGkiOiI1NWM3NzZlMjFmN2NiZDg3OWMwNmZhYzAxOGRhYzQwMiJ9.ET0hb-VTUOL3M22oG13ofzvGPLMAncbF8rdNDIqo8tg'
     decoded_payload = JWT.decode(example_jwt, example_secret, true, 'jti' => Digest::MD5.hexdigest('secret:1425917209'))
@@ -194,14 +194,14 @@ describe JWT do
       # example_payload = {'hello' => 'world', 'aud' => 'url:pnd'}
       example_secret = 'secret'
       example_jwt = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJoZWxsbyI6IndvcmxkIiwiYXVkIjoidXJsOnBuZCJ9._gT5veUtNiZD7wLEC6Gd0-nkQV3cl1z8G0zXq8qcd-8'
-      expect { JWT.decode(example_jwt, example_secret, true, :verify_aud => true, 'aud' => 'wrong:aud') }.to raise_error(JWT::InvalidAudError)
+      expect { JWT.decode(example_jwt, example_secret, true, verify_aud: true, aud: 'wrong:aud') }.to raise_error(JWT::InvalidAudError)
     end
 
     it 'raises deode exception when aud is missing' do
       # JWT.encode('hello' => 'world', 'secret')
       example_secret = 'secret'
       example_jwt = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJoZWxsbyI6IndvcmxkIn0.bqxXg9VwcbXKoiWtp-osd0WKPX307RjcN7EuXbdq-CE'
-      expect { JWT.decode(example_jwt, example_secret, true, :verify_aud => true, 'aud' => 'url:pnd') }.to raise_error(JWT::InvalidAudError)
+      expect { JWT.decode(example_jwt, example_secret, true, verify_aud: true, aud: 'url:pnd') }.to raise_error(JWT::InvalidAudError)
     end
   end
 
@@ -302,12 +302,12 @@ describe JWT do
 
   it 'raises exception when decoded with a different algorithm than it was encoded with' do
     jwt = JWT.encode(@payload, 'foo', 'HS384')
-    expect { JWT.decode(jwt, 'foo', true, :algorithm => 'HS512') }.to raise_error(JWT::IncorrectAlgorithm)
+    expect { JWT.decode(jwt, 'foo', true, algorithm: 'HS512') }.to raise_error(JWT::IncorrectAlgorithm)
   end
 
   it 'does not raise exception when encoded with the expected algorithm' do
     jwt = JWT.encode(@payload, 'foo', 'HS512')
-    JWT.decode(jwt, 'foo', true, :algorithm => 'HS512')
+    JWT.decode(jwt, 'foo', true, algorithm: 'HS512')
   end
 
   it 'encodes and decodes plaintext JWTs' do
@@ -357,7 +357,7 @@ describe JWT do
     expired_payload['exp'] = Time.now.to_i - 1
     secret = 'secret'
     jwt = JWT.encode(expired_payload, secret)
-    decoded_payload = JWT.decode(jwt, secret, true, :verify_expiration => false)
+    decoded_payload = JWT.decode(jwt, secret, true, verify_expiration: false)
     expect(decoded_payload).to include(expired_payload)
   end
 
@@ -366,7 +366,7 @@ describe JWT do
     expired_payload['exp'] = Time.now.to_i - 2
     secret = 'secret'
     jwt = JWT.encode(expired_payload, secret)
-    decoded_payload = JWT.decode(jwt, secret, true, :leeway => 3)
+    decoded_payload = JWT.decode(jwt, secret, true, leeway: 3)
     expect(decoded_payload).to include(expired_payload)
   end
 
@@ -383,7 +383,7 @@ describe JWT do
     mature_payload['nbf'] = Time.now.to_i
     secret = 'secret'
     jwt = JWT.encode(mature_payload, secret)
-    decoded_payload = JWT.decode(jwt, secret, true, :verify_expiration => false)
+    decoded_payload = JWT.decode(jwt, secret, true, verify_expiration: false)
     expect(decoded_payload).to include(mature_payload)
   end
 
@@ -391,7 +391,7 @@ describe JWT do
     mature_payload = @payload.clone
     secret = 'secret'
     jwt = JWT.encode(mature_payload, secret)
-    decoded_payload = JWT.decode(jwt, secret, true, :verify_expiration => false)
+    decoded_payload = JWT.decode(jwt, secret, true, verify_expiration: false)
     expect(decoded_payload).to include(mature_payload)
   end
 
@@ -408,7 +408,7 @@ describe JWT do
     immature_payload['nbf'] = Time.now.to_i + 2
     secret = 'secret'
     jwt = JWT.encode(immature_payload, secret)
-    decoded_payload = JWT.decode(jwt, secret, true, :verify_not_before => false)
+    decoded_payload = JWT.decode(jwt, secret, true, verify_not_before: false)
     expect(decoded_payload).to include(immature_payload)
   end
 
@@ -417,7 +417,7 @@ describe JWT do
     immature_payload['nbf'] = Time.now.to_i - 2
     secret = 'secret'
     jwt = JWT.encode(immature_payload, secret)
-    decoded_payload = JWT.decode(jwt, secret, true, :leeway => 3)
+    decoded_payload = JWT.decode(jwt, secret, true, leeway: 3)
     expect(decoded_payload).to include(immature_payload)
   end
 
