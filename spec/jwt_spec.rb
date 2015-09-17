@@ -213,7 +213,19 @@ describe JWT do
     expect(decoded_payload).to include(example_payload)
   end
 
-  it 'raise decode exception when the sub is invalid'
+  it 'raises decode exception when verify_sub is set but the JWT does not contain a sub' do
+    example_payload = {'foo' => 'bar'}
+    example_secret = 'secret'
+    example_jwt = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJmb28iOiJiYXIifQ.bVhBeMrW5g33Vi4FLSLn7aqcmAiupmmw-AY17YxCYLI'
+    expect { JWT.decode(example_jwt, example_secret, true, verify_sub: true, sub: 'subject') }.to raise_error(JWT::InvalidSubError)
+  end
+
+  it 'raise decode exception when the sub does not match' do
+    example_payload = {'sub' => 'subject', 'foo' => 'bar'}
+    example_secret = 'secret'
+    example_jwt = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzdWJqZWN0IiwiZm9vIjoiYmFyIn0.RUkJZgPcK3eOU3iR301nsZa3MSA936fgu03_UoamVuo'
+    expect { JWT.decode(example_jwt, example_secret, true, verify_sub: true, sub: 'another_subject') }.to raise_error(JWT::InvalidSubError)
+  end
 
   it 'raises decode exception when the token is invalid' do
     example_secret = 'secret'

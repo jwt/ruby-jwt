@@ -176,7 +176,7 @@ module JWT
         fail(JWT::InvalidAudError, "Invalid audience. Expected #{options[:aud]}, received #{payload['aud'] || '<none>'}") unless payload['aud'].to_s == options[:aud].to_s
       end
     end
-    if options[:verify_sub] && payload.include?('sub')
+    if options[:verify_sub] && options.include?(:sub)
       fail(JWT::InvalidSubError, "Invalid subject. Expected #{options[:sub]}, received #{payload['sub'] || '<none>'}") unless payload['sub'].to_s == options[:sub].to_s
     end
     if options[:verify_jti] && payload.include?('jti')
