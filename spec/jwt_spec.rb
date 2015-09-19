@@ -239,58 +239,45 @@ describe JWT do
       let(:invalid_token) { JWT.encode payload, data[:secret] }
 
       let :token do
-        iss_payload = payload.merge({ :iss => iss })
+        iss_payload = payload.merge(iss: iss)
         JWT.encode iss_payload, data[:secret]
       end
 
       it 'invalid iss should raise JWT::InvalidIssuerError' do
         expect do
-          JWT.decode token, data[:secret], true, {
-            'iss' => 'wrong-issuer',
-            :verify_iss => true
-          }
+          JWT.decode token, data[:secret], true, iss: 'wrong-issuer', verify_iss: true
         end.to raise_error JWT::InvalidIssuerError
       end
 
       it 'valid iss should not raise JWT::InvalidIssuerError' do
         expect do
-          JWT.decode token, data[:secret], true, {
-            'iss' => iss,
-            :verify_iss => true
-          }
+          JWT.decode token, data[:secret], true, iss: iss, verify_iss: true
         end.not_to raise_error
       end
     end
 
     context 'issued at claim' do
       let(:iat) { Time.now.to_i }
-      let(:new_payload) { payload.merge({ :iat => iat }) }
+      let(:new_payload) { payload.merge(iat: iat) }
       let(:token) { JWT.encode new_payload, data[:secret] }
-      let(:invalid_token) { JWT.encode new_payload.merge({ 'iat' => iat + 60 }), data[:secret] }
+      let(:invalid_token) { JWT.encode new_payload.merge('iat' => iat + 60), data[:secret] }
       let(:leeway) { 30 }
 
       it 'invalid iat should raise JWT::InvalidIatError' do
         expect do
-          JWT.decode invalid_token, data[:secret], true, {
-            :verify_iat => true
-          }
+          JWT.decode invalid_token, data[:secret], true, verify_iat: true
         end.to raise_error JWT::InvalidIatError
       end
 
-      it 'should ignore leeway' do
+      it 'should accept leeway' do
         expect do
-          JWT.decode invalid_token, data[:secret], true, {
-            :verify_iat => true,
-            :leeway => 70
-          }
-        end.to raise_error JWT::InvalidIatError
+          JWT.decode invalid_token, data[:secret], true, verify_iat: true, leeway: 70
+        end.to_not raise_error
       end
 
       it 'valid iat should not raise JWT::InvalidIatError' do
         expect do
-          JWT.decode token, data[:secret], true, {
-            :verify_iat => true
-          }
+          JWT.decode token, data[:secret], true, verify_iat: true
         end.to_not raise_error
       end
     end
@@ -300,44 +287,32 @@ describe JWT do
       let(:array_aud) { %w(ruby-jwt-aud test-aud ruby-ruby-ruby) }
 
       let :simple_token do
-        new_payload = payload.merge({ 'aud' => simple_aud })
+        new_payload = payload.merge('aud' => simple_aud)
         JWT.encode new_payload, data[:secret]
       end
 
       let :array_token do
-        new_payload = payload.merge({ 'aud' => array_aud })
+        new_payload = payload.merge('aud' => array_aud)
         JWT.encode new_payload, data[:secret]
       end
 
       it 'invalid aud should raise JWT::InvalidAudError' do
         expect do
-          JWT.decode simple_token, data[:secret], true, {
-            'aud' => 'wrong audience',
-            :verify_aud => true
-          }
+          JWT.decode simple_token, data[:secret], true, aud: 'wrong audience', verify_aud: true
         end.to raise_error JWT::InvalidAudError
 
         expect do
-          JWT.decode array_token, data[:secret], true, {
-            'aud' => %w(wrong audience),
-            :verify_aud => true
-          }
+          JWT.decode array_token, data[:secret], true, aud: %w(wrong audience), verify_aud: true
         end.to raise_error JWT::InvalidAudError
       end
 
       it 'valid aud should not raise JWT::InvalidAudError' do
         expect do
-          JWT.decode simple_token, data[:secret], true, {
-            'aud' => simple_aud,
-            :verify_aud => true
-          }
+          JWT.decode simple_token, data[:secret], true, 'aud' => simple_aud, :verify_aud => true
         end.to_not raise_error
 
         expect do
-          JWT.decode array_token, data[:secret], true, {
-            'aud' => array_aud.first,
-            :verify_aud => true
-          }
+          JWT.decode array_token, data[:secret], true, 'aud' => array_aud.first, :verify_aud => true
         end.to_not raise_error
       end
     end
@@ -346,39 +321,33 @@ describe JWT do
       let(:sub) { 'ruby jwt subject' }
 
       let :token do
-        new_payload = payload.merge({ 'sub' => sub })
+        new_payload = payload.merge('sub' => sub)
         JWT.encode new_payload, data[:secret]
       end
 
       let :invalid_token do
-        new_payload = payload.merge({ 'sub' => 'we are not the druids you are looking for' })
+        new_payload = payload.merge('sub' => 'we are not the druids you are looking for')
         JWT.encode new_payload, data[:secret]
       end
 
       it 'invalid sub should raise JWT::InvalidSubError' do
         expect do
-          JWT.decode invalid_token, data[:secret], true, {
-            'sub' => sub,
-            :verify_sub => true
-          }
+          JWT.decode invalid_token, data[:secret], true, sub: sub, verify_sub: true
         end.to raise_error JWT::InvalidSubError
       end
 
       it 'valid sub should not raise JWT::InvalidSubError' do
         expect do
-          JWT.decode token, data[:secret], true, {
-            'sub' => sub,
-            :verify_sub => true
-          }
+          JWT.decode token, data[:secret], true, 'sub' => sub, :verify_sub => true
         end.to_not raise_error
       end
     end
 
     context 'jwt id claim' do
       let :jti do
-        new_payload = payload.merge({ 'iat' => Time.now.to_i })
+        new_payload = payload.merge('iat' => Time.now.to_i)
         key = data[:secret]
-        new_payload.merge({ 'jti' => Digest::MD5.hexdigest("#{key}:#{new_payload['iat']}") })
+        new_payload.merge('jti' => Digest::MD5.hexdigest("#{key}:#{new_payload['iat']}"))
       end
 
       let(:token) { JWT.encode jti, data[:secret] }
@@ -390,13 +359,13 @@ describe JWT do
 
       it 'invalid jti should raise JWT::InvalidJtiError' do
         expect do
-          JWT.decode invalid_token, data[:secret], true, { :verify_jti => true, 'jti' => jti['jti'] }
+          JWT.decode invalid_token, data[:secret], true, :verify_jti => true, 'jti' => jti['jti']
         end.to raise_error JWT::InvalidJtiError
       end
 
       it 'valid jti should not raise JWT::InvalidJtiError' do
         expect do
-          JWT.decode token, data[:secret], true, { :verify_jti => true, 'jti' => jti['jti'] }
+          JWT.decode token, data[:secret], true, verify_jti: true, jti: jti['jti']
         end.to_not raise_error
       end
     end
