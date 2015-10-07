@@ -11,7 +11,7 @@ sudo gem install jwt
 
 ## Algorithms and Usage
 
-The JWT spec supports NONE, HMAC, RSASSA, ECDSA and RSASSA-PSS algorithms for cryptographic signing. Currently the jwt gem supports NONE, HMAC, RSASSA and ECDSA.
+The JWT spec supports NONE, HMAC, RSASSA, ECDSA and RSASSA-PSS algorithms for cryptographic signing. Currently the jwt gem supports NONE, HMAC, RSASSA and ECDSA. If you are using cryptographic signing, you need to specify the algorithm in the options hash whenever you call JWT.decode to ensure that an attacker [cannot bypass the algorithm verification step](https://auth0.com/blog/2015/03/31/critical-vulnerabilities-in-json-web-token-libraries/).
 
 See: [ JSON Web Algorithms (JWA) 3.1. "alg" (Algorithm) Header Parameter Values for JWS](https://tools.ietf.org/html/rfc7518#section-3.1)
 
@@ -55,7 +55,7 @@ token = JWT.encode payload, hmac_secret, 'HS256'
 # eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0ZXN0IjoiZGF0YSJ9._sLPAGP-IXgho8BkMGQ86N2mah7vDyn0L5hOR4UkfoI
 puts token
 
-decoded_token = JWT.decode token, hmac_secret
+decoded_token = JWT.decode token, hmac_secret, true, { :algorithm => 'HS256' }
 
 # Array
 # [
@@ -80,7 +80,7 @@ token = JWT.encode payload, rsa_private, 'RS256'
 # eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJ0ZXN0IjoiZGF0YSJ9.c2FynXNyi6_PeKxrDGxfS3OLwQ8lTDbWBWdq7oMviCy2ZfFpzvW2E_odCWJrbLof-eplHCsKzW7MGAntHMALXgclm_Cs9i2Exi6BZHzpr9suYkrhIjwqV1tCgMBCQpdeMwIq6SyKVjgH3L51ivIt0-GDDPDH1Rcut3jRQzp3Q35bg3tcI2iVg7t3Msvl9QrxXAdYNFiS5KXH22aJZ8X_O2HgqVYBXfSB1ygTYUmKTIIyLbntPQ7R22rFko1knGWOgQCoYXwbtpuKRZVFrxX958L2gUWgb4jEQNf3fhOtkBm1mJpj-7BGst00o8g_3P2zHy-3aKgpPo1XlKQGjRrrxA
 puts token
 
-decoded_token = JWT.decode token, rsa_public
+decoded_token = JWT.decode token, rsa_public, true, { :algorithm => 'RS256' }
 
 # Array
 # [
@@ -107,7 +107,7 @@ token = JWT.encode payload, ecdsa_key, 'ES256'
 # eyJ0eXAiOiJKV1QiLCJhbGciOiJFUzI1NiJ9.eyJ0ZXN0IjoiZGF0YSJ9.MEQCIAtShrxRwP1L9SapqaT4f7hajDJH4t_rfm-YlZcNDsBNAiB64M4-JRfyS8nRMlywtQ9lHbvvec9U54KznzOe1YxTyA
 puts token
 
-decoded_token = JWT.decode token, ecdsa_public
+decoded_token = JWT.decode token, ecdsa_public, true, { :algorithm => 'ES256' }
 
 # Array
 # [
@@ -148,7 +148,7 @@ exp_payload = { :data => 'data', :exp => exp }
 token = JWT.encode exp_payload, hmac_secret, 'HS256'
 
 begin
-  decoded_token = JWT.decode token, hmac_secret, true
+  decoded_token = JWT.decode token, hmac_secret, true, { :algorithm => 'HS256' }
 rescue JWT::ExpiredSignature
   # Handle expired token, e.g. logout user or deny access
 end
@@ -167,7 +167,7 @@ token = JWT.encode exp_payload, hmac_secret, 'HS256'
 
 begin
   # add leeway to ensure the token is still accepted
-  decoded_token = JWT.decode token, hmac_secret, true, { :leeway => leeway }
+  decoded_token = JWT.decode token, hmac_secret, true, { :leeway => leeway, :algorithm => 'HS256' }
 rescue JWT::ExpiredSignature
   # Handle expired token, e.g. logout user or deny access
 end
@@ -188,7 +188,7 @@ nbf_payload = { :data => 'data', :nbf => nbf }
 token = JWT.encode nbf_payload, hmac_secret, 'HS256'
 
 begin
-  decoded_token = JWT.decode token, hmac_secret
+  decoded_token = JWT.decode token, hmac_secret, true, { :algorithm => 'HS256' }
 rescue JWT::ImmatureSignature
   # Handle invalid token, e.g. logout user or deny access
 end
@@ -207,7 +207,7 @@ token = JWT.encode nbf_payload, hmac_secret, 'HS256'
 
 begin
   # add leeway to ensure the token is valid
-  decoded_token = JWT.decode token, hmac_secret, true, { :leeway => leeway }
+  decoded_token = JWT.decode token, hmac_secret, true, { :leeway => leeway, :algorithm => 'HS256' }
 rescue JWT::ImmatureSignature
   # Handle invalid token, e.g. logout user or deny access
 end
@@ -227,7 +227,7 @@ token = JWT.encode iss_payload, hmac_secret, 'HS256'
 
 begin
   # Add iss to the validation to check if the token has been manipulated
-  decoded_token = JWT.decode token, hmac_secret, true, { 'iss' => iss, :verify_iss => true }
+  decoded_token = JWT.decode token, hmac_secret, true, { 'iss' => iss, :verify_iss => true, :algorithm => 'HS256' }
 rescue JWT::InvalidIssuerError
   # Handle invalid token, e.g. logout user or deny access
 end
@@ -247,7 +247,7 @@ token = JWT.encode aud_payload, hmac_secret, 'HS256'
 
 begin
   # Add aud to the validation to check if the token has been manipulated
-  decoded_token = JWT.decode token, hmac_secret, true, { 'aud' => aud, :verify_aud => true }
+  decoded_token = JWT.decode token, hmac_secret, true, { 'aud' => aud, :verify_aud => true, :algorithm => 'HS256' }
 rescue JWT::InvalidAudError
   # Handle invalid token, e.g. logout user or deny access
   puts 'Audience Error'
@@ -272,7 +272,7 @@ token = JWT.encode jti_payload, hmac_secret, 'HS256'
 
 begin
   # Add jti and iat to the validation to check if the token has been manipulated
-  decoded_token = JWT.decode token, hmac_secret, true, { 'iat' => iat, 'jti' => jti, :verify_jti => true }
+  decoded_token = JWT.decode token, hmac_secret, true, { 'iat' => iat, 'jti' => jti, :verify_jti => true, :algorithm => 'HS256' }
   # Check if the JTI has already been used
 rescue JWT::InvalidJtiError
   # Handle invalid token, e.g. logout user or deny access
@@ -295,7 +295,7 @@ token = JWT.encode iat_payload, hmac_secret, 'HS256'
 
 begin
   # Add iat to the validation to check if the token has been manipulated
-  decoded_token = JWT.decode token, hmac_secret, true, { :verify_iat => true }
+  decoded_token = JWT.decode token, hmac_secret, true, { :verify_iat => true, :algorithm => 'HS256' }
 rescue JWT::InvalidIatError
   # Handle invalid token, e.g. logout user or deny access
 end
@@ -315,7 +315,7 @@ token = JWT.encode sub_payload, hmac_secret, 'HS256'
 
 begin
   # Add sub to the validation to check if the token has been manipulated
-  decoded_token = JWT.decode token, hmac_secret, true, { 'sub' => sub, :verify_sub => true }
+  decoded_token = JWT.decode token, hmac_secret, true, { 'sub' => sub, :verify_sub => true, :algorithm => 'HS256' }
 rescue JWT::InvalidSubError
   # Handle invalid token, e.g. logout user or deny access
 end
