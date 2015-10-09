@@ -127,7 +127,7 @@ describe JWT do
     example_payload = { 'hello' => 'world', 'iat' => 1_425_917_209 }
     example_secret = 'secret'
     example_jwt = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJoZWxsbyI6IndvcmxkIiwiaWF0IjoxNDI1OTE3MjA5fQ.m4F-Ugo7aLnLunBBO3BeDidyWMx8T9eoJz6FW2rgQhU'
-    decoded_payload = JWT.decode(example_jwt, example_secret, true, iat: true)
+    decoded_payload = JWT.decode(example_jwt, example_secret, true)
     expect(decoded_payload).to include(example_payload)
   end
 
@@ -135,7 +135,7 @@ describe JWT do
     # example_payload = {'hello' => 'world', 'iat' => 'abc'}
     example_secret = 'secret'
     example_jwt = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJoZWxsbyI6IndvcmxkIiwiaWF0IjoiMTQyNTkxNzIwOSJ9.Mn_vk61xWjIhbXFqAB0nFmNkDiCmfzUgl_LaCKRT6S8'
-    expect { JWT.decode(example_jwt, example_secret, true, verify_iat: true, 'iat' => 1_425_917_209) }.to raise_error(JWT::InvalidIatError)
+    expect { JWT.decode(example_jwt, example_secret, true, verify_iat: true) }.to raise_error(JWT::InvalidIatError)
   end
 
   it 'raises decode exception when iat is in the future' do
