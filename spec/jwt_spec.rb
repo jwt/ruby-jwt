@@ -132,7 +132,7 @@ describe JWT do
   end
 
   it 'raises decode exception when iat is invalid' do
-    # example_payload = {'hello' => 'world', 'iat' => 'abc'}
+    # example_payload = {'hello' => 'world', 'iat' => '1425917209'}
     example_secret = 'secret'
     example_jwt = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJoZWxsbyI6IndvcmxkIiwiaWF0IjoiMTQyNTkxNzIwOSJ9.Mn_vk61xWjIhbXFqAB0nFmNkDiCmfzUgl_LaCKRT6S8'
     expect { JWT.decode(example_jwt, example_secret, true, verify_iat: true) }.to raise_error(JWT::InvalidIatError)
