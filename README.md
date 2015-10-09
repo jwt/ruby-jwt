@@ -272,7 +272,7 @@ token = JWT.encode jti_payload, hmac_secret, 'HS256'
 
 begin
   # Add jti and iat to the validation to check if the token has been manipulated
-  decoded_token = JWT.decode token, hmac_secret, true, { 'iat' => iat, 'jti' => jti, :verify_jti => true, :algorithm => 'HS256' }
+  decoded_token = JWT.decode token, hmac_secret, true, { 'jti' => jti, :verify_jti => true, :algorithm => 'HS256' }
   # Check if the JTI has already been used
 rescue JWT::InvalidJtiError
   # Handle invalid token, e.g. logout user or deny access
