@@ -270,7 +270,7 @@ describe JWT do
       end
     end
 
-    context 'issued iat claim' do
+    context 'issued at claim' do
       let(:iat) { Time.now.to_i }
       let(:new_payload) { payload.merge(iat: iat) }
       let(:token) { JWT.encode new_payload, data[:secret] }
@@ -408,4 +408,5 @@ describe JWT do
       expect(JWT.secure_compare('Foo', 'Bar')).to eq false
     end
   end
+
 end
