@@ -243,10 +243,24 @@ describe JWT do
         JWT.encode iss_payload, data[:secret]
       end
 
+      it 'if verify_iss is set to false (default option) should not raise JWT::InvalidIssuerError' do
+        expect do
+          JWT.decode token, data[:secret], true, iss: iss
+        end.not_to raise_error
+      end
+
       it 'invalid iss should raise JWT::InvalidIssuerError' do
         expect do
           JWT.decode token, data[:secret], true, iss: 'wrong-issuer', verify_iss: true
         end.to raise_error JWT::InvalidIssuerError
+      end
+
+      it 'with missing iss claim should raise JWT::InvalidIssuerError' do
+        missing_iss_claim_token = JWT.encode payload, data[:secret]
+
+        expect do
+          JWT.decode missing_iss_claim_token, data[:secret], true, verify_iss: true, iss: iss
+        end.to raise_error(JWT::InvalidIssuerError, /received <none>/)
       end
 
       it 'valid iss should not raise JWT::InvalidIssuerError' do
@@ -256,7 +270,7 @@ describe JWT do
       end
     end
 
-    context 'issued at claim' do
+    context 'issued iat claim' do
       let(:iat) { Time.now.to_i }
       let(:new_payload) { payload.merge(iat: iat) }
       let(:token) { JWT.encode new_payload, data[:secret] }
