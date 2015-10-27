@@ -194,11 +194,11 @@ module JWT
 
   def verify_signature(algo, key, signing_input, signature)
     if %w(HS256 HS384 HS512).include?(algo)
-      fail(JWT::VerificationError, 'Signature verification raiseed') unless secure_compare(signature, sign_hmac(algo, signing_input, key))
+      fail(JWT::VerificationError, 'Signature verification raised') unless secure_compare(signature, sign_hmac(algo, signing_input, key))
     elsif %w(RS256 RS384 RS512).include?(algo)
-      fail(JWT::VerificationError, 'Signature verification raiseed') unless verify_rsa(algo, key, signing_input, signature)
+      fail(JWT::VerificationError, 'Signature verification raised') unless verify_rsa(algo, key, signing_input, signature)
     elsif %w(ES256 ES384 ES512).include?(algo)
-      fail(JWT::VerificationError, 'Signature verification raiseed') unless verify_ecdsa(algo, key, signing_input, signature)
+      fail(JWT::VerificationError, 'Signature verification raised') unless verify_ecdsa(algo, key, signing_input, signature)
     else
       fail JWT::VerificationError, 'Algorithm not supported'
     end
