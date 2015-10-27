@@ -203,7 +203,7 @@ module JWT
       fail JWT::VerificationError, 'Algorithm not supported'
     end
   rescue OpenSSL::PKey::PKeyError
-    fail JWT::VerificationError, 'Signature verification raised'
+    raise JWT::VerificationError, 'Signature verification raised'
   ensure
     OpenSSL.errors.clear
   end

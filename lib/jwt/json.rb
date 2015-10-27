@@ -8,7 +8,7 @@ module JWT
       def decode_json(encoded)
         JSON.parse(encoded)
       rescue JSON::ParserError
-        raise JWT::DecodeError.new('Invalid segment encoding')
+        raise JWT::DecodeError, 'Invalid segment encoding'
       end
 
       def encode_json(raw)
@@ -21,7 +21,7 @@ module JWT
       def decode_json(encoded)
         MultiJson.decode(encoded)
       rescue MultiJson::LoadError
-        raise JWT::DecodeError.new('Invalid segment encoding')
+        raise JWT::DecodeError, 'Invalid segment encoding'
       end
 
       def encode_json(raw)
