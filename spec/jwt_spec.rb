@@ -359,27 +359,21 @@ describe JWT do
 
     context 'jwt id claim' do
       let :jti do
-        new_payload = payload.merge('iat' => Time.now.to_i)
-        key = data[:secret]
-        new_payload.merge('jti' => Digest::MD5.hexdigest("#{key}:#{new_payload['iat']}"))
+        payload.merge('jti' => 'some-random-uuid-or-whatever')
       end
 
       let(:token) { JWT.encode jti, data[:secret] }
+      let(:invalid_token) { JWT.encode payload, data[:secret] }
 
-      let :invalid_token do
-        jti.delete('iat')
-        JWT.encode jti, data[:secret]
-      end
-
-      it 'invalid jti should raise JWT::InvalidJtiError' do
+      it 'missing jti should raise JWT::InvalidJtiError' do
         expect do
-          JWT.decode invalid_token, data[:secret], true, :verify_jti => true, 'jti' => jti['jti']
+          JWT.decode invalid_token, data[:secret], true, verify_jti: true
         end.to raise_error JWT::InvalidJtiError
       end
 
       it 'valid jti should not raise JWT::InvalidJtiError' do
         expect do
-          JWT.decode token, data[:secret], true, verify_jti: true, jti: jti['jti']
+          JWT.decode token, data[:secret], true, verify_jti: true
         end.to_not raise_error
       end
     end
@@ -408,5 +402,4 @@ describe JWT do
       expect(JWT.secure_compare('Foo', 'Bar')).to eq false
     end
   end
-
 end
