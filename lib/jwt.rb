@@ -179,9 +179,8 @@ module JWT
     if options[:verify_sub] && options.include?(:sub)
       fail(JWT::InvalidSubError, "Invalid subject. Expected #{options[:sub]}, received #{payload['sub'] || '<none>'}") unless payload['sub'].to_s == options[:sub].to_s
     end
-    if options[:verify_jti] && payload.include?('jti')
-      fail(JWT::InvalidJtiError, 'need iat for verify jwt id') unless payload.include?('iat')
-      fail(JWT::InvalidJtiError, 'Not a uniq jwt id') unless options[:jti].to_s == Digest::MD5.hexdigest("#{key}:#{payload['iat']}")
+    if options[:verify_jti]
+      fail(JWT::InvalidJtiError, 'Missing jti') if payload['jti'].to_s == ''
     end
 
     [payload, header]
