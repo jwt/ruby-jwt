@@ -227,7 +227,7 @@ token = JWT.encode iss_payload, hmac_secret, 'HS256'
 
 begin
   # Add iss to the validation to check if the token has been manipulated
-  decoded_token = JWT.decode token, hmac_secret, true, { 'iss' => iss, :verify_iss => true, :algorithm => 'HS256' }
+  decoded_token = JWT.decode token, hmac_secret, true, { :iss => iss, :verify_iss => true, :algorithm => 'HS256' }
 rescue JWT::InvalidIssuerError
   # Handle invalid token, e.g. logout user or deny access
 end
@@ -247,7 +247,7 @@ token = JWT.encode aud_payload, hmac_secret, 'HS256'
 
 begin
   # Add aud to the validation to check if the token has been manipulated
-  decoded_token = JWT.decode token, hmac_secret, true, { 'aud' => aud, :verify_aud => true, :algorithm => 'HS256' }
+  decoded_token = JWT.decode token, hmac_secret, true, { :aud => aud, :verify_aud => true, :algorithm => 'HS256' }
 rescue JWT::InvalidAudError
   # Handle invalid token, e.g. logout user or deny access
   puts 'Audience Error'
