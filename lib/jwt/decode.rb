@@ -48,7 +48,7 @@ module JWT
 
     def verify
       @options.each do |key, val|
-        next if key == :leeway
+        next unless key.to_s.match(/verify/)
 
         Verify.send(key, payload, @options) if val
       end

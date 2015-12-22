@@ -59,12 +59,11 @@ module JWT
     def self.verify_sub(payload, options)
       return unless options[:sub]
 
-      if payload['sub'].to_s != options[:sub].to_s
-        fail(
-          JWT::InvalidSubError,
-          "Invalid subject. Expected #{options[:sub]}, received #{payload['sub'] || '<none>'}"
-        )
-      end
+
+      fail(
+        JWT::InvalidSubError,
+        "Invalid subject. Expected #{options[:sub]}, received #{payload['sub'] || '<none>'}"
+      ) unless payload['sub'].to_s == options[:sub].to_s
     end
   end
 end

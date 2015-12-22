@@ -103,7 +103,7 @@ module JWT
     segments.join('.')
   end
 
-  def decode(jwt, key = nil, verify = true, options = {}, &keyfinder)
+  def decode(jwt, key = nil, verify = true, custom_options = {}, &keyfinder)
     fail(JWT::DecodeError, 'Nil JSON web token') unless jwt
 
     options = {
@@ -115,22 +115,23 @@ module JWT
       verify_aud: false,
       verify_sub: false,
       leeway: 0
-    }.merge(options)
+    }
 
-    decoder = Decode.new jwt, key, verify, options, &keyfinder
+    merged_options = options.merge(custom_options)
+
+    decoder = Decode.new jwt, key, verify, merged_options, &keyfinder
     header, payload, signature, signing_input = decoder.decode_segments
+    decoder.verify
 
     fail(JWT::DecodeError, 'Not enough or too many segments') unless header && payload
 
     if verify
       algo, key = signature_algorithm_and_key(header, key, &keyfinder)
-      if options[:algorithm] && algo != options[:algorithm]
+      if merged_options[:algorithm] && algo != merged_options[:algorithm]
         fail JWT::IncorrectAlgorithm, 'Expected a different algorithm'
       end
       verify_signature(algo, key, signing_input, signature)
     end
-
-    decoder.verify
 
     [payload, header]
   end

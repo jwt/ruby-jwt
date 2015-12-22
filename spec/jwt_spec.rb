@@ -341,8 +341,8 @@ describe JWT do
       end
 
       let :invalid_token do
-        new_payload = payload.merge('sub' => 'we are not the druids you are looking for')
-        JWT.encode new_payload, data[:secret]
+        invalid_payload = payload.merge('sub' => 'we are not the druids you are looking for')
+        JWT.encode invalid_payload, data[:secret]
       end
 
       it 'invalid sub should raise JWT::InvalidSubError' do
