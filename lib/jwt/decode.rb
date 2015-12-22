@@ -1,6 +1,7 @@
 require 'jwt/json'
 require 'jwt/verify'
 
+# JWT::Decode module
 module JWT
   extend JWT::Json
 

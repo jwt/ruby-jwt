@@ -72,7 +72,6 @@ module JWT
     OpenSSL::HMAC.digest(OpenSSL::Digest.new(algorithm.sub('HS', 'sha')), key, msg)
   end
 
-
   def base64url_encode(str)
     Base64.encode64(str).tr('+/', '-_').gsub(/[\n=]/, '')
   end

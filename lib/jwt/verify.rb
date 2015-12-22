@@ -41,7 +41,7 @@ module JWT
     end
 
     def self.verify_aud(payload, options)
-      return if !options[:aud]
+      return unless options[:aud]
 
       if payload[:aud].is_a?(Array)
         fail(
