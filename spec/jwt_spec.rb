@@ -1,5 +1,6 @@
 require 'spec_helper'
 require 'jwt'
+require 'jwt/decode'
 
 describe JWT do
   let(:payload) { { 'user_id' => 'some@user.tld' } }

@@ -1,5 +1,6 @@
 require 'base64'
 require 'openssl'
+require 'jwt/decode'
 require 'jwt/json'
 
 # JSON Web Token implementation
@@ -71,10 +72,6 @@ module JWT
     OpenSSL::HMAC.digest(OpenSSL::Digest.new(algorithm.sub('HS', 'sha')), key, msg)
   end
 
-  def base64url_decode(str)
-    str += '=' * (4 - str.length.modulo(4))
-    Base64.decode64(str.tr('-_', '+/'))
-  end
 
   def base64url_encode(str)
     Base64.encode64(str).tr('+/', '-_').gsub(/[\n=]/, '')
@@ -107,32 +104,8 @@ module JWT
     segments.join('.')
   end
 
-  def raw_segments(jwt, verify = true)
-    segments = jwt.split('.')
-    required_num_segments = verify ? [3] : [2, 3]
-    fail(JWT::DecodeError, 'Not enough or too many segments') unless required_num_segments.include? segments.length
-    segments
-  end
-
-  def decode_header_and_payload(header_segment, payload_segment)
-    header = decode_json(base64url_decode(header_segment))
-    payload = decode_json(base64url_decode(payload_segment))
-    [header, payload]
-  end
-
-  def decoded_segments(jwt, verify = true)
-    header_segment, payload_segment, crypto_segment = raw_segments(jwt, verify)
-    header, payload = decode_header_and_payload(header_segment, payload_segment)
-    signature = base64url_decode(crypto_segment.to_s) if verify
-    signing_input = [header_segment, payload_segment].join('.')
-    [header, payload, signature, signing_input]
-  end
-
   def decode(jwt, key = nil, verify = true, options = {}, &keyfinder)
     fail(JWT::DecodeError, 'Nil JSON web token') unless jwt
-
-    header, payload, signature, signing_input = decoded_segments(jwt, verify)
-    fail(JWT::DecodeError, 'Not enough or too many segments') unless header && payload
 
     default_options = {
       verify_expiration: true,
@@ -147,38 +120,20 @@ module JWT
 
     options = default_options.merge(options)
 
+    decoder = Decode.new jwt, key, verify, options, &keyfinder
+
+    header, payload, signature, signing_input = decoder.decode_segments
+
+    decoder.verify
+
+    fail(JWT::DecodeError, 'Not enough or too many segments') unless header && payload
+
     if verify
       algo, key = signature_algorithm_and_key(header, key, &keyfinder)
       if options[:algorithm] && algo != options[:algorithm]
         fail JWT::IncorrectAlgorithm, 'Expected a different algorithm'
       end
       verify_signature(algo, key, signing_input, signature)
-    end
-
-    if options[:verify_expiration] && payload.include?('exp')
-      fail(JWT::ExpiredSignature, 'Signature has expired') unless payload['exp'].to_i > (Time.now.to_i - options[:leeway])
-    end
-    if options[:verify_not_before] && payload.include?('nbf')
-      fail(JWT::ImmatureSignature, 'Signature nbf has not been reached') unless payload['nbf'].to_i <= (Time.now.to_i + options[:leeway])
-    end
-    if options[:verify_iss] && options[:iss]
-      fail(JWT::InvalidIssuerError, "Invalid issuer. Expected #{options[:iss]}, received #{payload['iss'] || '<none>'}") unless payload['iss'].to_s == options[:iss].to_s
-    end
-    if options[:verify_iat] && payload.include?('iat')
-      fail(JWT::InvalidIatError, 'Invalid iat') unless payload['iat'].is_a?(Integer) && payload['iat'].to_i <= (Time.now.to_i + options[:leeway])
-    end
-    if options[:verify_aud] && options[:aud]
-      if payload[:aud].is_a?(Array)
-        fail(JWT::InvalidAudError, 'Invalid audience') unless payload['aud'].include?(options[:aud].to_s)
-      else
-        fail(JWT::InvalidAudError, "Invalid audience. Expected #{options[:aud]}, received #{payload['aud'] || '<none>'}") unless payload['aud'].to_s == options[:aud].to_s
-      end
-    end
-    if options[:verify_sub] && options.include?(:sub)
-      fail(JWT::InvalidSubError, "Invalid subject. Expected #{options[:sub]}, received #{payload['sub'] || '<none>'}") unless payload['sub'].to_s == options[:sub].to_s
-    end
-    if options[:verify_jti]
-      fail(JWT::InvalidJtiError, 'Missing jti') if payload['jti'].to_s == ''
     end
 
     [payload, header]
