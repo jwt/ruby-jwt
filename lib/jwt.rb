@@ -107,7 +107,7 @@ module JWT
   def decode(jwt, key = nil, verify = true, options = {}, &keyfinder)
     fail(JWT::DecodeError, 'Nil JSON web token') unless jwt
 
-    default_options = {
+    options = {
       verify_expiration: true,
       verify_not_before: true,
       verify_iss: false,
@@ -116,15 +116,10 @@ module JWT
       verify_aud: false,
       verify_sub: false,
       leeway: 0
-    }
-
-    options = default_options.merge(options)
+    }.merge(options)
 
     decoder = Decode.new jwt, key, verify, options, &keyfinder
-
     header, payload, signature, signing_input = decoder.decode_segments
-
-    decoder.verify
 
     fail(JWT::DecodeError, 'Not enough or too many segments') unless header && payload
 
@@ -135,6 +130,8 @@ module JWT
       end
       verify_signature(algo, key, signing_input, signature)
     end
+
+    decoder.verify
 
     [payload, header]
   end

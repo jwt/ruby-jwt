@@ -36,7 +36,7 @@ module JWT
       end
     end
 
-    def self.verify_jti(payload, options)
+    def self.verify_jti(payload, _options)
       fail(JWT::InvalidJtiError, 'Missing jti') if payload['jti'].to_s == ''
     end
 

@@ -4,6 +4,7 @@ require 'jwt/verify'
 module JWT
   extend JWT::Json
 
+  # Decoding logic for JWT
   class Decode
     attr_reader :header, :payload, :signature
 
@@ -48,9 +49,7 @@ module JWT
       @options.each do |key, val|
         next if key == :leeway
 
-        if val == true
-          Verify.send key, payload, @options
-        end
+        Verify.send(key, payload, @options) if val
       end
     end
   end
