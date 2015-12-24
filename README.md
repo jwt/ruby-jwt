@@ -5,7 +5,7 @@
 [![Test Coverage](https://codeclimate.com/github/jwt/ruby-jwt/badges/coverage.svg)](https://codeclimate.com/github/jwt/ruby-jwt/coverage)
 [![Issue Count](https://codeclimate.com/github/jwt/ruby-jwt/badges/issue_count.svg)](https://codeclimate.com/github/jwt/ruby-jwt)
 
-A Ruby implementation of [JSON Web Token](https://tools.ietf.org/html/rfc7519).
+A pure ruby implementation of the [RFC 7519 OAuth JSON Web Token (JWT)](https://tools.ietf.org/html/rfc7519) standard.
 
 If you have further questions releated to development or usage, join us: [ruby-jwt google group](https://groups.google.com/forum/#!forum/ruby-jwt).
 
