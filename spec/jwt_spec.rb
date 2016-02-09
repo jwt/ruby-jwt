@@ -377,6 +377,18 @@ describe JWT do
           JWT.decode token, data[:secret], true, verify_jti: true
         end.to_not raise_error
       end
+
+      it 'false proc should raise JWT::InvalidJtiError' do
+        expect do
+          JWT.decode token, data[:secret], true, verify_jti: lambda { |jti| false }
+        end.to raise_error JWT::InvalidJtiError
+      end
+
+      it 'true proc should not raise JWT::InvalidJtiError' do
+        expect do
+          JWT.decode invalid_token, data[:secret], true, verify_jti: lambda { |jti| true }
+        end.to_not raise_error
+      end
     end
   end
 

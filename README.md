@@ -267,8 +267,6 @@ From [Oauth JSON Web Token 4.1.7. "jti" (JWT ID) Claim](https://tools.ietf.org/h
 > The `jti` (JWT ID) claim provides a unique identifier for the JWT. The identifier value MUST be assigned in a manner that ensures that there is a negligible probability that the same value will be accidentally assigned to a different data object; if the application uses multiple issuers, collisions MUST be prevented among values produced by different issuers as well. The `jti` claim can be used to prevent the JWT from being replayed. The `jti` value is a case-sensitive string. Use of this claim is OPTIONAL.
 
 ```ruby
-# in order to use JTI you have to add iat
-iat = Time.now.to_i
 # Use the secret and iat to create a unique key per request to prevent replay attacks
 jti_raw = [hmac_secret, iat].join(':').to_s
 jti = Digest::MD5.hexdigest(jti_raw)
@@ -277,9 +275,10 @@ jti_payload = { :data => 'data', :iat => iat, :jti => jti }
 token = JWT.encode jti_payload, hmac_secret, 'HS256'
 
 begin
-  # Add jti and iat to the validation to check if the token has been manipulated
-  decoded_token = JWT.decode token, hmac_secret, true, { 'jti' => jti, :verify_jti => true, :algorithm => 'HS256' }
-  # Check if the JTI has already been used
+  # If :verify_jti is true, validation will pass if a JTI is present
+  #decoded_token = JWT.decode token, hmac_secret, true, { :verify_jti => true, :algorithm => 'HS256' }
+  # Alternatively, pass a proc with your own code to check if the JTI has already been used
+  decoded_token = JWT.decode token, hmac_secret, true, { :verify_jti => proc { |jti| my_validation_method(jti) }, :algorithm => 'HS256' }
 rescue JWT::InvalidJtiError
   # Handle invalid token, e.g. logout user or deny access
   puts 'Error'
