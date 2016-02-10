@@ -37,7 +37,11 @@ module JWT
     end
 
     def self.verify_jti(payload, _options)
-      fail(JWT::InvalidJtiError, 'Missing jti') if payload['jti'].to_s == ''
+      if _options[:verify_jti].class == Proc
+        fail(JWT::InvalidJtiError, 'Invalid jti') unless _options[:verify_jti].call(payload['jti'])
+      else
+        fail(JWT::InvalidJtiError, 'Missing jti') if payload['jti'].to_s == ''
+      end
     end
 
     def self.verify_aud(payload, options)
