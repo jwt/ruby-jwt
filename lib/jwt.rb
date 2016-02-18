@@ -96,6 +96,8 @@ module JWT
 
   def encode(payload, key, algorithm = 'HS256', header_fields = {})
     algorithm ||= 'none'
+    # convert hmac-sha512 to the standard value HS512
+    algorithm = 'HS512' if algorithm.include?('hmac-sha512')
     segments = []
     segments << encoded_header(algorithm, header_fields)
     segments << encoded_payload(payload)
@@ -127,9 +129,6 @@ module JWT
 
     if verify
       algo, key = signature_algorithm_and_key(header, key, &keyfinder)
-      # Applied Systems tokens contain a non-standard algorithm label,
-      # converting to a standard label
-      algo = "HS512" if algo.include?("hmac-sha512")
       if merged_options[:algorithm] && algo != merged_options[:algorithm]
         fail JWT::IncorrectAlgorithm, 'Expected a different algorithm'
       end

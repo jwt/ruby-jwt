@@ -22,6 +22,7 @@ describe JWT do
       'HS256' => 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoic29tZUB1c2VyLnRsZCJ9.tCGvlClld0lbQ3NZaH8y53n5RSBr3zlS4Oy5bXqvzZQ',
       'HS384' => 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzM4NCJ9.eyJ1c2VyX2lkIjoic29tZUB1c2VyLnRsZCJ9.sj1gc01SawlJSrPZgmveifJ8CzZRYAWjejWm4FRaGaAISESJ9Ncf12fCz2vHrITm',
       'HS512' => 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJ1c2VyX2lkIjoic29tZUB1c2VyLnRsZCJ9.isjhsWMZpRQOWw6LKtlY4L6tMDNkLr0qZ3bQe_xRFXWhzVvJlkclTbLVa1J6Dlj2WyZ_I1jEobTaFMDoXPzwWg',
+      'http://www.w3.org/2001/04/xmldsig-more#hmac-sha512' => 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJ1c2VyX2lkIjoic29tZUB1c2VyLnRsZCJ9.isjhsWMZpRQOWw6LKtlY4L6tMDNkLr0qZ3bQe_xRFXWhzVvJlkclTbLVa1J6Dlj2WyZ_I1jEobTaFMDoXPzwWg',
       'RS256' => 'eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJ1c2VyX2lkIjoic29tZUB1c2VyLnRsZCJ9.u82QrhjZTtwve5akvfWS_4LPywbkb1Yp0nUwZJWtTW0ID7dY9rRiQF5KGj2UDLZotqRlUjyNQgE_hB5BBzICDQdCjQHQoYWE5n_D2wV4PMu7Qg3FVKoBFbf8ee6irodu10fgYxpUIZtvbWw52_6k6A9IoSLSzx_lCcxoVGdW90dUuKhBcZkDtY5WNuQg7MiDthupSL1-V4Y1jmT_7o8tLNGFiocyZfGNw4yGpEOGNvD5WePNit0xsnbj6dEquovUvSFKsMaQXp2PVDEkLOiLMcyk0RrHqrHw2eNSCquWTH8PhX5Up-CVmjQM5zF9ibkaiq8NyPtsy-7rgtbyVMqXBQ',
       'RS384' => 'eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzM4NCJ9.eyJ1c2VyX2lkIjoic29tZUB1c2VyLnRsZCJ9.2_jPwOsUWJ-3r6lXMdJGPdhLNJQSSEmY2mrDXCwNJk-2YhMIqKAzJJCbyso_A1hS7BVkXmHt54RCcNJXroZBOgmGavCcYTPMaT6sCvVVvJJ_wn7jzKHNAJfL5nWeynTQIBWmL-m_v9QpZAgPALdeqjPRv4JHePZm23kvrUgQOxef2ldXv1l6IB3zfF72uEbk9T5pKBvgeeeQ46xm_HtkpXqMdqcTHawUXeXhuiWxuWfy9pAvhm8ivxwJhiQ15-sQNBlS9lG1_gQz1xaZ_Ou_n1nhNfGwpK5HeS0AgmqsqyCOvaGHeAuAOPZ_dSC3cFKu2AP7kc6_AKBgwJzh4agkXg',
       'RS512' => 'eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzUxMiJ9.eyJ1c2VyX2lkIjoic29tZUB1c2VyLnRsZCJ9.abwof7BqTvuLkN69OhEuFTP7vjGzfvAvooQdwIRne_a88MsjCq31n4UPvyIlY9_8u69rpU79RbMsrq_UZ6L85zP83EcyYI-HOfFZgYDAL3DJ7biBD99JTzyOsH_2i_E6yCkevjEX6uL_Am_C7jpWyePJQkYzTFni6mW4W1T9UobiVGA1tIZ-XOJDPHHxZkGu6W8lKW0UCsr9Ge2SCSlTs_LDSOa34gqMC5GP89unhLqSMqEMJ_Nm6Rj0rnmk87wBZM-b04LLteWuEU59QDNa4nMTjfXW74U4hX9n5EECDPQdQMecgxlUbFunAfZaoNzP4m7H4vux2FzYkjkXhdqnnw',
@@ -52,7 +53,7 @@ describe JWT do
     end
   end
 
-  %w(HS256 HS384 HS512).each do |alg|
+  %w(HS256 HS384 HS512 http://www.w3.org/2001/04/xmldsig-more#hmac-sha512).each do |alg|
     context "alg: #{alg}" do
       it 'should generate a valid token' do
         token = JWT.encode payload, data[:secret], alg
@@ -63,6 +64,9 @@ describe JWT do
       it 'should decode a valid token' do
         jwt_payload, header = JWT.decode data[alg], data[:secret]
 
+        # we expect the hmac-sha512 algorithm to be returned as the standard
+        # HS512 algorithm
+        alg = 'HS512' if alg.include?('hmac-sha512')
         expect(header['alg']).to eq alg
         expect(jwt_payload).to eq payload
       end
