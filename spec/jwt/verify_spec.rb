@@ -131,7 +131,6 @@ module JWT
       end
 
       it 'must allow an array whith any value matching the one in the options' do
-        pending "This fails because the conditional in the implementation uses a symbol instead of a string for the key."
         Verify.verify_aud(array_payload, options.merge(aud: array_aud.first))
       end
     end

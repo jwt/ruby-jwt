@@ -49,7 +49,7 @@ module JWT
     def self.verify_aud(payload, options)
       return unless options[:aud]
 
-      if payload[:aud].is_a?(Array)
+      if payload['aud'].is_a?(Array)
         fail(
           JWT::InvalidAudError,
           'Invalid audience'
@@ -64,7 +64,6 @@ module JWT
 
     def self.verify_sub(payload, options)
       return unless options[:sub]
-
 
       fail(
         JWT::InvalidSubError,
