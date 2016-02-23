@@ -6,6 +6,33 @@ module JWT
     let(:base_payload) { { 'user_id' => 'some@user.tld' } }
     let(:options) {  { leeway: 0} }
 
+    context '.verify_aud(payload, options)' do
+      let(:scalar_aud) { 'ruby-jwt-audience' }
+      let(:array_aud) { %w(ruby-jwt-aud test-aud ruby-ruby-ruby) }
+      let(:scalar_payload) { base_payload.merge('aud' => scalar_aud) }
+      let(:array_payload) { base_payload.merge('aud' => array_aud) }
+
+      it 'must raise JWT::InvalidAudError when the singular audience does not match' do
+        expect do
+          Verify.verify_aud(scalar_payload, options.merge(aud: 'no-match'))
+        end.to raise_error JWT::InvalidAudError
+      end
+
+      it 'must raise JWT::InvalidAudError when the payload has an array and none match the supplied value' do
+        expect do
+          Verify.verify_aud(array_payload, options.merge(aud: 'no-match'))
+        end.to raise_error JWT::InvalidAudError
+      end
+
+      it 'must allow a matching singular audience to pass' do
+        Verify.verify_aud(scalar_payload, options.merge(aud: scalar_aud))
+      end
+
+      it 'must allow an array whith any value matching the one in the options' do
+        Verify.verify_aud(array_payload, options.merge(aud: array_aud.first))
+      end
+    end
+
     context '.verify_expiration(payload, options)' do
       let(:leeway) { 10 }
       let(:payload) { base_payload.merge('exp' => (Time.now.to_i - 5)) }
@@ -17,22 +44,32 @@ module JWT
       end
 
       it 'must allow some leeway in the expiration when configured' do
-        # using .to_not raise error is equivilent to the following
         Verify.verify_expiration(payload, options.merge(leeway: 10))
       end
     end
 
-    context '.verify_not_before(payload, options)' do
-      let(:payload) { base_payload.merge('nbf' => (Time.now.to_i + 5)) }
+    context '.verify_iat(payload, options)' do
+      let(:iat) { Time.now.to_i }
+      let(:payload) { base_payload.merge('iat' => iat) }
 
-      it 'must raise JWT::ImmatureSignature when the nbf in the payload is in the future' do
-        expect do
-          Verify.verify_not_before(payload, options)
-        end.to raise_error JWT::ImmatureSignature
+      it 'must allow a valid iat' do
+        Verify.verify_iat(payload, options)
       end
 
-      it 'must allow some leeway in the token age when configured' do
-        Verify.verify_not_before(payload, options.merge(leeway: 10))
+      it 'must allow configured leeway' do
+        Verify.verify_iat(payload.merge('iat' => (iat + 60)), options.merge(leeway: 70))
+      end
+
+      it 'must raise JWT::InvalidIatError when the iat value is not an Integer' do
+        expect do
+          Verify.verify_iat(payload.merge('iat' => 'not a number'), options)
+        end.to raise_error JWT::InvalidIatError
+      end
+
+      it 'must raise JWT::InvalidIatError when the iat value is in the future' do
+        expect do
+          Verify.verify_iat(payload.merge('iat' => (iat + 120)), options)
+        end.to raise_error JWT::InvalidIatError
       end
     end
 
@@ -56,31 +93,6 @@ module JWT
 
       it 'must allow a matching issuer to pass' do
         Verify.verify_iss(payload, options.merge(iss: iss))
-      end
-    end
-
-    context 'issued at claim' do
-      let(:iat) { Time.now.to_i }
-      let(:payload) { base_payload.merge('iat' => iat) }
-
-      it 'must allow a valid iat' do
-        Verify.verify_iat(payload, options)
-      end
-
-      it 'must allow configured leeway' do
-        Verify.verify_iat(payload.merge('iat' => (iat + 60)), options.merge(leeway: 70))
-      end
-
-      it 'must raise JWT::InvalidIatError when the iat value is not an Integer' do
-        expect do
-          Verify.verify_iat(payload.merge('iat' => 'not a number'), options)
-        end.to raise_error JWT::InvalidIatError
-      end
-
-      it 'must raise JWT::InvalidIatError when the iat value is in the future' do
-        expect do
-          Verify.verify_iat(payload.merge('iat' => (iat + 120)), options)
-        end.to raise_error JWT::InvalidIatError
       end
     end
 
@@ -108,30 +120,17 @@ module JWT
       end
     end
 
-    context '.verify_aud(payload, options)' do
-      let(:scalar_aud) { 'ruby-jwt-audience' }
-      let(:array_aud) { %w(ruby-jwt-aud test-aud ruby-ruby-ruby) }
-      let(:scalar_payload) { base_payload.merge('aud' => scalar_aud) }
-      let(:array_payload) { base_payload.merge('aud' => array_aud) }
+    context '.verify_not_before(payload, options)' do
+      let(:payload) { base_payload.merge('nbf' => (Time.now.to_i + 5)) }
 
-      it 'must raise JWT::InvalidAudError when the singular audience does not match' do
+      it 'must raise JWT::ImmatureSignature when the nbf in the payload is in the future' do
         expect do
-          Verify.verify_aud(scalar_payload, options.merge(aud: 'no-match'))
-        end.to raise_error JWT::InvalidAudError
+          Verify.verify_not_before(payload, options)
+        end.to raise_error JWT::ImmatureSignature
       end
 
-      it 'must raise JWT::InvalidAudError when the payload has an array and none match the supplied value' do
-        expect do
-          Verify.verify_aud(array_payload, options.merge(aud: 'no-match'))
-        end.to raise_error JWT::InvalidAudError
-      end
-
-      it 'must allow a matching singular audience to pass' do
-        Verify.verify_aud(scalar_payload, options.merge(aud: scalar_aud))
-      end
-
-      it 'must allow an array whith any value matching the one in the options' do
-        Verify.verify_aud(array_payload, options.merge(aud: array_aud.first))
+      it 'must allow some leeway in the token age when configured' do
+        Verify.verify_not_before(payload, options.merge(leeway: 10))
       end
     end
 
