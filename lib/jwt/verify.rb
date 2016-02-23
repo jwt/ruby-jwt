@@ -1,3 +1,5 @@
+require 'jwt/error'
+
 module JWT
   # JWT verify methods
   module Verify
