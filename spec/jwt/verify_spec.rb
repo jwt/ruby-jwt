@@ -24,12 +24,26 @@ module JWT
         end.to raise_error JWT::InvalidAudError
       end
 
+      it 'must raise JWT::InvalidAudError when the singular audience does not match and the options aud key is a string' do
+        expect do
+          Verify.verify_aud(scalar_payload, options.merge('aud' => 'no-match'))
+        end.to raise_error JWT::InvalidAudError
+      end
+
       it 'must allow a matching singular audience to pass' do
         Verify.verify_aud(scalar_payload, options.merge(aud: scalar_aud))
       end
 
-      it 'must allow an array whith any value matching the one in the options' do
+      it 'must allow a matching audence to pass when the options key is a string' do
+        Verify.verify_aud(scalar_payload, options.merge('aud' => scalar_aud))
+      end
+
+      it 'must allow an array with any value matching the one in the options' do
         Verify.verify_aud(array_payload, options.merge(aud: array_aud.first))
+      end
+
+      it 'must allow an array with any value matching the one in the options with a string options key' do
+        Verify.verify_aud(array_payload, options.merge('aud' => array_aud.first))
       end
     end
 
@@ -106,6 +120,12 @@ module JWT
       it 'must raise JWT::InvalidJtiError when the jti is missing' do
         expect do
           Verify.verify_jti(base_payload, options)
+        end.to raise_error JWT::InvalidJtiError, /missing/i
+      end
+
+      it 'must raise JWT::InvalidJtiError when the jti is an empty string' do
+        expect do
+          Verify.verify_jti(base_payload.merge('jti' => '   '), options)
         end.to raise_error JWT::InvalidJtiError, /missing/i
       end
 
