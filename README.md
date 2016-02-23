@@ -11,9 +11,17 @@ If you have further questions releated to development or usage, join us: [ruby-j
 
 ## Installing
 
+### Using Rubygems:
 ```bash
 sudo gem install jwt
 ```
+
+### Using Bundler:
+Add the following to your Gemfile
+```
+gem 'jwt'
+```
+And run `bundle install`
 
 ## Algorithms and Usage
 
@@ -328,16 +336,16 @@ end
 
 # Development and Tests
 
-We depend on [Echoe](http://rubygems.org/gems/echoe) for defining gemspec and performing releases to rubygems.org, which can be done with
+We depend on [Bundler](http://rubygems.org/gems/bundler) for defining gemspec and performing releases to rubygems.org, which can be done with
 
 ```bash
 rake release
 ```
 
-The tests are written with rspec. Given you have rake and rspec, you can run tests with
+The tests are written with rspec. Given you have installed the dependencies via bundler, you can run tests with
 
 ```bash
-rake test
+bundle exec rspec
 ```
 
 **If you want a release cut with your PR, please include a version bump according to [Semantic Versioning](http://semver.org/)**
