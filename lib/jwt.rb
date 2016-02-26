@@ -96,11 +96,11 @@ module JWT
 
   def encode(payload, key, algorithm = 'HS256', header_fields = {})
     algorithm ||= 'none'
-    # convert hmac-sha512 to the standard value HS512
-    algorithm = 'HS512' if algorithm.include?('hmac-sha512')
     segments = []
     segments << encoded_header(algorithm, header_fields)
     segments << encoded_payload(payload)
+    # convert hmac-sha512 to the standard value HS512
+    algorithm = 'HS512' if algorithm.include?('hmac-sha512')
     segments << encoded_signature(segments.join('.'), key, algorithm)
     segments.join('.')
   end
