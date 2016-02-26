@@ -64,9 +64,6 @@ describe JWT do
       it 'should decode a valid token' do
         jwt_payload, header = JWT.decode data[alg], data[:secret]
 
-        # we expect the hmac-sha512 algorithm to be returned as the standard
-        # HS512 algorithm
-        alg = 'HS512' if alg.include?('hmac-sha512')
         expect(header['alg']).to eq alg
         expect(jwt_payload).to eq payload
       end

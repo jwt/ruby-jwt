@@ -35,9 +35,6 @@ module JWT
 
     def decode_header_and_payload(header_segment, payload_segment)
       header = JWT.decode_json(base64url_decode(header_segment))
-      # Applied Systems tokens contain a non-standard algorithm label,
-      # converting to a standard label
-      header['alg'] = 'HS512' if header['alg'].include?('hmac-sha512')
       payload = JWT.decode_json(base64url_decode(payload_segment))
       [header, payload]
     end
