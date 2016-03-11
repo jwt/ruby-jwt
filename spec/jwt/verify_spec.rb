@@ -74,7 +74,11 @@ module JWT
         Verify.verify_iat(payload.merge('iat' => (iat + 60)), options.merge(leeway: 70))
       end
 
-      it 'must raise JWT::InvalidIatError when the iat value is not an Integer' do
+      it 'must properly handle integer times' do
+        Verify.verify_iat(payload.merge('iat' => Time.now.to_i), options)
+      end
+
+      it 'must raise JWT::InvalidIatError when the iat value is not Numeric' do
         expect do
           Verify.verify_iat(payload.merge('iat' => 'not a number'), options)
         end.to raise_error JWT::InvalidIatError
