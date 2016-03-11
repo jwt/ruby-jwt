@@ -63,7 +63,7 @@ module JWT
     end
 
     context '.verify_iat(payload, options)' do
-      let(:iat) { Time.now.to_i }
+      let(:iat) { Time.now.to_f }
       let(:payload) { base_payload.merge('iat' => iat) }
 
       it 'must allow a valid iat' do
