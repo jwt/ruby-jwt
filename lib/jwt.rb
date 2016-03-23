@@ -170,4 +170,8 @@ module JWT
     byte_size = (public_key.group.degree + 7) / 8
     OpenSSL::ASN1.decode(signature).value.map { |value| value.value.to_s(2).rjust(byte_size, "\x00") }.join
   end
+
+  def base64url_decode(str)
+    Decode.base64url_decode(str)
+  end
 end
