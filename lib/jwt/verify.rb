@@ -4,7 +4,7 @@ module JWT
   # JWT verify methods
   class Verify
     class << self
-      %i[verify_aud verify_expiration verify_iat verify_iss verify_jti verify_not_before verify_sub].each do |method_name|
+      %w[verify_aud verify_expiration verify_iat verify_iss verify_jti verify_not_before verify_sub].each do |method_name|
         define_method method_name do |payload, options|
           new(payload, options).send(method_name)
         end
@@ -17,7 +17,7 @@ module JWT
     end
 
     def verify_aud
-      return unless options_aud = extract_option(:aud)
+      return unless (options_aud = extract_option(:aud))
 
       if @payload['aud'].is_a?(Array)
         fail(
@@ -49,7 +49,7 @@ module JWT
     end
 
     def verify_iss
-      return unless options_iss = extract_option(:iss)
+      return unless (options_iss = extract_option(:iss))
 
       if @payload['iss'].to_s != options_iss.to_s
         fail(
@@ -77,7 +77,7 @@ module JWT
     end
 
     def verify_sub
-      return unless options_sub = extract_option(:sub)
+      return unless (options_sub = extract_option(:sub))
 
       fail(
         JWT::InvalidSubError,
