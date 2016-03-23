@@ -43,7 +43,7 @@ module JWT
     def verify_iat
       return unless @payload.include?('iat')
 
-      if !(@payload['iat'].is_a?(Integer)) || @payload['iat'].to_i > (Time.now.to_i + leeway)
+      if !(@payload['iat'].is_a?(Numeric)) || @payload['iat'].to_f > (Time.now.to_f + leeway)
         fail(JWT::InvalidIatError, 'Invalid iat')
       end
     end
