@@ -9,6 +9,11 @@ A pure ruby implementation of the [RFC 7519 OAuth JSON Web Token (JWT)](https://
 
 If you have further questions releated to development or usage, join us: [ruby-jwt google group](https://groups.google.com/forum/#!forum/ruby-jwt).
 
+## Announcements
+
+* Ruby 1.9.3 support will be dropped by December 31st, 2016.
+* Version 1.5.3 yanked. See: #132 and #133
+
 ## Installing
 
 ### Using Rubygems:
