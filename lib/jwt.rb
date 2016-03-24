@@ -94,6 +94,27 @@ module JWT
     segments.join('.')
   end
 
+  def decoded_segments(jwt, key = nil, verify = true, custom_options = {}, &keyfinder)
+    fail(JWT::DecodeError, 'Nil JSON web token') unless jwt
+
+    options = {
+      verify_expiration: true,
+      verify_not_before: true,
+      verify_iss: false,
+      verify_iat: false,
+      verify_jti: false,
+      verify_aud: false,
+      verify_sub: false,
+      leeway: 0
+    }
+
+    merged_options = options.merge(custom_options)
+
+    decoder = Decode.new jwt, key, verify, merged_options, &keyfinder
+    decoder.decode_segments
+  end
+
+
   def decode(jwt, key = nil, verify = true, custom_options = {}, &keyfinder)
     fail(JWT::DecodeError, 'Nil JSON web token') unless jwt
 
