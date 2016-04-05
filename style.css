@@ -1,0 +1,14 @@
+header, main {
+  margin: 0 auto;
+  width: 600px;
+}
+
+a {
+  text-decoration: none;
+}
+
+pre {
+  background: #efefef;
+  border: 1px solid #ccc;
+  padding: 0.5rem;
+}
