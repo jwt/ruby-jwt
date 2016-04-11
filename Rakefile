@@ -7,5 +7,5 @@ begin
 
   task default: :test
 rescue LoadError
-  puts 'RSpec rake tasks not available. Can not set up test execution via Rake'
+  puts 'RSpec rake tasks not available. Please run "bundle install" to install missing dependencies.'
 end
