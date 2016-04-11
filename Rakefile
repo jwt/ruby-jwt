@@ -5,7 +5,7 @@ begin
 
   RSpec::Core::RakeTask.new(:test)
 
-  task :default => :test
+  task default: :test
 rescue LoadError
-  # no rspec available
+  puts 'RSpec rake tasks not available. Can not set up test execution via Rake'
 end
