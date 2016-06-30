@@ -12,7 +12,7 @@ If you have further questions releated to development or usage, join us: [ruby-j
 ## Announcements
 
 * Ruby 1.9.3 support will be dropped by December 31st, 2016.
-* Version 1.5.3 yanked. See: #132 and #133
+* Version 1.5.3 yanked. See: [#132](https://github.com/jwt/ruby-jwt/issues/132) and [#133](https://github.com/jwt/ruby-jwt/issues/133)
 
 ## Installing
 
@@ -62,8 +62,8 @@ puts decoded_token
 
 **HMAC** (default: HS256)
 
-* HS256	- HMAC using SHA-256 hash algorithm (default)
-* HS384	- HMAC using SHA-384 hash algorithm
+* HS256 - HMAC using SHA-256 hash algorithm (default)
+* HS384 - HMAC using SHA-384 hash algorithm
 * HS512 - HMAC using SHA-512 hash algorithm
 
 ```ruby
