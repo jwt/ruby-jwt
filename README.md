@@ -46,7 +46,7 @@ payload = {:data => 'test'}
 # IMPORTANT: set nil as password parameter
 token = JWT.encode payload, nil, 'none'
 
-# eyJ0eXAiOiJKV1QiLCJhbGciOiJub25lIn0.eyJ0ZXN0IjoiZGF0YSJ9.
+# eyJ0eXAiOiJKV1QiLCJhbGciOiJub25lIn0.eyJkYXRhIjoidGVzdCJ9.
 puts token
 
 # Set password to nil and validation to false otherwise this won't work
@@ -71,7 +71,7 @@ hmac_secret = 'my$ecretK3y'
 
 token = JWT.encode payload, hmac_secret, 'HS256'
 
-# eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0ZXN0IjoiZGF0YSJ9._sLPAGP-IXgho8BkMGQ86N2mah7vDyn0L5hOR4UkfoI
+# eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJkYXRhIjoidGVzdCJ9.ZxW8go9hz3ETCSfxFxpwSkYg_602gOPKearsf6DsxgY
 puts token
 
 decoded_token = JWT.decode token, hmac_secret, true, { :algorithm => 'HS256' }
