@@ -133,9 +133,6 @@ module JWT
 
     decoder = Decode.new jwt, key, verify, merged_options, &keyfinder
     header, payload, signature, signing_input = decoder.decode_segments
-    decoder.verify
-
-    fail(JWT::DecodeError, 'Not enough or too many segments') unless header && payload
 
     if verify
       algo, key = signature_algorithm_and_key(header, key, &keyfinder)
@@ -144,6 +141,10 @@ module JWT
       end
       verify_signature(algo, key, signing_input, signature)
     end
+
+    decoder.verify
+
+    fail(JWT::DecodeError, 'Not enough or too many segments') unless header && payload
 
     [payload, header]
   end
