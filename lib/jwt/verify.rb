@@ -35,7 +35,7 @@ module JWT
     def verify_expiration
       return unless @payload.include?('exp')
 
-      if @payload['exp'].to_i < (Time.now.to_i - leeway)
+      if @payload['exp'].to_i <= (Time.now.to_i - leeway)
         fail(JWT::ExpiredSignature, 'Signature has expired')
       end
     end
