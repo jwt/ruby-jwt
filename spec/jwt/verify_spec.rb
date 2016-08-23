@@ -60,6 +60,14 @@ module JWT
       it 'must allow some leeway in the expiration when configured' do
         Verify.verify_expiration(payload, options.merge(leeway: 10))
       end
+
+      it 'must be expired if the exp claim equals the current time' do
+        payload.merge!('exp' => Time.now.to_i)
+
+        expect do
+          Verify.verify_expiration(payload, options)
+        end.to raise_error JWT::ExpiredSignature
+      end
     end
 
     context '.verify_iat(payload, options)' do
