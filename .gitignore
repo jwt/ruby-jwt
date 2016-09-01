@@ -4,3 +4,5 @@ pkg
 Gemfile.lock
 coverage/
 .DS_Store
+.rbenv-gemsets
+.ruby-version
