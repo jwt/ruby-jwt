@@ -1,9 +1,10 @@
+# frozen_string_literal: true
 require_relative '../spec_helper'
 require 'jwt'
 
 describe 'README.md code test' do
   context 'algorithm usage' do
-    let(:payload) { {:data => 'test'} }
+    let(:payload) { { data: 'test' } }
 
     it 'NONE' do
       token = JWT.encode payload, nil, 'none'
@@ -11,9 +12,9 @@ describe 'README.md code test' do
 
       expect(token).to eq 'eyJ0eXAiOiJKV1QiLCJhbGciOiJub25lIn0.eyJkYXRhIjoidGVzdCJ9.'
       expect(decoded_token).to eq [
-                                      {'data' => 'test'},
-                                      {'typ' => 'JWT', 'alg' => 'none'}
-                                  ]
+        { 'data' => 'test' },
+        { 'typ' => 'JWT', 'alg' => 'none' }
+      ]
     end
 
     it 'HMAC' do
@@ -22,9 +23,9 @@ describe 'README.md code test' do
 
       expect(token).to eq 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJkYXRhIjoidGVzdCJ9.ZxW8go9hz3ETCSfxFxpwSkYg_602gOPKearsf6DsxgY'
       expect(decoded_token).to eq [
-                                      {'data' => 'test'},
-                                      {'typ' => 'JWT', 'alg' => 'HS256'}
-                                  ]
+        { 'data' => 'test' },
+        { 'typ' => 'JWT', 'alg' => 'HS256' }
+      ]
     end
 
     it 'RSA' do
@@ -32,12 +33,12 @@ describe 'README.md code test' do
       rsa_public = rsa_private.public_key
 
       token = JWT.encode payload, rsa_private, 'RS256'
-      decoded_token = JWT.decode token, rsa_public, true, {:algorithm => 'RS256'}
+      decoded_token = JWT.decode token, rsa_public, true, algorithm: 'RS256'
 
       expect(decoded_token).to eq [
-                                      {'data' => 'test'},
-                                      {'typ' => 'JWT', 'alg' => 'RS256'}
-                                  ]
+        { 'data' => 'test' },
+        { 'typ' => 'JWT', 'alg' => 'RS256' }
+      ]
     end
 
     it 'ECDSA' do
@@ -47,12 +48,12 @@ describe 'README.md code test' do
       ecdsa_public.private_key = nil
 
       token = JWT.encode payload, ecdsa_key, 'ES256'
-      decoded_token = JWT.decode token, ecdsa_public, true, {:algorithm => 'ES256'}
+      decoded_token = JWT.decode token, ecdsa_public, true, algorithm: 'ES256'
 
       expect(decoded_token).to eq [
-                                      {'data' => 'test'},
-                                      {'typ' => 'JWT', 'alg' => 'ES256'}
-                                  ]
+        { 'data' => 'test' },
+        { 'typ' => 'JWT', 'alg' => 'ES256' }
+      ]
     end
   end
 
@@ -62,12 +63,12 @@ describe 'README.md code test' do
     context 'exp' do
       it 'without leeway' do
         exp = Time.now.to_i + 4 * 3600
-        exp_payload = {:data => 'data', :exp => exp}
+        exp_payload = { data: 'data', exp: exp }
 
         token = JWT.encode exp_payload, hmac_secret, 'HS256'
 
         expect do
-          JWT.decode token, hmac_secret, true, {:algorithm => 'HS256'}
+          JWT.decode token, hmac_secret, true, algorithm: 'HS256'
         end.not_to raise_error
       end
 
@@ -75,12 +76,12 @@ describe 'README.md code test' do
         exp = Time.now.to_i - 10
         leeway = 30 # seconds
 
-        exp_payload = {:data => 'data', :exp => exp}
+        exp_payload = { data: 'data', exp: exp }
 
         token = JWT.encode exp_payload, hmac_secret, 'HS256'
 
         expect do
-          JWT.decode token, hmac_secret, true, {:leeway => leeway, :algorithm => 'HS256'}
+          JWT.decode token, hmac_secret, true, leeway: leeway, algorithm: 'HS256'
         end.not_to raise_error
       end
     end
@@ -88,47 +89,51 @@ describe 'README.md code test' do
     context 'nbf' do
       it 'without leeway' do
         nbf = Time.now.to_i - 3600
-        nbf_payload = {:data => 'data', :nbf => nbf}
+        nbf_payload = { data: 'data', nbf: nbf }
         token = JWT.encode nbf_payload, hmac_secret, 'HS256'
 
         expect do
-          JWT.decode token, hmac_secret, true, {:algorithm => 'HS256'}
+          JWT.decode token, hmac_secret, true, algorithm: 'HS256'
         end.not_to raise_error
       end
 
       it 'with leeway' do
         nbf = Time.now.to_i + 10
         leeway = 30
-        nbf_payload = {:data => 'data', :nbf => nbf}
+        nbf_payload = { data: 'data', nbf: nbf }
         token = JWT.encode nbf_payload, hmac_secret, 'HS256'
 
         expect do
-          JWT.decode token, hmac_secret, true, {:leeway => leeway, :algorithm => 'HS256'}
+          JWT.decode token, hmac_secret, true, leeway: leeway, algorithm: 'HS256'
         end.not_to raise_error
       end
     end
 
     it 'iss' do
       iss = 'My Awesome Company Inc. or https://my.awesome.website/'
-      iss_payload = {:data => 'data', :iss => iss}
+      iss_payload = { data: 'data', iss: iss }
 
       token = JWT.encode iss_payload, hmac_secret, 'HS256'
 
       expect do
-
+        JWT.decode token, hmac_secret, true, iss: iss, algorithm: 'HS256'
       end.not_to raise_error
     end
 
     context 'aud' do
       it 'array' do
-        expect do
+        aud = %w(Young Old)
+        aud_payload = { data: 'data', aud: aud }
 
+        token = JWT.encode aud_payload, hmac_secret, 'HS256'
+
+        expect do
+          JWT.decode token, hmac_secret, true, aud: %w(Old Young), verify_aud: true, algorithm: 'HS256'
         end.not_to raise_error
       end
 
       it 'string' do
         expect do
-
         end.not_to raise_error
       end
     end
@@ -138,32 +143,47 @@ describe 'README.md code test' do
       hmac_secret = 'test'
       jti_raw = [hmac_secret, iat].join(':').to_s
       jti = Digest::MD5.hexdigest(jti_raw)
-      jti_payload = {:data => 'data', :iat => iat, :jti => jti}
+      jti_payload = { data: 'data', iat: iat, jti: jti }
 
       token = JWT.encode jti_payload, hmac_secret, 'HS256'
 
       expect do
-        JWT.decode token, hmac_secret, true, {:verify_jti => true, :algorithm => 'HS256'}
+        JWT.decode token, hmac_secret, true, verify_jti: true, algorithm: 'HS256'
       end.not_to raise_error
     end
 
     context 'iat' do
       it 'without leeway' do
-        expect do
+        iat = Time.now.to_i
+        iat_payload = { data: 'data', iat: iat }
 
+        token = JWT.encode iat_payload, hmac_secret, 'HS256'
+
+        expect do
+          JWT.decode token, hmac_secret, true, verify_iat: true, algorithm: 'HS256'
         end.not_to raise_error
       end
 
       it 'with leeway' do
-        expect do
+        iat = Time.now.to_i - 7
+        iat_payload = { data: 'data', iat: iat, leeway: 10 }
 
+        token = JWT.encode iat_payload, hmac_secret, 'HS256'
+
+        expect do
+          JWT.decode token, hmac_secret, true, verify_iat: true, algorithm: 'HS256'
         end.not_to raise_error
       end
     end
 
     it 'sub' do
-      expect do
+      sub = 'Subject'
+      sub_payload = { data: 'data', sub: sub }
 
+      token = JWT.encode sub_payload, hmac_secret, 'HS256'
+
+      expect do
+        JWT.decode token, hmac_secret, true, 'sub' => sub, :verify_sub => true, :algorithm => 'HS256'
       end.not_to raise_error
     end
   end
