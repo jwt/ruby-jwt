@@ -50,6 +50,14 @@ describe JWT do
       expect(header['alg']).to eq alg
       expect(jwt_payload).to eq payload
     end
+
+    it 'should display a better error message if payload exp is_a?(Time)' do
+      payload['exp'] = Time.now
+
+      expect do
+        JWT.encode payload, nil, alg
+      end.to raise_error JWT::InvalidPayload
+    end
   end
 
   %w(HS256 HS384 HS512).each do |alg|

@@ -9,4 +9,5 @@ module JWT
   class InvalidAudError < DecodeError; end
   class InvalidSubError < DecodeError; end
   class InvalidJtiError < DecodeError; end
+  class InvalidPayload < DecodeError; end
 end
