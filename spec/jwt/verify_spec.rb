@@ -1,10 +1,11 @@
+# frozen_string_literal: true
 require 'spec_helper'
 require 'jwt/verify'
 
 module JWT
   RSpec.describe Verify do
     let(:base_payload) { { 'user_id' => 'some@user.tld' } }
-    let(:options) {  { leeway: 0} }
+    let(:options) { { leeway: 0 } }
 
     context '.verify_aud(payload, options)' do
       let(:scalar_aud) { 'ruby-jwt-audience' }
@@ -62,7 +63,7 @@ module JWT
       end
 
       it 'must be expired if the exp claim equals the current time' do
-        payload.merge!('exp' => Time.now.to_i)
+        payload['exp'] = Time.now.to_i
 
         expect do
           Verify.verify_expiration(payload, options)
@@ -143,12 +144,12 @@ module JWT
 
       it 'must raise JWT::InvalidJtiError when verify_jti proc returns false' do
         expect do
-          Verify.verify_jti(payload, options.merge(verify_jti: ->(jti) { false }))
+          Verify.verify_jti(payload, options.merge(verify_jti: ->(_jti) { false }))
         end.to raise_error JWT::InvalidJtiError, /invalid/i
       end
 
       it 'true proc should not raise JWT::InvalidJtiError' do
-        Verify.verify_jti(payload, options.merge(verify_jti: ->(jti) { true }))
+        Verify.verify_jti(payload, options.merge(verify_jti: ->(_jti) { true }))
       end
     end
 
