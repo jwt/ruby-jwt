@@ -1,5 +1,46 @@
 # Change Log
 
+## [v1.5.5](https://github.com/jwt/ruby-jwt/tree/v1.5.5) (2016-09-16)
+[Full Changelog](https://github.com/jwt/ruby-jwt/compare/v1.5.4...v1.5.5)
+
+**Implemented enhancements:**
+
+- JWT.decode always raises JWT::ExpiredSignature for tokens created with Time objects passed as the `exp` parameter [\#148](https://github.com/jwt/ruby-jwt/issues/148)
+
+**Fixed bugs:**
+
+- expiration check does not give "Signature has expired" error for the exact time of expiration [\#157](https://github.com/jwt/ruby-jwt/issues/157)
+- JTI claim broken? [\#152](https://github.com/jwt/ruby-jwt/issues/152)
+- Audience Claim broken? [\#151](https://github.com/jwt/ruby-jwt/issues/151)
+- 1.5.3 breaks compatibility with 1.5.2 [\#133](https://github.com/jwt/ruby-jwt/issues/133)
+- Version 1.5.3 breaks 1.9.3 compatibility, but not documented as such [\#132](https://github.com/jwt/ruby-jwt/issues/132)
+- Fix: exp claim check [\#161](https://github.com/jwt/ruby-jwt/pull/161) ([excpt](https://github.com/excpt))
+
+**Closed issues:**
+
+- Rendering Json Results in JWT::DecodeError [\#162](https://github.com/jwt/ruby-jwt/issues/162)
+- PHP Libraries [\#154](https://github.com/jwt/ruby-jwt/issues/154)
+- \[security\] Signature verified after expiration/sub/iss checks [\#153](https://github.com/jwt/ruby-jwt/issues/153)
+- Is ruby-jwt thread-safe? [\#150](https://github.com/jwt/ruby-jwt/issues/150)
+- JWT 1.5.3 [\#143](https://github.com/jwt/ruby-jwt/issues/143)
+- gem install v 1.5.3 returns error [\#141](https://github.com/jwt/ruby-jwt/issues/141)
+- Adding a CHANGELOG [\#140](https://github.com/jwt/ruby-jwt/issues/140)
+
+**Merged pull requests:**
+
+- Bump version [\#165](https://github.com/jwt/ruby-jwt/pull/165) ([excpt](https://github.com/excpt))
+- Improve error message for exp claim in payload [\#164](https://github.com/jwt/ruby-jwt/pull/164) ([excpt](https://github.com/excpt))
+- Fix \#151 and code refactoring [\#163](https://github.com/jwt/ruby-jwt/pull/163) ([excpt](https://github.com/excpt))
+- Signature validation before claim verification [\#160](https://github.com/jwt/ruby-jwt/pull/160) ([excpt](https://github.com/excpt))
+- Create specs for README.md examples [\#159](https://github.com/jwt/ruby-jwt/pull/159) ([excpt](https://github.com/excpt))
+- Tiny Readme Improvement [\#156](https://github.com/jwt/ruby-jwt/pull/156) ([b264](https://github.com/b264))
+- Added test execution to Rakefile [\#147](https://github.com/jwt/ruby-jwt/pull/147) ([jabbrwcky](https://github.com/jabbrwcky))
+- Add more bling bling to the site [\#146](https://github.com/jwt/ruby-jwt/pull/146) ([excpt](https://github.com/excpt))
+- Bump version [\#145](https://github.com/jwt/ruby-jwt/pull/145) ([excpt](https://github.com/excpt))
+- Add first content and basic layout [\#144](https://github.com/jwt/ruby-jwt/pull/144) ([excpt](https://github.com/excpt))
+- Add a changelog file [\#142](https://github.com/jwt/ruby-jwt/pull/142) ([excpt](https://github.com/excpt))
+- Return decoded\_segments [\#139](https://github.com/jwt/ruby-jwt/pull/139) ([akostrikov](https://github.com/akostrikov))
+
 ## [v1.5.4](https://github.com/jwt/ruby-jwt/tree/v1.5.4) (2016-03-24)
 [Full Changelog](https://github.com/jwt/ruby-jwt/compare/v1.5.3...v1.5.4)
 
@@ -106,7 +147,7 @@
 **Merged pull requests:**
 
 - Correctly sign ECDSA JWTs [\#87](https://github.com/jwt/ruby-jwt/pull/87) ([jurriaan](https://github.com/jurriaan))
-- fixed results of decoded tokens in readme [\#86](https://github.com/jwt/ruby-jwt/pull/86) ([TheBlasfem](https://github.com/TheBlasfem))
+- fixed results of decoded tokens in readme [\#86](https://github.com/jwt/ruby-jwt/pull/86) ([piscolomo](https://github.com/piscolomo))
 - Force verification of "iss" and "aud" claims [\#82](https://github.com/jwt/ruby-jwt/pull/82) ([lwe](https://github.com/lwe))
 
 ## [jwt-1.5.0](https://github.com/jwt/ruby-jwt/tree/jwt-1.5.0) (2015-05-09)
