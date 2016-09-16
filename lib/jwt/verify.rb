@@ -26,13 +26,13 @@ module JWT
             raise(
               JWT::InvalidAudError,
               'Invalid audience'
-            ) unless @payload['aud'].include?(aud)
+            ) unless @payload['aud'].include?(aud.to_s)
           end
         else
           raise(
             JWT::InvalidAudError,
             'Invalid audience'
-          ) unless @payload['aud'].include?(options_aud)
+          ) unless @payload['aud'].include?(options_aud.to_s)
         end
       else
         raise(
