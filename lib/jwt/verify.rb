@@ -20,9 +20,6 @@ module JWT
     def verify_aud
       return unless (options_aud = extract_option(:aud))
 
-      puts @payload['aud']
-      puts @options_aud
-
       if @payload['aud'].is_a?(Array)
         if options_aud.is_a?(Array)
           options_aud.each do |aud|
