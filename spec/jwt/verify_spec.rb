@@ -46,6 +46,19 @@ module JWT
       it 'must allow an array with any value matching the one in the options with a string options key' do
         Verify.verify_aud(array_payload, options.merge('aud' => array_aud.first))
       end
+
+      it 'should allow strings or symbolds in options array' do
+        options['aud'] = [
+          'ruby-jwt-aud', 
+          'test-aud',
+          'ruby-ruby-ruby',
+          :test
+        ]
+
+        array_payload['aud'].push('test')
+        
+        Verify.verify_aud(array_payload, options)
+      end
     end
 
     context '.verify_expiration(payload, options)' do
