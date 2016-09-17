@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 require 'jwt/json'
 require 'jwt/verify'
 
@@ -28,7 +29,7 @@ module JWT
     def raw_segments(jwt, verify)
       segments = jwt.split('.')
       required_num_segments = verify ? [3] : [2, 3]
-      fail(JWT::DecodeError, 'Not enough or too many segments') unless required_num_segments.include? segments.length
+      raise(JWT::DecodeError, 'Not enough or too many segments') unless required_num_segments.include? segments.length
       segments
     end
     private :raw_segments
@@ -47,7 +48,7 @@ module JWT
 
     def verify
       @options.each do |key, val|
-        next unless key.to_s.match(/verify/)
+        next unless key.to_s =~ /verify/
 
         Verify.send(key, payload, @options) if val
       end
