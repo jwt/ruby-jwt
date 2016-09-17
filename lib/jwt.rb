@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 require 'base64'
 require 'openssl'
 require 'jwt/decode'
@@ -15,6 +16,17 @@ module JWT
     'prime256v1' => 'ES256',
     'secp384r1' => 'ES384',
     'secp521r1' => 'ES512'
+  }.freeze
+
+  DEFAULT_OPTIONS = {
+    verify_expiration: true,
+    verify_not_before: true,
+    verify_iss: false,
+    verify_iat: false,
+    verify_jti: false,
+    verify_aud: false,
+    verify_sub: false,
+    leeway: 0
   }.freeze
 
   module_function
@@ -73,7 +85,7 @@ module JWT
   end
 
   def encoded_payload(payload)
-    raise InvalidPayload, "exp claim must be an integer" if payload['exp'] && payload['exp'].is_a?(Time)
+    raise InvalidPayload, 'exp claim must be an integer' if payload['exp'] && payload['exp'].is_a?(Time)
     base64url_encode(encode_json(payload))
   end
 
@@ -98,56 +110,32 @@ module JWT
   def decoded_segments(jwt, key = nil, verify = true, custom_options = {}, &keyfinder)
     raise(JWT::DecodeError, 'Nil JSON web token') unless jwt
 
-    options = {
-      verify_expiration: true,
-      verify_not_before: true,
-      verify_iss: false,
-      verify_iat: false,
-      verify_jti: false,
-      verify_aud: false,
-      verify_sub: false,
-      leeway: 0
-    }
-
-    merged_options = options.merge(custom_options)
+    merged_options = DEFAULT_OPTIONS.merge(custom_options)
 
     decoder = Decode.new jwt, key, verify, merged_options, &keyfinder
     decoder.decode_segments
   end
 
-
   def decode(jwt, key = nil, verify = true, custom_options = {}, &keyfinder)
     raise(JWT::DecodeError, 'Nil JSON web token') unless jwt
 
-    options = {
-      verify_expiration: true,
-      verify_not_before: true,
-      verify_iss: false,
-      verify_iat: false,
-      verify_jti: false,
-      verify_aud: false,
-      verify_sub: false,
-      leeway: 0
-    }
-
-    merged_options = options.merge(custom_options)
-
+    merged_options = DEFAULT_OPTIONS.merge(custom_options)
     decoder = Decode.new jwt, key, verify, merged_options, &keyfinder
     header, payload, signature, signing_input = decoder.decode_segments
-
-    if verify
-      algo, key = signature_algorithm_and_key(header, key, &keyfinder)
-      if merged_options[:algorithm] && algo != merged_options[:algorithm]
-        raise JWT::IncorrectAlgorithm, 'Expected a different algorithm'
-      end
-      verify_signature(algo, key, signing_input, signature)
-    end
-
+    decode_verify_signature(key, header, signature, signing_input, merged_options, &keyfinder) if verify
     decoder.verify
 
     raise(JWT::DecodeError, 'Not enough or too many segments') unless header && payload
 
     [payload, header]
+  end
+
+  def decode_verify_signature(key, header, signature, signing_input, options, &keyfinder)
+    algo, key = signature_algorithm_and_key(header, key, &keyfinder)
+    if options[:algorithm] && algo != options[:algorithm]
+      raise JWT::IncorrectAlgorithm, 'Expected a different algorithm'
+    end
+    verify_signature(algo, key, signing_input, signature)
   end
 
   def signature_algorithm_and_key(header, key, &keyfinder)
@@ -156,6 +144,14 @@ module JWT
   end
 
   def verify_signature(algo, key, signing_input, signature)
+    verify_signature_algo(algo, key, signing_input, signature)
+  rescue OpenSSL::PKey::PKeyError
+    raise JWT::VerificationError, 'Signature verification raised'
+  ensure
+    OpenSSL.errors.clear
+  end
+
+  def verify_signature_algo(algo, key, signing_input, signature)
     if %w(HS256 HS384 HS512).include?(algo)
       raise(JWT::VerificationError, 'Signature verification raised') unless secure_compare(signature, sign_hmac(algo, signing_input, key))
     elsif %w(RS256 RS384 RS512).include?(algo)
@@ -165,10 +161,6 @@ module JWT
     else
       raise JWT::VerificationError, 'Algorithm not supported'
     end
-  rescue OpenSSL::PKey::PKeyError
-    raise JWT::VerificationError, 'Signature verification raised'
-  ensure
-    OpenSSL.errors.clear
   end
 
   # From devise
@@ -179,7 +171,7 @@ module JWT
 
     res = 0
     b.each_byte { |byte| res |= byte ^ l.shift }
-    res == 0
+    res.zero?
   end
 
   def raw_to_asn1(signature, private_key)
