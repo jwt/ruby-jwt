@@ -1,5 +1,16 @@
 # Change Log
 
+## [v1.5.6](https://github.com/jwt/ruby-jwt/tree/v1.5.6) (2016-09-19)
+[Full Changelog](https://github.com/jwt/ruby-jwt/compare/v1.5.5...v1.5.6)
+
+**Fixed bugs:**
+
+- Fix missing symbol handling in aud verify code [\#166](https://github.com/jwt/ruby-jwt/pull/166) ([excpt](https://github.com/excpt))
+
+**Merged pull requests:**
+
+- Fix rubocop code smells [\#167](https://github.com/jwt/ruby-jwt/pull/167) ([excpt](https://github.com/excpt))
+
 ## [v1.5.5](https://github.com/jwt/ruby-jwt/tree/v1.5.5) (2016-09-16)
 [Full Changelog](https://github.com/jwt/ruby-jwt/compare/v1.5.4...v1.5.5)
 
