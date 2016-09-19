@@ -47,7 +47,7 @@ module JWT
         Verify.verify_aud(array_payload, options.merge('aud' => array_aud.first))
       end
 
-      it 'should allow strings or symbolds in options array' do
+      it 'should allow strings or symbols in options array' do
         options['aud'] = [
           'ruby-jwt-aud', 
           'test-aud',
