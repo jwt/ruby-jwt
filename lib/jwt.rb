@@ -122,7 +122,7 @@ module JWT
     merged_options = DEFAULT_OPTIONS.merge(custom_options)
     decoder = Decode.new jwt, key, verify, merged_options, &keyfinder
     header, payload, signature, signing_input = decoder.decode_segments
-    decode_verify_signature(key, header, signature, signing_input, merged_options, &keyfinder) if verify
+    decode_verify_signature(key, header, payload, signature, signing_input, merged_options, &keyfinder) if verify
     decoder.verify
 
     raise(JWT::DecodeError, 'Not enough or too many segments') unless header && payload
@@ -130,16 +130,18 @@ module JWT
     [payload, header]
   end
 
-  def decode_verify_signature(key, header, signature, signing_input, options, &keyfinder)
-    algo, key = signature_algorithm_and_key(header, key, &keyfinder)
+  def decode_verify_signature(key, header, payload, signature, signing_input, options, &keyfinder)
+    algo, key = signature_algorithm_and_key(header, payload, key, &keyfinder)
     if options[:algorithm] && algo != options[:algorithm]
       raise JWT::IncorrectAlgorithm, 'Expected a different algorithm'
     end
     verify_signature(algo, key, signing_input, signature)
   end
 
-  def signature_algorithm_and_key(header, key, &keyfinder)
-    key = yield(header) if keyfinder
+  def signature_algorithm_and_key(header, payload, key, &keyfinder)
+    if keyfinder
+      key = (keyfinder.arity == 2) ? keyfinder.call(header, payload) : keyfinder.call(header)
+    end
     [header['alg'], key]
   end
 
