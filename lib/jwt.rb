@@ -141,6 +141,7 @@ module JWT
   def signature_algorithm_and_key(header, payload, key, &keyfinder)
     if keyfinder
       key = (keyfinder.arity == 2) ? keyfinder.call(header, payload) : keyfinder.call(header)
+      raise JWT::DecodeError, 'No verification key available'  unless key
     end
     [header['alg'], key]
   end
