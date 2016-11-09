@@ -10,10 +10,10 @@ describe 'README.md code test' do
       token = JWT.encode payload, nil, 'none'
       decoded_token = JWT.decode token, nil, false
 
-      expect(token).to eq 'eyJ0eXAiOiJKV1QiLCJhbGciOiJub25lIn0.eyJkYXRhIjoidGVzdCJ9.'
+      expect(token).to eq 'eyJhbGciOiJub25lIn0.eyJkYXRhIjoidGVzdCJ9.'
       expect(decoded_token).to eq [
         { 'data' => 'test' },
-        { 'typ' => 'JWT', 'alg' => 'none' }
+        { 'alg' => 'none' }
       ]
     end
 
@@ -21,10 +21,10 @@ describe 'README.md code test' do
       token = JWT.encode payload, 'my$ecretK3y', 'HS256'
       decoded_token = JWT.decode token, 'my$ecretK3y', false
 
-      expect(token).to eq 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJkYXRhIjoidGVzdCJ9.ZxW8go9hz3ETCSfxFxpwSkYg_602gOPKearsf6DsxgY'
+      expect(token).to eq 'eyJhbGciOiJIUzI1NiJ9.eyJkYXRhIjoidGVzdCJ9.pNIWIL34Jo13LViZAJACzK6Yf0qnvT_BuwOxiMCPE-Y'
       expect(decoded_token).to eq [
         { 'data' => 'test' },
-        { 'typ' => 'JWT', 'alg' => 'HS256' }
+        { 'alg' => 'HS256' }
       ]
     end
 
@@ -37,7 +37,7 @@ describe 'README.md code test' do
 
       expect(decoded_token).to eq [
         { 'data' => 'test' },
-        { 'typ' => 'JWT', 'alg' => 'RS256' }
+        { 'alg' => 'RS256' }
       ]
     end
 
@@ -52,7 +52,7 @@ describe 'README.md code test' do
 
       expect(decoded_token).to eq [
         { 'data' => 'test' },
-        { 'typ' => 'JWT', 'alg' => 'ES256' }
+        { 'alg' => 'ES256' }
       ]
     end
   end
