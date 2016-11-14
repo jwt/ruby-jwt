@@ -44,6 +44,7 @@ module JWT
   end
 
   def sign_rsa(algorithm, msg, private_key)
+    raise EncodeError, "The given key is a #{private_key.class}. It has to be an OpenSSL::PKey::RSA instance." if private_key.class == String
     private_key.sign(OpenSSL::Digest.new(algorithm.sub('RS', 'sha')), msg)
   end
 
