@@ -55,7 +55,7 @@ decoded_token = JWT.decode token, nil, false
 # Array
 # [
 #   {"data"=>"test"}, # payload
-#   {"typ"=>"JWT", "alg"=>"none"} # header
+#   {"alg"=>"none"} # header
 # ]
 puts decoded_token
 ```
@@ -79,7 +79,7 @@ decoded_token = JWT.decode token, hmac_secret, true, { :algorithm => 'HS256' }
 # Array
 # [
 #   {"data"=>"test"}, # payload
-#   {"typ"=>"JWT", "alg"=>"HS256"} # header
+#   {"alg"=>"HS256"} # header
 # ]
 puts decoded_token
 ```
@@ -104,7 +104,7 @@ decoded_token = JWT.decode token, rsa_public, true, { :algorithm => 'RS256' }
 # Array
 # [
 #   {"data"=>"test"}, # payload
-#   {"typ"=>"JWT", "alg"=>"RS256"} # header
+#   {"alg"=>"RS256"} # header
 # ]
 puts decoded_token
 ```
@@ -131,7 +131,7 @@ decoded_token = JWT.decode token, ecdsa_public, true, { :algorithm => 'ES256' }
 # Array
 # [
 #    {"test"=>"data"}, # payload
-#    {"typ"=>"JWT", "alg"=>"ES256"} # header
+#    {"alg"=>"ES256"} # header
 # ]
 puts decoded_token
 ```
@@ -151,6 +151,38 @@ used. JWT supports these reserved claim names:
  - 'jti' (JWT ID) Claim
  - 'iat' (Issued At) Claim
  - 'sub' (Subject) Claim
+
+## Add custom header fields
+Ruby-jwt gem supports custom [header fields] (https://tools.ietf.org/html/rfc7519#section-5)
+To add custom header fields you need to pass `header_fields` parameter
+
+```ruby
+token = JWT.encode payload, key, algorithm='HS256', header_fields={}
+```
+
+**Example:**
+
+```ruby
+require 'jwt'
+
+payload = {:data => 'test'}
+
+# IMPORTANT: set nil as password parameter
+token = JWT.encode payload, nil, 'none', { :typ => "JWT" }
+
+# eyJ0eXAiOiJKV1QiLCJhbGciOiJub25lIn0.eyJkYXRhIjoidGVzdCJ9.
+puts token
+
+# Set password to nil and validation to false otherwise this won't work
+decoded_token = JWT.decode token, nil, false
+
+# Array
+# [
+#   {"data"=>"test"}, # payload
+#   {"typ"=>"JWT", "alg"=>"none"} # header
+# ]
+puts decoded_token
+```
 
 ### Expiration Time Claim
 

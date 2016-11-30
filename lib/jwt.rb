@@ -81,7 +81,7 @@ module JWT
   end
 
   def encoded_header(algorithm = 'HS256', header_fields = {})
-    header = { 'typ' => 'JWT', 'alg' => algorithm }.merge(header_fields)
+    header = { 'alg' => algorithm }.merge(header_fields)
     base64url_encode(encode_json(header))
   end
 
