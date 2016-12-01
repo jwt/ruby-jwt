@@ -7,7 +7,7 @@ rvm:
   - 2.1.0
   - 2.2.0
   - 2.3.0
-script: "bundle exec rspec"
+script: "bundle exec rspec && codeclimate-test-reporter"
 addons:
   code_climate:
     repo_token: e87b175db123ab42ca2ca4420abaa13c0dc2085608402b9a25f08a83ca3ba202
