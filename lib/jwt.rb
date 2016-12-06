@@ -2,6 +2,7 @@
 require 'base64'
 require 'openssl'
 require 'jwt/decode'
+require 'jwt/encode'
 require 'jwt/error'
 require 'jwt/json'
 
@@ -76,38 +77,6 @@ module JWT
     OpenSSL::HMAC.digest(OpenSSL::Digest.new(algorithm.sub('HS', 'sha')), key, msg)
   end
 
-  def base64url_encode(str)
-    Base64.encode64(str).tr('+/', '-_').gsub(/[\n=]/, '')
-  end
-
-  def encoded_header(algorithm = 'HS256', header_fields = {})
-    header = { 'alg' => algorithm }.merge(header_fields)
-    base64url_encode(encode_json(header))
-  end
-
-  def encoded_payload(payload)
-    raise InvalidPayload, 'exp claim must be an integer' if payload['exp'] && payload['exp'].is_a?(Time)
-    base64url_encode(encode_json(payload))
-  end
-
-  def encoded_signature(signing_input, key, algorithm)
-    if algorithm == 'none'
-      ''
-    else
-      signature = sign(algorithm, signing_input, key)
-      base64url_encode(signature)
-    end
-  end
-
-  def encode(payload, key, algorithm = 'HS256', header_fields = {})
-    algorithm ||= 'none'
-    segments = []
-    segments << encoded_header(algorithm, header_fields)
-    segments << encoded_payload(payload)
-    segments << encoded_signature(segments.join('.'), key, algorithm)
-    segments.join('.')
-  end
-
   def decoded_segments(jwt, key = nil, verify = true, custom_options = {}, &keyfinder)
     raise(JWT::DecodeError, 'Nil JSON web token') unless jwt
 
@@ -115,6 +84,11 @@ module JWT
 
     decoder = Decode.new jwt, key, verify, merged_options, &keyfinder
     decoder.decode_segments
+  end
+
+  def encode(payload, key, algorithm = 'HS256', header_fields = {})
+    encoder = Encode.new payload, key, algorithm, header_fields
+    encoder.segments
   end
 
   def decode(jwt, key = nil, verify = true, custom_options = {}, &keyfinder)
@@ -196,5 +170,9 @@ module JWT
 
   def base64url_decode(str)
     Decode.base64url_decode(str)
+  end
+
+  def base64url_encode(str)
+    Base64.encode64(str).tr('+/', '-_').gsub(/[\n=]/, '')
   end
 end
