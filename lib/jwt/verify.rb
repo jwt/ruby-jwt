@@ -20,23 +20,11 @@ module JWT
     def verify_aud
       return unless (options_aud = extract_option(:aud))
 
-      if @payload['aud'].is_a?(Array)
-        verify_aud_array(@payload['aud'], options_aud)
-      else
+      if ([*@payload['aud']] & [*options_aud]).empty?
         raise(
           JWT::InvalidAudError,
           "Invalid audience. Expected #{options_aud}, received #{@payload['aud'] || '<none>'}"
-        ) unless @payload['aud'].to_s == options_aud.to_s
-      end
-    end
-
-    def verify_aud_array(audience, options_aud)
-      if options_aud.is_a?(Array)
-        options_aud.each do |aud|
-          raise(JWT::InvalidAudError, 'Invalid audience') unless audience.include?(aud.to_s)
-        end
-      else
-        raise(JWT::InvalidAudError, 'Invalid audience') unless audience.include?(options_aud.to_s)
+        )
       end
     end
 
