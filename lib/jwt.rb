@@ -107,9 +107,10 @@ module JWT
 
   def decode_verify_signature(key, header, payload, signature, signing_input, options, &keyfinder)
     algo, key = signature_algorithm_and_key(header, payload, key, &keyfinder)
-    if options[:algorithm] && algo != options[:algorithm]
-      raise JWT::IncorrectAlgorithm, 'Expected a different algorithm'
-    end
+
+    raise(JWT::IncorrectAlgorithm, 'An algorithm must be specified') unless options[:algorithm]
+    raise(JWT::IncorrectAlgorithm, 'Expected a different algorithm') unless algo == options[:algorithm]
+
     verify_signature(algo, key, signing_input, signature)
   end
 
