@@ -69,7 +69,7 @@ describe JWT do
       end
 
       it 'should decode a valid token' do
-        jwt_payload, header = JWT.decode data[alg], data[:secret]
+        jwt_payload, header = JWT.decode data[alg], data[:secret], true, algorithm: alg
 
         expect(header['alg']).to eq alg
         expect(jwt_payload).to eq payload
@@ -77,7 +77,7 @@ describe JWT do
 
       it 'wrong secret should raise JWT::DecodeError' do
         expect do
-          JWT.decode data[alg], 'wrong_secret'
+          JWT.decode data[alg], 'wrong_secret', true, algorithm: alg
         end.to raise_error JWT::DecodeError
       end
 
@@ -98,7 +98,7 @@ describe JWT do
       end
 
       it 'should decode a valid token' do
-        jwt_payload, header = JWT.decode data[alg], data[:rsa_public]
+        jwt_payload, header = JWT.decode data[alg], data[:rsa_public], true, algorithm: alg
 
         expect(header['alg']).to eq alg
         expect(jwt_payload).to eq payload
@@ -108,7 +108,7 @@ describe JWT do
         key = OpenSSL::PKey.read File.read(File.join(CERT_PATH, 'rsa-2048-wrong-public.pem'))
 
         expect do
-          JWT.decode data[alg], key
+          JWT.decode data[alg], key, true, algorithm: alg
         end.to raise_error JWT::DecodeError
       end
 
@@ -131,14 +131,14 @@ describe JWT do
       let(:wrong_key) { OpenSSL::PKey.read(File.read(File.join(CERT_PATH, 'ec256-wrong-public.pem'))) }
 
       it 'should generate a valid token' do
-        jwt_payload, header = JWT.decode data[alg], data["#{alg}_public"]
+        jwt_payload, header = JWT.decode data[alg], data["#{alg}_public"], true, algorithm: alg
 
         expect(header['alg']).to eq alg
         expect(jwt_payload).to eq payload
       end
 
       it 'should decode a valid token' do
-        jwt_payload, header = JWT.decode data[alg], data["#{alg}_public"]
+        jwt_payload, header = JWT.decode data[alg], data["#{alg}_public"], true, algorithm: alg
 
         expect(header['alg']).to eq alg
         expect(jwt_payload).to eq payload
@@ -195,6 +195,14 @@ describe JWT do
           JWT.decode token, data[:secret], true, algorithm: 'HS512'
         end.not_to raise_error
       end
+
+      it 'should raise JWT::IncorrectAlgorithm if no algorithm is provided' do
+        token = JWT.encode payload, data[:rsa_public].to_s, 'HS256'
+
+        expect do
+          JWT.decode token, data[:rsa_public], true
+        end.to raise_error JWT::IncorrectAlgorithm
+      end
     end
 
     context 'issuer claim' do
@@ -208,7 +216,7 @@ describe JWT do
 
       it 'if verify_iss is set to false (default option) should not raise JWT::InvalidIssuerError' do
         expect do
-          JWT.decode token, data[:secret], true, iss: iss
+          JWT.decode token, data[:secret], true, iss: iss, algorithm: 'HS256'
         end.not_to raise_error
       end
     end
