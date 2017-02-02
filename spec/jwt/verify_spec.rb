@@ -8,7 +8,7 @@ module JWT
     let(:options) { { leeway: 0 } }
 
     context '.verify_aud(payload, options)' do
-      let(:scalar_aud) { 'ruby-jwt-audience' }
+      let(:scalar_aud) { 'ruby-jwt-aud' }
       let(:array_aud) { %w(ruby-jwt-aud test-aud ruby-ruby-ruby) }
       let(:scalar_payload) { base_payload.merge('aud' => scalar_aud) }
       let(:array_payload) { base_payload.merge('aud' => array_aud) }
@@ -45,6 +45,22 @@ module JWT
 
       it 'must allow an array with any value matching the one in the options with a string options key' do
         Verify.verify_aud(array_payload, options.merge('aud' => array_aud.first))
+      end
+
+      it 'must allow an array with any value matching any value in the options array' do
+        Verify.verify_aud(array_payload, options.merge(aud: array_aud))
+      end
+
+      it 'must allow an array with any value matching any value in the options array with a string options key' do
+        Verify.verify_aud(array_payload, options.merge("aud" => array_aud))
+      end
+
+      it 'must allow a singular audience payload matching any value in the options array' do
+        Verify.verify_aud(scalar_payload, options.merge(aud: array_aud))
+      end
+
+      it 'must allow a singular audience payload matching any value in the options array with a string options key' do
+        Verify.verify_aud(scalar_payload, options.merge("aud" => array_aud))
       end
 
       it 'should allow strings or symbols in options array' do
