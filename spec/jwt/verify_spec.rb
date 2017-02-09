@@ -65,14 +65,14 @@ module JWT
 
       it 'should allow strings or symbols in options array' do
         options['aud'] = [
-          'ruby-jwt-aud', 
+          'ruby-jwt-aud',
           'test-aud',
           'ruby-ruby-ruby',
           :test
         ]
 
         array_payload['aud'].push('test')
-        
+
         Verify.verify_aud(array_payload, options)
       end
     end
@@ -87,8 +87,12 @@ module JWT
         end.to raise_error JWT::ExpiredSignature
       end
 
-      it 'must allow some leeway in the expiration when configured' do
+      it 'must allow some leeway in the expiration when global leeway is configured' do
         Verify.verify_expiration(payload, options.merge(leeway: 10))
+      end
+
+      it 'must allow some leeway in the expiration when exp_leeway is configured' do
+        Verify.verify_expiration(payload, options.merge(exp_leeway: 10))
       end
 
       it 'must be expired if the exp claim equals the current time' do
@@ -110,6 +114,10 @@ module JWT
 
       it 'must allow configured leeway' do
         Verify.verify_iat(payload.merge('iat' => (iat + 60)), options.merge(leeway: 70))
+      end
+
+      it 'must allow configured iat_leeway' do
+        Verify.verify_iat(payload.merge('iat' => (iat + 60)), options.merge(iat_leeway: 70))
       end
 
       it 'must properly handle integer times' do
@@ -191,8 +199,12 @@ module JWT
         end.to raise_error JWT::ImmatureSignature
       end
 
-      it 'must allow some leeway in the token age when configured' do
+      it 'must allow some leeway in the token age when global leeway is configured' do
         Verify.verify_not_before(payload, options.merge(leeway: 10))
+      end
+
+      it 'must allow some leeway in the token age when nbf_leeway is configured' do
+        Verify.verify_not_before(payload, options.merge(nbf_leeway: 10))
       end
     end
 

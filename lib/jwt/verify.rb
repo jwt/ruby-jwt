@@ -31,7 +31,7 @@ module JWT
     def verify_expiration
       return unless @payload.include?('exp')
 
-      if @payload['exp'].to_i <= (Time.now.to_i - leeway)
+      if @payload['exp'].to_i <= (Time.now.to_i - exp_leeway)
         raise(JWT::ExpiredSignature, 'Signature has expired')
       end
     end
@@ -39,7 +39,7 @@ module JWT
     def verify_iat
       return unless @payload.include?('iat')
 
-      if !@payload['iat'].is_a?(Numeric) || @payload['iat'].to_f > (Time.now.to_f + leeway)
+      if !@payload['iat'].is_a?(Numeric) || @payload['iat'].to_f > (Time.now.to_f + iat_leeway)
         raise(JWT::InvalidIatError, 'Invalid iat')
       end
     end
@@ -67,7 +67,7 @@ module JWT
     def verify_not_before
       return unless @payload.include?('nbf')
 
-      if @payload['nbf'].to_i > (Time.now.to_i + leeway)
+      if @payload['nbf'].to_i > (Time.now.to_i + nbf_leeway)
         raise(JWT::ImmatureSignature, 'Signature nbf has not been reached')
       end
     end
@@ -87,8 +87,20 @@ module JWT
       @options.values_at(key.to_sym, key.to_s).compact.first
     end
 
-    def leeway
+    def global_leeway
       extract_option :leeway
+    end
+
+    def exp_leeway
+      extract_option(:exp_leeway) || global_leeway
+    end
+
+    def iat_leeway
+      extract_option(:iat_leeway) || global_leeway
+    end
+
+    def nbf_leeway
+      extract_option(:nbf_leeway) || global_leeway
     end
   end
 end
