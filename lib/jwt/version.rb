@@ -10,9 +10,9 @@ module JWT
   # Moments version builder module
   module VERSION
     # major version
-    MAJOR = 1
+    MAJOR = 2
     # minor version
-    MINOR = 6
+    MINOR = 0
     # tiny version
     TINY  = 0
     # alpha, beta, etc. tag
