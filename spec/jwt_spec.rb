@@ -78,7 +78,7 @@ describe JWT do
       it 'wrong secret should raise JWT::DecodeError' do
         expect do
           JWT.decode data[alg], 'wrong_secret', true, algorithm: alg
-        end.to raise_error JWT::DecodeError
+        end.to raise_error JWT::VerificationError
       end
 
       it 'wrong secret and verify = false should not raise JWT::DecodeError' do
@@ -226,23 +226,6 @@ describe JWT do
     it 'urlsafe replace + / with - _' do
       allow(Base64).to receive(:encode64) { 'string+with/non+url-safe/characters_' }
       expect(JWT.base64url_encode('foo')).to eq('string-with_non-url-safe_characters_')
-    end
-  end
-
-  describe 'secure comparison' do
-    it 'returns true if strings are equal' do
-      expect(JWT.secure_compare('Foo', 'Foo')).to eq true
-    end
-
-    it 'returns false if either input is nil or empty' do
-      [nil, ''].each do |bad|
-        expect(JWT.secure_compare(bad, 'Foo')).to eq false
-        expect(JWT.secure_compare('Foo', bad)).to eq false
-      end
-    end
-
-    it 'retuns false if the strings are different' do
-      expect(JWT.secure_compare('Foo', 'Bar')).to eq false
     end
   end
 end
