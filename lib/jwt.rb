@@ -6,6 +6,7 @@ require 'jwt/default_options'
 require 'jwt/encode'
 require 'jwt/error'
 require 'jwt/json'
+require 'jwt/signature'
 
 # JSON Web Token implementation
 #
@@ -17,49 +18,18 @@ module JWT
 
   module_function
 
-  def sign(algorithm, msg, key)
-    if %w(HS256 HS384 HS512).include?(algorithm)
-      sign_hmac(algorithm, msg, key)
-    elsif %w(RS256 RS384 RS512).include?(algorithm)
-      sign_rsa(algorithm, msg, key)
-    elsif %w(ES256 ES384 ES512).include?(algorithm)
-      sign_ecdsa(algorithm, msg, key)
-    else
-      raise NotImplementedError, 'Unsupported signing method'
-    end
-  end
-
-  def sign_rsa(algorithm, msg, private_key)
-    raise EncodeError, "The given key is a #{private_key.class}. It has to be an OpenSSL::PKey::RSA instance." if private_key.class == String
-    private_key.sign(OpenSSL::Digest.new(algorithm.sub('RS', 'sha')), msg)
-  end
-
-  def sign_ecdsa(algorithm, msg, private_key)
-    key_algorithm = NAMED_CURVES[private_key.group.curve_name]
-    if algorithm != key_algorithm
-      raise IncorrectAlgorithm, "payload algorithm is #{algorithm} but #{key_algorithm} signing key was provided"
-    end
-
-    digest = OpenSSL::Digest.new(algorithm.sub('ES', 'sha'))
-    asn1_to_raw(private_key.dsa_sign_asn1(digest.digest(msg)), private_key)
-  end
-
   def verify_rsa(algorithm, public_key, signing_input, signature)
     public_key.verify(OpenSSL::Digest.new(algorithm.sub('RS', 'sha')), signature, signing_input)
   end
 
   def verify_ecdsa(algorithm, public_key, signing_input, signature)
-    key_algorithm = NAMED_CURVES[public_key.group.curve_name]
+    key_algorithm = Signature::NAMED_CURVES[public_key.group.curve_name]
     if algorithm != key_algorithm
       raise IncorrectAlgorithm, "payload algorithm is #{algorithm} but #{key_algorithm} verification key was provided"
     end
 
     digest = OpenSSL::Digest.new(algorithm.sub('ES', 'sha'))
     public_key.dsa_verify_asn1(digest.digest(signing_input), raw_to_asn1(signature, public_key))
-  end
-
-  def sign_hmac(algorithm, msg, key)
-    OpenSSL::HMAC.digest(OpenSSL::Digest.new(algorithm.sub('HS', 'sha')), key, msg)
   end
 
   def decoded_segments(jwt, key = nil, verify = true, custom_options = {}, &keyfinder)
@@ -121,7 +91,7 @@ module JWT
 
   def verify_signature_algo(algo, key, signing_input, signature)
     if %w(HS256 HS384 HS512).include?(algo)
-      raise(JWT::VerificationError, 'Signature verification raised') unless secure_compare(signature, sign_hmac(algo, signing_input, key))
+      raise(JWT::VerificationError, 'Signature verification raised') unless secure_compare(signature, Signature.sign(algo, signing_input, key))
     elsif %w(RS256 RS384 RS512).include?(algo)
       raise(JWT::VerificationError, 'Signature verification raised') unless verify_rsa(algo, key, signing_input, signature)
     elsif %w(ES256 ES384 ES512).include?(algo)
@@ -146,11 +116,6 @@ module JWT
     r = signature[0..(byte_size - 1)]
     s = signature[byte_size..-1] || ''
     OpenSSL::ASN1::Sequence.new([r, s].map { |int| OpenSSL::ASN1::Integer.new(OpenSSL::BN.new(int, 2)) }).to_der
-  end
-
-  def asn1_to_raw(signature, public_key)
-    byte_size = (public_key.group.degree + 7) / 8
-    OpenSSL::ASN1.decode(signature).value.map { |value| value.value.to_s(2).rjust(byte_size, "\x00") }.join
   end
 
   def base64url_decode(str)
