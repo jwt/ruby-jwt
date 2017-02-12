@@ -5,6 +5,10 @@ module JWT
   module Signature
     extend self
 
+    HMAC_ALGORITHMS = %w(HS256 HS384 HS512).freeze
+    RSA_ALGORITHMS = %w(RS256 RS384 RS512).freeze
+    ECDSA_ALGORITHMS = %w(ES256 ES384 ES512).freeze
+
     NAMED_CURVES = {
       'prime256v1' => 'ES256',
       'secp384r1' => 'ES384',
@@ -12,11 +16,11 @@ module JWT
     }.freeze
 
     def sign(algorithm, msg, key)
-      if %w(HS256 HS384 HS512).include?(algorithm)
+      if HMAC_ALGORITHMS.include?(algorithm)
         sign_hmac(algorithm, msg, key)
-      elsif %w(RS256 RS384 RS512).include?(algorithm)
+      elsif RSA_ALGORITHMS.include?(algorithm)
         sign_rsa(algorithm, msg, key)
-      elsif %w(ES256 ES384 ES512).include?(algorithm)
+      elsif ECDSA_ALGORITHMS.include?(algorithm)
         sign_ecdsa(algorithm, msg, key)
       else
         raise NotImplementedError, 'Unsupported signing method'
@@ -24,7 +28,17 @@ module JWT
     end
 
     def verify(algo, key, signing_input, signature)
-      verify_signature_algo(algo, key, signing_input, signature)
+      verified = if HMAC_ALGORITHMS.include?(algo)
+                   secure_compare(signature, sign_hmac(algo, signing_input, key))
+                 elsif RSA_ALGORITHMS.include?(algo)
+                   verify_rsa(algo, key, signing_input, signature)
+                 elsif ECDSA_ALGORITHMS.include?(algo)
+                   verify_ecdsa(algo, key, signing_input, signature)
+                 else
+                   raise JWT::VerificationError, 'Algorithm not supported'
+                 end
+
+      raise(JWT::VerificationError, 'Signature verification raised') unless verified
     rescue OpenSSL::PKey::PKeyError
       raise JWT::VerificationError, 'Signature verification raised'
     ensure
@@ -50,18 +64,6 @@ module JWT
 
     def sign_hmac(algorithm, msg, key)
       OpenSSL::HMAC.digest(OpenSSL::Digest.new(algorithm.sub('HS', 'sha')), key, msg)
-    end
-
-    def verify_signature_algo(algo, key, signing_input, signature)
-      if %w(HS256 HS384 HS512).include?(algo)
-        raise(JWT::VerificationError, 'Signature verification raised') unless secure_compare(signature, sign_hmac(algo, signing_input, key))
-      elsif %w(RS256 RS384 RS512).include?(algo)
-        raise(JWT::VerificationError, 'Signature verification raised') unless verify_rsa(algo, key, signing_input, signature)
-      elsif %w(ES256 ES384 ES512).include?(algo)
-        raise(JWT::VerificationError, 'Signature verification raised') unless verify_ecdsa(algo, key, signing_input, signature)
-      else
-        raise JWT::VerificationError, 'Algorithm not supported'
-      end
     end
 
     def verify_rsa(algorithm, public_key, signing_input, signature)
