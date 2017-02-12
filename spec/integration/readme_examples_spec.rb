@@ -1,4 +1,4 @@
-# frozen_string_literal: true
+©# frozen_string_literal: true
 require_relative '../spec_helper'
 require 'jwt'
 
@@ -180,7 +180,7 @@ describe 'README.md code test' do
       it 'with custom field' do
         payload = { data: 'test' }
 
-        token = JWT.encode payload, nil, 'none', { typ: 'JWT' }
+        token = JWT.encode payload, nil, 'none', typ: 'JWT'
         jwt_payload, header = JWT.decode token, nil, false
 
         expect(header['typ']).to eq 'JWT'
