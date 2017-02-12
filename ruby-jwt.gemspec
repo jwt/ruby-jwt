@@ -6,7 +6,6 @@ Gem::Specification.new do |spec|
   spec.name = 'jwt'
   spec.version = JWT.gem_version
   spec.authors = [
-    'Jeff Lindsay',
     'Tim Rudat'
   ]
   spec.email = 'timrudat@gmail.com'
@@ -14,6 +13,7 @@ Gem::Specification.new do |spec|
   spec.description = 'A pure ruby implementation of the RFC 7519 OAuth JSON Web Token (JWT) standard.'
   spec.homepage = 'http://github.com/jwt/ruby-jwt'
   spec.license = 'MIT'
+  spec.required_ruby_version = '~> 2.1'
 
   spec.files = `git ls-files -z`.split("\x0")
   spec.executables = spec.files.grep(%r{^bin/}) { |f| File.basename(f) }
