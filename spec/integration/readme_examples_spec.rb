@@ -181,7 +181,7 @@ describe 'README.md code test' do
         payload = { data: 'test' }
 
         token = JWT.encode payload, nil, 'none', typ: 'JWT'
-        jwt_payload, header = JWT.decode token, nil, false
+        _, header = JWT.decode token, nil, false
 
         expect(header['typ']).to eq 'JWT'
       end

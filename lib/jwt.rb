@@ -2,6 +2,7 @@
 require 'base64'
 require 'openssl'
 require 'jwt/decode'
+require 'jwt/default_options'
 require 'jwt/encode'
 require 'jwt/error'
 require 'jwt/json'
@@ -12,23 +13,7 @@ require 'jwt/json'
 # https://tools.ietf.org/html/rfc7519#section-4.1.5
 module JWT
   extend JWT::Json
-
-  NAMED_CURVES = {
-    'prime256v1' => 'ES256',
-    'secp384r1' => 'ES384',
-    'secp521r1' => 'ES512'
-  }.freeze
-
-  DEFAULT_OPTIONS = {
-    verify_expiration: true,
-    verify_not_before: true,
-    verify_iss: false,
-    verify_iat: false,
-    verify_jti: false,
-    verify_aud: false,
-    verify_sub: false,
-    leeway: 0
-  }.freeze
+  include JWT::DefaultOptions
 
   module_function
 
@@ -151,7 +136,6 @@ module JWT
   def secure_compare(a, b)
     return false if a.nil? || b.nil? || a.empty? || b.empty? || a.bytesize != b.bytesize
     l = a.unpack "C#{a.bytesize}"
-
     res = 0
     b.each_byte { |byte| res |= byte ^ l.shift }
     res.zero?

@@ -1,2 +1,5 @@
+AllCops:
+  Excludes:
+    - spec/**/*
 Metrics/LineLength:
   Enabled: false
