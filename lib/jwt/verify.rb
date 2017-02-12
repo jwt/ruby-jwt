@@ -19,66 +19,41 @@ module JWT
 
     def verify_aud
       return unless (options_aud = extract_option(:aud))
-
-      if ([*@payload['aud']] & [*options_aud]).empty?
-        raise(
-          JWT::InvalidAudError,
-          "Invalid audience. Expected #{options_aud}, received #{@payload['aud'] || '<none>'}"
-        )
-      end
+      raise(JWT::InvalidAudError, "Invalid audience. Expected #{options_aud}, received #{@payload['aud'] || '<none>'}") if ([*@payload['aud']] & [*options_aud]).empty?
     end
 
     def verify_expiration
       return unless @payload.include?('exp')
-
-      if @payload['exp'].to_i <= (Time.now.to_i - exp_leeway)
-        raise(JWT::ExpiredSignature, 'Signature has expired')
-      end
+      raise(JWT::ExpiredSignature, 'Signature has expired') if @payload['exp'].to_i <= (Time.now.to_i - exp_leeway)
     end
 
     def verify_iat
       return unless @payload.include?('iat')
-
-      if !@payload['iat'].is_a?(Numeric) || @payload['iat'].to_f > (Time.now.to_f + iat_leeway)
-        raise(JWT::InvalidIatError, 'Invalid iat')
-      end
+      raise(JWT::InvalidIatError, 'Invalid iat') if !@payload['iat'].is_a?(Numeric) || @payload['iat'].to_f > (Time.now.to_f + iat_leeway)
     end
 
     def verify_iss
       return unless (options_iss = extract_option(:iss))
-
-      if @payload['iss'].to_s != options_iss.to_s
-        raise(
-          JWT::InvalidIssuerError,
-          "Invalid issuer. Expected #{options_iss}, received #{@payload['iss'] || '<none>'}"
-        )
-      end
+      raise(JWT::InvalidIssuerError, "Invalid issuer. Expected #{options_iss}, received #{@payload['iss'] || '<none>'}") if @payload['iss'].to_s != options_iss.to_s
     end
 
     def verify_jti
       options_verify_jti = extract_option(:verify_jti)
       if options_verify_jti.respond_to?(:call)
         raise(JWT::InvalidJtiError, 'Invalid jti') unless options_verify_jti.call(@payload['jti'])
-      else
-        raise(JWT::InvalidJtiError, 'Missing jti') if @payload['jti'].to_s.strip.empty?
+      elsif @payload['jti'].to_s.strip.empty?
+        raise(JWT::InvalidJtiError, 'Missing jti')
       end
     end
 
     def verify_not_before
       return unless @payload.include?('nbf')
-
-      if @payload['nbf'].to_i > (Time.now.to_i + nbf_leeway)
-        raise(JWT::ImmatureSignature, 'Signature nbf has not been reached')
-      end
+      raise(JWT::ImmatureSignature, 'Signature nbf has not been reached') if @payload['nbf'].to_i > (Time.now.to_i + nbf_leeway)
     end
 
     def verify_sub
       return unless (options_sub = extract_option(:sub))
-
-      raise(
-        JWT::InvalidSubError,
-        "Invalid subject. Expected #{options_sub}, received #{@payload['sub'] || '<none>'}"
-      ) unless @payload['sub'].to_s == options_sub.to_s
+      raise(JWT::InvalidSubError, "Invalid subject. Expected #{options_sub}, received #{@payload['sub'] || '<none>'}") unless @payload['sub'].to_s == options_sub.to_s
     end
 
     private

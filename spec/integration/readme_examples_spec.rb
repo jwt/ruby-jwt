@@ -176,12 +176,12 @@ describe 'README.md code test' do
       end
     end
 
-   context 'custom header fields' do
+    context 'custom header fields' do
       it 'with custom field' do
         payload = { data: 'test' }
 
-        token = JWT.encode payload, nil, 'none', { typ: 'JWT' }
-        jwt_payload, header = JWT.decode token, nil, false
+        token = JWT.encode payload, nil, 'none', typ: 'JWT'
+        _, header = JWT.decode token, nil, false
 
         expect(header['typ']).to eq 'JWT'
       end
