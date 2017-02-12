@@ -176,7 +176,7 @@ describe 'README.md code test' do
       end
     end
 
-   context 'custom header fields' do
+    context 'custom header fields' do
       it 'with custom field' do
         payload = { data: 'test' }
 

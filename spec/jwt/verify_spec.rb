@@ -60,7 +60,7 @@ module JWT
       end
 
       it 'must allow a singular audience payload matching any value in the options array with a string options key' do
-        Verify.verify_aud(scalar_payload, options.merge("aud" => array_aud))
+        Verify.verify_aud(scalar_payload, options.merge('aud' => array_aud))
       end
 
       it 'should allow strings or symbols in options array' do
