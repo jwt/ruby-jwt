@@ -71,7 +71,7 @@ module JWT
     end
 
     def verify_ecdsa(algorithm, public_key, signing_input, signature)
-      key_algorithm = Signature::NAMED_CURVES[public_key.group.curve_name]
+      key_algorithm = NAMED_CURVES[public_key.group.curve_name]
       if algorithm != key_algorithm
         raise IncorrectAlgorithm, "payload algorithm is #{algorithm} but #{key_algorithm} verification key was provided"
       end
