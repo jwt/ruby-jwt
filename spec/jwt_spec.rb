@@ -1,5 +1,6 @@
 require 'spec_helper'
 require 'jwt'
+require 'jwt/encode'
 require 'jwt/decode'
 
 describe JWT do
@@ -225,7 +226,7 @@ describe JWT do
   context 'Base64' do
     it 'urlsafe replace + / with - _' do
       allow(Base64).to receive(:encode64) { 'string+with/non+url-safe/characters_' }
-      expect(JWT.base64url_encode('foo')).to eq('string-with_non-url-safe_characters_')
+      expect(JWT::Encode.base64url_encode('foo')).to eq('string-with_non-url-safe_characters_')
     end
   end
 end

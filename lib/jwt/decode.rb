@@ -7,6 +7,11 @@ module JWT
   class Decode
     attr_reader :header, :payload, :signature
 
+    def self.base64url_decode(str)
+      str += '=' * (4 - str.length.modulo(4))
+      Base64.decode64(str.tr('-_', '+/'))
+    end
+
     def initialize(jwt, verify)
       @jwt = jwt
       @verify = verify
@@ -20,13 +25,14 @@ module JWT
       [@header, @payload, @signature, signing_input]
     end
 
+    private
+
     def raw_segments(jwt, verify)
       segments = jwt.split('.')
       required_num_segments = verify ? [3] : [2, 3]
       raise(JWT::DecodeError, 'Not enough or too many segments') unless required_num_segments.include? segments.length
       segments
     end
-    private :raw_segments
 
     def decode_header_and_payload(header_segment, payload_segment)
       header = JSON.parse(Decode.base64url_decode(header_segment))
@@ -34,12 +40,6 @@ module JWT
       [header, payload]
     rescue JSON::ParserError
       raise JWT::DecodeError, 'Invalid segment encoding'
-    end
-    private :decode_header_and_payload
-
-    def self.base64url_decode(str)
-      str += '=' * (4 - str.length.modulo(4))
-      Base64.decode64(str.tr('-_', '+/'))
     end
   end
 end

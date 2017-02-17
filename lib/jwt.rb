@@ -64,12 +64,4 @@ module JWT
     end
     [header['alg'], key]
   end
-
-  def base64url_decode(str)
-    Decode.base64url_decode(str)
-  end
-
-  def base64url_encode(str)
-    Base64.encode64(str).tr('+/', '-_').gsub(/[\n=]/, '')
-  end
 end

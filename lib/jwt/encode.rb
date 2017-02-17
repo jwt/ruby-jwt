@@ -7,6 +7,10 @@ module JWT
   class Encode
     attr_reader :payload, :key, :algorithm, :header_fields, :segments
 
+    def self.base64url_encode(str)
+      Base64.encode64(str).tr('+/', '-_').gsub(/[\n=]/, '')
+    end
+
     def initialize(payload, key, algorithm, header_fields)
       @payload = payload
       @key = key
@@ -19,12 +23,12 @@ module JWT
 
     def encoded_header(algorithm, header_fields)
       header = { 'alg' => algorithm }.merge(header_fields)
-      JWT.base64url_encode(JSON.generate(header))
+      Encode.base64url_encode(JSON.generate(header))
     end
 
     def encoded_payload(payload)
       raise InvalidPayload, 'exp claim must be an integer' if payload['exp'] && payload['exp'].is_a?(Time)
-      JWT.base64url_encode(JSON.generate(payload))
+      Encode.base64url_encode(JSON.generate(payload))
     end
 
     def encoded_signature(signing_input, key, algorithm)
@@ -32,7 +36,7 @@ module JWT
         ''
       else
         signature = JWT::Signature.sign(algorithm, signing_input, key)
-        JWT.base64url_encode(signature)
+        Encode.base64url_encode(signature)
       end
     end
 
