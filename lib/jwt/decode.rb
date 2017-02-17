@@ -10,12 +10,10 @@ module JWT
   class Decode
     attr_reader :header, :payload, :signature
 
-    def initialize(jwt, key, verify, options, &keyfinder)
+    def initialize(jwt, verify, options)
       @jwt = jwt
-      @key = key
       @verify = verify
       @options = options
-      @keyfinder = keyfinder
     end
 
     def decode_segments

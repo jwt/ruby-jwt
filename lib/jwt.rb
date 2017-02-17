@@ -17,12 +17,12 @@ module JWT
 
   module_function
 
-  def decoded_segments(jwt, key = nil, verify = true, custom_options = {}, &keyfinder)
+  def decoded_segments(jwt, verify = true, custom_options = {})
     raise(JWT::DecodeError, 'Nil JSON web token') unless jwt
 
     merged_options = DEFAULT_OPTIONS.merge(custom_options)
 
-    decoder = Decode.new jwt, key, verify, merged_options, &keyfinder
+    decoder = Decode.new jwt, verify, merged_options
     decoder.decode_segments
   end
 
@@ -35,7 +35,7 @@ module JWT
     raise(JWT::DecodeError, 'Nil JSON web token') unless jwt
 
     merged_options = DEFAULT_OPTIONS.merge(custom_options)
-    decoder = Decode.new jwt, key, verify, merged_options, &keyfinder
+    decoder = Decode.new jwt, verify, merged_options
     header, payload, signature, signing_input = decoder.decode_segments
     decode_verify_signature(key, header, payload, signature, signing_input, merged_options, &keyfinder) if verify
     decoder.verify
