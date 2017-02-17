@@ -1,11 +1,9 @@
 # frozen_string_literal: true
-require 'jwt/json'
+require 'json'
 require 'jwt/verify'
 
 # JWT::Decode module
 module JWT
-  extend JWT::Json
-
   # Decoding logic for JWT
   class Decode
     attr_reader :header, :payload, :signature
@@ -33,9 +31,11 @@ module JWT
     private :raw_segments
 
     def decode_header_and_payload(header_segment, payload_segment)
-      header = JWT.decode_json(Decode.base64url_decode(header_segment))
-      payload = JWT.decode_json(Decode.base64url_decode(payload_segment))
+      header = JSON.parse(Decode.base64url_decode(header_segment))
+      payload = JSON.parse(Decode.base64url_decode(payload_segment))
       [header, payload]
+    rescue JSON::ParserError
+      raise JWT::DecodeError, 'Invalid segment encoding'
     end
     private :decode_header_and_payload
 

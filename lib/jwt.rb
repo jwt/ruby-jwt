@@ -4,7 +4,6 @@ require 'jwt/decode'
 require 'jwt/default_options'
 require 'jwt/encode'
 require 'jwt/error'
-require 'jwt/json'
 require 'jwt/signature'
 
 # JSON Web Token implementation
@@ -12,7 +11,6 @@ require 'jwt/signature'
 # Should be up to date with the latest spec:
 # https://tools.ietf.org/html/rfc7519#section-4.1.5
 module JWT
-  extend JWT::Json
   include JWT::DefaultOptions
 
   module_function
