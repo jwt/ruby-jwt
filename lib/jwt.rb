@@ -5,6 +5,7 @@ require 'jwt/default_options'
 require 'jwt/encode'
 require 'jwt/error'
 require 'jwt/signature'
+require 'jwt/verify'
 
 # JSON Web Token implementation
 #
@@ -15,12 +16,10 @@ module JWT
 
   module_function
 
-  def decoded_segments(jwt, verify = true, custom_options = {})
+  def decoded_segments(jwt, verify = true)
     raise(JWT::DecodeError, 'Nil JSON web token') unless jwt
 
-    merged_options = DEFAULT_OPTIONS.merge(custom_options)
-
-    decoder = Decode.new jwt, verify, merged_options
+    decoder = Decode.new jwt, verify
     decoder.decode_segments
   end
 
@@ -33,10 +32,12 @@ module JWT
     raise(JWT::DecodeError, 'Nil JSON web token') unless jwt
 
     merged_options = DEFAULT_OPTIONS.merge(custom_options)
-    decoder = Decode.new jwt, verify, merged_options
+
+    decoder = Decode.new jwt, verify
     header, payload, signature, signing_input = decoder.decode_segments
     decode_verify_signature(key, header, payload, signature, signing_input, merged_options, &keyfinder) if verify
-    decoder.verify
+
+    Verify.verify_claims(payload, merged_options)
 
     raise(JWT::DecodeError, 'Not enough or too many segments') unless header && payload
 

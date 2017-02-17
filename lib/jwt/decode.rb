@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 require 'json'
-require 'jwt/verify'
 
 # JWT::Decode module
 module JWT
@@ -8,10 +7,9 @@ module JWT
   class Decode
     attr_reader :header, :payload, :signature
 
-    def initialize(jwt, verify, options)
+    def initialize(jwt, verify)
       @jwt = jwt
       @verify = verify
-      @options = options
     end
 
     def decode_segments
@@ -42,14 +40,6 @@ module JWT
     def self.base64url_decode(str)
       str += '=' * (4 - str.length.modulo(4))
       Base64.decode64(str.tr('-_', '+/'))
-    end
-
-    def verify
-      @options.each do |key, val|
-        next unless key.to_s =~ /verify/
-
-        Verify.send(key, payload, @options) if val
-      end
     end
   end
 end

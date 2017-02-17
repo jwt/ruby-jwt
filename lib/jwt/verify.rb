@@ -10,6 +10,13 @@ module JWT
           new(payload, options).send(method_name)
         end
       end
+
+      def verify_claims(payload, options)
+        options.each do |key, val|
+          next unless key.to_s =~ /verify/
+          Verify.send(key, payload, options) if val
+        end
+      end
     end
 
     def initialize(payload, options)
