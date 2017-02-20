@@ -25,55 +25,20 @@ module JWT
         end.to raise_error JWT::InvalidAudError
       end
 
-      it 'must raise JWT::InvalidAudError when the singular audience does not match and the options aud key is a string' do
-        expect do
-          Verify.verify_aud(scalar_payload, options.merge('aud' => 'no-match'))
-        end.to raise_error JWT::InvalidAudError
-      end
-
       it 'must allow a matching singular audience to pass' do
         Verify.verify_aud(scalar_payload, options.merge(aud: scalar_aud))
-      end
-
-      it 'must allow a matching audence to pass when the options key is a string' do
-        Verify.verify_aud(scalar_payload, options.merge('aud' => scalar_aud))
       end
 
       it 'must allow an array with any value matching the one in the options' do
         Verify.verify_aud(array_payload, options.merge(aud: array_aud.first))
       end
 
-      it 'must allow an array with any value matching the one in the options with a string options key' do
-        Verify.verify_aud(array_payload, options.merge('aud' => array_aud.first))
-      end
-
       it 'must allow an array with any value matching any value in the options array' do
         Verify.verify_aud(array_payload, options.merge(aud: array_aud))
       end
 
-      it 'must allow an array with any value matching any value in the options array with a string options key' do
-        Verify.verify_aud(array_payload, options.merge('aud' => array_aud))
-      end
-
       it 'must allow a singular audience payload matching any value in the options array' do
         Verify.verify_aud(scalar_payload, options.merge(aud: array_aud))
-      end
-
-      it 'must allow a singular audience payload matching any value in the options array with a string options key' do
-        Verify.verify_aud(scalar_payload, options.merge('aud' => array_aud))
-      end
-
-      it 'should allow strings or symbols in options array' do
-        options['aud'] = [
-          'ruby-jwt-aud',
-          'test-aud',
-          'ruby-ruby-ruby',
-          :test
-        ]
-
-        array_payload['aud'].push('test')
-
-        Verify.verify_aud(array_payload, options)
       end
     end
 

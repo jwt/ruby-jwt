@@ -4,25 +4,22 @@ require 'jwt/decode'
 require 'jwt/default_options'
 require 'jwt/encode'
 require 'jwt/error'
-require 'jwt/json'
 require 'jwt/signature'
+require 'jwt/verify'
 
 # JSON Web Token implementation
 #
 # Should be up to date with the latest spec:
 # https://tools.ietf.org/html/rfc7519#section-4.1.5
 module JWT
-  extend JWT::Json
   include JWT::DefaultOptions
 
   module_function
 
-  def decoded_segments(jwt, key = nil, verify = true, custom_options = {}, &keyfinder)
+  def decoded_segments(jwt, verify = true)
     raise(JWT::DecodeError, 'Nil JSON web token') unless jwt
 
-    merged_options = DEFAULT_OPTIONS.merge(custom_options)
-
-    decoder = Decode.new jwt, key, verify, merged_options, &keyfinder
+    decoder = Decode.new jwt, verify
     decoder.decode_segments
   end
 
@@ -35,10 +32,12 @@ module JWT
     raise(JWT::DecodeError, 'Nil JSON web token') unless jwt
 
     merged_options = DEFAULT_OPTIONS.merge(custom_options)
-    decoder = Decode.new jwt, key, verify, merged_options, &keyfinder
+
+    decoder = Decode.new jwt, verify
     header, payload, signature, signing_input = decoder.decode_segments
     decode_verify_signature(key, header, payload, signature, signing_input, merged_options, &keyfinder) if verify
-    decoder.verify
+
+    Verify.verify_claims(payload, merged_options)
 
     raise(JWT::DecodeError, 'Not enough or too many segments') unless header && payload
 
@@ -64,13 +63,5 @@ module JWT
       raise JWT::DecodeError, 'No verification key available' unless key
     end
     [header['alg'], key]
-  end
-
-  def base64url_decode(str)
-    Decode.base64url_decode(str)
-  end
-
-  def base64url_encode(str)
-    Base64.encode64(str).tr('+/', '-_').gsub(/[\n=]/, '')
   end
 end

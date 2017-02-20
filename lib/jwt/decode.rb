@@ -1,21 +1,20 @@
 # frozen_string_literal: true
-require 'jwt/json'
-require 'jwt/verify'
+require 'json'
 
 # JWT::Decode module
 module JWT
-  extend JWT::Json
-
   # Decoding logic for JWT
   class Decode
     attr_reader :header, :payload, :signature
 
-    def initialize(jwt, key, verify, options, &keyfinder)
+    def self.base64url_decode(str)
+      str += '=' * (4 - str.length.modulo(4))
+      Base64.decode64(str.tr('-_', '+/'))
+    end
+
+    def initialize(jwt, verify)
       @jwt = jwt
-      @key = key
       @verify = verify
-      @options = options
-      @keyfinder = keyfinder
     end
 
     def decode_segments
@@ -26,32 +25,21 @@ module JWT
       [@header, @payload, @signature, signing_input]
     end
 
+    private
+
     def raw_segments(jwt, verify)
       segments = jwt.split('.')
       required_num_segments = verify ? [3] : [2, 3]
       raise(JWT::DecodeError, 'Not enough or too many segments') unless required_num_segments.include? segments.length
       segments
     end
-    private :raw_segments
 
     def decode_header_and_payload(header_segment, payload_segment)
-      header = JWT.decode_json(Decode.base64url_decode(header_segment))
-      payload = JWT.decode_json(Decode.base64url_decode(payload_segment))
+      header = JSON.parse(Decode.base64url_decode(header_segment))
+      payload = JSON.parse(Decode.base64url_decode(payload_segment))
       [header, payload]
-    end
-    private :decode_header_and_payload
-
-    def self.base64url_decode(str)
-      str += '=' * (4 - str.length.modulo(4))
-      Base64.decode64(str.tr('-_', '+/'))
-    end
-
-    def verify
-      @options.each do |key, val|
-        next unless key.to_s =~ /verify/
-
-        Verify.send(key, payload, @options) if val
-      end
+    rescue JSON::ParserError
+      raise JWT::DecodeError, 'Invalid segment encoding'
     end
   end
 end

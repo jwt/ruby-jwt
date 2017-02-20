@@ -10,6 +10,13 @@ module JWT
           new(payload, options).send(method_name)
         end
       end
+
+      def verify_claims(payload, options)
+        options.each do |key, val|
+          next unless key.to_s =~ /verify/
+          Verify.send(key, payload, options) if val
+        end
+      end
     end
 
     def initialize(payload, options)
@@ -18,7 +25,7 @@ module JWT
     end
 
     def verify_aud
-      return unless (options_aud = extract_option(:aud))
+      return unless (options_aud = @options[:aud])
       raise(JWT::InvalidAudError, "Invalid audience. Expected #{options_aud}, received #{@payload['aud'] || '<none>'}") if ([*@payload['aud']] & [*options_aud]).empty?
     end
 
@@ -33,12 +40,12 @@ module JWT
     end
 
     def verify_iss
-      return unless (options_iss = extract_option(:iss))
+      return unless (options_iss = @options[:iss])
       raise(JWT::InvalidIssuerError, "Invalid issuer. Expected #{options_iss}, received #{@payload['iss'] || '<none>'}") if @payload['iss'].to_s != options_iss.to_s
     end
 
     def verify_jti
-      options_verify_jti = extract_option(:verify_jti)
+      options_verify_jti = @options[:verify_jti]
       if options_verify_jti.respond_to?(:call)
         raise(JWT::InvalidJtiError, 'Invalid jti') unless options_verify_jti.call(@payload['jti'])
       elsif @payload['jti'].to_s.strip.empty?
@@ -52,30 +59,26 @@ module JWT
     end
 
     def verify_sub
-      return unless (options_sub = extract_option(:sub))
+      return unless (options_sub = @options[:sub])
       raise(JWT::InvalidSubError, "Invalid subject. Expected #{options_sub}, received #{@payload['sub'] || '<none>'}") unless @payload['sub'].to_s == options_sub.to_s
     end
 
     private
 
-    def extract_option(key)
-      @options.values_at(key.to_sym, key.to_s).compact.first
-    end
-
     def global_leeway
-      extract_option :leeway
+      @options[:leeway]
     end
 
     def exp_leeway
-      extract_option(:exp_leeway) || global_leeway
+      @options[:exp_leeway] || global_leeway
     end
 
     def iat_leeway
-      extract_option(:iat_leeway) || global_leeway
+      @options[:iat_leeway] || global_leeway
     end
 
     def nbf_leeway
-      extract_option(:nbf_leeway) || global_leeway
+      @options[:nbf_leeway] || global_leeway
     end
   end
 end
