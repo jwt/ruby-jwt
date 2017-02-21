@@ -1,11 +1,15 @@
 # frozen_string_literal: true
 require 'openssl'
+begin
+  require 'rbnacl'
+rescue LoadError
+end
 
 module JWT
   module Signature
     extend self
 
-    HMAC_ALGORITHMS = %w(HS256 HS384 HS512).freeze
+    HMAC_ALGORITHMS = %w(HS256 HS512256 HS384 HS512).freeze
     RSA_ALGORITHMS = %w(RS256 RS384 RS512).freeze
     ECDSA_ALGORITHMS = %w(ES256 ES384 ES512).freeze
 
@@ -29,7 +33,7 @@ module JWT
 
     def verify(algo, key, signing_input, signature)
       verified = if HMAC_ALGORITHMS.include?(algo)
-                   secure_compare(signature, sign_hmac(algo, signing_input, key))
+                   verify_hmac(algo, key, signing_input, signature)
                  elsif RSA_ALGORITHMS.include?(algo)
                    verify_rsa(algo, key, signing_input, signature)
                  elsif ECDSA_ALGORITHMS.include?(algo)
@@ -63,7 +67,12 @@ module JWT
     end
 
     def sign_hmac(algorithm, msg, key)
-      OpenSSL::HMAC.digest(OpenSSL::Digest.new(algorithm.sub('HS', 'sha')), key, msg)
+      authenticator, padded_key = rbnacl_fixup(algorithm, key)
+      if authenticator && padded_key
+        authenticator.auth(padded_key, msg.encode('binary'))
+      else
+        OpenSSL::HMAC.digest(OpenSSL::Digest.new(algorithm.sub('HS', 'sha')), key, msg)
+      end
     end
 
     def verify_rsa(algorithm, public_key, signing_input, signature)
@@ -80,6 +89,19 @@ module JWT
       public_key.dsa_verify_asn1(digest.digest(signing_input), raw_to_asn1(signature, public_key))
     end
 
+    def verify_hmac(algorithm, public_key, signing_input, signature)
+      authenticator, padded_key = rbnacl_fixup(algorithm, public_key)
+      if authenticator && padded_key
+        begin
+          authenticator.verify(padded_key, signature.encode('binary'), signing_input.encode('binary'))
+        rescue RbNaCl::BadAuthenticatorError
+          false
+        end
+      else
+        secure_compare(signature, sign_hmac(algorithm, signing_input, public_key))
+      end
+    end
+
     def asn1_to_raw(signature, public_key)
       byte_size = (public_key.group.degree + 7) / 8
       OpenSSL::ASN1.decode(signature).value.map { |value| value.value.to_s(2).rjust(byte_size, "\x00") }.join
@@ -90,6 +112,22 @@ module JWT
       r = signature[0..(byte_size - 1)]
       s = signature[byte_size..-1] || ''
       OpenSSL::ASN1::Sequence.new([r, s].map { |int| OpenSSL::ASN1::Integer.new(OpenSSL::BN.new(int, 2)) }).to_der
+    end
+
+    def rbnacl_fixup(algorithm, key)
+      algorithm = algorithm.sub('HS', 'SHA').to_sym
+
+      return [] unless defined?(RbNaCl) && RbNaCl::HMAC.constants(false).include?(algorithm)
+
+      authenticator = RbNaCl::HMAC.const_get(algorithm)
+
+      # Fall back to OpenSSL for keys larger than 32 bytes.
+      return [] if key.bytesize > authenticator.key_bytes
+
+      [
+        authenticator,
+        key.bytes.fill(0, key.bytesize...authenticator.key_bytes).pack('C*')
+      ]
     end
 
     # From devise
