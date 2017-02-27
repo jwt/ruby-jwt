@@ -10,7 +10,7 @@ require 'jwt/verify'
 # JSON Web Token implementation
 #
 # Should be up to date with the latest spec:
-# https://tools.ietf.org/html/rfc7519#section-4.1.5
+# https://tools.ietf.org/html/rfc7519
 module JWT
   include JWT::DefaultOptions
 
