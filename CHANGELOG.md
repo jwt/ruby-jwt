@@ -1,5 +1,52 @@
 # Change Log
 
+## [v2.0.0](https://github.com/jwt/ruby-jwt/tree/v2.0.0) (2017-02-27)
+[Full Changelog](https://github.com/jwt/ruby-jwt/compare/v1.5.6...v2.0.0)
+
+**Implemented enhancements:**
+
+- Error with method sign for String [\#171](https://github.com/jwt/ruby-jwt/issues/171)
+- Refactor the encondig code [\#121](https://github.com/jwt/ruby-jwt/issues/121)
+- Refactor [\#196](https://github.com/jwt/ruby-jwt/pull/196) ([EmilioCristalli](https://github.com/EmilioCristalli))
+- Move signature logic to its own module [\#195](https://github.com/jwt/ruby-jwt/pull/195) ([EmilioCristalli](https://github.com/EmilioCristalli))
+- Add options for claim-specific leeway [\#187](https://github.com/jwt/ruby-jwt/pull/187) ([EmilioCristalli](https://github.com/EmilioCristalli))
+- Add user friendly encode error if private key is a String, \#171 [\#176](https://github.com/jwt/ruby-jwt/pull/176) ([xamenrax](https://github.com/xamenrax))
+- Return empty string if signature less than byte\_size \#155 [\#175](https://github.com/jwt/ruby-jwt/pull/175) ([xamenrax](https://github.com/xamenrax))
+- Remove 'typ' optional parameter [\#174](https://github.com/jwt/ruby-jwt/pull/174) ([xamenrax](https://github.com/xamenrax))
+- Pass payload to keyfinder [\#172](https://github.com/jwt/ruby-jwt/pull/172) ([CodeMonkeySteve](https://github.com/CodeMonkeySteve))
+- Use RbNaCl for HMAC if available with fallback to OpenSSL [\#149](https://github.com/jwt/ruby-jwt/pull/149) ([mwpastore](https://github.com/mwpastore))
+
+**Fixed bugs:**
+
+- ruby-jwt::raw\_to\_asn1: Fails for signatures less than byte\_size [\#155](https://github.com/jwt/ruby-jwt/issues/155)
+- The leeway parameter is applies to all time based verifications [\#129](https://github.com/jwt/ruby-jwt/issues/129)
+- Add options for claim-specific leeway [\#187](https://github.com/jwt/ruby-jwt/pull/187) ([EmilioCristalli](https://github.com/EmilioCristalli))
+- Make algorithm option required to verify signature [\#184](https://github.com/jwt/ruby-jwt/pull/184) ([EmilioCristalli](https://github.com/EmilioCristalli))
+- Validate audience when payload is a scalar and options is an array [\#183](https://github.com/jwt/ruby-jwt/pull/183) ([steti](https://github.com/steti))
+
+**Closed issues:**
+
+- Different encoded value between servers with same password [\#197](https://github.com/jwt/ruby-jwt/issues/197)
+- Signature is different at each run [\#190](https://github.com/jwt/ruby-jwt/issues/190)
+- Include custom headers with password [\#189](https://github.com/jwt/ruby-jwt/issues/189)
+- can't create token - 'NotImplementedError: Unsupported signing method' [\#186](https://github.com/jwt/ruby-jwt/issues/186)
+- Why jwt depends on json \< 2.0 ? [\#179](https://github.com/jwt/ruby-jwt/issues/179)
+- Cannot verify JWT at all?? [\#177](https://github.com/jwt/ruby-jwt/issues/177)
+- verify\_iss: true is raising JWT::DecodeError instead of JWT::InvalidIssuerError [\#170](https://github.com/jwt/ruby-jwt/issues/170)
+
+**Merged pull requests:**
+
+- Add Codacy coverage reporter [\#194](https://github.com/jwt/ruby-jwt/pull/194) ([excpt](https://github.com/excpt))
+- Add minimum required ruby version to gemspec [\#193](https://github.com/jwt/ruby-jwt/pull/193) ([excpt](https://github.com/excpt))
+- Code smell fixes [\#192](https://github.com/jwt/ruby-jwt/pull/192) ([excpt](https://github.com/excpt))
+- Version bump to 2.0.0.dev [\#191](https://github.com/jwt/ruby-jwt/pull/191) ([excpt](https://github.com/excpt))
+- Basic encode module refactoring \#121 [\#182](https://github.com/jwt/ruby-jwt/pull/182) ([xamenrax](https://github.com/xamenrax))
+- Fix travis ci build configuration [\#181](https://github.com/jwt/ruby-jwt/pull/181) ([excpt](https://github.com/excpt))
+- Fix travis ci build configuration [\#180](https://github.com/jwt/ruby-jwt/pull/180) ([excpt](https://github.com/excpt))
+- Fix typo in README [\#178](https://github.com/jwt/ruby-jwt/pull/178) ([tomeduarte](https://github.com/tomeduarte))
+- Fix code style [\#173](https://github.com/jwt/ruby-jwt/pull/173) ([excpt](https://github.com/excpt))
+- Fixed a typo in a spec name [\#169](https://github.com/jwt/ruby-jwt/pull/169) ([Mingan](https://github.com/Mingan))
+
 ## [v1.5.6](https://github.com/jwt/ruby-jwt/tree/v1.5.6) (2016-09-19)
 [Full Changelog](https://github.com/jwt/ruby-jwt/compare/v1.5.5...v1.5.6)
 
@@ -9,6 +56,7 @@
 
 **Merged pull requests:**
 
+- Update changelog [\#168](https://github.com/jwt/ruby-jwt/pull/168) ([excpt](https://github.com/excpt))
 - Fix rubocop code smells [\#167](https://github.com/jwt/ruby-jwt/pull/167) ([excpt](https://github.com/excpt))
 
 ## [v1.5.5](https://github.com/jwt/ruby-jwt/tree/v1.5.5) (2016-09-16)
