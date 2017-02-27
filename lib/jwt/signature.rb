@@ -5,7 +5,9 @@ begin
 rescue LoadError
 end
 
+# JWT::Signature module
 module JWT
+  # Signature logic for JWT
   module Signature
     extend self
 
