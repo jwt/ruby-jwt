@@ -2,7 +2,8 @@
 require 'openssl'
 begin
   require 'rbnacl'
-rescue LoadError
+rescue LoadError => e
+  abort(e.message) if defined?(RbNaCl)
 end
 
 # JWT::Signature module
