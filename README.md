@@ -87,6 +87,10 @@ puts decoded_token
 
 Note: If [RbNaCl](https://github.com/cryptosphere/rbnacl) is loadable, ruby-jwt will use it for HMAC-SHA256, HMAC-SHA512/256, and HMAC-SHA512. RbNaCl enforces a maximum key size of 32 bytes for these algorithms.
 
+[RbNaCl](https://github.com/cryptosphere/rbnacl) requires
+[libsodium](https://github.com/jedisct1/libsodium), it can installed
+on MacOS with `brew install libsodium`.
+
 **RSA**
 
 * RS256 - RSA using SHA-256 hash algorithm
