@@ -11,7 +11,7 @@ If you have further questions related to development or usage, join us: [ruby-jw
 
 ## Announcements
 
-* Ruby 1.9.3 support will be dropped by December 31st, 2016.
+* Ruby 1.9.3 support was dropped at December 31st, 2016.
 * Version 1.5.3 yanked. See: [#132](https://github.com/jwt/ruby-jwt/issues/132) and [#133](https://github.com/jwt/ruby-jwt/issues/133)
 
 ## Installing
