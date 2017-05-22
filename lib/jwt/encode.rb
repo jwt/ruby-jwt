@@ -27,7 +27,7 @@ module JWT
     end
 
     def encoded_payload(payload)
-      raise InvalidPayload, 'exp claim must be an integer' if payload && payload['exp'] && payload['exp'].is_a?(Time)
+      raise InvalidPayload, 'exp claim must be an integer' if payload && payload['exp'] && !payload['exp'].is_a?(Integer)
       Encode.base64url_encode(JSON.generate(payload))
     end
 
