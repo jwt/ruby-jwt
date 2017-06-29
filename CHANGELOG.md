@@ -15,6 +15,7 @@
 - Remove 'typ' optional parameter [\#174](https://github.com/jwt/ruby-jwt/pull/174) ([xamenrax](https://github.com/xamenrax))
 - Pass payload to keyfinder [\#172](https://github.com/jwt/ruby-jwt/pull/172) ([CodeMonkeySteve](https://github.com/CodeMonkeySteve))
 - Use RbNaCl for HMAC if available with fallback to OpenSSL [\#149](https://github.com/jwt/ruby-jwt/pull/149) ([mwpastore](https://github.com/mwpastore))
+- Allow configuration of multiple acceptable issuers [\#210](https://github.com/jwt/ruby-jwt/pull/210)
 
 **Fixed bugs:**
 

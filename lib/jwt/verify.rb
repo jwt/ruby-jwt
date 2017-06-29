@@ -41,7 +41,8 @@ module JWT
 
     def verify_iss
       return unless (options_iss = @options[:iss])
-      raise(JWT::InvalidIssuerError, "Invalid issuer. Expected #{options_iss}, received #{@payload['iss'] || '<none>'}") if @payload['iss'].to_s != options_iss.to_s
+      return if Array(options_iss).map(&:to_s).include?(@payload['iss'].to_s)
+      raise(JWT::InvalidIssuerError, "Invalid issuer. Expected #{options_iss}, received #{@payload['iss'] || '<none>'}")
     end
 
     def verify_jti

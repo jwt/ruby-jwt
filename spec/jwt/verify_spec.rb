@@ -108,20 +108,39 @@ module JWT
 
       let(:invalid_token) { JWT.encode base_payload, payload[:secret] }
 
-      it 'must raise JWT::InvalidIssuerError when the configured issuer does not match the payload issuer' do
-        expect do
-          Verify.verify_iss(payload, options.merge(iss: 'mismatched-issuer'))
-        end.to raise_error JWT::InvalidIssuerError
-      end
+      context 'when iss is a String' do
+        it 'must raise JWT::InvalidIssuerError when the configured issuer does not match the payload issuer' do
+          expect do
+            Verify.verify_iss(payload, options.merge(iss: 'mismatched-issuer'))
+          end.to raise_error JWT::InvalidIssuerError
+        end
 
-      it 'must raise JWT::InvalidIssuerError when the payload does not include an issuer' do
-        expect do
-          Verify.verify_iss(base_payload, options.merge(iss: iss))
-        end.to raise_error(JWT::InvalidIssuerError, /received <none>/)
-      end
+        it 'must raise JWT::InvalidIssuerError when the payload does not include an issuer' do
+          expect do
+            Verify.verify_iss(base_payload, options.merge(iss: iss))
+          end.to raise_error(JWT::InvalidIssuerError, /received <none>/)
+        end
 
-      it 'must allow a matching issuer to pass' do
-        Verify.verify_iss(payload, options.merge(iss: iss))
+        it 'must allow a matching issuer to pass' do
+          Verify.verify_iss(payload, options.merge(iss: iss))
+        end
+      end
+      context 'when iss is an Array' do
+        it 'must raise JWT::InvalidIssuerError when no matching issuers in array' do
+          expect do
+            Verify.verify_iss(payload, options.merge(iss: %w[first second]))
+          end.to raise_error JWT::InvalidIssuerError
+        end
+
+        it 'must raise JWT::InvalidIssuerError when the payload does not include an issuer' do
+          expect do
+            Verify.verify_iss(base_payload, options.merge(iss: %w[first second]))
+          end.to raise_error(JWT::InvalidIssuerError, /received <none>/)
+        end
+
+        it 'must allow an array with matching issuer to pass' do
+          Verify.verify_iss(payload, options.merge(iss: ['first', iss, 'third']))
+        end
       end
     end
 
