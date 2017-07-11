@@ -277,6 +277,8 @@ From [Oauth JSON Web Token 4.1.1. "iss" (Issuer) Claim](https://tools.ietf.org/h
 
 > The `iss` (issuer) claim identifies the principal that issued the JWT. The processing of this claim is generally application specific. The `iss` value is a case-sensitive string containing a ***StringOrURI*** value. Use of this claim is OPTIONAL.
 
+You can pass multiple allowed issuers as an Array, verification will pass if oCne of them matches the `iss` value in the payload.
+
 ```ruby
 iss = 'My Awesome Company Inc. or https://my.awesome.website/'
 iss_payload = { :data => 'data', :iss => iss }
