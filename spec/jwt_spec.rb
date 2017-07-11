@@ -60,6 +60,14 @@ describe JWT do
         JWT.encode payload, nil, alg
       end.to raise_error JWT::InvalidPayload
     end
+
+    it 'should display a better error message if payload exp is not an Integer' do
+      payload['exp'] = Time.now.to_i.to_s
+
+      expect do
+        JWT.encode payload, nil, alg
+      end.to raise_error JWT::InvalidPayload
+    end
   end
 
   %w(HS256 HS512256 HS384 HS512).each do |alg|
