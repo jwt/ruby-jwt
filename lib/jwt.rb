@@ -134,11 +134,11 @@ module JWT
 
   def decode_verify_signature(key, header, signature, signing_input, options, &keyfinder)
     algo, key = signature_algorithm_and_key(header, key, &keyfinder)
-    # convert hmac-sha512 to the standard value HS512
-    algo = 'HS512' if algo.include?('hmac-sha512')
     if options[:algorithm] && algo != options[:algorithm]
       raise JWT::IncorrectAlgorithm, 'Expected a different algorithm'
     end
+    # convert hmac-sha512 to the standard value HS512
+    algo = 'HS512' if algo.include?('hmac-sha512')
     verify_signature(algo, key, signing_input, signature)
   end
 
