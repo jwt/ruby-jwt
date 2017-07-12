@@ -1,6 +1,8 @@
+# frozen_string_literal: true
 require 'base64'
 require 'openssl'
 require 'jwt/decode'
+require 'jwt/error'
 require 'jwt/json'
 
 # JSON Web Token implementation
@@ -8,23 +10,24 @@ require 'jwt/json'
 # Should be up to date with the latest spec:
 # https://tools.ietf.org/html/rfc7519#section-4.1.5
 module JWT
-  class DecodeError < StandardError; end
-  class VerificationError < DecodeError; end
-  class ExpiredSignature < DecodeError; end
-  class IncorrectAlgorithm < DecodeError; end
-  class ImmatureSignature < DecodeError; end
-  class InvalidIssuerError < DecodeError; end
-  class InvalidIatError < DecodeError; end
-  class InvalidAudError < DecodeError; end
-  class InvalidSubError < DecodeError; end
-  class InvalidJtiError < DecodeError; end
   extend JWT::Json
 
   NAMED_CURVES = {
     'prime256v1' => 'ES256',
     'secp384r1' => 'ES384',
     'secp521r1' => 'ES512'
-  }
+  }.freeze
+
+  DEFAULT_OPTIONS = {
+    verify_expiration: true,
+    verify_not_before: true,
+    verify_iss: false,
+    verify_iat: false,
+    verify_jti: false,
+    verify_aud: false,
+    verify_sub: false,
+    leeway: 0
+  }.freeze
 
   module_function
 
@@ -36,7 +39,7 @@ module JWT
     elsif %w(ES256 ES384 ES512).include?(algorithm)
       sign_ecdsa(algorithm, msg, key)
     else
-      fail NotImplementedError, 'Unsupported signing method'
+      raise NotImplementedError, 'Unsupported signing method'
     end
   end
 
@@ -47,7 +50,7 @@ module JWT
   def sign_ecdsa(algorithm, msg, private_key)
     key_algorithm = NAMED_CURVES[private_key.group.curve_name]
     if algorithm != key_algorithm
-      fail IncorrectAlgorithm, "payload algorithm is #{algorithm} but #{key_algorithm} signing key was provided"
+      raise IncorrectAlgorithm, "payload algorithm is #{algorithm} but #{key_algorithm} signing key was provided"
     end
 
     digest = OpenSSL::Digest.new(algorithm.sub('ES', 'sha'))
@@ -61,7 +64,7 @@ module JWT
   def verify_ecdsa(algorithm, public_key, signing_input, signature)
     key_algorithm = NAMED_CURVES[public_key.group.curve_name]
     if algorithm != key_algorithm
-      fail IncorrectAlgorithm, "payload algorithm is #{algorithm} but #{key_algorithm} verification key was provided"
+      raise IncorrectAlgorithm, "payload algorithm is #{algorithm} but #{key_algorithm} verification key was provided"
     end
 
     digest = OpenSSL::Digest.new(algorithm.sub('ES', 'sha'))
@@ -82,6 +85,7 @@ module JWT
   end
 
   def encoded_payload(payload)
+    raise InvalidPayload, 'exp claim must be an integer' if payload['exp'] && payload['exp'].is_a?(Time)
     base64url_encode(encode_json(payload))
   end
 
@@ -105,61 +109,62 @@ module JWT
     segments.join('.')
   end
 
-  def decode(jwt, key = nil, verify = true, custom_options = {}, &keyfinder)
-    fail(JWT::DecodeError, 'Nil JSON web token') unless jwt
+  def decoded_segments(jwt, key = nil, verify = true, custom_options = {}, &keyfinder)
+    raise(JWT::DecodeError, 'Nil JSON web token') unless jwt
 
-    options = {
-      verify_expiration: true,
-      verify_not_before: true,
-      verify_iss: false,
-      verify_iat: false,
-      verify_jti: false,
-      verify_aud: false,
-      verify_sub: false,
-      leeway: 0
-    }
-
-    merged_options = options.merge(custom_options)
+    merged_options = DEFAULT_OPTIONS.merge(custom_options)
 
     decoder = Decode.new jwt, key, verify, merged_options, &keyfinder
+    decoder.decode_segments
+  end
+
+  def decode(jwt, key = nil, verify = true, custom_options = {}, &keyfinder)
+    raise(JWT::DecodeError, 'Nil JSON web token') unless jwt
+
+    merged_options = DEFAULT_OPTIONS.merge(custom_options)
+    decoder = Decode.new jwt, key, verify, merged_options, &keyfinder
     header, payload, signature, signing_input = decoder.decode_segments
+    decode_verify_signature(key, header, signature, signing_input, merged_options, &keyfinder) if verify
     decoder.verify
 
-    fail(JWT::DecodeError, 'Not enough or too many segments') unless header && payload
-
-    if verify
-      algo, key = signature_algorithm_and_key(header, key, &keyfinder)
-      if merged_options[:algorithm] && algo != merged_options[:algorithm]
-        fail JWT::IncorrectAlgorithm, 'Expected a different algorithm'
-      end
-      # Applied Systems tokens contain a non-standard algorithm label,
-      # converting to a standard label
-      algo = 'HS512' if algo.include?('hmac-sha512')
-      verify_signature(algo, key, signing_input, signature)
-    end
+    raise(JWT::DecodeError, 'Not enough or too many segments') unless header && payload
 
     [payload, header]
   end
 
+  def decode_verify_signature(key, header, signature, signing_input, options, &keyfinder)
+    algo, key = signature_algorithm_and_key(header, key, &keyfinder)
+    # convert hmac-sha512 to the standard value HS512
+    algo = 'HS512' if algo.include?('hmac-sha512')
+    if options[:algorithm] && algo != options[:algorithm]
+      raise JWT::IncorrectAlgorithm, 'Expected a different algorithm'
+    end
+    verify_signature(algo, key, signing_input, signature)
+  end
+
   def signature_algorithm_and_key(header, key, &keyfinder)
-    key = keyfinder.call(header) if keyfinder
+    key = yield(header) if keyfinder
     [header['alg'], key]
   end
 
   def verify_signature(algo, key, signing_input, signature)
-    if %w(HS256 HS384 HS512).include?(algo)
-      fail(JWT::VerificationError, 'Signature verification raised') unless secure_compare(signature, sign_hmac(algo, signing_input, key))
-    elsif %w(RS256 RS384 RS512).include?(algo)
-      fail(JWT::VerificationError, 'Signature verification raised') unless verify_rsa(algo, key, signing_input, signature)
-    elsif %w(ES256 ES384 ES512).include?(algo)
-      fail(JWT::VerificationError, 'Signature verification raised') unless verify_ecdsa(algo, key, signing_input, signature)
-    else
-      fail JWT::VerificationError, 'Algorithm not supported'
-    end
+    verify_signature_algo(algo, key, signing_input, signature)
   rescue OpenSSL::PKey::PKeyError
     raise JWT::VerificationError, 'Signature verification raised'
   ensure
     OpenSSL.errors.clear
+  end
+
+  def verify_signature_algo(algo, key, signing_input, signature)
+    if %w(HS256 HS384 HS512).include?(algo)
+      raise(JWT::VerificationError, 'Signature verification raised') unless secure_compare(signature, sign_hmac(algo, signing_input, key))
+    elsif %w(RS256 RS384 RS512).include?(algo)
+      raise(JWT::VerificationError, 'Signature verification raised') unless verify_rsa(algo, key, signing_input, signature)
+    elsif %w(ES256 ES384 ES512).include?(algo)
+      raise(JWT::VerificationError, 'Signature verification raised') unless verify_ecdsa(algo, key, signing_input, signature)
+    else
+      raise JWT::VerificationError, 'Algorithm not supported'
+    end
   end
 
   # From devise
@@ -170,7 +175,7 @@ module JWT
 
     res = 0
     b.each_byte { |byte| res |= byte ^ l.shift }
-    res == 0
+    res.zero?
   end
 
   def raw_to_asn1(signature, private_key)
@@ -183,5 +188,9 @@ module JWT
   def asn1_to_raw(signature, public_key)
     byte_size = (public_key.group.degree + 7) / 8
     OpenSSL::ASN1.decode(signature).value.map { |value| value.value.to_s(2).rjust(byte_size, "\x00") }.join
+  end
+
+  def base64url_decode(str)
+    Decode.base64url_decode(str)
   end
 end

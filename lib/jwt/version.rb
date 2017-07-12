@@ -1,4 +1,5 @@
 # encoding: utf-8
+# frozen_string_literal: true
 
 # Moments version builder module
 module JWT
@@ -13,9 +14,9 @@ module JWT
     # minor version
     MINOR = 5
     # tiny version
-    TINY  = 3
+    TINY  = 6
     # alpha, beta, etc. tag
-    PRE   = 'dev'
+    PRE   = nil
 
     # Build version string
     STRING = [MAJOR, MINOR, TINY, PRE].compact.join('.')

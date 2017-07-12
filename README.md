@@ -9,11 +9,24 @@ A pure ruby implementation of the [RFC 7519 OAuth JSON Web Token (JWT)](https://
 
 If you have further questions releated to development or usage, join us: [ruby-jwt google group](https://groups.google.com/forum/#!forum/ruby-jwt).
 
+## Announcements
+
+* Ruby 1.9.3 support will be dropped by December 31st, 2016.
+* Version 1.5.3 yanked. See: [#132](https://github.com/jwt/ruby-jwt/issues/132) and [#133](https://github.com/jwt/ruby-jwt/issues/133)
+
 ## Installing
 
+### Using Rubygems:
 ```bash
 sudo gem install jwt
 ```
+
+### Using Bundler:
+Add the following to your Gemfile
+```
+gem 'jwt'
+```
+And run `bundle install`
 
 ## Algorithms and Usage
 
@@ -33,7 +46,7 @@ payload = {:data => 'test'}
 # IMPORTANT: set nil as password parameter
 token = JWT.encode payload, nil, 'none'
 
-# eyJ0eXAiOiJKV1QiLCJhbGciOiJub25lIn0.eyJ0ZXN0IjoiZGF0YSJ9.
+# eyJ0eXAiOiJKV1QiLCJhbGciOiJub25lIn0.eyJkYXRhIjoidGVzdCJ9.
 puts token
 
 # Set password to nil and validation to false otherwise this won't work
@@ -49,8 +62,8 @@ puts decoded_token
 
 **HMAC** (default: HS256)
 
-* HS256	- HMAC using SHA-256 hash algorithm (default)
-* HS384	- HMAC using SHA-384 hash algorithm
+* HS256 - HMAC using SHA-256 hash algorithm (default)
+* HS384 - HMAC using SHA-384 hash algorithm
 * HS512 - HMAC using SHA-512 hash algorithm
 
 ```ruby
@@ -58,7 +71,7 @@ hmac_secret = 'my$ecretK3y'
 
 token = JWT.encode payload, hmac_secret, 'HS256'
 
-# eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0ZXN0IjoiZGF0YSJ9._sLPAGP-IXgho8BkMGQ86N2mah7vDyn0L5hOR4UkfoI
+# eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJkYXRhIjoidGVzdCJ9.ZxW8go9hz3ETCSfxFxpwSkYg_602gOPKearsf6DsxgY
 puts token
 
 decoded_token = JWT.decode token, hmac_secret, true, { :algorithm => 'HS256' }
@@ -328,16 +341,16 @@ end
 
 # Development and Tests
 
-We depend on [Echoe](http://rubygems.org/gems/echoe) for defining gemspec and performing releases to rubygems.org, which can be done with
+We depend on [Bundler](http://rubygems.org/gems/bundler) for defining gemspec and performing releases to rubygems.org, which can be done with
 
 ```bash
 rake release
 ```
 
-The tests are written with rspec. Given you have rake and rspec, you can run tests with
+The tests are written with rspec. Given you have installed the dependencies via bundler, you can run tests with
 
 ```bash
-rake test
+bundle exec rspec
 ```
 
 **If you want a release cut with your PR, please include a version bump according to [Semantic Versioning](http://semver.org/)**
