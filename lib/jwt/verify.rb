@@ -1,11 +1,12 @@
 # frozen_string_literal: true
+
 require 'jwt/error'
 
 module JWT
   # JWT verify methods
   class Verify
     class << self
-      %w(verify_aud verify_expiration verify_iat verify_iss verify_jti verify_not_before verify_sub).each do |method_name|
+      %w[verify_aud verify_expiration verify_iat verify_iss verify_jti verify_not_before verify_sub].each do |method_name|
         define_method method_name do |payload, options|
           new(payload, options).send(method_name)
         end

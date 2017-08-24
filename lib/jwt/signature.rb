@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require 'jwt/security_utils'
 require 'openssl'
 begin
@@ -13,9 +14,9 @@ module JWT
   module Signature
     extend self
 
-    HMAC_ALGORITHMS = %w(HS256 HS512256 HS384 HS512).freeze
-    RSA_ALGORITHMS = %w(RS256 RS384 RS512).freeze
-    ECDSA_ALGORITHMS = %w(ES256 ES384 ES512).freeze
+    HMAC_ALGORITHMS = %w[HS256 HS512256 HS384 HS512].freeze
+    RSA_ALGORITHMS = %w[RS256 RS384 RS512].freeze
+    ECDSA_ALGORITHMS = %w[ES256 ES384 ES512].freeze
 
     NAMED_CURVES = {
       'prime256v1' => 'ES256',
