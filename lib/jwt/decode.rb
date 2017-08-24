@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require 'json'
 
 # JWT::Decode module
@@ -15,6 +16,9 @@ module JWT
     def initialize(jwt, verify)
       @jwt = jwt
       @verify = verify
+      @header = ''
+      @payload = ''
+      @signature = ''
     end
 
     def decode_segments
