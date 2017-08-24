@@ -1,5 +1,6 @@
 # JWT
 
+[![Gem Version](https://badge.fury.io/rb/jwt.svg)](https://badge.fury.io/rb/jwt)
 [![Build Status](https://travis-ci.org/jwt/ruby-jwt.svg)](https://travis-ci.org/jwt/ruby-jwt)
 [![Code Climate](https://codeclimate.com/github/jwt/ruby-jwt/badges/gpa.svg)](https://codeclimate.com/github/jwt/ruby-jwt)
 [![Test Coverage](https://codeclimate.com/github/jwt/ruby-jwt/badges/coverage.svg)](https://codeclimate.com/github/jwt/ruby-jwt/coverage)
