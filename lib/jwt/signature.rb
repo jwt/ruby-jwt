@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+require 'jwt/security_utils'
 require 'openssl'
 begin
   require 'rbnacl'
@@ -101,7 +102,7 @@ module JWT
           false
         end
       else
-        secure_compare(signature, sign_hmac(algorithm, signing_input, public_key))
+        SecurityUtils.secure_compare(signature, sign_hmac(algorithm, signing_input, public_key))
       end
     end
 
@@ -112,9 +113,9 @@ module JWT
 
     def raw_to_asn1(signature, private_key)
       byte_size = (private_key.group.degree + 7) / 8
-      r = signature[0..(byte_size - 1)]
-      s = signature[byte_size..-1] || ''
-      OpenSSL::ASN1::Sequence.new([r, s].map { |int| OpenSSL::ASN1::Integer.new(OpenSSL::BN.new(int, 2)) }).to_der
+      sig_bytes = signature[0..(byte_size - 1)]
+      sig_char = signature[byte_size..-1] || ''
+      OpenSSL::ASN1::Sequence.new([sig_bytes, sig_char].map { |int| OpenSSL::ASN1::Integer.new(OpenSSL::BN.new(int, 2)) }).to_der
     end
 
     def rbnacl_fixup(algorithm, key)
@@ -131,16 +132,6 @@ module JWT
         authenticator,
         key.bytes.fill(0, key.bytesize...authenticator.key_bytes).pack('C*')
       ]
-    end
-
-    # From devise
-    # constant-time comparison algorithm to prevent timing attacks
-    def secure_compare(a, b)
-      return false if a.nil? || b.nil? || a.empty? || b.empty? || a.bytesize != b.bytesize
-      l = a.unpack "C#{a.bytesize}"
-      res = 0
-      b.each_byte { |byte| res |= byte ^ l.shift }
-      res.zero?
     end
   end
 end
