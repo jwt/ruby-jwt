@@ -16,13 +16,6 @@ module JWT
 
   module_function
 
-  def decoded_segments(jwt, verify = true)
-    raise(JWT::DecodeError, 'Nil JSON web token') unless jwt
-
-    decoder = Decode.new jwt, verify
-    decoder.decode_segments
-  end
-
   def encode(payload, key, algorithm = 'HS256', header_fields = {})
     encoder = Encode.new payload, key, algorithm, header_fields
     encoder.segments
