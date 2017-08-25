@@ -27,7 +27,9 @@ module JWT
 
     def verify_aud
       return unless (options_aud = @options[:aud])
-      raise(JWT::InvalidAudError, "Invalid audience. Expected #{options_aud}, received #{@payload['aud'] || '<none>'}") if ([*@payload['aud']] & [*options_aud]).empty?
+
+      aud = @payload['aud']
+      raise(JWT::InvalidAudError, "Invalid audience. Expected #{options_aud}, received #{aud || '<none>'}") if ([*aud] & [*options_aud]).empty?
     end
 
     def verify_expiration
@@ -37,20 +39,28 @@ module JWT
 
     def verify_iat
       return unless @payload.include?('iat')
-      raise(JWT::InvalidIatError, 'Invalid iat') if !@payload['iat'].is_a?(Numeric) || @payload['iat'].to_f > (Time.now.to_f + iat_leeway)
+
+      iat = @payload['iat']
+      raise(JWT::InvalidIatError, 'Invalid iat') if !iat.is_a?(Numeric) || iat.to_f > (Time.now.to_f + iat_leeway)
     end
 
     def verify_iss
       return unless (options_iss = @options[:iss])
-      return if Array(options_iss).map(&:to_s).include?(@payload['iss'].to_s)
-      raise(JWT::InvalidIssuerError, "Invalid issuer. Expected #{options_iss}, received #{@payload['iss'] || '<none>'}")
+
+      iss = @payload['iss']
+      
+      return if Array(options_iss).map(&:to_s).include?(iss.to_s)
+      
+      raise(JWT::InvalidIssuerError, "Invalid issuer. Expected #{options_iss}, received #{iss || '<none>'}")
     end
 
     def verify_jti
       options_verify_jti = @options[:verify_jti]
+      jti = @payload['jti']
+
       if options_verify_jti.respond_to?(:call)
-        raise(JWT::InvalidJtiError, 'Invalid jti') unless options_verify_jti.call(@payload['jti'])
-      elsif @payload['jti'].to_s.strip.empty?
+        raise(JWT::InvalidJtiError, 'Invalid jti') unless options_verify_jti.call(jti)
+      elsif jti.to_s.strip.empty?
         raise(JWT::InvalidJtiError, 'Missing jti')
       end
     end
@@ -62,7 +72,8 @@ module JWT
 
     def verify_sub
       return unless (options_sub = @options[:sub])
-      raise(JWT::InvalidSubError, "Invalid subject. Expected #{options_sub}, received #{@payload['sub'] || '<none>'}") unless @payload['sub'].to_s == options_sub.to_s
+      sub = @payload['sub']
+      raise(JWT::InvalidSubError, "Invalid subject. Expected #{options_sub}, received #{sub || '<none>'}") unless sub.to_s == options_sub.to_s
     end
 
     private
