@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require 'spec_helper'
 require 'jwt/verify'
 
@@ -9,7 +10,7 @@ module JWT
 
     context '.verify_aud(payload, options)' do
       let(:scalar_aud) { 'ruby-jwt-aud' }
-      let(:array_aud) { %w(ruby-jwt-aud test-aud ruby-ruby-ruby) }
+      let(:array_aud) { %w[ruby-jwt-aud test-aud ruby-ruby-ruby] }
       let(:scalar_payload) { base_payload.merge('aud' => scalar_aud) }
       let(:array_payload) { base_payload.merge('aud' => array_aud) }
 

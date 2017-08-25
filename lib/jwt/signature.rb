@@ -38,14 +38,14 @@ module JWT
 
     def verify(algo, key, signing_input, signature)
       verified = if HMAC_ALGORITHMS.include?(algo)
-                   verify_hmac(algo, key, signing_input, signature)
-                 elsif RSA_ALGORITHMS.include?(algo)
-                   verify_rsa(algo, key, signing_input, signature)
-                 elsif ECDSA_ALGORITHMS.include?(algo)
-                   verify_ecdsa(algo, key, signing_input, signature)
-                 else
-                   raise JWT::VerificationError, 'Algorithm not supported'
-                 end
+        verify_hmac(algo, key, signing_input, signature)
+      elsif RSA_ALGORITHMS.include?(algo)
+        verify_rsa(algo, key, signing_input, signature)
+      elsif ECDSA_ALGORITHMS.include?(algo)
+        verify_ecdsa(algo, key, signing_input, signature)
+      else
+        raise JWT::VerificationError, 'Algorithm not supported'
+      end
 
       raise(JWT::VerificationError, 'Signature verification raised') unless verified
     rescue OpenSSL::PKey::PKeyError

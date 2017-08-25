@@ -18,7 +18,7 @@ CERT_PATH = File.join(File.dirname(__FILE__), 'fixtures', 'certs')
 
 RSpec.configure do |config|
   config.expect_with :rspec do |c|
-    c.syntax = [:should, :expect]
+    c.syntax = %i[should expect]
   end
 
   config.run_all_when_everything_filtered = true
