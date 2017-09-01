@@ -4,6 +4,10 @@ require 'jwt/error'
 module JWT
   # JWT verify methods
   class Verify
+    DEFAULTS = {
+      leeway: 0
+    }.freeze
+
     class << self
       %w(verify_aud verify_expiration verify_iat verify_iss verify_jti verify_not_before verify_sub).each do |method_name|
         define_method method_name do |payload, options|
@@ -21,7 +25,7 @@ module JWT
 
     def initialize(payload, options)
       @payload = payload
-      @options = options
+      @options = DEFAULTS.merge(options)
     end
 
     def verify_aud

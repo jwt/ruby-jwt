@@ -43,7 +43,6 @@ module JWT
     end
 
     context '.verify_expiration(payload, options)' do
-      let(:leeway) { 10 }
       let(:payload) { base_payload.merge('exp' => (Time.now.to_i - 5)) }
 
       it 'must raise JWT::ExpiredSignature when the token has expired' do
@@ -66,6 +65,16 @@ module JWT
         expect do
           Verify.verify_expiration(payload, options)
         end.to raise_error JWT::ExpiredSignature
+      end
+
+      context 'when leeway is not specified' do
+        let(:options) { {} }
+
+        it 'used a default leeway of 0' do
+          expect do
+            Verify.verify_expiration(payload, options)
+          end.to raise_error JWT::ExpiredSignature
+        end
       end
     end
 
