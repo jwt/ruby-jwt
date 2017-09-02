@@ -238,4 +238,14 @@ describe JWT do
       expect(JWT::Encode.base64url_encode('foo')).to eq('string-with_non-url-safe_characters_')
     end
   end
+
+  it 'should not verify token even if the payload has claims' do
+    head = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9'
+    load = 'eyJ1c2VyX2lkIjo1NCwiZXhwIjoxNTA0MzkwODA0fQ'
+    sign = 'Skpi6FfYMbZ-DwW9ocyRIosNMdPMAIWRLYxRO68GTQk'
+
+    expect do
+      JWT.decode([head, load, sign].join('.'), '', false)
+    end.not_to raise_error
+  end
 end
