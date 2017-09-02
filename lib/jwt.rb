@@ -31,7 +31,7 @@ module JWT
     header, payload, signature, signing_input = decoder.decode_segments
     decode_verify_signature(key, header, payload, signature, signing_input, merged_options, &keyfinder) if verify
 
-    Verify.verify_claims(payload, merged_options)
+    Verify.verify_claims(payload, merged_options) if verify
 
     raise(JWT::DecodeError, 'Not enough or too many segments') unless header && payload
 
