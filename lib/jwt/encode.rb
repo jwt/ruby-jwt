@@ -22,31 +22,30 @@ module JWT
 
     private
 
-    def encoded_header(algorithm, header_fields)
-      header = { 'alg' => algorithm }.merge(header_fields)
+    def encoded_header
+      header = { 'alg' => @algorithm }.merge(@header_fields)
       Encode.base64url_encode(JSON.generate(header))
     end
 
-    def encoded_payload(payload)
-      raise InvalidPayload, 'exp claim must be an integer' if payload && payload['exp'] && !payload['exp'].is_a?(Integer)
-      Encode.base64url_encode(JSON.generate(payload))
+    def encoded_payload
+      raise InvalidPayload, 'exp claim must be an integer' if @payload && !@payload.is_a?(Array) && @payload.key?('exp') && !@payload['exp'].is_a?(Integer)
+      Encode.base64url_encode(JSON.generate(@payload))
     end
 
-    def encoded_signature(signing_input, key, algorithm)
-      if algorithm == 'none'
+    def encoded_signature(signing_input)
+      if @algorithm == 'none'
         ''
       else
-        signature = JWT::Signature.sign(algorithm, signing_input, key)
+        signature = JWT::Signature.sign(@algorithm, signing_input, @key)
         Encode.base64url_encode(signature)
       end
     end
 
     def encode_segments
-      segments = []
-      segments << encoded_header(@algorithm, @header_fields)
-      segments << encoded_payload(@payload)
-      segments << encoded_signature(segments.join('.'), @key, @algorithm)
-      segments.join('.')
+      header = encoded_header
+      payload = encoded_payload
+      signature = encoded_signature([header, payload].join('.'))
+      [header, payload, signature].join('.')
     end
   end
 end
