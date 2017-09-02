@@ -22,7 +22,7 @@ module JWT
     end
 
     def decode_segments
-      header_segment, payload_segment, crypto_segment = raw_segments(@jwt, @verify)
+      header_segment, payload_segment, crypto_segment = raw_segments
       @header, @payload = decode_header_and_payload(header_segment, payload_segment)
       @signature = Decode.base64url_decode(crypto_segment.to_s) if @verify
       signing_input = [header_segment, payload_segment].join('.')
@@ -31,9 +31,9 @@ module JWT
 
     private
 
-    def raw_segments(jwt, verify)
-      segments = jwt.split('.')
-      required_num_segments = verify ? [3] : [2, 3]
+    def raw_segments
+      segments = @jwt.split('.')
+      required_num_segments = @verify ? [3] : [2, 3]
       raise(JWT::DecodeError, 'Not enough or too many segments') unless required_num_segments.include? segments.length
       segments
     end
