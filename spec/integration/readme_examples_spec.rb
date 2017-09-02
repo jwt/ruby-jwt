@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require_relative '../spec_helper'
 require 'jwt'
 
@@ -122,13 +123,13 @@ describe 'README.md code test' do
 
     context 'aud' do
       it 'array' do
-        aud = %w(Young Old)
+        aud = %w[Young Old]
         aud_payload = { data: 'data', aud: aud }
 
         token = JWT.encode aud_payload, hmac_secret, 'HS256'
 
         expect do
-          JWT.decode token, hmac_secret, true, aud: %w(Old Young), verify_aud: true, algorithm: 'HS256'
+          JWT.decode token, hmac_secret, true, aud: %w[Old Young], verify_aud: true, algorithm: 'HS256'
         end.not_to raise_error
       end
 

@@ -70,7 +70,7 @@ describe JWT do
     end
   end
 
-  %w(HS256 HS512256 HS384 HS512).each do |alg|
+  %w[HS256 HS512256 HS384 HS512].each do |alg|
     context "alg: #{alg}" do
       it 'should generate a valid token' do
         token = JWT.encode payload, data[:secret], alg
@@ -99,7 +99,7 @@ describe JWT do
     end
   end
 
-  %w(RS256 RS384 RS512).each do |alg|
+  %w[RS256 RS384 RS512].each do |alg|
     context "alg: #{alg}" do
       it 'should generate a valid token' do
         token = JWT.encode payload, data[:rsa_private], alg
@@ -132,7 +132,7 @@ describe JWT do
     end
   end
 
-  %w(ES256 ES384 ES512).each do |alg|
+  %w[ES256 ES384 ES512].each do |alg|
     context "alg: #{alg}" do
       before(:each) do
         data[alg] = JWT.encode payload, data["#{alg}_private"], alg
@@ -237,5 +237,15 @@ describe JWT do
       allow(Base64).to receive(:encode64) { 'string+with/non+url-safe/characters_' }
       expect(JWT::Encode.base64url_encode('foo')).to eq('string-with_non-url-safe_characters_')
     end
+  end
+
+  it 'should not verify token even if the payload has claims' do
+    head = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9'
+    load = 'eyJ1c2VyX2lkIjo1NCwiZXhwIjoxNTA0MzkwODA0fQ'
+    sign = 'Skpi6FfYMbZ-DwW9ocyRIosNMdPMAIWRLYxRO68GTQk'
+
+    expect do
+      JWT.decode([head, load, sign].join('.'), '', false)
+    end.not_to raise_error
   end
 end

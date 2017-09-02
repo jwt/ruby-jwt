@@ -1,0 +1,17 @@
+styleguide: plataformatec/linters
+engines:
+  reek:
+    enabled: true
+  fixme:
+    enabled: true
+  rubocop:
+    enabled: true
+  duplication:
+    config:
+      languages:
+      - ruby
+    enabled: true
+  remark-lint:
+    enabled: true
+exclude_paths:
+- spec

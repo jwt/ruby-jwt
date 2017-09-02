@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require 'base64'
 require 'jwt/decode'
 require 'jwt/default_options'
@@ -16,13 +17,6 @@ module JWT
 
   module_function
 
-  def decoded_segments(jwt, verify = true)
-    raise(JWT::DecodeError, 'Nil JSON web token') unless jwt
-
-    decoder = Decode.new jwt, verify
-    decoder.decode_segments
-  end
-
   def encode(payload, key, algorithm = 'HS256', header_fields = {})
     encoder = Encode.new payload, key, algorithm, header_fields
     encoder.segments
@@ -37,7 +31,7 @@ module JWT
     header, payload, signature, signing_input = decoder.decode_segments
     decode_verify_signature(key, header, payload, signature, signing_input, merged_options, &keyfinder) if verify
 
-    Verify.verify_claims(payload, merged_options)
+    Verify.verify_claims(payload, merged_options) if verify
 
     raise(JWT::DecodeError, 'Not enough or too many segments') unless header && payload
 
@@ -56,10 +50,10 @@ module JWT
   def signature_algorithm_and_key(header, payload, key, &keyfinder)
     if keyfinder
       key = if keyfinder.arity == 2
-              yield(header, payload)
-            else
-              yield(header)
-            end
+        yield(header, payload)
+      else
+        yield(header)
+      end
       raise JWT::DecodeError, 'No verification key available' unless key
     end
     [header['alg'], key]
