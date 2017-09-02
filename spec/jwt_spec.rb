@@ -248,4 +248,10 @@ describe JWT do
       JWT.decode([head, load, sign].join('.'), '', false)
     end.not_to raise_error
   end
+
+  it 'should not raise InvalidPayload exception if payload is an array' do
+    expect do
+      JWT.encode(['my', 'payload'], 'secret')
+    end.not_to raise_error
+  end
 end
