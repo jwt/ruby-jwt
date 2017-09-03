@@ -1,7 +1,39 @@
 # Change Log
 
-## [v2.0.0](https://github.com/jwt/ruby-jwt/tree/v2.0.0) (2017-02-27)
-[Full Changelog](https://github.com/jwt/ruby-jwt/compare/v1.5.6...v2.0.0)
+## [v2.0.0](https://github.com/jwt/ruby-jwt/tree/v2.0.0) (2017-09-03)
+[Full Changelog](https://github.com/jwt/ruby-jwt/compare/v2.0.0.beta1...v2.0.0)
+
+**Fixed bugs:**
+
+- Support versions outside 2.1 [\#209](https://github.com/jwt/ruby-jwt/issues/209)
+- Verifying expiration without leeway throws exception [\#206](https://github.com/jwt/ruby-jwt/issues/206)
+- Ruby interpreter warning [\#200](https://github.com/jwt/ruby-jwt/issues/200)
+- TypeError: no implicit conversion of String into Integer [\#188](https://github.com/jwt/ruby-jwt/issues/188)
+- Fix JWT.encode\(nil\) [\#203](https://github.com/jwt/ruby-jwt/pull/203) ([tmm1](https://github.com/tmm1))
+
+**Closed issues:**
+
+- Possibility to disable claim verifications [\#222](https://github.com/jwt/ruby-jwt/issues/222)
+- Proper way to verify Firebase id tokens [\#216](https://github.com/jwt/ruby-jwt/issues/216)
+
+**Merged pull requests:**
+
+- Skip 'exp' claim validation for array payloads [\#224](https://github.com/jwt/ruby-jwt/pull/224) ([excpt](https://github.com/excpt))
+- Use a default leeway of 0 [\#223](https://github.com/jwt/ruby-jwt/pull/223) ([travisofthenorth](https://github.com/travisofthenorth))
+- Fix reported codesmells [\#221](https://github.com/jwt/ruby-jwt/pull/221) ([excpt](https://github.com/excpt))
+- Add fancy gem version badge [\#220](https://github.com/jwt/ruby-jwt/pull/220) ([excpt](https://github.com/excpt))
+- Add missing dist option to .travis.yml [\#219](https://github.com/jwt/ruby-jwt/pull/219) ([excpt](https://github.com/excpt))
+- Fix ruby version requirements in gemspec file [\#218](https://github.com/jwt/ruby-jwt/pull/218) ([excpt](https://github.com/excpt))
+- Fix a little typo in the readme [\#214](https://github.com/jwt/ruby-jwt/pull/214) ([RyanBrushett](https://github.com/RyanBrushett))
+- Update README.md [\#212](https://github.com/jwt/ruby-jwt/pull/212) ([zuzannast](https://github.com/zuzannast))
+- Fix typo in HS512256 algorithm description [\#211](https://github.com/jwt/ruby-jwt/pull/211) ([ojab](https://github.com/ojab))
+- Allow configuration of multiple acceptable issuers [\#210](https://github.com/jwt/ruby-jwt/pull/210) ([ojab](https://github.com/ojab))
+- Enforce `exp` to be an `Integer` [\#205](https://github.com/jwt/ruby-jwt/pull/205) ([lucasmazza](https://github.com/lucasmazza))
+- ruby 1.9.3 support message upd [\#204](https://github.com/jwt/ruby-jwt/pull/204) ([maokomioko](https://github.com/maokomioko))
+- Guard against partially loaded RbNaCl when failing to load libsodium [\#202](https://github.com/jwt/ruby-jwt/pull/202) ([Dorian](https://github.com/Dorian))
+
+## [v2.0.0.beta1](https://github.com/jwt/ruby-jwt/tree/v2.0.0.beta1) (2017-02-27)
+[Full Changelog](https://github.com/jwt/ruby-jwt/compare/v1.5.6...v2.0.0.beta1)
 
 **Implemented enhancements:**
 
@@ -15,7 +47,6 @@
 - Remove 'typ' optional parameter [\#174](https://github.com/jwt/ruby-jwt/pull/174) ([xamenrax](https://github.com/xamenrax))
 - Pass payload to keyfinder [\#172](https://github.com/jwt/ruby-jwt/pull/172) ([CodeMonkeySteve](https://github.com/CodeMonkeySteve))
 - Use RbNaCl for HMAC if available with fallback to OpenSSL [\#149](https://github.com/jwt/ruby-jwt/pull/149) ([mwpastore](https://github.com/mwpastore))
-- Allow configuration of multiple acceptable issuers [\#210](https://github.com/jwt/ruby-jwt/pull/210)
 
 **Fixed bugs:**
 
@@ -37,6 +68,8 @@
 
 **Merged pull requests:**
 
+- Version bump 2.0.0.beta1 [\#199](https://github.com/jwt/ruby-jwt/pull/199) ([excpt](https://github.com/excpt))
+- Update CHANGELOG.md and minor fixes [\#198](https://github.com/jwt/ruby-jwt/pull/198) ([excpt](https://github.com/excpt))
 - Add Codacy coverage reporter [\#194](https://github.com/jwt/ruby-jwt/pull/194) ([excpt](https://github.com/excpt))
 - Add minimum required ruby version to gemspec [\#193](https://github.com/jwt/ruby-jwt/pull/193) ([excpt](https://github.com/excpt))
 - Code smell fixes [\#192](https://github.com/jwt/ruby-jwt/pull/192) ([excpt](https://github.com/excpt))
@@ -302,7 +335,6 @@
 
 **Closed issues:**
 
-- yanking of version 0.1.12 causes issues [\#39](https://github.com/jwt/ruby-jwt/issues/39)
 - Semantic versioning [\#37](https://github.com/jwt/ruby-jwt/issues/37)
 - Update gem to get latest changes [\#36](https://github.com/jwt/ruby-jwt/issues/36)
 
