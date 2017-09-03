@@ -1,4 +1,4 @@
-styleguide: plataformatec/linters
+styleguide: excpt/linters
 engines:
   reek:
     enabled: true
