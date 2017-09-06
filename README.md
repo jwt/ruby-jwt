@@ -144,6 +144,28 @@ decoded_token = JWT.decode token, ecdsa_public, true, { :algorithm => 'ES256' }
 puts decoded_token
 ```
 
+**EDDSA**
+
+* ED25519 
+
+```ruby 
+private_key = RbNaCl::Signatures::Ed25519::SigningKey.new("abcdefghijklmnopqrstuvwxyzABCDEF") # the
+new method takes a 32 bit string
+public_key = private_key.verify_key
+token = JWT.encode payload, private_key, 'ED25519' 
+
+# eyJhbGciOiJFRDI1NTE5In0.eyJ0ZXN0IjoiZGF0YSJ9.-Ki0vxVOlsPXovPsYRT_9OXrLSgQd4RDAgCLY_PLmcP4q32RYy-yUUmX82ycegdekR9wo26me1wOzjmSU5nTCQ
+puts token
+
+decoded_token = JWT.decode token, public_key, true, {:algorithm => 'ED25519' } 
+# Array
+# [
+#  {"test"=>"data"}, # payload
+#  {"alg"=>"ED25519"} # header
+# ]
+
+```
+
 **RSASSA-PSS**
 
 Not implemented.
