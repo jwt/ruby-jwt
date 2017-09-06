@@ -19,6 +19,8 @@ describe JWT do
       'ES384_public' => OpenSSL::PKey.read(File.read(File.join(CERT_PATH, 'ec384-public.pem'))),
       'ES512_private' => OpenSSL::PKey.read(File.read(File.join(CERT_PATH, 'ec512-private.pem'))),
       'ES512_public' => OpenSSL::PKey.read(File.read(File.join(CERT_PATH, 'ec512-public.pem'))),
+      'ED25519_private' =>  RbNaCl::Signatures::Ed25519::SigningKey.new("abcdefghijklmnopqrstuvwxyzABCDEF"),
+      'ED25519_public' => RbNaCl::Signatures::Ed25519::SigningKey.new("abcdefghijklmnopqrstuvwxyzABCDEF").verify_key,  
       'NONE' => 'eyJhbGciOiJub25lIn0.eyJ1c2VyX2lkIjoic29tZUB1c2VyLnRsZCJ9.',
       'HS256' => 'eyJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoic29tZUB1c2VyLnRsZCJ9.kWOVtIOpWcG7JnyJG0qOkTDbOy636XrrQhMm_8JrRQ8',
       'HS512256' => 'eyJhbGciOiJIUzUxMjI1NiJ9.eyJ1c2VyX2lkIjoic29tZUB1c2VyLnRsZCJ9.Ds_4ibvf7z4QOBoKntEjDfthy3WJ-3rKMspTEcHE2bA',
@@ -132,7 +134,42 @@ describe JWT do
     end
   end
 
-  %w[ES256 ES384 ES512].each do |alg|
+  %w[ED25519].each do |alg|
+    context "alg: #{alg}" do
+      before(:each) do
+        data[alg] = JWT.encode payload, data["#{alg}_private"], alg
+      end
+
+      let(:wrong_key) { OpenSSL::PKey.read(File.read(File.join(CERT_PATH, 'ec256-wrong-public.pem'))) }
+
+      it 'should generate a valid token' do
+        jwt_payload, header = JWT.decode data[alg], data["#{alg}_public"], true, algorithm: alg
+
+        expect(header['alg']).to eq alg
+        expect(jwt_payload).to eq payload
+      end
+
+      it 'should decode a valid token' do
+        jwt_payload, header = JWT.decode data[alg], data["#{alg}_public"], true, algorithm: alg
+
+        expect(header['alg']).to eq alg
+        expect(jwt_payload).to eq payload
+      end
+
+      it 'wrong key should raise JWT::DecodeError' do
+        expect do
+          JWT.decode data[alg], wrong_key
+        end.to raise_error JWT::DecodeError
+      end
+
+      it 'wrong key and verify = false should not raise JWT::DecodeError' do
+        expect do
+          JWT.decode data[alg], wrong_key, false
+        end.not_to raise_error
+      end
+    end
+  end
+  %w[ES256 ES384 ES512 ].each do |alg|
     context "alg: #{alg}" do
       before(:each) do
         data[alg] = JWT.encode payload, data["#{alg}_private"], alg
