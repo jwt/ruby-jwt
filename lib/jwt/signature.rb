@@ -18,7 +18,7 @@ module JWT
     RSA_ALGORITHMS = %w[RS256 RS384 RS512].freeze
     ECDSA_ALGORITHMS = %w[ES256 ES384 ES512].freeze
     EDDSA_ALGORITHMS = %w[ED25519].freeze
- 
+
     NAMED_CURVES = {
       'prime256v1' => 'ES256',
       'secp384r1' => 'ES384',
@@ -75,11 +75,13 @@ module JWT
       digest = OpenSSL::Digest.new(algorithm.sub('ES', 'sha'))
       SecurityUtils.asn1_to_raw(private_key.dsa_sign_asn1(digest.digest(msg)), private_key)
     end
+
     def sign_eddsa(algorithm, msg, private_key)
       raise EncodeError, "Key given is a #{private_key.class} but has to be an RbNaCl::Signatures::Ed25519::SigningKey" if private_key.class != RbNaCl::Signatures::Ed25519::SigningKey
       raise IncorrectAlgorithm, "payload algorithm is #{algorithm} but #{private_key.primitive} signing key was provided"  if algorithm.downcase.to_sym != private_key.primitive
-      private_key.sign(msg) 
+      private_key.sign(msg)
     end
+
     def sign_hmac(algorithm, msg, key)
       authenticator, padded_key = SecurityUtils.rbnacl_fixup(algorithm, key)
       if authenticator && padded_key
@@ -88,11 +90,13 @@ module JWT
         OpenSSL::HMAC.digest(OpenSSL::Digest.new(algorithm.sub('HS', 'sha')), key, msg)
       end
     end
-    def verify_eddsa(algorithm, public_key,signing_input, signature)
+
+    def verify_eddsa(algorithm, public_key, signing_input, signature)
       raise IncorrectAlgorithm, "payload algorithm is #{algorithm} but #{public_key.primitive} verification key was provided" if algorithm.downcase.to_sym != public_key.primitive
       raise DecodeError, "key given is a #{public_key.class} but has to be a RbNaCl::Signatures::Ed25519::VerifyKey" if public_key.class != RbNaCl::Signatures::Ed25519::VerifyKey
       public_key.verify(signature, signing_input)
     end
+
     def verify_ecdsa(algorithm, public_key, signing_input, signature)
       key_algorithm = NAMED_CURVES[public_key.group.curve_name]
       if algorithm != key_algorithm
