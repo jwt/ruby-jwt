@@ -149,8 +149,7 @@ puts decoded_token
 * ED25519 
 
 ```ruby 
-private_key = RbNaCl::Signatures::Ed25519::SigningKey.new("abcdefghijklmnopqrstuvwxyzABCDEF") # the
-new method takes a 32 bit string
+private_key = RbNaCl::Signatures::Ed25519::SigningKey.new("abcdefghijklmnopqrstuvwxyzABCDEF")
 public_key = private_key.verify_key
 token = JWT.encode payload, private_key, 'ED25519' 
 
