@@ -2,7 +2,7 @@ module JWT
   module Algos
     module Rsa
       extend self
-      SUPPORTED = %w(RS256 RS384 RS512)
+      SUPPORTED = %w(RS256 RS384 RS512).freeze
 
       def sign to_sign
         algorithm, msg, key = to_sign.values

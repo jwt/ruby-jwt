@@ -1,4 +1,3 @@
-require 'jwt/security_utils'
 module JWT
   module Algos
     module Ecdsa

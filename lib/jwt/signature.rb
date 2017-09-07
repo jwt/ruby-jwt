@@ -25,6 +25,7 @@ module JWT
     ]
     ToSign = Struct.new(:algorithm, :msg, :key)
     ToVerify = Struct.new(:algorithm, :public_key, :signing_input, :signature)
+
     def sign(algorithm, msg, key)
       algo = ALGOS.find{|algo|
         algo.const_get(:SUPPORTED).include? algorithm 
