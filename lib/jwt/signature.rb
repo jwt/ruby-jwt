@@ -6,6 +6,7 @@ require 'jwt/algos/hmac'
 require 'jwt/algos/eddsa'
 require 'jwt/algos/ecdsa'
 require 'jwt/algos/rsa'
+require 'jwt/algos/unsupported'
 begin
   require 'rbnacl'
 rescue LoadError => e
@@ -21,7 +22,8 @@ module JWT
       Algos::Hmac,
       Algos::Ecdsa,
       Algos::Rsa,
-      Algos::Eddsa
+      Algos::Eddsa,
+      Algos::Unsupported
     ].freeze
     ToSign = Struct.new(:algorithm, :msg, :key)
     ToVerify = Struct.new(:algorithm, :public_key, :signing_input, :signature)
@@ -30,7 +32,6 @@ module JWT
       algo = ALGOS.find do |alg|
         alg.const_get(:SUPPORTED).include? algorithm
       end
-      raise NotImplementedError, 'Unsupported signing method' if algo.nil?
       algo.sign ToSign.new(algorithm, msg, key)
     end
 
@@ -38,7 +39,6 @@ module JWT
       algo = ALGOS.find do |alg|
         alg.const_get(:SUPPORTED).include? algorithm
       end
-      raise JWT::VerificationError, 'Algorithm not supported' if algo.nil?
       verified = algo.verify(ToVerify.new(algorithm, key, signing_input, signature))
       raise(JWT::VerificationError, 'Signature verification raised') unless verified
     rescue OpenSSL::PKey::PKeyError

@@ -1,0 +1,19 @@
+module JWT
+  module Algos
+    module Unsupported
+      module_function
+
+      supported_true = Object.new
+      def supported_true.include?(*)
+        true
+      end
+      SUPPORTED = supported_true
+      def verify(*)
+        raise JWT::VerificationError, 'Algorithm not supported'
+      end
+      def sign(*)
+        raise NotImplementedError, 'Unsupported signing method'
+      end
+    end
+  end
+end
