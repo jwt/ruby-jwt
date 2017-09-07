@@ -1,10 +1,10 @@
 module JWT
   module Algos
     module Hmac
-      extend self 
+      module_function
       SUPPORTED = %w(HS256 HS512256 HS384 HS512).freeze
 
-      def sign to_sign
+      def sign(to_sign)
         algorithm, msg, key = to_sign.values
         authenticator, padded_key = SecurityUtils.rbnacl_fixup(algorithm, key)
         if authenticator && padded_key
@@ -14,7 +14,7 @@ module JWT
         end
       end
 
-      def verify to_verify
+      def verify(to_verify)
         algorithm, public_key, signing_input, signature = to_verify.values
         authenticator, padded_key = SecurityUtils.rbnacl_fixup(algorithm, public_key)
         if authenticator && padded_key

@@ -27,20 +27,19 @@ module JWT
     ToVerify = Struct.new(:algorithm, :public_key, :signing_input, :signature)
 
     def sign(algorithm, msg, key)
-      algo = ALGOS.find{|algo|
-        algo.const_get(:SUPPORTED).include? algorithm 
-      } 
-      raise NotImplementedError, 'Unsupported signing method' if algo.nil? 
-      algo.sign ToSign.new(algorithm, msg, key) 
+      algo = ALGOS.find do |alg|
+        alg.const_get(:SUPPORTED).include? algorithm
+      end
+      raise NotImplementedError, 'Unsupported signing method' if algo.nil?
+      algo.sign ToSign.new(algorithm, msg, key)
     end
 
     def verify(algorithm, key, signing_input, signature)
-      algo = ALGOS.find{|algo|
-        algo.const_get(:SUPPORTED).include? algorithm 
-      }
-
+      algo = ALGOS.find do |alg|
+        alg.const_get(:SUPPORTED).include? algorithm
+      end
       raise JWT::VerificationError, 'Algorithm not supported' if algo.nil?
-      verified = algo.verify(ToVerify.new(algorithm, key, signing_input, signature)) 
+      verified = algo.verify(ToVerify.new(algorithm, key, signing_input, signature))
       raise(JWT::VerificationError, 'Signature verification raised') unless verified
     rescue OpenSSL::PKey::PKeyError
       raise JWT::VerificationError, 'Signature verification raised'

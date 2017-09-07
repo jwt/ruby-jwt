@@ -1,7 +1,7 @@
 module JWT
   module Algos
     module Eddsa
-      extend self
+      module_function
       SUPPORTED = %w(ED25519).freeze
 
       def sign to_sign
