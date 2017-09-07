@@ -2,6 +2,7 @@ module JWT
   module Algos
     module Ecdsa
       module_function
+
       SUPPORTED = %(ES256 ES384 ES512).freeze
       NAMED_CURVES = {
         'prime256v1' => 'ES256',

@@ -2,6 +2,7 @@ module JWT
   module Algos
     module Rsa
       module_function
+
       SUPPORTED = %w(RS256 RS384 RS512).freeze
 
       def sign(to_sign)

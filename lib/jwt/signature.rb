@@ -22,7 +22,7 @@ module JWT
       Algos::Ecdsa,
       Algos::Rsa,
       Algos::Eddsa
-    ]
+    ].freeze
     ToSign = Struct.new(:algorithm, :msg, :key)
     ToVerify = Struct.new(:algorithm, :public_key, :signing_input, :signature)
 

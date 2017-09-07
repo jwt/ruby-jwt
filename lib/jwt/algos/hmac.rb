@@ -2,6 +2,7 @@ module JWT
   module Algos
     module Hmac
       module_function
+
       SUPPORTED = %w(HS256 HS512256 HS384 HS512).freeze
 
       def sign(to_sign)
