@@ -11,6 +11,7 @@ module JWT
       def verify(*)
         raise JWT::VerificationError, 'Algorithm not supported'
       end
+
       def sign(*)
         raise NotImplementedError, 'Unsupported signing method'
       end
