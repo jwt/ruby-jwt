@@ -52,9 +52,9 @@ module JWT
       return unless (options_iss = @options[:iss])
 
       iss = @payload['iss']
-      
+
       return if Array(options_iss).map(&:to_s).include?(iss.to_s)
-      
+
       raise(JWT::InvalidIssuerError, "Invalid issuer. Expected #{options_iss}, received #{iss || '<none>'}")
     end
 
