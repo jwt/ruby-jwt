@@ -3,7 +3,6 @@ module JWT
   #
   # @see: https://github.com/rails/rails/blob/master/activesupport/lib/active_support/security_utils.rb
   module SecurityUtils
-
     module_function
 
     def secure_compare(left, right)

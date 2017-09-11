@@ -3,7 +3,7 @@ module JWT
     module Rsa
       module_function
 
-      SUPPORTED = %w(RS256 RS384 RS512).freeze
+      SUPPORTED = %w[RS256 RS384 RS512].freeze
 
       def sign(to_sign)
         algorithm, msg, key = to_sign.values
