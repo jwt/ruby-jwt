@@ -214,6 +214,10 @@ module JWT
       it 'must allow a matching sub' do
         Verify.verify_sub(base_payload.merge('sub' => sub), options.merge(sub: sub))
       end
+
+      it 'allows matching a sub with a regular expression' do
+        Verify.verify_sub(base_payload.merge('sub' => sub), options.merge(sub: /^ruby jwt/))
+      end
     end
   end
 end

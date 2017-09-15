@@ -77,7 +77,7 @@ module JWT
     def verify_sub
       return unless (options_sub = @options[:sub])
       sub = @payload['sub']
-      raise(JWT::InvalidSubError, "Invalid subject. Expected #{options_sub}, received #{sub || '<none>'}") unless sub.to_s == options_sub.to_s
+      raise(JWT::InvalidSubError, "Invalid subject. Expected #{options_sub}, received #{sub || '<none>'}") unless options_sub === sub.to_s
     end
 
     private
