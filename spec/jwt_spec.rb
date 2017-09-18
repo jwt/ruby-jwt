@@ -291,4 +291,10 @@ describe JWT do
       JWT.encode(['my', 'payload'], 'secret')
     end.not_to raise_error
   end
+
+  it 'should encode string payloads' do
+    expect do
+      JWT.encode 'Hello World', 'secret'
+    end.not_to raise_error
+  end
 end
