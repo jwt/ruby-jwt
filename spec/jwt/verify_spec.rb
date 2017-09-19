@@ -182,6 +182,19 @@ module JWT
       it 'true proc should not raise JWT::InvalidJtiError' do
         Verify.verify_jti(payload, options.merge(verify_jti: ->(_jti) { true }))
       end
+
+      it 'it should not throw arguement error with 2 args' do
+        expect do
+          Verify.verify_jti(payload, options.merge(verify_jti: ->(_jti, pl) {
+            true
+          }))
+        end.to_not raise_error
+      end
+      it 'should have payload as second param in proc' do
+        Verify.verify_jti(payload, options.merge(verify_jti: ->(_jti, pl) {
+          expect(pl).to eq(payload)
+        }))
+      end
     end
 
     context '.verify_not_before(payload, options)' do
