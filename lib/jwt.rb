@@ -42,7 +42,7 @@ module JWT
     algo, key = signature_algorithm_and_key(header, payload, key, &keyfinder)
 
     raise(JWT::IncorrectAlgorithm, 'An algorithm must be specified') unless options[:algorithm]
-    raise(JWT::IncorrectAlgorithm, 'Expected a different algorithm') unless algo == options[:algorithm]
+    raise(JWT::IncorrectAlgorithm, 'Expected a different algorithm') unless Array(options[:algorithm]).include?(algo)
 
     Signature.verify(algo, key, signing_input, signature)
   end
