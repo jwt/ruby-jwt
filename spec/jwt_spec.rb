@@ -243,12 +243,15 @@ describe JWT do
         end.not_to raise_error
       end
 
-      it 'should raise JWT::IncorrectAlgorithm if no algorithm is provided' do
-        token = JWT.encode payload, data[:rsa_public].to_s, 'HS256'
+      context 'no algorithm provided' do
+        it 'should use the default decode algorithm' do
+          token = JWT.encode payload, data[:rsa_public].to_s
 
-        expect do
-          JWT.decode token, data[:rsa_public], true
-        end.to raise_error JWT::IncorrectAlgorithm
+          jwt_payload, header = JWT.decode token, data[:rsa_public].to_s
+
+          expect(header['alg']).to eq 'HS256'
+          expect(jwt_payload).to eq payload
+        end
       end
     end
 
