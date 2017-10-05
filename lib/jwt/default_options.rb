@@ -9,7 +9,7 @@ module JWT
       verify_aud: false,
       verify_sub: false,
       leeway: 0,
-      algorithm: 'HS256'
+      algorithms: ['HS256']
     }.freeze
   end
 end
