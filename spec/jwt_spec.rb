@@ -232,14 +232,14 @@ describe JWT do
   context 'Verify' do
     context 'algorithm' do
       it 'should raise JWT::IncorrectAlgorithm on mismatch' do
-        token = JWT.encode payload, data[:secret], 'HS512'
+        token = JWT.encode payload, data[:secret], 'HS256'
 
         expect do
           JWT.decode token, data[:secret], true, algorithm: 'HS384'
         end.to raise_error JWT::IncorrectAlgorithm
 
         expect do
-          JWT.decode token, data[:secret], true, algorithm: 'HS512'
+          JWT.decode token, data[:secret], true, algorithm: 'HS256'
         end.not_to raise_error
       end
 
