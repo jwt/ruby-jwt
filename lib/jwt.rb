@@ -41,8 +41,8 @@ module JWT
   def decode_verify_signature(key, header, payload, signature, signing_input, options, &keyfinder)
     algo, key = signature_algorithm_and_key(header, payload, key, &keyfinder)
 
-    raise(JWT::IncorrectAlgorithm, 'An algorithm must be specified') unless options[:algorithm]
-    raise(JWT::IncorrectAlgorithm, 'Expected a different algorithm') unless algo == options[:algorithm]
+    raise(JWT::IncorrectAlgorithm, 'An algorithm must be specified') if allowed_algorithms(options).empty?
+    raise(JWT::IncorrectAlgorithm, 'Expected a different algorithm') unless allowed_algorithms(options).include?(algo)
 
     Signature.verify(algo, key, signing_input, signature)
   end
@@ -57,5 +57,13 @@ module JWT
       raise JWT::DecodeError, 'No verification key available' unless key
     end
     [header['alg'], key]
+  end
+
+  def allowed_algorithms(options)
+    if options.key?(:algorithm)
+      [options[:algorithm]]
+    else
+      options[:algorithms] || []
+    end
   end
 end
