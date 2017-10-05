@@ -9,8 +9,8 @@ require 'jwt/algos/rsa'
 require 'jwt/algos/unsupported'
 begin
   require 'rbnacl'
-rescue LoadError => e
-  abort(e.message) if defined?(RbNaCl)
+rescue LoadError
+  raise if defined?(RbNaCl)
 end
 
 # JWT::Signature module
