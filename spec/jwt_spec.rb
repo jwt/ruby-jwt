@@ -235,7 +235,7 @@ describe JWT do
         token = JWT.encode payload, data[:secret], 'HS512'
 
         expect do
-          JWT.decode token, data[:secret], true, algorithms: 'HS384'
+          JWT.decode token, data[:secret], true, algorithm: 'HS384'
         end.to raise_error JWT::IncorrectAlgorithm
 
         expect do
