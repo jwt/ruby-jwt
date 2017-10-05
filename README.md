@@ -61,9 +61,9 @@ decoded_token = JWT.decode token, nil, false
 puts decoded_token
 ```
 
-**HMAC** (default: HS256)
+**HMAC**
 
-* HS256 - HMAC using SHA-256 hash algorithm (default)
+* HS256 - HMAC using SHA-256 hash algorithm
 * HS512256 - HMAC using SHA-512-256 hash algorithm (only available with RbNaCl; see note below)
 * HS384 - HMAC using SHA-384 hash algorithm
 * HS512 - HMAC using SHA-512 hash algorithm
@@ -145,6 +145,14 @@ puts decoded_token
 ```
 
 **EDDSA**
+
+In order to use this algorithm you need to add the `RbNaCl` gem to you `Gemfile`.
+
+```ruby
+gem 'rbnacl'
+```
+
+For more detailed installation instruction check the official [repository](https://github.com/cryptosphere/rbnacl) on GitHub.
 
 * ED25519 
 
