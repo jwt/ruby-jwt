@@ -1,5 +1,36 @@
 # Change Log
 
+## [2.1.0](https://github.com/jwt/ruby-jwt/tree/2.1.0) (2017-10-06)
+[Full Changelog](https://github.com/jwt/ruby-jwt/compare/v2.0.0...2.1.0)
+
+**Implemented enhancements:**
+
+- Ed25519 support planned? [\#217](https://github.com/jwt/ruby-jwt/issues/217)
+- Verify JTI Proc [\#207](https://github.com/jwt/ruby-jwt/issues/207)
+- Allow a list of algorithms for decode [\#241](https://github.com/jwt/ruby-jwt/pull/241) ([lautis](https://github.com/lautis))
+- verify takes 2 params, second being payload closes: \#207 [\#238](https://github.com/jwt/ruby-jwt/pull/238) ([ab320012](https://github.com/ab320012))
+- simplified logic for keyfinder [\#237](https://github.com/jwt/ruby-jwt/pull/237) ([ab320012](https://github.com/ab320012))
+- Show backtrace if rbnacl-libsodium not loaded [\#231](https://github.com/jwt/ruby-jwt/pull/231) ([buzztaiki](https://github.com/buzztaiki))
+- Support for ED25519 [\#229](https://github.com/jwt/ruby-jwt/pull/229) ([ab320012](https://github.com/ab320012))
+
+**Fixed bugs:**
+
+- JWT.encode failing on encode for string [\#235](https://github.com/jwt/ruby-jwt/issues/235)
+- The README says it uses an algorithm by default [\#226](https://github.com/jwt/ruby-jwt/issues/226)
+- Fix string payload issue [\#236](https://github.com/jwt/ruby-jwt/pull/236) ([excpt](https://github.com/excpt))
+
+**Closed issues:**
+
+- Change from 1.5.6 to 2.0.0 and appears a "Completed 401 Unauthorized" [\#240](https://github.com/jwt/ruby-jwt/issues/240)
+- Why doesn't the decode function use a default algorithm? [\#227](https://github.com/jwt/ruby-jwt/issues/227)
+
+**Merged pull requests:**
+
+- Update README.md [\#242](https://github.com/jwt/ruby-jwt/pull/242) ([excpt](https://github.com/excpt))
+- Update ebert configuration [\#232](https://github.com/jwt/ruby-jwt/pull/232) ([excpt](https://github.com/excpt))
+- added algos/strategy classes + structs for inputs [\#230](https://github.com/jwt/ruby-jwt/pull/230) ([ab320012](https://github.com/ab320012))
+- Add HS256 algorithm to decode default options [\#228](https://github.com/jwt/ruby-jwt/pull/228) ([madkin10](https://github.com/madkin10))
+
 ## [v2.0.0](https://github.com/jwt/ruby-jwt/tree/v2.0.0) (2017-09-03)
 [Full Changelog](https://github.com/jwt/ruby-jwt/compare/v2.0.0.beta1...v2.0.0)
 
@@ -18,6 +49,7 @@
 
 **Merged pull requests:**
 
+- Release 2.0.0 preparations :\) [\#225](https://github.com/jwt/ruby-jwt/pull/225) ([excpt](https://github.com/excpt))
 - Skip 'exp' claim validation for array payloads [\#224](https://github.com/jwt/ruby-jwt/pull/224) ([excpt](https://github.com/excpt))
 - Use a default leeway of 0 [\#223](https://github.com/jwt/ruby-jwt/pull/223) ([travisofthenorth](https://github.com/travisofthenorth))
 - Fix reported codesmells [\#221](https://github.com/jwt/ruby-jwt/pull/221) ([excpt](https://github.com/excpt))
