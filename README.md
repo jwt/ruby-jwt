@@ -190,7 +190,7 @@ used. JWT supports these reserved claim names:
  - 'sub' (Subject) Claim
 
 ## Add custom header fields
-Ruby-jwt gem supports custom [header fields] (https://tools.ietf.org/html/rfc7519#section-5)
+Ruby-jwt gem supports custom [header fields](https://tools.ietf.org/html/rfc7519#section-5)
 To add custom header fields you need to pass `header_fields` parameter
 
 ```ruby
