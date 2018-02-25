@@ -1,16 +1,17 @@
 # frozen_string_literal: true
 
 module JWT
-  class EncodeError < StandardError; end
-  class DecodeError < StandardError; end
-  class VerificationError < DecodeError; end
-  class ExpiredSignature < DecodeError; end
-  class IncorrectAlgorithm < DecodeError; end
-  class ImmatureSignature < DecodeError; end
-  class InvalidIssuerError < DecodeError; end
-  class InvalidIatError < DecodeError; end
-  class InvalidAudError < DecodeError; end
-  class InvalidSubError < DecodeError; end
-  class InvalidJtiError < DecodeError; end
-  class InvalidPayload < DecodeError; end
+  EncodeError = Class.new(StandardError)
+  DecodeError = Class.new(StandardError)
+
+  VerificationError  = Class.new(DecodeError)
+  ExpiredSignature   = Class.new(DecodeError)
+  IncorrectAlgorithm = Class.new(DecodeError)
+  ImmatureSignature  = Class.new(DecodeError)
+  InvalidIssuerError = Class.new(DecodeError)
+  InvalidIatError    = Class.new(DecodeError)
+  InvalidAudError    = Class.new(DecodeError)
+  InvalidSubError    = Class.new(DecodeError)
+  InvalidJtiError    = Class.new(DecodeError)
+  InvalidPayload     = Class.new(DecodeError)
 end
