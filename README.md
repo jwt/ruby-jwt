@@ -42,12 +42,12 @@ See: [ JSON Web Algorithms (JWA) 3.1. "alg" (Algorithm) Header Parameter Values 
 ```ruby
 require 'jwt'
 
-payload = {:data => 'test'}
+payload = { data: 'test' }
 
 # IMPORTANT: set nil as password parameter
 token = JWT.encode payload, nil, 'none'
 
-# eyJ0eXAiOiJKV1QiLCJhbGciOiJub25lIn0.eyJkYXRhIjoidGVzdCJ9.
+# eyJhbGciOiJub25lIn0.eyJkYXRhIjoidGVzdCJ9.
 puts token
 
 # Set password to nil and validation to false otherwise this won't work
@@ -73,10 +73,10 @@ hmac_secret = 'my$ecretK3y'
 
 token = JWT.encode payload, hmac_secret, 'HS256'
 
-# eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJkYXRhIjoidGVzdCJ9.ZxW8go9hz3ETCSfxFxpwSkYg_602gOPKearsf6DsxgY
+# eyJhbGciOiJIUzI1NiJ9.eyJkYXRhIjoidGVzdCJ9.pNIWIL34Jo13LViZAJACzK6Yf0qnvT_BuwOxiMCPE-Y
 puts token
 
-decoded_token = JWT.decode token, hmac_secret, true, { :algorithm => 'HS256' }
+decoded_token = JWT.decode token, hmac_secret, true, { algorithm: 'HS256' }
 
 # Array
 # [
@@ -104,10 +104,10 @@ rsa_public = rsa_private.public_key
 
 token = JWT.encode payload, rsa_private, 'RS256'
 
-# eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJ0ZXN0IjoiZGF0YSJ9.c2FynXNyi6_PeKxrDGxfS3OLwQ8lTDbWBWdq7oMviCy2ZfFpzvW2E_odCWJrbLof-eplHCsKzW7MGAntHMALXgclm_Cs9i2Exi6BZHzpr9suYkrhIjwqV1tCgMBCQpdeMwIq6SyKVjgH3L51ivIt0-GDDPDH1Rcut3jRQzp3Q35bg3tcI2iVg7t3Msvl9QrxXAdYNFiS5KXH22aJZ8X_O2HgqVYBXfSB1ygTYUmKTIIyLbntPQ7R22rFko1knGWOgQCoYXwbtpuKRZVFrxX958L2gUWgb4jEQNf3fhOtkBm1mJpj-7BGst00o8g_3P2zHy-3aKgpPo1XlKQGjRrrxA
+# eyJhbGciOiJSUzI1NiJ9.eyJkYXRhIjoidGVzdCJ9.GplO4w1spRgvEJQ3-FOtZr-uC8L45Jt7SN0J4woBnEXG_OZBSNcZjAJWpjadVYEe2ev3oUBFDYM1N_-0BTVeFGGYvMewu8E6aMjSZvOpf1cZBew-Vt4poSq7goG2YRI_zNPt3af2lkPqXD796IKC5URrEvcgF5xFQ-6h07XRDpSRx1ECrNsUOt7UM3l1IB4doY11GzwQA5sHDTmUZ0-kBT76ZMf12Srg_N3hZwphxBtudYtN5VGZn420sVrQMdPE_7Ni3EiWT88j7WCr1xrF60l8sZT3yKCVleG7D2BEXacTntB7GktBv4Xo8OKnpwpqTpIlC05dMowMkz3rEAAYbQ
 puts token
 
-decoded_token = JWT.decode token, rsa_public, true, { :algorithm => 'RS256' }
+decoded_token = JWT.decode token, rsa_public, true, { algorithm: 'RS256' }
 
 # Array
 # [
@@ -131,10 +131,10 @@ ecdsa_public.private_key = nil
 
 token = JWT.encode payload, ecdsa_key, 'ES256'
 
-# eyJ0eXAiOiJKV1QiLCJhbGciOiJFUzI1NiJ9.eyJ0ZXN0IjoiZGF0YSJ9.MEQCIAtShrxRwP1L9SapqaT4f7hajDJH4t_rfm-YlZcNDsBNAiB64M4-JRfyS8nRMlywtQ9lHbvvec9U54KznzOe1YxTyA
+# eyJhbGciOiJFUzI1NiJ9.eyJkYXRhIjoidGVzdCJ9.AlLW--kaF7EX1NMX9WJRuIW8NeRJbn2BLXHns7Q5TZr7Hy3lF6MOpMlp7GoxBFRLISQ6KrD0CJOrR8aogEsPeg
 puts token
 
-decoded_token = JWT.decode token, ecdsa_public, true, { :algorithm => 'ES256' }
+decoded_token = JWT.decode token, ecdsa_public, true, { algorithm: 'ES256' }
 
 # Array
 # [
@@ -157,14 +157,14 @@ For more detailed installation instruction check the official [repository](https
 * ED25519 
 
 ```ruby 
-private_key = RbNaCl::Signatures::Ed25519::SigningKey.new("abcdefghijklmnopqrstuvwxyzABCDEF")
+private_key = RbNaCl::Signatures::Ed25519::SigningKey.new('abcdefghijklmnopqrstuvwxyzABCDEF')
 public_key = private_key.verify_key
 token = JWT.encode payload, private_key, 'ED25519' 
 
-# eyJhbGciOiJFRDI1NTE5In0.eyJ0ZXN0IjoiZGF0YSJ9.-Ki0vxVOlsPXovPsYRT_9OXrLSgQd4RDAgCLY_PLmcP4q32RYy-yUUmX82ycegdekR9wo26me1wOzjmSU5nTCQ
+# eyJhbGciOiJFRDI1NTE5In0.eyJkYXRhIjoidGVzdCJ9.6xIztXyOupskddGA_RvKU76V9b2dCQUYhoZEVFnRimJoPYIzZ2Fm47CWw8k2NTCNpgfAuxg9OXjaiVK7MvrbCQ
 puts token
 
-decoded_token = JWT.decode token, public_key, true, {:algorithm => 'ED25519' } 
+decoded_token = JWT.decode token, public_key, true, { algorithm: 'ED25519' }
 # Array
 # [
 #  {"test"=>"data"}, # payload
@@ -202,12 +202,12 @@ token = JWT.encode payload, key, algorithm='HS256', header_fields={}
 ```ruby
 require 'jwt'
 
-payload = {:data => 'test'}
+payload = { data: 'test' }
 
 # IMPORTANT: set nil as password parameter
-token = JWT.encode payload, nil, 'none', { :typ => "JWT" }
+token = JWT.encode payload, nil, 'none', { typ: 'JWT' }
 
-# eyJ0eXAiOiJKV1QiLCJhbGciOiJub25lIn0.eyJkYXRhIjoidGVzdCJ9.
+# eyJhbGciOiJub25lIiwidHlwIjoiSldUIn0.eyJkYXRhIjoidGVzdCJ9.
 puts token
 
 # Set password to nil and validation to false otherwise this won't work
@@ -231,12 +231,12 @@ From [Oauth JSON Web Token 4.1.4. "exp" (Expiration Time) Claim](https://tools.i
 
 ```ruby
 exp = Time.now.to_i + 4 * 3600
-exp_payload = { :data => 'data', :exp => exp }
+exp_payload = { data: 'data', exp: exp }
 
 token = JWT.encode exp_payload, hmac_secret, 'HS256'
 
 begin
-  decoded_token = JWT.decode token, hmac_secret, true, { :algorithm => 'HS256' }
+  decoded_token = JWT.decode token, hmac_secret, true, { algorithm: 'HS256' }
 rescue JWT::ExpiredSignature
   # Handle expired token, e.g. logout user or deny access
 end
@@ -248,14 +248,14 @@ end
 exp = Time.now.to_i - 10
 leeway = 30 # seconds
 
-exp_payload = { :data => 'data', :exp => exp }
+exp_payload = { data: 'data', exp: exp }
 
 # build expired token
 token = JWT.encode exp_payload, hmac_secret, 'HS256'
 
 begin
   # add leeway to ensure the token is still accepted
-  decoded_token = JWT.decode token, hmac_secret, true, { :exp_leeway => leeway, :algorithm => 'HS256' }
+  decoded_token = JWT.decode token, hmac_secret, true, { exp_leeway: leeway, algorithm: 'HS256' }
 rescue JWT::ExpiredSignature
   # Handle expired token, e.g. logout user or deny access
 end
@@ -271,12 +271,12 @@ From [Oauth JSON Web Token 4.1.5. "nbf" (Not Before) Claim](https://tools.ietf.o
 
 ```ruby
 nbf = Time.now.to_i - 3600
-nbf_payload = { :data => 'data', :nbf => nbf }
+nbf_payload = { data: 'data', nbf: nbf }
 
 token = JWT.encode nbf_payload, hmac_secret, 'HS256'
 
 begin
-  decoded_token = JWT.decode token, hmac_secret, true, { :algorithm => 'HS256' }
+  decoded_token = JWT.decode token, hmac_secret, true, { algorithm: 'HS256' }
 rescue JWT::ImmatureSignature
   # Handle invalid token, e.g. logout user or deny access
 end
@@ -288,14 +288,14 @@ end
 nbf = Time.now.to_i + 10
 leeway = 30
 
-nbf_payload = { :data => 'data', :nbf => nbf }
+nbf_payload = { data: 'data', nbf: nbf }
 
 # build expired token
 token = JWT.encode nbf_payload, hmac_secret, 'HS256'
 
 begin
   # add leeway to ensure the token is valid
-  decoded_token = JWT.decode token, hmac_secret, true, { :nbf_leeway => leeway, :algorithm => 'HS256' }
+  decoded_token = JWT.decode token, hmac_secret, true, { nbf_leeway: leeway, algorithm: 'HS256' }
 rescue JWT::ImmatureSignature
   # Handle invalid token, e.g. logout user or deny access
 end
@@ -311,13 +311,13 @@ You can pass multiple allowed issuers as an Array, verification will pass if one
 
 ```ruby
 iss = 'My Awesome Company Inc. or https://my.awesome.website/'
-iss_payload = { :data => 'data', :iss => iss }
+iss_payload = { data: 'data', iss: iss }
 
 token = JWT.encode iss_payload, hmac_secret, 'HS256'
 
 begin
   # Add iss to the validation to check if the token has been manipulated
-  decoded_token = JWT.decode token, hmac_secret, true, { :iss => iss, :verify_iss => true, :algorithm => 'HS256' }
+  decoded_token = JWT.decode token, hmac_secret, true, { iss: iss, verify_iss: true, algorithm: 'HS256' }
 rescue JWT::InvalidIssuerError
   # Handle invalid token, e.g. logout user or deny access
 end
@@ -331,13 +331,13 @@ From [Oauth JSON Web Token 4.1.3. "aud" (Audience) Claim](https://tools.ietf.org
 
 ```ruby
 aud = ['Young', 'Old']
-aud_payload = { :data => 'data', :aud => aud }
+aud_payload = { data: 'data', aud: aud }
 
 token = JWT.encode aud_payload, hmac_secret, 'HS256'
 
 begin
   # Add aud to the validation to check if the token has been manipulated
-  decoded_token = JWT.decode token, hmac_secret, true, { :aud => aud, :verify_aud => true, :algorithm => 'HS256' }
+  decoded_token = JWT.decode token, hmac_secret, true, { aud: aud, verify_aud: true, algorithm: 'HS256' }
 rescue JWT::InvalidAudError
   # Handle invalid token, e.g. logout user or deny access
   puts 'Audience Error'
@@ -354,20 +354,19 @@ From [Oauth JSON Web Token 4.1.7. "jti" (JWT ID) Claim](https://tools.ietf.org/h
 # Use the secret and iat to create a unique key per request to prevent replay attacks
 jti_raw = [hmac_secret, iat].join(':').to_s
 jti = Digest::MD5.hexdigest(jti_raw)
-jti_payload = { :data => 'data', :iat => iat, :jti => jti }
+jti_payload = { data: 'data', iat: iat, jti: jti }
 
 token = JWT.encode jti_payload, hmac_secret, 'HS256'
 
 begin
   # If :verify_jti is true, validation will pass if a JTI is present
-  #decoded_token = JWT.decode token, hmac_secret, true, { :verify_jti => true, :algorithm => 'HS256' }
+  #decoded_token = JWT.decode token, hmac_secret, true, { verify_jti: true, algorithm: 'HS256' }
   # Alternatively, pass a proc with your own code to check if the JTI has already been used
-  decoded_token = JWT.decode token, hmac_secret, true, { :verify_jti => proc { |jti| my_validation_method(jti) }, :algorithm => 'HS256' }
+  decoded_token = JWT.decode token, hmac_secret, true, { verify_jti: proc { |jti| my_validation_method(jti) }, algorithm: 'HS256' }
 rescue JWT::InvalidJtiError
   # Handle invalid token, e.g. logout user or deny access
   puts 'Error'
 end
-
 ```
 
 ### Issued At Claim
@@ -380,13 +379,13 @@ From [Oauth JSON Web Token 4.1.6. "iat" (Issued At) Claim](https://tools.ietf.or
 
 ```ruby
 iat = Time.now.to_i
-iat_payload = { :data => 'data', :iat => iat }
+iat_payload = { data: 'data', iat: iat }
 
 token = JWT.encode iat_payload, hmac_secret, 'HS256'
 
 begin
   # Add iat to the validation to check if the token has been manipulated
-  decoded_token = JWT.decode token, hmac_secret, true, { :verify_iat => true, :algorithm => 'HS256' }
+  decoded_token = JWT.decode token, hmac_secret, true, { verify_iat: true, algorithm: 'HS256' }
 rescue JWT::InvalidIatError
   # Handle invalid token, e.g. logout user or deny access
 end
@@ -398,14 +397,14 @@ end
 iat = Time.now.to_i + 10
 leeway = 30 # seconds
 
-iat_payload = { :data => 'data', :iat => iat }
+iat_payload = { data: 'data', iat: iat }
 
 # build token issued in the future
 token = JWT.encode iat_payload, hmac_secret, 'HS256'
 
 begin
   # add leeway to ensure the token is accepted
-  decoded_token = JWT.decode token, hmac_secret, true, { :iat_leeway => leeway, :verify_iat => true, :algorithm => 'HS256' }
+  decoded_token = JWT.decode token, hmac_secret, true, { iat_leeway: leeway, verify_iat: true, algorithm: 'HS256' }
 rescue JWT::InvalidIatError
   # Handle invalid token, e.g. logout user or deny access
 end
@@ -419,13 +418,13 @@ From [Oauth JSON Web Token 4.1.2. "sub" (Subject) Claim](https://tools.ietf.org/
 
 ```ruby
 sub = 'Subject'
-sub_payload = { :data => 'data', :sub => sub }
+sub_payload = { data: 'data', sub: sub }
 
 token = JWT.encode sub_payload, hmac_secret, 'HS256'
 
 begin
   # Add sub to the validation to check if the token has been manipulated
-  decoded_token = JWT.decode token, hmac_secret, true, { 'sub' => sub, :verify_sub => true, :algorithm => 'HS256' }
+  decoded_token = JWT.decode token, hmac_secret, true, { sub: sub, verify_sub: true, algorithm: 'HS256' }
 rescue JWT::InvalidSubError
   # Handle invalid token, e.g. logout user or deny access
 end
