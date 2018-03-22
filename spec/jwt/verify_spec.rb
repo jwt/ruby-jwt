@@ -87,12 +87,9 @@ module JWT
         Verify.verify_iat(payload, options)
       end
 
-      it 'must allow configured leeway' do
-        Verify.verify_iat(payload.merge('iat' => (iat + 60)), options.merge(leeway: 70))
-      end
-
-      it 'must allow configured iat_leeway' do
-        Verify.verify_iat(payload.merge('iat' => (iat + 60)), options.merge(iat_leeway: 70))
+      it 'must ignore configured leeway' do
+        expect{Verify.verify_iat(payload.merge('iat' => (iat + 60)), options.merge(leeway: 70)) }
+          .to raise_error(JWT::InvalidIatError)
       end
 
       it 'must properly handle integer times' do
