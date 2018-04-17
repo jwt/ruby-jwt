@@ -447,7 +447,7 @@ bundle exec rspec
 **If you want a release cut with your PR, please include a version bump according to [Semantic Versioning](http://semver.org/)**
 
 ## Contributors
-
+ * Alex Baranov [@ab320012](https://github.com/ab320012) <alex.baranov@gaiasystemsinc.com>
  * Jordan Brough <github.jordanb@xoxy.net>
  * Ilya Zhitomirskiy <ilya@joindiaspora.com>
  * Daniel Grippi <daniel@joindiaspora.com>
