@@ -3,7 +3,7 @@ module JWT
     module Ecdsa
       module_function
 
-      SUPPORTED = %(ES256 ES384 ES512).freeze
+      SUPPORTED = %w[ES256 ES384 ES512].freeze
       NAMED_CURVES = {
         'prime256v1' => 'ES256',
         'secp384r1' => 'ES384',
