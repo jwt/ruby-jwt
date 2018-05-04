@@ -42,7 +42,9 @@ module JWT
 
     [@payload, @header]
   end
+
   private_class_method
+
   def verify_signature(&keyfinder)
     @key = find_key(&keyfinder) if keyfinder
 
