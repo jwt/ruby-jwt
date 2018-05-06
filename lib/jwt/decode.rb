@@ -6,8 +6,6 @@ require 'json'
 module JWT
   # Decoding logic for JWT
   class Decode
-    attr_reader :header, :payload, :signature
-
     def self.base64url_decode(str)
       str += '=' * (4 - str.length.modulo(4))
       Base64.decode64(str.tr('-_', '+/'))
@@ -15,6 +13,7 @@ module JWT
 
     def initialize(jwt, verify)
       @jwt = jwt
+      @segments = jwt.split('.')
       @verify = verify
       @header = ''
       @payload = ''
@@ -22,26 +21,45 @@ module JWT
     end
 
     def decode_segments
-      header_segment, payload_segment, crypto_segment = raw_segments
-      @header, @payload = decode_header_and_payload(header_segment, payload_segment)
-      @signature = Decode.base64url_decode(crypto_segment.to_s) if @verify
-      signing_input = [header_segment, payload_segment].join('.')
-      [@header, @payload, @signature, signing_input]
+      validate_segment_count
+      decode_crypto if @verify
+      return_values
     end
 
     private
 
-    def raw_segments
-      segments = @jwt.split('.')
-      required_num_segments = @verify ? [3] : [2, 3]
-      raise(JWT::DecodeError, 'Not enough or too many segments') unless required_num_segments.include? segments.length
-      segments
+    def validate_segment_count
+      raise(JWT::DecodeError, 'Not enough or too many segments') unless
+        (@verify && segment_length != 3) ||
+            (segment_length != 3 || segment_length != 2)
     end
 
-    def decode_header_and_payload(header_segment, payload_segment)
-      header = JSON.parse(Decode.base64url_decode(header_segment))
-      payload = JSON.parse(Decode.base64url_decode(payload_segment))
-      [header, payload]
+    def segment_length
+      @segments.count
+    end
+
+    def decode_crypto
+      @signature = Decode.base64url_decode(@segments[2])
+    end
+
+    def return_values
+      [header, payload, @signature, signing_input]
+    end
+
+    def header
+      parse_and_decode @segments[0]
+    end
+
+    def payload
+      parse_and_decode @segments[1]
+    end
+
+    def signing_input
+      @segments.first(2).join('.')
+    end
+
+    def parse_and_decode(segment)
+      JSON.parse(Decode.base64url_decode(segment))
     rescue JSON::ParserError
       raise JWT::DecodeError, 'Invalid segment encoding'
     end
