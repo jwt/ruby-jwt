@@ -5,8 +5,9 @@
 [![Code Climate](https://codeclimate.com/github/jwt/ruby-jwt/badges/gpa.svg)](https://codeclimate.com/github/jwt/ruby-jwt)
 [![Test Coverage](https://codeclimate.com/github/jwt/ruby-jwt/badges/coverage.svg)](https://codeclimate.com/github/jwt/ruby-jwt/coverage)
 [![Issue Count](https://codeclimate.com/github/jwt/ruby-jwt/badges/issue_count.svg)](https://codeclimate.com/github/jwt/ruby-jwt)
+[![Ebert](https://ebertapp.io/github/jwt/ruby-jwt.svg)](https://ebertapp.io/github/jwt/ruby-jwt)
 
-A pure ruby implementation of the [RFC 7519 OAuth JSON Web Token (JWT)](https://tools.ietf.org/html/rfc7519) standard.
+A ruby implementation of the [RFC 7519 OAuth JSON Web Token (JWT)](https://tools.ietf.org/html/rfc7519) standard.
 
 If you have further questions related to development or usage, join us: [ruby-jwt google group](https://groups.google.com/forum/#!forum/ruby-jwt).
 
@@ -154,12 +155,12 @@ gem 'rbnacl'
 
 For more detailed installation instruction check the official [repository](https://github.com/cryptosphere/rbnacl) on GitHub.
 
-* ED25519 
+* ED25519
 
-```ruby 
+```ruby
 private_key = RbNaCl::Signatures::Ed25519::SigningKey.new('abcdefghijklmnopqrstuvwxyzABCDEF')
 public_key = private_key.verify_key
-token = JWT.encode payload, private_key, 'ED25519' 
+token = JWT.encode payload, private_key, 'ED25519'
 
 # eyJhbGciOiJFRDI1NTE5In0.eyJkYXRhIjoidGVzdCJ9.6xIztXyOupskddGA_RvKU76V9b2dCQUYhoZEVFnRimJoPYIzZ2Fm47CWw8k2NTCNpgfAuxg9OXjaiVK7MvrbCQ
 puts token
@@ -447,31 +448,9 @@ bundle exec rspec
 **If you want a release cut with your PR, please include a version bump according to [Semantic Versioning](http://semver.org/)**
 
 ## Contributors
- * Alex Baranov [@ab320012](https://github.com/ab320012) <alex.baranov@gaiasystemsinc.com>
- * Jordan Brough <github.jordanb@xoxy.net>
- * Ilya Zhitomirskiy <ilya@joindiaspora.com>
- * Daniel Grippi <daniel@joindiaspora.com>
- * Jeff Lindsay <progrium@gmail.com>
- * Bob Aman <bob@sporkmonger.com>
- * Micah Gates <github@mgates.com>
- * Rob Wygand <rob@wygand.com>
- * Ariel Salomon (Oscil8)
- * Paul Battley <pbattley@gmail.com>
- * Zane Shannon [@zshannon](https://github.com/zshannon)
- * Brian Fletcher [@punkle](https://github.com/punkle)
- * Alex [@ZhangHanDong](https://github.com/ZhangHanDong)
- * John Downey [@jtdowney](https://github.com/jtdowney)
- * Adam Greene [@skippy](https://github.com/skippy)
- * Tim Rudat [@excpt](https://github.com/excpt) <timrudat@gmail.com> - Maintainer
+
+See `AUTHORS` file.
 
 ## License
 
-MIT
-
-Copyright (c) 2011 Jeff Lindsay
-
-Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+See `LICENSE` file.
