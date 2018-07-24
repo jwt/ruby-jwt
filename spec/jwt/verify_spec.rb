@@ -92,6 +92,14 @@ module JWT
           .to raise_error(JWT::InvalidIatError)
       end
 
+      context 'when iat leeway is specified' do
+        let(:iat) { Time.now.to_f + 29 }
+
+        it 'must permit leeway' do
+          Verify.verify_iat(payload, options.merge(iat_leeway: 30))
+        end
+      end
+
       it 'must properly handle integer times' do
         Verify.verify_iat(payload.merge('iat' => Time.now.to_i), options)
       end

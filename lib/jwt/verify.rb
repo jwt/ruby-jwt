@@ -45,7 +45,7 @@ module JWT
       return unless @payload.include?('iat')
 
       iat = @payload['iat']
-      raise(JWT::InvalidIatError, 'Invalid iat') if !iat.is_a?(Numeric) || iat.to_f > Time.now.to_f
+      raise(JWT::InvalidIatError, 'Invalid iat') if !iat.is_a?(Numeric) || iat.to_f > (Time.now.to_f + iat_leeway)
     end
 
     def verify_iss
@@ -92,7 +92,7 @@ module JWT
     end
 
     def iat_leeway
-      @options[:iat_leeway] || global_leeway
+      @options[:iat_leeway] || 0
     end
 
     def nbf_leeway
