@@ -373,7 +373,7 @@ end
 
 From [Oauth JSON Web Token 4.1.6. "iat" (Issued At) Claim](https://tools.ietf.org/html/rfc7519#section-4.1.6):
 
-> The `iat` (issued at) claim identifies the time at which the JWT was issued. This claim can be used to determine the age of the JWT. Its value MUST be a number containing a ***NumericDate*** value. Use of this claim is OPTIONAL.
+> The `iat` (issued at) claim identifies the time at which the JWT was issued. This claim can be used to determine the age of the JWT. The `leeway` option is not taken into account when verifying this claim. The `iat_leeway` option was removed in version 2.2.0. Its value MUST be a number containing a ***NumericDate*** value. Use of this claim is OPTIONAL.
 
 **Handle Issued At Claim**
 
@@ -386,25 +386,6 @@ token = JWT.encode iat_payload, hmac_secret, 'HS256'
 begin
   # Add iat to the validation to check if the token has been manipulated
   decoded_token = JWT.decode token, hmac_secret, true, { verify_iat: true, algorithm: 'HS256' }
-rescue JWT::InvalidIatError
-  # Handle invalid token, e.g. logout user or deny access
-end
-```
-
-**Adding Leeway**
-
-```ruby
-iat = Time.now.to_i + 10
-leeway = 30 # seconds
-
-iat_payload = { data: 'data', iat: iat }
-
-# build token issued in the future
-token = JWT.encode iat_payload, hmac_secret, 'HS256'
-
-begin
-  # add leeway to ensure the token is accepted
-  decoded_token = JWT.decode token, hmac_secret, true, { iat_leeway: leeway, verify_iat: true, algorithm: 'HS256' }
 rescue JWT::InvalidIatError
   # Handle invalid token, e.g. logout user or deny access
 end

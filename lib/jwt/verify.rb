@@ -91,10 +91,6 @@ module JWT
       @options[:exp_leeway] || global_leeway
     end
 
-    def iat_leeway
-      @options[:iat_leeway] || global_leeway
-    end
-
     def nbf_leeway
       @options[:nbf_leeway] || global_leeway
     end
