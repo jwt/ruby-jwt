@@ -134,7 +134,13 @@ describe 'README.md code test' do
       end
 
       it 'string' do
+        aud = 'Kids'
+        aud_payload = { data: 'data', aud: aud }
+
+        token = JWT.encode aud_payload, hmac_secret, 'HS256'
+
         expect do
+          JWT.decode token, hmac_secret, true, aud: 'Kids', verify_aud: true, algorithm: 'HS256'
         end.not_to raise_error
       end
     end
