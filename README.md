@@ -176,7 +176,28 @@ decoded_token = JWT.decode token, public_key, true, { algorithm: 'ED25519' }
 
 **RSASSA-PSS**
 
-Not implemented.
+* PS256 - RSASSA-PSS using SHA-256 hash algorithm
+* PS384 - RSASSA-PSS using SHA-384 hash algorithm
+* PS512 - RSASSA-PSS using SHA-512 hash algorithm
+
+```ruby
+rsa_private = OpenSSL::PKey::RSA.generate 2048
+rsa_public = rsa_private.public_key
+
+token = JWT.encode payload, rsa_private, 'PS256'
+
+# eyJhbGciOiJQUzI1NiJ9.eyJkYXRhIjoidGVzdCJ9.KEmqagMUHM-NcmXo6818ZazVTIAkn9qU9KQFT1c5Iq91n0KRpAI84jj4ZCdkysDlWokFs3Dmn4MhcXP03oJKLFgnoPL40_Wgg9iFr0jnIVvnMUp1kp2RFUbL0jqExGTRA3LdAhuvw6ZByGD1bkcWjDXygjQw-hxILrT1bENjdr0JhFd-cB0-ps5SB0mwhFNcUw-OM3Uu30B1-mlFaelUY8jHJYKwLTZPNxHzndt8RGXF8iZLp7dGb06HSCKMcVzhASGMH4ZdFystRe2hh31cwcvnl-Eo_D4cdwmpN3Abhk_8rkxawQJR3duh8HNKc4AyFPo7SabEaSu2gLnLfN3yfg
+puts token
+
+decoded_token = JWT.decode token, rsa_public, true, { algorithm: 'PS256' }
+
+# Array
+# [
+#   {"data"=>"test"}, # payload
+#   {"alg"=>"PS256"} # header
+# ]
+puts decoded_token
+```
 
 ## Support for reserved claim names
 JSON Web Token defines some reserved claim names and defines how they should be

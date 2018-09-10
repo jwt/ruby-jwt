@@ -20,6 +20,12 @@ module JWT
       public_key.verify(OpenSSL::Digest.new(algorithm.sub('RS', 'sha')), signature, signing_input)
     end
 
+    def verify_ps(algorithm, public_key, signing_input, signature)
+      formatted_algorithm = algorithm.sub('PS', 'sha')
+
+      public_key.verify_pss(formatted_algorithm, signature, signing_input, salt_length: :auto, mgf1_hash: formatted_algorithm)
+    end
+
     def asn1_to_raw(signature, public_key)
       byte_size = (public_key.group.degree + 7) / 8
       OpenSSL::ASN1.decode(signature).value.map { |value| value.value.to_s(2).rjust(byte_size, "\x00") }.join
