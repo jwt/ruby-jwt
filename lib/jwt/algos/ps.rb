@@ -7,9 +7,14 @@ module JWT
 
       def sign(to_sign)
         algorithm, msg, key = to_sign.values
-        raise EncodeError, "The given key is a #{key.class}. It has to be an OpenSSL::PKey::RSA instance." if key.class == String
 
-        key.sign_pss(algorithm.sub('PS', 'sha'), msg, salt_length: :max, mgf1_hash: algorithm.sub('PS', 'sha'))
+        key_class = key.class
+
+        raise EncodeError, "The given key is a #{key_class}. It has to be an OpenSSL::PKey::RSA instance." if key_class == String
+
+        translated_algorithm = algorithm.sub('PS', 'sha')
+
+        key.sign_pss(translated_algorithm, msg, salt_length: :max, mgf1_hash: translated_algorithm)
       end
 
       def verify(to_verify)
