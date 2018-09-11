@@ -1,11 +1,15 @@
 module JWT
   module Algos
     module Ps
+      # RSASSA-PSS signing algorithms
+
       module_function
 
       SUPPORTED = %w[PS256 PS384 PS512].freeze
 
       def sign(to_sign)
+        require_openssl!
+
         algorithm, msg, key = to_sign.values
 
         key_class = key.class
@@ -18,7 +22,15 @@ module JWT
       end
 
       def verify(to_verify)
+        require_openssl!
+
         SecurityUtils.verify_ps(to_verify.algorithm, to_verify.public_key, to_verify.signing_input, to_verify.signature)
+      end
+
+      def require_openssl!
+        unless Gem.loaded_specs['openssl'] && Gem.loaded_specs['openssl'].version.release >= Gem::Version.new('2.1')
+          raise JWT::RequiredGemError, 'OpenSSL +2.1 is required to support RSASSA-PSS algorithms'
+        end
       end
     end
   end

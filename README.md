@@ -176,6 +176,12 @@ decoded_token = JWT.decode token, public_key, true, { algorithm: 'ED25519' }
 
 **RSASSA-PSS**
 
+In order to use this algorithm you need to add the `openssl` gem to you `Gemfile` with a version greater or equal to `2.1`.
+
+```ruby
+gem 'openssl', '~> 2.1'
+```
+
 * PS256 - RSASSA-PSS using SHA-256 hash algorithm
 * PS384 - RSASSA-PSS using SHA-384 hash algorithm
 * PS512 - RSASSA-PSS using SHA-512 hash algorithm
