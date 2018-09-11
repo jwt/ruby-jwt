@@ -28,7 +28,9 @@ module JWT
       end
 
       def require_openssl!
-        unless Gem.loaded_specs['openssl'] && Gem.loaded_specs['openssl'].version.release >= Gem::Version.new('2.1')
+        openssl_gem = Gem.loaded_specs['openssl']
+
+        unless openssl_gem && openssl_gem.version.release >= Gem::Version.new('2.1')
           raise JWT::RequiredGemError, 'OpenSSL +2.1 is required to support RSASSA-PSS algorithms'
         end
       end
