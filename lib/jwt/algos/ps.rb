@@ -28,10 +28,14 @@ module JWT
       end
 
       def require_openssl!
-        openssl_gem = Gem.loaded_specs['openssl']
+        if Object.const_defined?('OpenSSL')
+          major, minor = OpenSSL::VERSION.split('.').first(2)
 
-        unless openssl_gem && openssl_gem.version.release >= Gem::Version.new('2.1')
-          raise JWT::RequiredGemError, 'OpenSSL +2.1 is required to support RSASSA-PSS algorithms'
+          unless major.to_i >= 2 && minor.to_i >= 1
+            raise JWT::RequiredDependencyError, "You currently have OpenSSL #{OpenSSL::VERSION}. PS support requires >= 2.1"
+          end
+        else
+          raise JWT::RequiredDependencyError, 'PS signing requires OpenSSL +2.1'
         end
       end
     end
