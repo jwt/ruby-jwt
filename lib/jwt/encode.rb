@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'json'
+require_relative './claims_validator'
 
 # JWT::Encode module
 module JWT
@@ -28,7 +29,7 @@ module JWT
     end
 
     def encoded_payload
-      raise InvalidPayload, 'exp claim must be an integer' if @payload && @payload.is_a?(Hash) && @payload.key?('exp') && !@payload['exp'].is_a?(Integer)
+      ClaimsValidator.new(@payload).validate if @payload.is_a?(Hash)
       Encode.base64url_encode(JSON.generate(@payload))
     end
 
