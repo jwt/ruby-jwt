@@ -169,6 +169,7 @@ describe JWT do
       end
     end
   end
+
   %w[ES256 ES384 ES512].each do |alg|
     context "alg: #{alg}" do
       before(:each) do
@@ -285,9 +286,9 @@ describe JWT do
   end
 
   context 'Base64' do
-    it 'urlsafe replace + / with - _' do
-      allow(Base64).to receive(:encode64) { 'string+with/non+url-safe/characters_' }
-      expect(JWT::Encode.base64url_encode('foo')).to eq('string-with_non-url-safe_characters_')
+    it 'removes padding from the urlsafe_encode64ed string' do
+      allow(Base64).to receive(:urlsafe_encode64ed).with('basestring') { 'YmFzZXN0cmluZw==' }
+      expect(JWT::Encode.base64url_encode('basestring')).to eq('YmFzZXN0cmluZw')
     end
   end
 

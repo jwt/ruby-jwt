@@ -9,7 +9,7 @@ module JWT
     attr_reader :payload, :key, :algorithm, :header_fields, :segments
 
     def self.base64url_encode(str)
-      Base64.encode64(str).tr('+/', '-_').gsub(/[\n=]/, '')
+      Base64.urlsafe_encode64(str).delete('=')
     end
 
     def initialize(payload, key, algorithm, header_fields)
