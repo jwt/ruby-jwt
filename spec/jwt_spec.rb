@@ -31,7 +31,10 @@ describe JWT do
       'RS512' => 'eyJhbGciOiJSUzUxMiJ9.eyJ1c2VyX2lkIjoic29tZUB1c2VyLnRsZCJ9.LIIAUEuCkGNdpYguOO5LoW4rZ7ED2POJrB0pmEAAchyTdIK4HKh1jcLxc6KyGwZv40njCgub3y72q6vcQTn7oD0zWFCVQRIDW1911Ii2hRNHuigiPUnrnZh1OQ6z65VZRU6GKs8omoBGU9vrClBU0ODqYE16KxYmE_0n4Xw2h3D_L1LF0IAOtDWKBRDa3QHwZRM9sHsHNsBuD5ye9KzDYN1YALXj64LBfA-DoCKfpVAm9NkRPOyzjR2X2C3TomOSJgqWIVHJucudKDDAZyEbO4RA5pI-UFYy1370p9bRajvtDyoBuLDCzoSkMyQ4L2DnLhx5CbWcnD7Cd3GUmnjjTA',
       'ES256' => '',
       'ES384' => '',
-      'ES512' => ''
+      'ES512' => '',
+      'PS256' => '',
+      'PS384' => '',
+      'PS512' => ''
     }
   end
 
@@ -186,6 +189,55 @@ describe JWT do
 
       it 'should decode a valid token' do
         jwt_payload, header = JWT.decode data[alg], data["#{alg}_public"], true, algorithm: alg
+
+        expect(header['alg']).to eq alg
+        expect(jwt_payload).to eq payload
+      end
+
+      it 'wrong key should raise JWT::DecodeError' do
+        expect do
+          JWT.decode data[alg], wrong_key
+        end.to raise_error JWT::DecodeError
+      end
+
+      it 'wrong key and verify = false should not raise JWT::DecodeError' do
+        expect do
+          JWT.decode data[alg], wrong_key, false
+        end.not_to raise_error
+      end
+    end
+  end
+
+  %w[PS256 PS384 PS512].each do |alg|
+    context "alg: #{alg}" do
+      before(:each) do
+        data[alg] = JWT.encode payload, data[:rsa_private], alg
+      end
+
+      let(:wrong_key) { data[:wrong_rsa_public] }
+
+      it 'should generate a valid token' do
+        token = data[alg]
+
+        header, body, signature = token.split('.')
+
+        expect(header).to eql(Base64.strict_encode64({ alg: alg }.to_json))
+        expect(body).to   eql(Base64.strict_encode64(payload.to_json))
+
+        # Validate signature is made of up header and body of JWT
+        translated_alg  = alg.gsub('PS', 'sha')
+        valid_signature = data[:rsa_public].verify_pss(
+          translated_alg,
+          JWT::Decode.base64url_decode(signature),
+          [header, body].join('.'),
+          salt_length: :auto,
+          mgf1_hash:   translated_alg
+        )
+        expect(valid_signature).to be true
+      end
+
+      it 'should decode a valid token' do
+        jwt_payload, header = JWT.decode data[alg], data[:rsa_public], true, algorithm: alg
 
         expect(header['alg']).to eq alg
         expect(jwt_payload).to eq payload
