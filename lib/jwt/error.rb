@@ -15,4 +15,6 @@ module JWT
   InvalidSubError    = Class.new(DecodeError)
   InvalidJtiError    = Class.new(DecodeError)
   InvalidPayload     = Class.new(DecodeError)
+
+  JWKError           = Class.new(DecodeError)
 end
