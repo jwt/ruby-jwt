@@ -5,6 +5,7 @@ require 'jwt/decode'
 require 'jwt/default_options'
 require 'jwt/encode'
 require 'jwt/error'
+require 'jwt/jwk'
 
 # JSON Web Token implementation
 #

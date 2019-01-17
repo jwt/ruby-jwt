@@ -217,5 +217,23 @@ describe 'README.md code test' do
         JWT.decode token, hmac_secret, true, 'sub' => sub, :verify_sub => true, :algorithm => 'HS256'
       end.not_to raise_error
     end
+
+
+    it 'JWK' do
+      jwk = JWT::JWK.new(OpenSSL::PKey::RSA.new(2048))
+      payload, headers = { data: 'data' }, { kid: jwk.kid }
+
+      token = JWT.encode(payload, jwk.keypair, 'RS512', headers)
+
+      # The jwk loader would fetch the set of JWKs from a trusted source
+      jwk_loader = ->(options) do
+        @cached_keys = nil if options[:invalidate] # need to reload the keys
+        @cached_keys ||= { keys: [jwk.export] }
+      end
+
+      expect do
+        JWT.decode(token, nil, true, { algorithms: ['RS512'], jwks: jwk_loader})
+      end.not_to raise_error
+    end
   end
 end

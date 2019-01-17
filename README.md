@@ -439,6 +439,31 @@ rescue JWT::InvalidSubError
 end
 ```
 
+### JSON Web Key (JWK)
+
+JWK is a JSON structure representing a cryptographic key. Currently only supports RSA public keys.
+
+```ruby
+jwk = JWT::JWK.new(OpenSSL::PKey::RSA.new(2048))
+payload, headers = { data: 'data' }, { kid: jwk.kid }
+
+token = JWT.encode(payload, jwk.keypair, 'RS512', headers)
+
+# The jwk loader would fetch the set of JWKs from a trusted source
+jwk_loader = ->(options) do
+  @cached_keys = nil if options[:invalidate] # need to reload the keys
+  @cached_keys ||= { keys: [jwk.export] }
+end
+
+begin
+  JWT.decode(token, nil, true, { algorithms: ['RS512'], jwks: jwk_loader})
+rescue JWT::JWKError
+  # Handle problems with the provided JWKs
+rescue JWT::DecodeError
+  # Handle other decode related issues e.g. no kid in header, no matching public key found etc. 
+end
+```
+
 # Development and Tests
 
 We depend on [Bundler](http://rubygems.org/gems/bundler) for defining gemspec and performing releases to rubygems.org, which can be done with
