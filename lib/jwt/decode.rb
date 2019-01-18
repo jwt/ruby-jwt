@@ -25,7 +25,7 @@ module JWT
     end
 
     def decode_segments
-      validate_segment_count
+      validate_segment_count!
       if @verify
         decode_crypto
         verify_signature
@@ -69,10 +69,11 @@ module JWT
       Verify.verify_claims(payload, @options)
     end
 
-    def validate_segment_count
-      raise(JWT::DecodeError, 'Not enough or too many segments') unless
-        (@verify && segment_length != 3) ||
-            (segment_length != 3 || segment_length != 2)
+    def validate_segment_count!
+      return if segment_length == 3
+      return if !@verify && segment_length == 2 # If no verifying required, the signature is not needed
+
+      raise(JWT::DecodeError, 'Not enough or too many segments')
     end
 
     def segment_length
