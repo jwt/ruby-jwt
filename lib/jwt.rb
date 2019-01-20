@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
-require 'base64'
+require 'jwt/base64'
+require 'jwt/json'
 require 'jwt/decode'
 require 'jwt/default_options'
 require 'jwt/encode'
@@ -17,12 +18,13 @@ module JWT
   module_function
 
   def encode(payload, key, algorithm = 'HS256', header_fields = {})
-    encoder = Encode.new payload, key, algorithm, header_fields
-    encoder.segments
+    Encode.new(payload: payload,
+               key: key,
+               algorithm: algorithm,
+               headers: header_fields).segments
   end
 
   def decode(jwt, key = nil, verify = true, options = {}, &keyfinder)
-    decoder = Decode.new(jwt, key, verify, DEFAULT_OPTIONS.merge(options), &keyfinder)
-    decoder.decode_segments
+    Decode.new(jwt, key, verify, DEFAULT_OPTIONS.merge(options), &keyfinder).decode_segments
   end
 end

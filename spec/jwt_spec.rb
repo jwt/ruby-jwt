@@ -57,21 +57,33 @@ describe JWT do
       expect(header['alg']).to eq alg
       expect(jwt_payload).to eq payload
     end
+  end
 
-    it 'should display a better error message if payload exp is_a?(Time)' do
-      payload['exp'] = Time.now
+  context 'payload validation' do
+    subject { JWT.encode(payload, nil, 'none') }
+    let(:payload) { { 'exp' => exp } }
 
-      expect do
-        JWT.encode payload, nil, alg
-      end.to raise_error JWT::InvalidPayload
+    context 'when exp is given as a non Integer' do
+      let(:exp) { Time.now.to_i.to_s }
+      it 'raises an JWT::InvalidPayload error' do
+        expect { subject }.to raise_error(JWT::InvalidPayload, 'exp claim must be an integer')
+      end
     end
 
-    it 'should display a better error message if payload exp is not an Integer' do
-      payload['exp'] = Time.now.to_i.to_s
+    context 'when exp is given as an Integer' do
+      let(:exp) { 1234 }
 
-      expect do
-        JWT.encode payload, nil, alg
-      end.to raise_error JWT::InvalidPayload
+      it 'encodes the payload' do
+        expect(subject).to be_a(String)
+      end
+    end
+
+    context 'when the key for exp is a symbol' do
+      let(:payload) { { :exp => 'NotAInteger' } }
+
+      it 'raises an JWT::InvalidPayload error' do
+        expect { subject }.to raise_error(JWT::InvalidPayload, 'exp claim must be an integer')
+      end
     end
   end
 
@@ -228,7 +240,7 @@ describe JWT do
         translated_alg  = alg.gsub('PS', 'sha')
         valid_signature = data[:rsa_public].verify_pss(
           translated_alg,
-          JWT::Decode.base64url_decode(signature),
+          JWT::Base64.url_decode(signature),
           [header, body].join('.'),
           salt_length: :auto,
           mgf1_hash:   translated_alg
@@ -339,7 +351,7 @@ describe JWT do
   context 'Base64' do
     it 'urlsafe replace + / with - _' do
       allow(Base64).to receive(:encode64) { 'string+with/non+url-safe/characters_' }
-      expect(JWT::Encode.base64url_encode('foo')).to eq('string-with_non-url-safe_characters_')
+      expect(JWT::Base64.url_encode('foo')).to eq('string-with_non-url-safe_characters_')
     end
   end
 
@@ -363,5 +375,13 @@ describe JWT do
     expect do
       JWT.encode 'Hello World', 'secret'
     end.not_to raise_error
+  end
+
+  context 'when the alg value is given as a header parameter' do
+
+    it 'does not override the actual algorithm used' do
+      headers = JSON.parse(::JWT::Base64.url_decode(JWT.encode('Hello World', 'secret', 'HS256', { alg: 'HS123'}).split('.').first))
+      expect(headers['alg']).to eq('HS256')
+    end
   end
 end

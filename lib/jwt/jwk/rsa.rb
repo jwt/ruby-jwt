@@ -27,16 +27,16 @@ module JWT
       def export
         {
           kty: KTY,
-          n: Base64.urlsafe_encode64(public_key.n.to_s(BINARY), padding: false),
-          e: Base64.urlsafe_encode64(public_key.e.to_s(BINARY), padding: false),
+          n: ::Base64.urlsafe_encode64(public_key.n.to_s(BINARY), padding: false),
+          e: ::Base64.urlsafe_encode64(public_key.e.to_s(BINARY), padding: false),
           kid: kid
         }
       end
 
       def self.import(jwk_data)
         imported_key = OpenSSL::PKey::RSA.new
-        imported_key.set_key(OpenSSL::BN.new(Base64.urlsafe_decode64(jwk_data[:n]), BINARY),
-          OpenSSL::BN.new(Base64.urlsafe_decode64(jwk_data[:e]), BINARY),
+        imported_key.set_key(OpenSSL::BN.new(::Base64.urlsafe_decode64(jwk_data[:n]), BINARY),
+          OpenSSL::BN.new(::Base64.urlsafe_decode64(jwk_data[:e]), BINARY),
           nil)
         self.new(imported_key)
       end
