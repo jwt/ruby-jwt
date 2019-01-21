@@ -184,6 +184,7 @@ describe JWT do
       end
     end
   end
+
   %w[ES256 ES384 ES512].each do |alg|
     context "alg: #{alg}" do
       before(:each) do
@@ -345,6 +346,30 @@ describe JWT do
           JWT.decode token, data[:secret], true, iss: iss, algorithm: 'HS256'
         end.not_to raise_error
       end
+    end
+  end
+
+  context 'a token with no segments' do
+    it 'raises JWT::DecodeError' do
+      expect { JWT.decode('ThisIsNotAValidJWTToken', nil, true) }.to raise_error(JWT::DecodeError, 'Not enough or too many segments')
+    end
+  end
+
+  context 'a token with not enough segments' do
+    it 'raises JWT::DecodeError' do
+      expect { JWT.decode('ThisIsNotAValidJWTToken.second', nil, true) }.to raise_error(JWT::DecodeError, 'Not enough or too many segments')
+    end
+  end
+
+  context 'a token with not too many segments' do
+    it 'raises JWT::DecodeError' do
+      expect { JWT.decode('ThisIsNotAValidJWTToken.second.third.signature', nil, true) }.to raise_error(JWT::DecodeError, 'Not enough or too many segments')
+    end
+  end
+
+  context 'a token with two segments but does not require verifying' do
+    it 'raises something else than "Not enough or too many segments"' do
+      expect { JWT.decode('ThisIsNotAValidJWTToken.second', nil, false) }.to raise_error(JWT::DecodeError, 'Invalid segment encoding')
     end
   end
 
