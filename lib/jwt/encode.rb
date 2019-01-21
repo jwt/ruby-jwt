@@ -1,52 +1,76 @@
 # frozen_string_literal: true
 
-require 'json'
-require_relative './claims_validator'
-
 # JWT::Encode module
 module JWT
   # Encoding logic for JWT
   class Encode
-    attr_reader :payload, :key, :algorithm, :header_fields, :segments
+    ALG_NONE = 'none'.freeze
+    ALG_KEY  = 'alg'.freeze
+    EXP_KEY  = 'exp'.freeze
+    EXP_KEYS = [EXP_KEY, EXP_KEY.to_sym].freeze
 
-    def self.base64url_encode(str)
-      Base64.urlsafe_encode64(str).delete('=')
+    def initialize(options)
+      @payload   = options[:payload]
+      @key       = options[:key]
+      @algorithm = options[:algorithm]
+      @headers   = options[:headers]
     end
 
-    def initialize(payload, key, algorithm, header_fields)
-      @payload = payload
-      @key = key
-      @algorithm = algorithm
-      @header_fields = header_fields
-      @segments = encode_segments
+    def segments
+      @segments ||= combine(encoded_header_and_payload, encoded_signature)
     end
 
     private
 
+    def validate_payload!
+      return unless @payload && @payload.is_a?(Hash)
+
+      validate_exp!
+    end
+
+    def validate_exp!
+      return if EXP_KEYS.all? { |key| !@payload.key?(key) || @payload[key].is_a?(Integer) }
+
+      raise InvalidPayload, 'exp claim must be an integer'
+    end
+
     def encoded_header
-      header = { 'alg' => @algorithm }.merge(@header_fields)
-      Encode.base64url_encode(JSON.generate(header))
+      @encoded_header ||= encode_header
     end
 
     def encoded_payload
-      ClaimsValidator.new(@payload).validate if @payload.is_a?(Hash)
-      Encode.base64url_encode(JSON.generate(@payload))
+      @encoded_payload ||= encode_payload
     end
 
-    def encoded_signature(signing_input)
-      if @algorithm == 'none'
-        ''
-      else
-        signature = JWT::Signature.sign(@algorithm, signing_input, @key)
-        Encode.base64url_encode(signature)
-      end
+    def encoded_signature
+      @encoded_signature ||= encode_signature
     end
 
-    def encode_segments
-      header = encoded_header
-      payload = encoded_payload
-      signature = encoded_signature([header, payload].join('.'))
-      [header, payload, signature].join('.')
+    def encoded_header_and_payload
+      @encoded_header_and_payload ||= combine(encoded_header, encoded_payload)
+    end
+
+    def encode_header
+      encode(@headers.merge(ALG_KEY => @algorithm))
+    end
+
+    def encode_payload
+      validate_payload!
+      encode(@payload)
+    end
+
+    def encode_signature
+      return '' if @algorithm == ALG_NONE
+
+      JWT::Base64.url_encode(JWT::Signature.sign(@algorithm, encoded_header_and_payload, @key))
+    end
+
+    def encode(data)
+      JWT::Base64.url_encode(JWT::JSON.generate(data))
+    end
+
+    def combine(*parts)
+      parts.join('.')
     end
   end
 end

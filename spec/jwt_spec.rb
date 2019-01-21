@@ -31,7 +31,10 @@ describe JWT do
       'RS512' => 'eyJhbGciOiJSUzUxMiJ9.eyJ1c2VyX2lkIjoic29tZUB1c2VyLnRsZCJ9.LIIAUEuCkGNdpYguOO5LoW4rZ7ED2POJrB0pmEAAchyTdIK4HKh1jcLxc6KyGwZv40njCgub3y72q6vcQTn7oD0zWFCVQRIDW1911Ii2hRNHuigiPUnrnZh1OQ6z65VZRU6GKs8omoBGU9vrClBU0ODqYE16KxYmE_0n4Xw2h3D_L1LF0IAOtDWKBRDa3QHwZRM9sHsHNsBuD5ye9KzDYN1YALXj64LBfA-DoCKfpVAm9NkRPOyzjR2X2C3TomOSJgqWIVHJucudKDDAZyEbO4RA5pI-UFYy1370p9bRajvtDyoBuLDCzoSkMyQ4L2DnLhx5CbWcnD7Cd3GUmnjjTA',
       'ES256' => '',
       'ES384' => '',
-      'ES512' => ''
+      'ES512' => '',
+      'PS256' => '',
+      'PS384' => '',
+      'PS512' => ''
     }
   end
 
@@ -54,21 +57,33 @@ describe JWT do
       expect(header['alg']).to eq alg
       expect(jwt_payload).to eq payload
     end
+  end
 
-    it 'should display a better error message if payload exp is_a?(Time)' do
-      payload['exp'] = Time.now
+  context 'payload validation' do
+    subject { JWT.encode(payload, nil, 'none') }
+    let(:payload) { { 'exp' => exp } }
 
-      expect do
-        JWT.encode payload, nil, alg
-      end.to raise_error JWT::InvalidPayload
+    context 'when exp is given as a non Integer' do
+      let(:exp) { Time.now.to_i.to_s }
+      it 'raises an JWT::InvalidPayload error' do
+        expect { subject }.to raise_error(JWT::InvalidPayload, 'exp claim must be an integer')
+      end
     end
 
-    it 'should display a better error message if payload exp is not an Integer' do
-      payload['exp'] = Time.now.to_i.to_s
+    context 'when exp is given as an Integer' do
+      let(:exp) { 1234 }
 
-      expect do
-        JWT.encode payload, nil, alg
-      end.to raise_error JWT::InvalidPayload
+      it 'encodes the payload' do
+        expect(subject).to be_a(String)
+      end
+    end
+
+    context 'when the key for exp is a symbol' do
+      let(:payload) { { :exp => 'NotAInteger' } }
+
+      it 'raises an JWT::InvalidPayload error' do
+        expect { subject }.to raise_error(JWT::InvalidPayload, 'exp claim must be an integer')
+      end
     end
   end
 
@@ -206,6 +221,55 @@ describe JWT do
     end
   end
 
+  %w[PS256 PS384 PS512].each do |alg|
+    context "alg: #{alg}" do
+      before(:each) do
+        data[alg] = JWT.encode payload, data[:rsa_private], alg
+      end
+
+      let(:wrong_key) { data[:wrong_rsa_public] }
+
+      it 'should generate a valid token' do
+        token = data[alg]
+
+        header, body, signature = token.split('.')
+
+        expect(header).to eql(Base64.strict_encode64({ alg: alg }.to_json))
+        expect(body).to   eql(Base64.strict_encode64(payload.to_json))
+
+        # Validate signature is made of up header and body of JWT
+        translated_alg  = alg.gsub('PS', 'sha')
+        valid_signature = data[:rsa_public].verify_pss(
+          translated_alg,
+          JWT::Base64.url_decode(signature),
+          [header, body].join('.'),
+          salt_length: :auto,
+          mgf1_hash:   translated_alg
+        )
+        expect(valid_signature).to be true
+      end
+
+      it 'should decode a valid token' do
+        jwt_payload, header = JWT.decode data[alg], data[:rsa_public], true, algorithm: alg
+
+        expect(header['alg']).to eq alg
+        expect(jwt_payload).to eq payload
+      end
+
+      it 'wrong key should raise JWT::DecodeError' do
+        expect do
+          JWT.decode data[alg], wrong_key
+        end.to raise_error JWT::DecodeError
+      end
+
+      it 'wrong key and verify = false should not raise JWT::DecodeError' do
+        expect do
+          JWT.decode data[alg], wrong_key, false
+        end.not_to raise_error
+      end
+    end
+  end
+
   context 'Invalid' do
     it 'algorithm should raise NotImplementedError' do
       expect do
@@ -285,10 +349,34 @@ describe JWT do
     end
   end
 
+  context 'a token with no segments' do
+    it 'raises JWT::DecodeError' do
+      expect { JWT.decode('ThisIsNotAValidJWTToken', nil, true) }.to raise_error(JWT::DecodeError, 'Not enough or too many segments')
+    end
+  end
+
+  context 'a token with not enough segments' do
+    it 'raises JWT::DecodeError' do
+      expect { JWT.decode('ThisIsNotAValidJWTToken.second', nil, true) }.to raise_error(JWT::DecodeError, 'Not enough or too many segments')
+    end
+  end
+
+  context 'a token with not too many segments' do
+    it 'raises JWT::DecodeError' do
+      expect { JWT.decode('ThisIsNotAValidJWTToken.second.third.signature', nil, true) }.to raise_error(JWT::DecodeError, 'Not enough or too many segments')
+    end
+  end
+
+  context 'a token with two segments but does not require verifying' do
+    it 'raises something else than "Not enough or too many segments"' do
+      expect { JWT.decode('ThisIsNotAValidJWTToken.second', nil, false) }.to raise_error(JWT::DecodeError, 'Invalid segment encoding')
+    end
+  end
+
   context 'Base64' do
-    it 'removes padding from the urlsafe_encode64ed string' do
-      allow(Base64).to receive(:urlsafe_encode64ed).with('basestring') { 'YmFzZXN0cmluZw==' }
-      expect(JWT::Encode.base64url_encode('basestring')).to eq('YmFzZXN0cmluZw')
+    it 'urlsafe replace + / with - _' do
+      allow(Base64).to receive(:encode64) { 'string+with/non+url-safe/characters_' }
+      expect(JWT::Base64.url_encode('foo')).to eq('string-with_non-url-safe_characters_')
     end
   end
 
@@ -312,5 +400,13 @@ describe JWT do
     expect do
       JWT.encode 'Hello World', 'secret'
     end.not_to raise_error
+  end
+
+  context 'when the alg value is given as a header parameter' do
+
+    it 'does not override the actual algorithm used' do
+      headers = JSON.parse(::JWT::Base64.url_decode(JWT.encode('Hello World', 'secret', 'HS256', { alg: 'HS123'}).split('.').first))
+      expect(headers['alg']).to eq('HS256')
+    end
   end
 end

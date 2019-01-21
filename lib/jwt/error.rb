@@ -1,8 +1,9 @@
 # frozen_string_literal: true
 
 module JWT
-  EncodeError = Class.new(StandardError)
-  DecodeError = Class.new(StandardError)
+  EncodeError             = Class.new(StandardError)
+  DecodeError             = Class.new(StandardError)
+  RequiredDependencyError = Class.new(StandardError)
 
   VerificationError  = Class.new(DecodeError)
   ExpiredSignature   = Class.new(DecodeError)
@@ -14,4 +15,6 @@ module JWT
   InvalidSubError    = Class.new(DecodeError)
   InvalidJtiError    = Class.new(DecodeError)
   InvalidPayload     = Class.new(DecodeError)
+
+  JWKError           = Class.new(DecodeError)
 end

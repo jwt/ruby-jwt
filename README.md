@@ -176,7 +176,34 @@ decoded_token = JWT.decode token, public_key, true, { algorithm: 'ED25519' }
 
 **RSASSA-PSS**
 
-Not implemented.
+In order to use this algorithm you need to add the `openssl` gem to you `Gemfile` with a version greater or equal to `2.1`.
+
+```ruby
+gem 'openssl', '~> 2.1'
+```
+
+* PS256 - RSASSA-PSS using SHA-256 hash algorithm
+* PS384 - RSASSA-PSS using SHA-384 hash algorithm
+* PS512 - RSASSA-PSS using SHA-512 hash algorithm
+
+```ruby
+rsa_private = OpenSSL::PKey::RSA.generate 2048
+rsa_public = rsa_private.public_key
+
+token = JWT.encode payload, rsa_private, 'PS256'
+
+# eyJhbGciOiJQUzI1NiJ9.eyJkYXRhIjoidGVzdCJ9.KEmqagMUHM-NcmXo6818ZazVTIAkn9qU9KQFT1c5Iq91n0KRpAI84jj4ZCdkysDlWokFs3Dmn4MhcXP03oJKLFgnoPL40_Wgg9iFr0jnIVvnMUp1kp2RFUbL0jqExGTRA3LdAhuvw6ZByGD1bkcWjDXygjQw-hxILrT1bENjdr0JhFd-cB0-ps5SB0mwhFNcUw-OM3Uu30B1-mlFaelUY8jHJYKwLTZPNxHzndt8RGXF8iZLp7dGb06HSCKMcVzhASGMH4ZdFystRe2hh31cwcvnl-Eo_D4cdwmpN3Abhk_8rkxawQJR3duh8HNKc4AyFPo7SabEaSu2gLnLfN3yfg
+puts token
+
+decoded_token = JWT.decode token, rsa_public, true, { algorithm: 'PS256' }
+
+# Array
+# [
+#   {"data"=>"test"}, # payload
+#   {"alg"=>"PS256"} # header
+# ]
+puts decoded_token
+```
 
 ## Support for reserved claim names
 JSON Web Token defines some reserved claim names and defines how they should be
@@ -409,6 +436,31 @@ begin
   decoded_token = JWT.decode token, hmac_secret, true, { sub: sub, verify_sub: true, algorithm: 'HS256' }
 rescue JWT::InvalidSubError
   # Handle invalid token, e.g. logout user or deny access
+end
+```
+
+### JSON Web Key (JWK)
+
+JWK is a JSON structure representing a cryptographic key. Currently only supports RSA public keys.
+
+```ruby
+jwk = JWT::JWK.new(OpenSSL::PKey::RSA.new(2048))
+payload, headers = { data: 'data' }, { kid: jwk.kid }
+
+token = JWT.encode(payload, jwk.keypair, 'RS512', headers)
+
+# The jwk loader would fetch the set of JWKs from a trusted source
+jwk_loader = ->(options) do
+  @cached_keys = nil if options[:invalidate] # need to reload the keys
+  @cached_keys ||= { keys: [jwk.export] }
+end
+
+begin
+  JWT.decode(token, nil, true, { algorithms: ['RS512'], jwks: jwk_loader})
+rescue JWT::JWKError
+  # Handle problems with the provided JWKs
+rescue JWT::DecodeError
+  # Handle other decode related issues e.g. no kid in header, no matching public key found etc. 
 end
 ```
 

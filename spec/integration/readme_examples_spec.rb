@@ -56,6 +56,19 @@ describe 'README.md code test' do
         { 'alg' => 'ES256' }
       ]
     end
+
+    it 'RSASSA-PSS' do
+      rsa_private = OpenSSL::PKey::RSA.generate 2048
+      rsa_public = rsa_private.public_key
+
+      token = JWT.encode payload, rsa_private, 'PS256'
+      decoded_token = JWT.decode token, rsa_public, true, algorithm: 'PS256'
+
+      expect(decoded_token).to eq [
+        { 'data' => 'test' },
+        { 'alg' => 'PS256' }
+      ]
+    end
   end
 
   context 'claims' do
@@ -202,6 +215,24 @@ describe 'README.md code test' do
 
       expect do
         JWT.decode token, hmac_secret, true, 'sub' => sub, :verify_sub => true, :algorithm => 'HS256'
+      end.not_to raise_error
+    end
+
+
+    it 'JWK' do
+      jwk = JWT::JWK.new(OpenSSL::PKey::RSA.new(2048))
+      payload, headers = { data: 'data' }, { kid: jwk.kid }
+
+      token = JWT.encode(payload, jwk.keypair, 'RS512', headers)
+
+      # The jwk loader would fetch the set of JWKs from a trusted source
+      jwk_loader = ->(options) do
+        @cached_keys = nil if options[:invalidate] # need to reload the keys
+        @cached_keys ||= { keys: [jwk.export] }
+      end
+
+      expect do
+        JWT.decode(token, nil, true, { algorithms: ['RS512'], jwks: jwk_loader})
       end.not_to raise_error
     end
   end
