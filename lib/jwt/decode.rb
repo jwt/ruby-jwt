@@ -8,11 +8,6 @@ require 'jwt/verify'
 module JWT
   # Decoding logic for JWT
   class Decode
-    def self.base64url_decode(str)
-      str += '=' * (4 - str.length.modulo(4))
-      Base64.decode64(str.tr('-_', '+/'))
-    end
-
     def initialize(jwt, key, verify, options, &keyfinder)
       raise(JWT::DecodeError, 'Nil JSON web token') unless jwt
       @jwt = jwt
@@ -80,7 +75,7 @@ module JWT
     end
 
     def decode_crypto
-      @signature = Decode.base64url_decode(@segments[2])
+      @signature = JWT::Base64.url_decode(@segments[2])
     end
 
     def header
@@ -96,7 +91,7 @@ module JWT
     end
 
     def parse_and_decode(segment)
-      JSON.parse(Decode.base64url_decode(segment))
+      JSON.parse(JWT::Base64.url_decode(segment))
     rescue JSON::ParserError
       raise JWT::DecodeError, 'Invalid segment encoding'
     end
