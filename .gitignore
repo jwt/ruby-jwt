@@ -8,5 +8,4 @@ coverage/
 .ruby-version
 .vscode/
 .bundle
-bin/
 *gemfile.lock
