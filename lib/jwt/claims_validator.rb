@@ -4,7 +4,9 @@ module JWT
   class ClaimsValidator
     INTEGER_CLAIMS = %i[
       exp
-    ]
+      iat
+      nbf
+    ].freeze
 
     def initialize(payload)
       @payload = payload.each_with_object({}) { |(k, v), h| h[k.to_sym] = v }
@@ -25,7 +27,7 @@ module JWT
     end
 
     def validate_is_int(claim)
-      raise InvalidPayload, "#{claim} claim must be an integer" unless @payload[:exp].is_a?(Integer)
+      raise InvalidPayload, "#{claim} claim must be an Integer but it is a #{@payload[claim].class}" unless @payload[claim].is_a?(Integer)
     end
   end
 end
