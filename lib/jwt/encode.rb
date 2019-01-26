@@ -1,13 +1,13 @@
 # frozen_string_literal: true
 
+require_relative './claims_validator'
+
 # JWT::Encode module
 module JWT
   # Encoding logic for JWT
   class Encode
     ALG_NONE = 'none'.freeze
     ALG_KEY  = 'alg'.freeze
-    EXP_KEY  = 'exp'.freeze
-    EXP_KEYS = [EXP_KEY, EXP_KEY.to_sym].freeze
 
     def initialize(options)
       @payload   = options[:payload]
@@ -21,18 +21,6 @@ module JWT
     end
 
     private
-
-    def validate_payload!
-      return unless @payload && @payload.is_a?(Hash)
-
-      validate_exp!
-    end
-
-    def validate_exp!
-      return if EXP_KEYS.all? { |key| !@payload.key?(key) || @payload[key].is_a?(Integer) }
-
-      raise InvalidPayload, 'exp claim must be an integer'
-    end
 
     def encoded_header
       @encoded_header ||= encode_header
@@ -55,7 +43,10 @@ module JWT
     end
 
     def encode_payload
-      validate_payload!
+      if @payload && @payload.is_a?(Hash)
+        ClaimsValidator.new(@payload).validate!
+      end
+
       encode(@payload)
     end
 

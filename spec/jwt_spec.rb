@@ -60,30 +60,21 @@ describe JWT do
   end
 
   context 'payload validation' do
-    subject { JWT.encode(payload, nil, 'none') }
-    let(:payload) { { 'exp' => exp } }
+    it 'validates the payload with the ClaimsValidator if the payload is a hash' do
+      validator = double()
+      expect(JWT::ClaimsValidator).to receive(:new) { validator }
+      expect(validator).to receive(:validate!) { true }
 
-    context 'when exp is given as a non Integer' do
-      let(:exp) { Time.now.to_i.to_s }
-      it 'raises an JWT::InvalidPayload error' do
-        expect { subject }.to raise_error(JWT::InvalidPayload, 'exp claim must be an integer')
-      end
+      payload = {}
+      JWT.encode payload, "secret", JWT::Algos::Hmac::SUPPORTED.sample
     end
 
-    context 'when exp is given as an Integer' do
-      let(:exp) { 1234 }
+    it 'does not validate the payload if it is not present' do
+      validator = double()
+      expect(JWT::ClaimsValidator).not_to receive(:new) { validator }
 
-      it 'encodes the payload' do
-        expect(subject).to be_a(String)
-      end
-    end
-
-    context 'when the key for exp is a symbol' do
-      let(:payload) { { :exp => 'NotAInteger' } }
-
-      it 'raises an JWT::InvalidPayload error' do
-        expect { subject }.to raise_error(JWT::InvalidPayload, 'exp claim must be an integer')
-      end
+      payload = nil
+      JWT.encode payload, "secret", JWT::Algos::Hmac::SUPPORTED.sample
     end
   end
 
