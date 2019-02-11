@@ -39,7 +39,13 @@ module JWT
     end
 
     def encode_header
-      encode(@headers.transform_keys(&:to_s).merge(ALG_KEY => @algorithm))
+      stringified_header = {}
+
+      @headers.each do |key, value|
+        stringified_header[key.to_s] = value
+      end
+
+      encode(stringified_header.merge(ALG_KEY => @algorithm))
     end
 
     def encode_payload
