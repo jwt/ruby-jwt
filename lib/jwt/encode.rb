@@ -39,7 +39,7 @@ module JWT
     end
 
     def encode_header
-      encode(@headers.merge(ALG_KEY => @algorithm))
+      encode(@headers.transform_keys(&:to_s).merge(ALG_KEY => @algorithm))
     end
 
     def encode_payload

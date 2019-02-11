@@ -399,5 +399,9 @@ describe JWT do
       headers = JSON.parse(::JWT::Base64.url_decode(JWT.encode('Hello World', 'secret', 'HS256', { alg: 'HS123'}).split('.').first))
       expect(headers['alg']).to eq('HS256')
     end
+
+    it "should generate the same token" do
+      expect(JWT.encode('Hello World', 'secret', 'HS256', { alg: 'HS256'})).to eq JWT.encode('Hello World', 'secret', 'HS256')
+    end
   end
 end
