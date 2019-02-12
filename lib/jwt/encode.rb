@@ -13,7 +13,7 @@ module JWT
       @payload   = options[:payload]
       @key       = options[:key]
       @algorithm = options[:algorithm]
-      @headers   = options[:headers].each_with_object({}) { |(k, v), h| h[k.to_s] = v }
+      @headers   = options[:headers].each_with_object({}) { |(key, value), headers| headers[key.to_s] = value }
     end
 
     def segments
