@@ -13,7 +13,7 @@ module JWT
       @payload   = options[:payload]
       @key       = options[:key]
       @algorithm = options[:algorithm]
-      @headers   = options[:headers]
+      @headers   = options[:headers].each_with_object({}) { |(k, v), h| h[k.to_s] = v }
     end
 
     def segments
@@ -39,13 +39,8 @@ module JWT
     end
 
     def encode_header
-      stringified_header = {}
-
-      @headers.each do |key, value|
-        stringified_header[key.to_s] = value
-      end
-
-      encode(stringified_header.merge(ALG_KEY => @algorithm))
+      @headers[ALG_KEY] = @algorithm
+      encode(@headers)
     end
 
     def encode_payload
