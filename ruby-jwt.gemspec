@@ -11,7 +11,7 @@ Gem::Specification.new do |spec|
   spec.email = 'timrudat@gmail.com'
   spec.summary = 'JSON Web Token implementation in Ruby'
   spec.description = 'A pure ruby implementation of the RFC 7519 OAuth JSON Web Token (JWT) standard.'
-  spec.homepage = 'http://github.com/jwt/ruby-jwt'
+  spec.homepage = 'https://github.com/jwt/ruby-jwt'
   spec.license = 'MIT'
   spec.required_ruby_version = '>= 2.1'
 
