@@ -18,7 +18,7 @@ module JWT
 
         translated_algorithm = algorithm.sub('PS', 'sha')
 
-        key.sign_pss(translated_algorithm, msg, salt_length: :max, mgf1_hash: translated_algorithm)
+        key.sign_pss(translated_algorithm, msg, salt_length: :digest, mgf1_hash: translated_algorithm)
       end
 
       def verify(to_verify)
