@@ -43,6 +43,7 @@ module JWT
       end
       verified = algo.verify(ToVerify.new(algorithm, key, signing_input, signature))
       raise(JWT::VerificationError, 'Signature verification raised') unless verified
+      true
     rescue OpenSSL::PKey::PKeyError
       raise JWT::VerificationError, 'Signature verification raised'
     ensure
