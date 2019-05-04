@@ -15,6 +15,7 @@ end
 SimpleCov.start if ENV['COVERAGE']
 
 CERT_PATH = File.join(File.dirname(__FILE__), 'fixtures', 'certs')
+X509_PATH = File.join(File.dirname(__FILE__), 'fixtures', 'x509')
 
 RSpec.configure do |config|
   config.expect_with :rspec do |c|

@@ -35,9 +35,14 @@ module JWT
     def verify_signature
       @key = find_key(&@keyfinder) if @keyfinder
       @key = ::JWT::JWK::KeyFinder.new(jwks: @options[:jwks]).key_for(header['kid']) if @options[:jwks]
+      @key = ::JWT::X509::KeyFinder.new({ 'x5c' => header['x5c'] }).public_key if header['x5c']
 
       raise(JWT::IncorrectAlgorithm, 'An algorithm must be specified') if allowed_algorithms.empty?
       raise(JWT::IncorrectAlgorithm, 'Expected a different algorithm') unless options_includes_algo_in_header?
+
+      if @options[:validate_cert] == true && !!@header['x5c']
+        return false unless ::JWT::X509::Validator.new({ 'x5c' => header['x5c'] }).valid?
+      end
 
       Signature.verify(header['alg'], @key, signing_input, @signature)
     end
