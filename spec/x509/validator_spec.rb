@@ -12,14 +12,14 @@ describe JWT::X509::Validator do
     context 'when the cert has a cert chain' do
       context 'when the cert has been signed by the chain' do
         it 'validates the cert' do
-          v = described_class.new({ 'x5c' => x5c_valid })
+          v = described_class.new(x5c: x5c_valid)
           expect(v.valid?).to be true
         end
       end
 
       context 'when the cert has not been signed by the chain' do
         it 'invalidates the cert' do
-          v = described_class.new({ 'x5c' => x5c_invalid })
+          v = described_class.new(x5c: x5c_invalid)
           expect(v.valid?).to be false
         end
       end
@@ -27,7 +27,7 @@ describe JWT::X509::Validator do
 
     context 'when the cert has no cert chain' do
       it 'validates the cert' do
-        v = described_class.new({ 'x5c' => x5c_no_chain_valid })
+        v = described_class.new(x5c: x5c_no_chain_valid)
         expect(v.valid?).to be true
       end
     end
