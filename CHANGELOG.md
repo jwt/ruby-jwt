@@ -1,7 +1,28 @@
 # Change Log
 
-## [v2.2.0](https://github.com/jwt/ruby-jwt/tree/v2.2.0) (2019-03-20)
-[Full Changelog](https://github.com/jwt/ruby-jwt/compare/v2.1.0...v2.2.0)
+## [v2.2.1](https://github.com/jwt/ruby-jwt/tree/v2.2.1) (2019-05-24)
+[Full Changelog](https://github.com/jwt/ruby-jwt/compare/v2.2.0...v2.2.1)
+
+**Fixed bugs:**
+
+- need to `require 'forwardable'` to use `Forwardable` [\#316](https://github.com/jwt/ruby-jwt/issues/316)
+- Add forwardable dependency for JWK RSA KeyFinder [\#317](https://github.com/jwt/ruby-jwt/pull/317) ([excpt](https://github.com/excpt))
+
+## [v2.2.0](https://github.com/jwt/ruby-jwt/tree/v2.2.0) (2019-05-23)
+[Full Changelog](https://github.com/jwt/ruby-jwt/compare/v2.2.0.pre.beta.0...v2.2.0)
+
+**Closed issues:**
+
+- misspelled es512 curve name [\#310](https://github.com/jwt/ruby-jwt/issues/310)
+- With Base64 decode i can read the hashed content [\#306](https://github.com/jwt/ruby-jwt/issues/306)
+- hide post-it's for graphviz views [\#303](https://github.com/jwt/ruby-jwt/issues/303)
+
+**Merged pull requests:**
+
+- Release 2.2.0 [\#315](https://github.com/jwt/ruby-jwt/pull/315) ([excpt](https://github.com/excpt))
+
+## [v2.2.0.pre.beta.0](https://github.com/jwt/ruby-jwt/tree/v2.2.0.pre.beta.0) (2019-03-20)
+[Full Changelog](https://github.com/jwt/ruby-jwt/compare/v2.1.0...v2.2.0.pre.beta.0)
 
 **Implemented enhancements:**
 
@@ -54,6 +75,7 @@
 
 **Merged pull requests:**
 
+- Release v2.2.0-beta.0 [\#302](https://github.com/jwt/ruby-jwt/pull/302) ([excpt](https://github.com/excpt))
 - Misc config improvements [\#296](https://github.com/jwt/ruby-jwt/pull/296) ([jamesstonehill](https://github.com/jamesstonehill))
 - Fix JSON conflict between \#293 and \#292 [\#294](https://github.com/jwt/ruby-jwt/pull/294) ([anakinj](https://github.com/anakinj))
 - Drop Ruby 2.2 from test matrix [\#290](https://github.com/jwt/ruby-jwt/pull/290) ([anakinj](https://github.com/anakinj))
@@ -79,7 +101,6 @@
 - verify takes 2 params, second being payload closes: \#207 [\#238](https://github.com/jwt/ruby-jwt/pull/238) ([ab320012](https://github.com/ab320012))
 - simplified logic for keyfinder [\#237](https://github.com/jwt/ruby-jwt/pull/237) ([ab320012](https://github.com/ab320012))
 - Show backtrace if rbnacl-libsodium not loaded [\#231](https://github.com/jwt/ruby-jwt/pull/231) ([buzztaiki](https://github.com/buzztaiki))
-- Support for ED25519 [\#229](https://github.com/jwt/ruby-jwt/pull/229) ([ab320012](https://github.com/ab320012))
 
 **Fixed bugs:**
 
@@ -102,6 +123,10 @@
 
 ## [v2.0.0](https://github.com/jwt/ruby-jwt/tree/v2.0.0) (2017-09-03)
 [Full Changelog](https://github.com/jwt/ruby-jwt/compare/v2.0.0.beta1...v2.0.0)
+
+**Implemented enhancements:**
+
+- Support for ED25519 [\#229](https://github.com/jwt/ruby-jwt/pull/229) ([ab320012](https://github.com/ab320012))
 
 **Fixed bugs:**
 
@@ -520,7 +545,6 @@
 - Oops. :-\) [\#11](https://github.com/jwt/ruby-jwt/pull/11) ([sporkmonger](https://github.com/sporkmonger))
 - Fix issue with signature verification in JRuby [\#10](https://github.com/jwt/ruby-jwt/pull/10) ([sporkmonger](https://github.com/sporkmonger))
 - Depend on MultiJson [\#9](https://github.com/jwt/ruby-jwt/pull/9) ([lautis](https://github.com/lautis))
-- Allow for custom headers on encode and decode [\#8](https://github.com/jwt/ruby-jwt/pull/8) ([dgrijalva](https://github.com/dgrijalva))
 - Missing development dependency for echoe gem. [\#6](https://github.com/jwt/ruby-jwt/pull/6) ([sporkmonger](https://github.com/sporkmonger))
 
 ## [jwt-0.1.4](https://github.com/jwt/ruby-jwt/tree/jwt-0.1.4) (2011-11-11)
@@ -537,6 +561,7 @@
 
 **Merged pull requests:**
 
+- Allow for custom headers on encode and decode [\#8](https://github.com/jwt/ruby-jwt/pull/8) ([dgrijalva](https://github.com/dgrijalva))
 - Bumped a version and added a .gemspec using rake build\_gemspec [\#3](https://github.com/jwt/ruby-jwt/pull/3) ([zhitomirskiyi](https://github.com/zhitomirskiyi))
 - Added RSA support [\#2](https://github.com/jwt/ruby-jwt/pull/2) ([zhitomirskiyi](https://github.com/zhitomirskiyi))
 
