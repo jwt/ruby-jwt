@@ -4,13 +4,14 @@ module JWT
   module JWK
     class RSA
       attr_reader :keypair
+      attr_reader :jwk_kid
 
       BINARY = 2
       KTY    = 'RSA'.freeze
 
-      def initialize(keypair)
+      def initialize(keypair, kid = nil)
         raise ArgumentError, 'keypair must be of type OpenSSL::PKey::RSA' unless keypair.is_a?(OpenSSL::PKey::RSA)
-
+        @jwk_kid = kid
         @keypair = keypair
       end
 
@@ -23,6 +24,7 @@ module JWT
       end
 
       def kid
+        return jwk_kid if jwk_kid
         sequence = OpenSSL::ASN1::Sequence([OpenSSL::ASN1::Integer.new(public_key.n),
                                             OpenSSL::ASN1::Integer.new(public_key.e)])
         OpenSSL::Digest::SHA256.hexdigest(sequence.to_der)
@@ -47,7 +49,7 @@ module JWT
 
         raise JWT::JWKError, 'Key format is invalid for RSA' unless jwk_n && jwk_e
 
-        self.new(rsa_pkey(jwk_n, jwk_e))
+        self.new(rsa_pkey(jwk_n, jwk_e),  jwk_data[:kid] || jwk_data['kid'])
       end
 
       def self.rsa_pkey(jwk_n, jwk_e)
@@ -55,7 +57,7 @@ module JWT
         key_n = decode_open_ssl_bn(jwk_n)
         key_e = decode_open_ssl_bn(jwk_e)
 
-        if key.respond_to?(:set_key)
+        self.new(imported_key)
           key.set_key(key_n, key_e, nil)
         else
           key.n = key_n
