@@ -24,6 +24,13 @@ describe JWT::JWK do
         expect { subject }.to raise_error(JWT::JWKError)
       end
     end
+
+    context 'when keypair with defined kid is imported' do
+      it 'returns the predefined kid if jwt_data contains a kid' do
+        params[:kid] = "CUSTOM_KID"
+        expect(subject.export).to eq(params)
+      end
+    end
   end
 
   describe '.to_jwk' do
