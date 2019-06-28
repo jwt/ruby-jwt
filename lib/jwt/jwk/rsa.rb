@@ -1,15 +1,9 @@
 # frozen_string_literal: true
 
-require 'forwardable'
-
 module JWT
   module JWK
     class RSA
-      extend Forwardable
-
       attr_reader :keypair
-
-      def_delegators :keypair, :private?, :public_key
 
       BINARY = 2
       KTY    = 'RSA'.freeze
@@ -18,6 +12,14 @@ module JWT
         raise ArgumentError, 'keypair must be of type OpenSSL::PKey::RSA' unless keypair.is_a?(OpenSSL::PKey::RSA)
 
         @keypair = keypair
+      end
+
+      def private?
+        keypair.private?
+      end
+
+      def public_key
+        keypair.public_key
       end
 
       def kid
