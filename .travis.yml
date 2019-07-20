@@ -19,3 +19,11 @@ before_install:
   - sudo apt-get update -q
   - sudo apt-get install libsodium-dev -y
   - gem install bundler
+
+matrix:
+  fast_finish: true
+  exclude:
+    - gemfile: gemfiles/rails_6.rc1.gemfile
+      rvm: 2.3
+    - gemfile: gemfiles/rails_6.rc1.gemfile
+      rvm: 2.4
