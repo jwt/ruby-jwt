@@ -2,7 +2,7 @@ require_relative './error'
 
 module JWT
   class ClaimsValidator
-    INTEGER_CLAIMS = %i[
+    NUMERIC_CLAIMS = %i[
       exp
       iat
       nbf
@@ -13,21 +13,23 @@ module JWT
     end
 
     def validate!
-      validate_int_claims
+      validate_numeric_claims
 
       true
     end
 
     private
 
-    def validate_int_claims
-      INTEGER_CLAIMS.each do |claim|
-        validate_is_int(claim) if @payload.key?(claim)
+    def validate_numeric_claims
+      NUMERIC_CLAIMS.each do |claim|
+        validate_is_numeric(claim) if @payload.key?(claim)
       end
     end
 
-    def validate_is_int(claim)
-      raise InvalidPayload, "#{claim} claim must be an Integer but it is a #{@payload[claim].class}" unless @payload[claim].is_a?(Integer)
+    def validate_is_numeric(claim)
+      return if @payload[claim].is_a?(Numeric)
+
+      raise InvalidPayload, "#{claim} claim must be a Numeric value but it is a #{@payload[claim].class}"
     end
   end
 end

@@ -2,44 +2,79 @@ require 'spec_helper'
 require 'jwt/claims_validator'
 
 RSpec.describe JWT::ClaimsValidator do
+  let(:validator) { described_class.new(claims) }
+
   describe '#validate!' do
-    it 'returns true if the payload is valid' do
-      valid_payload = { 'exp' => 12345 }
-      subject = described_class.new(valid_payload)
+    subject { validator.validate! }
 
-      expect(subject.validate!).to eq(true)
-    end
+    shared_examples_for 'a NumericDate claim' do |claim|
+      context "when #{claim} payload is an integer" do
+        let(:claims) { { claim => 12345 } }
 
-    shared_examples_for 'an integer claim' do |claim|
-      it "raises an error when the value of the #{claim} claim is a string" do
-        subject = described_class.new({ claim => '1' })
-        expect { subject.validate! }.to raise_error JWT::InvalidPayload
+        it 'does not raise error' do
+          expect { subject }.not_to raise_error
+        end
+
+        context 'and key is a string' do
+          let(:claims) { { claim.to_s => 43.32 } }
+
+          it 'does not raise error' do
+            expect { subject }.not_to raise_error
+          end
+        end
       end
 
-      it "raises an error when the value of the #{claim} claim is a Time object" do
-        subject = described_class.new({ claim => Time.now })
-        expect { subject.validate! }.to raise_error JWT::InvalidPayload
+      context "when #{claim} payload is a float" do
+        let(:claims) { { claim => 43.32 } }
+
+        it 'does not raise error' do
+          expect { subject }.not_to raise_error
+        end
       end
 
-      it "validates the #{claim} claim when the key is either a string or a symbol" do
-        symbol = described_class.new({ claim.to_sym => true })
-        expect { symbol.validate! }.to raise_error JWT::InvalidPayload
+      context "when #{claim} payload is a string" do
+        let(:claims) { { claim => '1' } }
 
-        string = described_class.new({ claim.to_s => true })
-        expect { string.validate! }.to raise_error JWT::InvalidPayload
+        it 'raises error' do
+          expect { subject }.to raise_error JWT::InvalidPayload
+        end
+
+        context 'and key is a string' do
+          let(:claims) { { claim.to_s => '1' } }
+
+          it 'raises error' do
+            expect { subject }.to raise_error JWT::InvalidPayload
+          end
+        end
+      end
+
+      context "when #{claim} payload is a Time object" do
+        let(:claims) { { claim => Time.now } }
+
+        it 'raises error' do
+          expect { subject }.to raise_error JWT::InvalidPayload
+        end
+      end
+
+      context "when #{claim} payload is a string" do
+        let(:claims) { { claim => '1' } }
+
+        it 'raises error' do
+          expect { subject }.to raise_error JWT::InvalidPayload
+        end
       end
     end
 
     context 'exp claim' do
-      it_should_behave_like 'an integer claim', :exp
+      it_should_behave_like 'a NumericDate claim', :exp
     end
 
     context 'iat claim' do
-      it_should_behave_like 'an integer claim', :iat
+      it_should_behave_like 'a NumericDate claim', :iat
     end
 
     context 'nbf claim' do
-      it_should_behave_like 'an integer claim', :nbf
+      it_should_behave_like 'a NumericDate claim', :nbf
     end
   end
 end
