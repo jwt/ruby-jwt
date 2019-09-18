@@ -39,9 +39,14 @@ module JWT
 
       def self.import(jwk_data)
         imported_key = OpenSSL::PKey::RSA.new
-        imported_key.set_key(OpenSSL::BN.new(::Base64.urlsafe_decode64(jwk_data[:n]), BINARY),
-          OpenSSL::BN.new(::Base64.urlsafe_decode64(jwk_data[:e]), BINARY),
-          nil)
+        if imported_key.respond_to?(:set_key)
+          imported_key.set_key(OpenSSL::BN.new(::Base64.urlsafe_decode64(jwk_data[:n]), BINARY),
+            OpenSSL::BN.new(::Base64.urlsafe_decode64(jwk_data[:e]), BINARY),
+            nil)
+        else
+          imported_key.n = OpenSSL::BN.new(::Base64.urlsafe_decode64(jwk_data[:n]), BINARY)
+          imported_key.e = OpenSSL::BN.new(::Base64.urlsafe_decode64(jwk_data[:e]), BINARY)
+        end
         self.new(imported_key)
       end
     end
