@@ -85,6 +85,21 @@ decoded_token = JWT.decode token, hmac_secret, true, { algorithm: 'HS256' }
 #   {"alg"=>"HS256"} # header
 # ]
 puts decoded_token
+
+# Without secret key
+token = JWT.encode payload, nil, 'HS256'
+
+# eyJhbGciOiJIUzI1NiJ9.eyJkYXRhIjoidGVzdCJ9.pVzcY2dX8JNM3LzIYeP2B1e1Wcpt1K3TWVvIYSF4x-o
+puts token
+
+decoded_token = JWT.decode token, nil, true, { algorithm: 'HS256' }
+
+# Array
+# [
+#   {"data"=>"test"}, # payload
+#   {"alg"=>"HS256"} # header
+# ]
+puts decoded_token
 ```
 
 Note: If [RbNaCl](https://github.com/cryptosphere/rbnacl) is loadable, ruby-jwt will use it for HMAC-SHA256, HMAC-SHA512-256, and HMAC-SHA512. RbNaCl enforces a maximum key size of 32 bytes for these algorithms.
@@ -460,7 +475,7 @@ begin
 rescue JWT::JWKError
   # Handle problems with the provided JWKs
 rescue JWT::DecodeError
-  # Handle other decode related issues e.g. no kid in header, no matching public key found etc. 
+  # Handle other decode related issues e.g. no kid in header, no matching public key found etc.
 end
 ```
 
