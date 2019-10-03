@@ -18,11 +18,22 @@ describe 'README.md code test' do
       ]
     end
 
-    it 'HMAC' do
+    it 'decodes with HMAC algorithm with secret key' do
       token = JWT.encode payload, 'my$ecretK3y', 'HS256'
       decoded_token = JWT.decode token, 'my$ecretK3y', false
 
       expect(token).to eq 'eyJhbGciOiJIUzI1NiJ9.eyJkYXRhIjoidGVzdCJ9.pNIWIL34Jo13LViZAJACzK6Yf0qnvT_BuwOxiMCPE-Y'
+      expect(decoded_token).to eq [
+        { 'data' => 'test' },
+        { 'alg' => 'HS256' }
+      ]
+    end
+
+    it 'decodes with HMAC algorithm without secret key' do
+      token = JWT.encode payload, nil, 'HS256'
+      decoded_token = JWT.decode token, nil, false
+
+      expect(token).to eq 'eyJhbGciOiJIUzI1NiJ9.eyJkYXRhIjoidGVzdCJ9.pVzcY2dX8JNM3LzIYeP2B1e1Wcpt1K3TWVvIYSF4x-o'
       expect(decoded_token).to eq [
         { 'data' => 'test' },
         { 'alg' => 'HS256' }

@@ -404,4 +404,17 @@ describe JWT do
       expect(JWT.encode('Hello World', 'secret', 'HS256', { alg: 'HS256'})).to eq JWT.encode('Hello World', 'secret', 'HS256')
     end
   end
+
+  context 'when hmac algorithm is used without secret key' do
+    it 'encodes payload' do
+      payload = { a: 1, b: 'b'}
+
+      token = JWT.encode(payload, '', 'HS256')
+
+      expect do
+        token_without_secret = JWT.encode(payload, nil, 'HS256')
+        expect(token).to eq(token_without_secret)
+      end.not_to raise_error
+    end
+  end
 end

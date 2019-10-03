@@ -7,6 +7,7 @@ module JWT
 
       def sign(to_sign)
         algorithm, msg, key = to_sign.values
+        key ||= ''
         authenticator, padded_key = SecurityUtils.rbnacl_fixup(algorithm, key)
         if authenticator && padded_key
           authenticator.auth(padded_key, msg.encode('binary'))
