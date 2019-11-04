@@ -4,6 +4,7 @@ require 'json'
 
 require 'jwt/signature'
 require 'jwt/verify'
+require 'jwt/x5c_key_finder'
 # JWT::Decode module
 module JWT
   # Decoding logic for JWT
@@ -52,6 +53,9 @@ module JWT
 
       @key = find_key(&@keyfinder) if @keyfinder
       @key = ::JWT::JWK::KeyFinder.new(jwks: @options[:jwks]).key_for(header['kid']) if @options[:jwks]
+      if (x5c_options = @options[:x5c])
+        @key = X5cKeyFinder.new(x5c_options[:root_certificates], x5c_options[:crls]).from(header['x5c'])
+      end
     end
 
     def verify_signature_for?(key)

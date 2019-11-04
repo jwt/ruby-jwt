@@ -675,4 +675,23 @@ RSpec.describe JWT do
       end
     end
   end
+
+  describe '::JWT.decode with x5c parameter' do
+    let(:alg) { "RS256" }
+    let(:root_certificates) { [instance_double('OpenSSL::X509::Certificate')] }
+    let(:key_finder) { instance_double('::JWT::X5cKeyFinder') }
+
+    before do
+      expect(::JWT::X5cKeyFinder).to receive(:new).with(root_certificates, nil).and_return(key_finder)
+      expect(key_finder).to receive(:from).and_return(data[:rsa_public])
+    end
+    subject(:decoded_token) { ::JWT.decode(data[alg], nil, true, algorithm: alg, x5c: { root_certificates: root_certificates }) }
+
+    it 'calls X5cKeyFinder#from to verify the signature and return the payload' do
+      jwt_payload, header = decoded_token
+
+      expect(header['alg']).to eq alg
+      expect(jwt_payload).to eq payload
+    end
+  end
 end
