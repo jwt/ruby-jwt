@@ -24,6 +24,7 @@ module JWT
       validate_segment_count!
       if @verify
         decode_crypto
+        verify_algo
         set_key
         verify_signature
         verify_claims
@@ -46,11 +47,13 @@ module JWT
       raise(JWT::VerificationError, 'Signature verification failed')
     end
 
-    def set_key
+    def verify_algo
       raise(JWT::IncorrectAlgorithm, 'An algorithm must be specified') if allowed_algorithms.empty?
       raise(JWT::IncorrectAlgorithm, 'Token is missing alg header') unless algorithm
       raise(JWT::IncorrectAlgorithm, 'Expected a different algorithm') unless options_includes_algo_in_header?
+    end
 
+    def set_key
       @key = find_key(&@keyfinder) if @keyfinder
       @key = ::JWT::JWK::KeyFinder.new(jwks: @options[:jwks]).key_for(header['kid']) if @options[:jwks]
       if (x5c_options = @options[:x5c])
