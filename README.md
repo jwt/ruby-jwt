@@ -490,6 +490,27 @@ You can specify claims that must be present for decoding to be successful. JWT::
 JWT.decode token, hmac_secret, true, { required_claims: ['exp'], algorithm: 'HS256' }
 ```
 
+### X.509 certificates in x5c header
+
+A JWT signature can be verified using certificate(s) given in the `x5c` header. Before doing that, the trustworthiness of these certificate(s) must be established. This is done in accordance with RFC 5280 which (among other things) verifies the certificate(s) are issued by a trusted root certificate, the timestamps are valid, and none of the certificate(s) are revoked (i.e. being present in the root certificate's Certificate Revocation List).
+
+```ruby
+root_certificates = [] # trusted `OpenSSL::X509::Certificate` objects
+crl_uris = root_certificates.map(&:crl_uris)
+crls = crl_uris.map do |uri|
+  # look up cached CRL by `uri` and return it if found, otherwise continue
+  crl = Net::HTTP.get(uri)
+  crl = OpenSSL::X509::CRL.new(crl)
+  # cache `crl` using `uri` as the key, expiry set to `crl.next_update` timestamp
+end
+
+begin
+  JWT.decode(token, nil, true, { x5c: { root_certificates: root_certificates, crls: crls })
+rescue JWT::DecodeError
+  # Handle error, e.g. x5c header certificate revoked or expired
+end
+```
+
 ### JSON Web Key (JWK)
 
 JWK is a JSON structure representing a cryptographic key. Currently only supports RSA public keys.
