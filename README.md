@@ -479,6 +479,13 @@ rescue JWT::DecodeError
 end
 ```
 
+or by passing JWK as a simple Hash
+
+```
+jwks = { keys: [{ ... }] } # keys needs to be Symbol
+JWT.decode(token, nil, true, { algorithms: ['RS512'], jwks: jwks})
+```
+
 # Development and Tests
 
 We depend on [Bundler](http://rubygems.org/gems/bundler) for defining gemspec and performing releases to rubygems.org, which can be done with
