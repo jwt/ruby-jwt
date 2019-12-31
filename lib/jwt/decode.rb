@@ -4,6 +4,7 @@ require 'json'
 
 require 'jwt/signature'
 require 'jwt/verify'
+require 'jwt/x5c_key_finder'
 # JWT::Decode module
 module JWT
   # Decoding logic for JWT
@@ -23,6 +24,7 @@ module JWT
       validate_segment_count!
       if @verify
         decode_crypto
+        verify_algo
         verify_signature
         verify_claims
       end
@@ -32,12 +34,15 @@ module JWT
 
     private
 
+    def verify_algo
+      raise(JWT::IncorrectAlgorithm, 'An algorithm must be specified') if allowed_algorithms.empty?
+      raise(JWT::IncorrectAlgorithm, 'Expected a different algorithm') unless options_includes_algo_in_header?
+    end
+
     def verify_signature
       @key = find_key(&@keyfinder) if @keyfinder
       @key = ::JWT::JWK::KeyFinder.new(jwks: @options[:jwks]).key_for(header['kid']) if @options[:jwks]
-
-      raise(JWT::IncorrectAlgorithm, 'An algorithm must be specified') if allowed_algorithms.empty?
-      raise(JWT::IncorrectAlgorithm, 'Expected a different algorithm') unless options_includes_algo_in_header?
+      @key = JWT::X5cKeyFinder.from(header['x5c'], @options.fetch(:root_certificates), @options[:crls]) if header['x5c']
 
       Signature.verify(header['alg'], @key, signing_input, @signature)
     end
