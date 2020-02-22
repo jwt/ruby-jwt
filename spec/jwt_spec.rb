@@ -299,6 +299,16 @@ describe JWT do
         end.not_to raise_error
       end
 
+      it 'should raise JWT::IncorrectAlgorithm on mismatch prior to kid public key network call' do
+        token = JWT.encode payload, data[:rsa_private], 'RS256'
+
+        expect do
+          JWT.decode(token, nil, true, { algorithms: ['RS384'] }) do |_,_|
+            # unsuccessful keyfinder public key network call
+          end
+        end.to raise_error JWT::IncorrectAlgorithm
+      end
+
       it 'should raise JWT::IncorrectAlgorithm when algorithms array does not contain algorithm' do
         token = JWT.encode payload, data[:secret], 'HS512'
 
