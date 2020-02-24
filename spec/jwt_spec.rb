@@ -304,7 +304,7 @@ describe JWT do
 
         expect do
           JWT.decode(token, nil, true, { algorithms: ['RS384'] }) do |_,_|
-            # unsuccessful keyfinder public key network call
+            # unsuccessful keyfinder public key network call here
           end
         end.to raise_error JWT::IncorrectAlgorithm
       end
