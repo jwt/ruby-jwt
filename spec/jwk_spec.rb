@@ -8,13 +8,22 @@ describe JWT::JWK do
 
   describe '.import' do
     let(:keypair) { rsa_key.public_key }
-    let(:params)  { described_class.new(keypair).export }
+    let(:exported_key) { described_class.new(keypair).export }
+    let(:params)  { exported_key }
 
     subject { described_class.import(params) }
 
     it 'creates a ::JWT::JWK::RSA instance' do
       expect(subject).to be_a ::JWT::JWK::RSA
-      expect(subject.export).to eq(params)
+      expect(subject.export).to eq(exported_key)
+    end
+
+    context 'parsed from JSON' do
+      let(:params)  { exported_key }
+      it 'creates a ::JWT::JWK::RSA instance from JSON parsed JWK' do
+        expect(subject).to be_a ::JWT::JWK::RSA
+        expect(subject.export).to eq(exported_key)
+      end
     end
 
     context 'when keytype is not supported' do
@@ -26,7 +35,7 @@ describe JWT::JWK do
     end
   end
 
-  describe '.to_jwk' do
+  describe '.new' do
     subject { described_class.new(keypair) }
 
     context 'when RSA key is given' do
