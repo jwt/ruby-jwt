@@ -54,4 +54,34 @@ describe JWT::JWK::RSA do
       end
     end
   end
+
+  describe '.import' do
+    subject { described_class.import(params) }
+    let(:exported_key) { described_class.new(rsa_key).export }
+
+    context 'when keypair is imported with symbol keys' do
+      let(:params) { {e: exported_key[:e], n: exported_key[:n]} }
+      it 'returns a hash with the public parts of the key' do
+        expect(subject).to be_a described_class
+        expect(subject.private?).to eq false
+        expect(subject.export).to eq(exported_key)
+      end
+    end
+
+    context 'when keypair is imported with string keys from JSON' do
+      let(:params) { {'e' => exported_key[:e], 'n' => exported_key[:n]} }
+      it 'returns a hash with the public parts of the key' do
+        expect(subject).to be_a described_class
+        expect(subject.private?).to eq false
+        expect(subject.export).to eq(exported_key)
+      end
+    end
+
+    context 'when jwk_data is given without e and/or n' do
+      let(:params) { { kty: "RSA" } }
+      it 'raises an error' do
+        expect { subject }.to raise_error(JWT::JWKError, "Key format is invalid for RSA")
+      end
+    end
+  end
 end

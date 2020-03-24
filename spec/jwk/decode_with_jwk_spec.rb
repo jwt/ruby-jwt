@@ -40,6 +40,15 @@ describe JWT do
         end
       end
 
+      context 'no keys are found in the set' do
+        let(:public_jwks) { {keys: []} }
+        it 'raises an exception' do
+          expect { described_class.decode(signed_token, nil, true, { algorithms: ['RS512'], jwks: public_jwks}) }.to raise_error(
+            JWT::DecodeError, /No keys found in jwks/
+          )
+        end
+      end
+
       context 'token does not know the kid' do
         let(:token_headers) { {} }
         it 'raises an exception' do
@@ -60,6 +69,14 @@ describe JWT do
     context 'when jwk keys are rotated' do
       it 'decodes the token' do
         key_loader = ->(options) { options[:invalidate] ? public_jwks : { keys: [] } }
+        payload, _header = described_class.decode(signed_token, nil, true, { algorithms: ['RS512'], jwks: key_loader})
+        expect(payload).to eq(token_payload)
+      end
+    end
+
+    context 'when jwk keys are loaded from JSON with string keys' do
+      it 'decodes the token' do
+        key_loader = ->(options) { JSON.parse(JSON.generate(public_jwks)) }
         payload, _header = described_class.decode(signed_token, nil, true, { algorithms: ['RS512'], jwks: key_loader})
         expect(payload).to eq(token_payload)
       end
