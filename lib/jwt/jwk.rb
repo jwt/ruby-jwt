@@ -12,9 +12,10 @@ module JWT
 
     class << self
       def import(jwk_data)
-        raise JWT::JWKError, 'Key type (kty) not provided' unless jwk_data[:kty]
+        jwk_kty = jwk_data[:kty] || jwk_data['kty']
+        raise JWT::JWKError, 'Key type (kty) not provided' unless jwk_kty
 
-        MAPPINGS.fetch(jwk_data[:kty].to_s) do |kty|
+        MAPPINGS.fetch(jwk_kty.to_s) do |kty|
           raise JWT::JWKError, "Key type #{kty} not supported"
         end.import(jwk_data)
       end

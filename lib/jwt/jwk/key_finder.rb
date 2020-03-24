@@ -14,7 +14,10 @@ module JWT
 
         jwk = resolve_key(kid)
 
-        raise ::JWT::DecodeError, "Could not find public key for kid #{kid}" unless jwk
+        unless jwk
+          raise ::JWT::DecodeError, "No keys found in jwks" if jwks_keys.empty?
+          raise ::JWT::DecodeError, "Could not find public key for kid #{kid}"
+        end
 
         ::JWT::JWK.import(jwk).keypair
       end
@@ -45,8 +48,12 @@ module JWT
         @jwks = @jwk_loader.call(opts)
       end
 
+      def jwks_keys
+        Array(jwks[:keys] || jwks['keys'])
+      end
+
       def find_key(kid)
-        Array(jwks[:keys]).find { |key| key[:kid] == kid }
+        jwks_keys.find { |key| (key[:kid] || key['kid']) == kid }
       end
 
       def reloadable?
