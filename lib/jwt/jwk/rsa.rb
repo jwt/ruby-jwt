@@ -39,13 +39,18 @@ module JWT
 
       def self.import(jwk_data)
         imported_key = OpenSSL::PKey::RSA.new
+        jwk_n = jwk_data[:n] || jwk_data['n']
+        jwk_e = jwk_data[:e] || jwk_data['e']
+
+        raise JWT::JWKError, "Key format is invalid for RSA" unless jwk_n && jwk_e
+
         if imported_key.respond_to?(:set_key)
-          imported_key.set_key(OpenSSL::BN.new(::Base64.urlsafe_decode64(jwk_data[:n]), BINARY),
-            OpenSSL::BN.new(::Base64.urlsafe_decode64(jwk_data[:e]), BINARY),
+          imported_key.set_key(OpenSSL::BN.new(::Base64.urlsafe_decode64(jwk_n), BINARY),
+            OpenSSL::BN.new(::Base64.urlsafe_decode64(jwk_e), BINARY),
             nil)
         else
-          imported_key.n = OpenSSL::BN.new(::Base64.urlsafe_decode64(jwk_data[:n]), BINARY)
-          imported_key.e = OpenSSL::BN.new(::Base64.urlsafe_decode64(jwk_data[:e]), BINARY)
+          imported_key.n = OpenSSL::BN.new(::Base64.urlsafe_decode64(jwk_n), BINARY)
+          imported_key.e = OpenSSL::BN.new(::Base64.urlsafe_decode64(jwk_e), BINARY)
         end
         self.new(imported_key)
       end
