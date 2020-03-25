@@ -5,7 +5,7 @@ module JWT
     class KeyFinder
       def initialize(options)
         jwks_or_loader = options[:jwks]
-        @jwks          = jwks_or_loader if jwks_or_loader.is_a?(Hash)
+        @jwks          = hash_keys(jwks_or_loader) if jwks_or_loader.is_a?(Hash)
         @jwk_loader    = jwks_or_loader if jwks_or_loader.respond_to?(:call)
       end
 
@@ -23,35 +23,28 @@ module JWT
       private
 
       def resolve_key(kid)
-        jwk = find_key(kid)
+        jwk = jwks[kid]
+        jwk ||= reload && jwks[kid]
+        jwk
+      end
 
-        return jwk if jwk
-
-        if reloadable?
-          load_keys(invalidate: true)
-          return find_key(kid)
-        end
-
-        nil
+      def reload
+        load_keys(invalidate: true) if reloadable?
       end
 
       def jwks
-        return @jwks if @jwks
-
-        load_keys
-        @jwks
+        @jwks || load_keys
       end
 
       def load_keys(opts = {})
-        @jwks = @jwk_loader.call(opts)
+        @jwks = hash_keys(@jwk_loader.call(opts))
       end
 
-      def jwks_keys
-        Array(jwks[:keys] || jwks['keys'])
-      end
-
-      def find_key(kid)
-        jwks_keys.find { |key| (key[:kid] || key['kid']) == kid }
+      def hash_keys(input)
+        kvpairs = Array(input[:keys] || input['keys']).map do |key|
+          [key[:kid] || key['kid'], key]
+        end
+        Hash[kvpairs]
       end
 
       def reloadable?
