@@ -42,7 +42,7 @@ module JWT
         jwk_n = jwk_data[:n] || jwk_data['n']
         jwk_e = jwk_data[:e] || jwk_data['e']
 
-        raise JWT::JWKError, "Key format is invalid for RSA" unless jwk_n && jwk_e
+        raise JWT::JWKError, 'Key format is invalid for RSA' unless jwk_n && jwk_e
 
         if imported_key.respond_to?(:set_key)
           imported_key.set_key(OpenSSL::BN.new(::Base64.urlsafe_decode64(jwk_n), BINARY),
