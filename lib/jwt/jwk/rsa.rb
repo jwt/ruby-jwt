@@ -31,28 +31,42 @@ module JWT
       def export
         {
           kty: KTY,
-          n: ::Base64.urlsafe_encode64(public_key.n.to_s(BINARY), padding: false),
-          e: ::Base64.urlsafe_encode64(public_key.e.to_s(BINARY), padding: false),
+          n: encode_open_ssl_bn(public_key.n),
+          e: encode_open_ssl_bn(public_key.e),
           kid: kid
         }
       end
 
+      def encode_open_ssl_bn(key_part)
+        ::Base64.urlsafe_encode64(key_part.to_s(BINARY), padding: false)
+      end
+
       def self.import(jwk_data)
-        imported_key = OpenSSL::PKey::RSA.new
         jwk_n = jwk_data[:n] || jwk_data['n']
         jwk_e = jwk_data[:e] || jwk_data['e']
 
         raise JWT::JWKError, 'Key format is invalid for RSA' unless jwk_n && jwk_e
 
-        if imported_key.respond_to?(:set_key)
-          imported_key.set_key(OpenSSL::BN.new(::Base64.urlsafe_decode64(jwk_n), BINARY),
-            OpenSSL::BN.new(::Base64.urlsafe_decode64(jwk_e), BINARY),
-            nil)
+        self.new(rsa_pkey(jwk_n, jwk_e))
+      end
+
+      def self.rsa_pkey(jwk_n, jwk_e)
+        key = OpenSSL::PKey::RSA.new
+        key_n = decode_open_ssl_bn(jwk_n)
+        key_e = decode_open_ssl_bn(jwk_e)
+
+        if key.respond_to?(:set_key)
+          key.set_key(key_n, key_e, nil)
         else
-          imported_key.n = OpenSSL::BN.new(::Base64.urlsafe_decode64(jwk_n), BINARY)
-          imported_key.e = OpenSSL::BN.new(::Base64.urlsafe_decode64(jwk_e), BINARY)
+          key.n = key_n
+          key.e = key_e
         end
-        self.new(imported_key)
+
+        key
+      end
+
+      def self.decode_open_ssl_bn(jwk_data)
+        OpenSSL::BN.new(::Base64.urlsafe_decode64(jwk_data), BINARY)
       end
     end
   end
