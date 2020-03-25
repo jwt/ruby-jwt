@@ -14,10 +14,8 @@ module JWT
 
         jwk = resolve_key(kid)
 
-        unless jwk
-          raise ::JWT::DecodeError, 'No keys found in jwks' if jwks_keys.empty?
-          raise ::JWT::DecodeError, "Could not find public key for kid #{kid}"
-        end
+        raise ::JWT::DecodeError, 'No keys found in jwks' if jwks_keys.empty?
+        raise ::JWT::DecodeError, "Could not find public key for kid #{kid}" unless jwk
 
         ::JWT::JWK.import(jwk).keypair
       end
