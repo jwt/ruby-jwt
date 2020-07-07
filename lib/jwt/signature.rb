@@ -38,6 +38,8 @@ module JWT
     end
 
     def verify(algorithm, key, signing_input, signature)
+      raise JWT::DecodeError, 'No verification key available' unless key
+
       algo = ALGOS.find do |alg|
         alg.const_get(:SUPPORTED).include? algorithm
       end
