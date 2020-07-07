@@ -268,6 +268,11 @@ describe JWT do
       end.to raise_error NotImplementedError
     end
 
+    it 'raises "No verification key available" error' do
+      token = JWT.encode({}, 'foo')
+      expect { JWT.decode(token, nil, true) }.to raise_error(JWT::DecodeError, 'No verification key available')
+    end
+
     it 'ECDSA curve_name should raise JWT::IncorrectAlgorithm' do
       key = OpenSSL::PKey::EC.new 'secp256k1'
       key.generate_key
