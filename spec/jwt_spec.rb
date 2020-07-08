@@ -122,6 +122,13 @@ describe JWT do
         expect(jwt_payload).to eq payload
       end
 
+      it 'should decode a valid token using algorithm hash string key' do
+        jwt_payload, header = JWT.decode data[alg], data[:rsa_public], true, 'algorithm' => alg
+
+        expect(header['alg']).to eq alg
+        expect(jwt_payload).to eq payload
+      end
+
       it 'wrong key should raise JWT::DecodeError' do
         key = OpenSSL::PKey.read File.read(File.join(CERT_PATH, 'rsa-2048-wrong-public.pem'))
 
@@ -312,6 +319,12 @@ describe JWT do
             # unsuccessful keyfinder public key network call here
           end
         end.to raise_error JWT::IncorrectAlgorithm
+
+        expect do
+          JWT.decode(token, nil, true, { 'algorithms' => ['RS384'] }) do |_,_|
+            # unsuccessful keyfinder public key network call here
+          end
+        end.to raise_error JWT::IncorrectAlgorithm
       end
 
       it 'should raise JWT::IncorrectAlgorithm when algorithms array does not contain algorithm' do
@@ -322,7 +335,15 @@ describe JWT do
         end.to raise_error JWT::IncorrectAlgorithm
 
         expect do
+          JWT.decode token, data[:secret], true, 'algorithms' => ['HS384']
+        end.to raise_error JWT::IncorrectAlgorithm
+
+        expect do
           JWT.decode token, data[:secret], true, algorithms: ['HS512', 'HS384']
+        end.not_to raise_error
+
+        expect do
+          JWT.decode token, data[:secret], true, 'algorithms' => ['HS512', 'HS384']
         end.not_to raise_error
       end
 
