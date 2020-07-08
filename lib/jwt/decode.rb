@@ -47,10 +47,17 @@ module JWT
     end
 
     def allowed_algorithms
-      if @options.key?(:algorithm)
+      # Order is very important - first check for string keys, next for symbols
+      if @options.key?('algorithm')
+        [@options['algorithm']]
+      elsif @options.key?(:algorithm)
         [@options[:algorithm]]
-      else
+      elsif @options.key?('algorithms')
+        @options['algorithms'] || []
+      elsif @options.key?(:algorithms)
         @options[:algorithms] || []
+      else
+        []
       end
     end
 
