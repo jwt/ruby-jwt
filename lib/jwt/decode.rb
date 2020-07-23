@@ -74,6 +74,7 @@ module JWT
     def validate_segment_count!
       return if segment_length == 3
       return if !@verify && segment_length == 2 # If no verifying required, the signature is not needed
+      return if segment_length == 2 && header['alg'] == 'none'
 
       raise(JWT::DecodeError, 'Not enough or too many segments')
     end
@@ -83,7 +84,7 @@ module JWT
     end
 
     def decode_crypto
-      @signature = JWT::Base64.url_decode(@segments[2])
+      @signature = JWT::Base64.url_decode(@segments[2] || '')
     end
 
     def header

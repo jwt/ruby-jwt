@@ -44,18 +44,51 @@ describe JWT do
 
   context 'alg: NONE' do
     let(:alg) { 'none' }
+    let(:encoded_token) { data['NONE'] }
 
     it 'should generate a valid token' do
       token = JWT.encode payload, nil, alg
 
-      expect(token).to eq data['NONE']
+      expect(token).to eq encoded_token
     end
 
-    it 'should decode a valid token' do
-      jwt_payload, header = JWT.decode data['NONE'], nil, false
+    context 'decoding without verification' do
+      it 'should decode a valid token' do
+        jwt_payload, header = JWT.decode encoded_token, nil, false
 
-      expect(header['alg']).to eq alg
-      expect(jwt_payload).to eq payload
+        expect(header['alg']).to eq alg
+        expect(jwt_payload).to eq payload
+      end
+    end
+
+    context 'decoding with verification' do
+      context 'without specifying the none algorithm' do
+        it 'should fail to decode the token' do
+          expect do
+            JWT.decode encoded_token, nil, true
+          end.to raise_error JWT::IncorrectAlgorithm
+        end
+      end
+
+      context 'specifying the none algorithm' do
+        context 'when the claims are valid' do
+          it 'should decode the token' do
+            jwt_payload, header = JWT.decode encoded_token, nil, true, { algorithms: 'none' }
+
+            expect(header['alg']).to eq 'none'
+            expect(jwt_payload).to eq payload
+          end
+        end
+
+        context 'when the claims are invalid' do
+          let(:encoded_token) { JWT.encode({ exp: 0 }, nil, 'none') }
+          it 'should fail to decode the token' do
+            expect do
+              JWT.decode encoded_token, nil, true
+            end.to raise_error JWT::DecodeError
+          end
+        end
+      end
     end
   end
 
@@ -367,7 +400,6 @@ describe JWT do
         iss_payload = payload.merge(iss: iss)
         JWT.encode iss_payload, data[:secret]
       end
-
       it 'if verify_iss is set to false (default option) should not raise JWT::InvalidIssuerError' do
         expect do
           JWT.decode token, data[:secret], true, iss: iss, algorithm: 'HS256'
@@ -384,7 +416,8 @@ describe JWT do
 
   context 'a token with not enough segments' do
     it 'raises JWT::DecodeError' do
-      expect { JWT.decode('ThisIsNotAValidJWTToken.second', nil, true) }.to raise_error(JWT::DecodeError, 'Not enough or too many segments')
+      token = JWT.encode('ThisIsNotAValidJWTToken', 'secret').split('.').slice(1,2).join
+      expect { JWT.decode(token, nil, true) }.to raise_error(JWT::DecodeError, 'Not enough or too many segments')
     end
   end
 
