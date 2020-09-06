@@ -1,13 +1,16 @@
 # frozen_string_literal: true
 
 require_relative 'jwk/rsa'
+require_relative 'jwk/ec'
 require_relative 'jwk/key_finder'
 
 module JWT
   module JWK
     MAPPINGS = {
       'RSA' => ::JWT::JWK::RSA,
-      OpenSSL::PKey::RSA => ::JWT::JWK::RSA
+      'EC' => ::JWT::JWK::EC,
+      OpenSSL::PKey::RSA => ::JWT::JWK::RSA,
+      OpenSSL::PKey::EC => ::JWT::JWK::EC
     }.freeze
 
     class << self
