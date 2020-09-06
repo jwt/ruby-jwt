@@ -46,5 +46,6 @@ module JWT
 end
 
 require_relative 'jwk/key_base'
+require_relative 'jwk/ec'
 require_relative 'jwk/rsa'
 require_relative 'jwk/hmac'
