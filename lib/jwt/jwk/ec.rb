@@ -78,7 +78,7 @@ module JWT
           when 'P-256' then 'prime256v1'
           when 'P-384' then 'secp384r1'
           when 'P-521' then 'secp521r1'
-          else raise 'Invalid curve provided'
+          else raise JWT::JWKError, 'Invalid curve provided'
           end
         end
 
