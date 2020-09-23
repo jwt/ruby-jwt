@@ -27,7 +27,8 @@ describe JWT::JWK::EC do
   end
 
   describe '#export' do
-    subject { described_class.new(keypair).export }
+    let(:kid) { nil }
+    subject { described_class.new(keypair, kid).export }
 
     context 'when keypair with private key is exported' do
       let(:keypair) { ec_key }
@@ -48,6 +49,13 @@ describe JWT::JWK::EC do
         expect(subject).to be_a Hash
         expect(subject).to include(:kty, :kid, :x, :y)
         expect(subject).not_to include(:d)
+      end
+
+      context 'when a custom "kid" is provided' do
+        let(:kid) { 'custom_key_identifier' }
+        it 'exports it' do
+          expect(subject[:kid]).to eq 'custom_key_identifier'
+        end
       end
     end
   end
@@ -73,6 +81,15 @@ describe JWT::JWK::EC do
 
             expect(subject).to be_a described_class
             expect(subject.export).to eq(exported_key)
+          end
+
+          context 'with a custom "kid" value' do
+            let(:exported_key) {
+              super().merge(kid: 'custom_key_identifier')
+            }
+            it 'imports that "kid" value' do
+              expect(subject.kid).to eq('custom_key_identifier')
+            end
           end
         end
 
