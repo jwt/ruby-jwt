@@ -7,21 +7,20 @@ module JWT
       def_delegators :@keypair, :private?, :public_key
 
       attr_reader :keypair
+      attr_reader :kid
 
       KTY    = 'EC'.freeze
       BINARY = 2
 
-      def initialize(keypair)
+      def initialize(keypair, kid = nil)
         raise ArgumentError, 'keypair must be of type OpenSSL::PKey::EC' unless keypair.is_a?(OpenSSL::PKey::EC)
 
         @keypair = keypair
+        @kid = kid || generate_kid(@keypair)
       end
 
       def export
-        crv, x_octets, y_octets = keypair_components
-        sequence = OpenSSL::ASN1::Sequence([OpenSSL::ASN1::Integer.new(OpenSSL::BN.new(x_octets, BINARY)),
-                                            OpenSSL::ASN1::Integer.new(OpenSSL::BN.new(y_octets, BINARY))])
-        kid = OpenSSL::Digest::SHA256.hexdigest(sequence.to_der)
+        crv, x_octets, y_octets = keypair_components(keypair)
         {
           kty: KTY,
           crv: crv,
@@ -33,9 +32,16 @@ module JWT
 
       private
 
-      def keypair_components
-        encoded_point = keypair.public_key.to_bn.to_s(BINARY)
-        case keypair.group.curve_name
+      def generate_kid(ec_keypair)
+        _crv, x_octets, y_octets = keypair_components(ec_keypair)
+        sequence = OpenSSL::ASN1::Sequence([OpenSSL::ASN1::Integer.new(OpenSSL::BN.new(x_octets, BINARY)),
+                                            OpenSSL::ASN1::Integer.new(OpenSSL::BN.new(y_octets, BINARY))])
+        OpenSSL::Digest::SHA256.hexdigest(sequence.to_der)
+      end
+
+      def keypair_components(ec_keypair)
+        encoded_point = ec_keypair.public_key.to_bn.to_s(BINARY)
+        case ec_keypair.group.curve_name
         when 'prime256v1'
           crv = 'P-256'
           x_octets, y_octets = encoded_point.unpack('xa32a32')
@@ -46,7 +52,7 @@ module JWT
           crv = 'P-521'
           x_octets, y_octets = encoded_point.unpack('xa66a66')
         else
-          raise "Unsupported curve '#{keypair.group.curve_name}'"
+          raise "Unsupported curve '#{ec_keypair.group.curve_name}'"
         end
         [crv, x_octets, y_octets]
       end
@@ -64,10 +70,10 @@ module JWT
           # See https://tools.ietf.org/html/rfc7518#section-6.2.1 for an
           # explanation of the relevant parameters.
 
-          jwk_crv, jwk_x, jwk_y = jwk_attrs(jwk_data, %i[crv x y])
+          jwk_crv, jwk_x, jwk_y, jwk_kid = jwk_attrs(jwk_data, %i[crv x y kid])
           raise Jwt::JWKError, 'Key format is invalid for EC' unless jwk_crv && jwk_x && jwk_y
 
-          new(ec_pkey(jwk_crv, jwk_x, jwk_y))
+          new(ec_pkey(jwk_crv, jwk_x, jwk_y), jwk_kid)
         end
 
         def to_openssl_curve(crv)
