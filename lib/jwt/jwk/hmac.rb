@@ -3,16 +3,16 @@
 module JWT
   module JWK
     class HMAC
-      attr_reader :key
+      attr_reader :keypair
       attr_reader :kid
 
       KTY = 'oct'.freeze
 
-      def initialize(key, kid = nil)
-        raise ArgumentError, 'key must be of type String' unless key.is_a?(String)
+      def initialize(keypair, kid = nil)
+        raise ArgumentError, 'keypair must be of type String' unless keypair.is_a?(String)
 
-        @key = key
-        @kid = kid || generate_kid(@key)
+        @keypair = keypair
+        @kid = kid || generate_kid(@keypair)
       end
 
       def private?
@@ -23,7 +23,7 @@ module JWT
       def export
         {
           kty: KTY,
-          k: key,
+          k: keypair,
           kid: kid
         }
       end
