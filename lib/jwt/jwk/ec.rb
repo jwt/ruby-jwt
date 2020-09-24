@@ -52,7 +52,7 @@ module JWT
           crv = 'P-521'
           x_octets, y_octets = encoded_point.unpack('xa66a66')
         else
-          raise "Unsupported curve '#{ec_keypair.group.curve_name}'"
+          raise Jwt::JWKError, "Unsupported curve '#{ec_keypair.group.curve_name}'"
         end
         [crv, x_octets, y_octets]
       end
