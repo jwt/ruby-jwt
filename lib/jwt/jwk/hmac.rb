@@ -37,7 +37,6 @@ module JWT
       end
 
       class << self
-
         def import(jwk_data)
           jwk_k = jwk_data[:k] || jwk_data['k']
           jwk_kid = jwk_data[:kid] || jwk_data['kid']
