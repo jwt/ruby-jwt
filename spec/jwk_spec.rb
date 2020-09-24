@@ -43,11 +43,9 @@ describe JWT::JWK do
       it { is_expected.to be_a ::JWT::JWK::RSA }
     end
 
-    context 'when unsupported key is given' do
-      let(:keypair) { 'key' }
-      it 'raises an error' do
-        expect { subject }.to raise_error(::JWT::JWKError, 'Cannot create JWK from a String')
-      end
+    context 'when secret key is given' do
+      let(:keypair) { 'secret-key' }
+      it { is_expected.to be_a ::JWT::JWK::HMAC }
     end
   end
 end
