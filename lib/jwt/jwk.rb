@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require_relative 'jwk/factory'
 require_relative 'jwk/rsa'
 require_relative 'jwk/hmac'
 require_relative 'jwk/key_finder'
