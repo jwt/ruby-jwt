@@ -3,8 +3,7 @@
 module JWT
   module JWK
     class Factory
-      attr_reader :keypair
-      attr_reader :kid
+      attr_reader :keypair, :kid
 
       def initialize(keypair, kid = nil)
         @keypair = keypair
