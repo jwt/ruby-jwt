@@ -20,10 +20,19 @@ describe JWT::JWK::HMAC do
 
   describe '#export' do
     let(:kid) { nil }
-    subject { described_class.new(key, kid).export }
 
     context 'when key is exported' do
       let(:key) { hmac_key }
+      subject { described_class.new(key, kid).export }
+      it 'returns a hash with the key' do
+        expect(subject).to be_a Hash
+        expect(subject).to include(:kty, :kid)
+      end
+    end
+
+    context 'when key is exported with private key' do
+      let(:key) { hmac_key }
+      subject { described_class.new(key, kid).export(include_private: true) }
       it 'returns a hash with the key' do
         expect(subject).to be_a Hash
         expect(subject).to include(:kty, :kid, :k)
@@ -33,7 +42,7 @@ describe JWT::JWK::HMAC do
 
   describe '.import' do
     subject { described_class.import(params) }
-    let(:exported_key) { described_class.new(key).export }
+    let(:exported_key) { described_class.new(key).export(include_private: true) }
 
     context 'when secret key is given' do
       let(:key) { hmac_key }
@@ -41,7 +50,7 @@ describe JWT::JWK::HMAC do
 
       it 'returns a key' do
         expect(subject).to be_a described_class
-        expect(subject.export).to eq(exported_key)
+        expect(subject.export(include_private: true)).to eq(exported_key)
       end
 
       context 'with a custom "kid" value' do
