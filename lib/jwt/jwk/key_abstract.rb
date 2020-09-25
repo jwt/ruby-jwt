@@ -22,6 +22,10 @@ module JWT
         raise NotImplementedError, "#{self.class} has not implemented method '#{__method__}'"
       end
 
+      protected
+
+      attr_writer :kid
+
       class << self
         def import(_jwk_data)
           raise NotImplementedError, "#{self.class} has not implemented method '#{__method__}'"
