@@ -486,6 +486,17 @@ jwks = { keys: [{ ... }] } # keys needs to be Symbol
 JWT.decode(token, nil, true, { algorithms: ['RS512'], jwks: jwks})
 ```
 
+### Importing and exporting JSON Web Keys
+
+The ::JWT::JWK class can be used to import and export both the public key (default behaviour) and the private key. To include the private key in the export pass the  `include_private` parameter to the export method.
+
+```ruby
+jwk = JWT::JWK.new(OpenSSL::PKey::RSA.new(2048))
+
+jwk_hash = jwk.export
+jwk_hash_with_private_key = jwk.export(include_private: true)
+```
+
 # Development and Tests
 
 We depend on [Bundler](http://rubygems.org/gems/bundler) for defining gemspec and performing releases to rubygems.org, which can be done with

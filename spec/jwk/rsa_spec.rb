@@ -34,7 +34,7 @@ describe JWT::JWK::RSA do
       it 'returns a hash with the public parts of the key' do
         expect(subject).to be_a Hash
         expect(subject).to include(:kty, :n, :e, :kid)
-        expect(subject).not_to include(:d)
+        expect(subject).not_to include(:d, :p, :dp, :dq,:qi)
       end
     end
 
@@ -43,7 +43,7 @@ describe JWT::JWK::RSA do
       it 'returns a hash with the public parts of the key' do
         expect(subject).to be_a Hash
         expect(subject).to include(:kty, :n, :e, :kid)
-        expect(subject).not_to include(:d)
+        expect(subject).not_to include(:d, :p, :dp, :dq,:qi)
       end
     end
 
@@ -51,6 +51,15 @@ describe JWT::JWK::RSA do
       let(:keypair) { 'key' }
       it 'raises an error' do
         expect { subject }.to raise_error(ArgumentError, 'keypair must be of type OpenSSL::PKey::RSA')
+      end
+    end
+
+    context 'when private key is requested' do
+      subject { described_class.new(keypair).export(include_private: true) }
+      let(:keypair) { rsa_key }
+      it 'returns a hash with the public AND private parts of the key' do
+        expect(subject).to be_a Hash
+        expect(subject).to include(:kty, :n, :e, :kid, :d, :p, :q, :dp, :dq,:qi)
       end
     end
   end
@@ -74,6 +83,15 @@ describe JWT::JWK::RSA do
         expect(subject).to be_a described_class
         expect(subject.private?).to eq false
         expect(subject.export).to eq(exported_key)
+      end
+    end
+
+    context 'when private key is included in the data' do
+      let(:exported_key) { described_class.new(rsa_key).export(include_private: true) }
+      let(:params) { exported_key }
+      it 'creates a complete keypair' do
+        expect(subject).to be_a described_class
+        expect(subject.private?).to eq true
       end
     end
 
