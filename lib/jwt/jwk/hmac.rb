@@ -19,13 +19,22 @@ module JWT
         true
       end
 
+      def public_key
+        nil
+      end
+
       # See https://tools.ietf.org/html/rfc7517#appendix-A.3
-      def export
-        {
+      def export(options = {})
+        ret = {
           kty: KTY,
-          k: keypair,
           kid: kid
         }
+
+        return ret unless private? && options[:include_private] == true
+
+        ret.merge(
+          k: keypair
+        )
       end
 
       private
