@@ -19,12 +19,12 @@ module JWT
         raise NotImplementedError, "#{self.class} has not implemented method '#{__method__}'"
       end
 
-      def export(options = {})
+      def export(_options = {})
         raise NotImplementedError, "#{self.class} has not implemented method '#{__method__}'"
       end
 
       class << self
-        def import(jwk_data)
+        def import(_jwk_data)
           raise NotImplementedError, "#{self.class} has not implemented method '#{__method__}'"
         end
       end
