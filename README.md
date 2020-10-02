@@ -5,7 +5,7 @@
 [![Code Climate](https://codeclimate.com/github/jwt/ruby-jwt/badges/gpa.svg)](https://codeclimate.com/github/jwt/ruby-jwt)
 [![Test Coverage](https://codeclimate.com/github/jwt/ruby-jwt/badges/coverage.svg)](https://codeclimate.com/github/jwt/ruby-jwt/coverage)
 [![Issue Count](https://codeclimate.com/github/jwt/ruby-jwt/badges/issue_count.svg)](https://codeclimate.com/github/jwt/ruby-jwt)
-[![Ebert](https://ebertapp.io/github/jwt/ruby-jwt.svg)](https://ebertapp.io/github/jwt/ruby-jwt)
+[![SourceLevel](https://app.sourcelevel.io/github/jwt/ruby-jwt.svg)](https://app.sourcelevel.io/github/jwt/ruby-jwt)
 
 A ruby implementation of the [RFC 7519 OAuth JSON Web Token (JWT)](https://tools.ietf.org/html/rfc7519) standard.
 
