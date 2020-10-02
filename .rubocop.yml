@@ -5,9 +5,6 @@ AllCops:
     - 'config/**/*'
     - 'script/**/*'
 
-Rails:
-  Enabled: true
-
 Style/AlignParameters:
   EnforcedStyle: with_fixed_indentation
 
