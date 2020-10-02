@@ -9,7 +9,7 @@ module JWT
         raise ArgumentError, 'keypair must be of type String' unless keypair.is_a?(String)
 
         super
-        @kid = kid || generate_kid(@keypair)
+        @kid = kid || generate_kid
       end
 
       def private?
@@ -22,22 +22,22 @@ module JWT
 
       # See https://tools.ietf.org/html/rfc7517#appendix-A.3
       def export(options = {})
-        ret = {
+        exported_hash = {
           kty: KTY,
           kid: kid
         }
 
-        return ret unless private? && options[:include_private] == true
+        return exported_hash unless private? && options[:include_private] == true
 
-        ret.merge(
+        exported_hash.merge(
           k: keypair
         )
       end
 
       private
 
-      def generate_kid(hmac_key)
-        sequence = OpenSSL::ASN1::Sequence([OpenSSL::ASN1::UTF8String.new(hmac_key),
+      def generate_kid
+        sequence = OpenSSL::ASN1::Sequence([OpenSSL::ASN1::UTF8String.new(keypair),
                                             OpenSSL::ASN1::UTF8String.new(KTY)])
         OpenSSL::Digest::SHA256.hexdigest(sequence.to_der)
       end
