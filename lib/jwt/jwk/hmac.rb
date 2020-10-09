@@ -2,8 +2,9 @@
 
 module JWT
   module JWK
-    class HMAC < KeyAbstract
+    class HMAC < KeyBase
       KTY = 'oct'.freeze
+      KTYS = [KTY, String].freeze
 
       def initialize(keypair, kid = nil)
         raise ArgumentError, 'keypair must be of type String' unless keypair.is_a?(String)
