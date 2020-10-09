@@ -2,15 +2,15 @@
 
 module JWT
   module JWK
-    class RSA < KeyAbstract
-      BINARY           = 2
-      KTY              = 'RSA'.freeze
+    class RSA < KeyBase
+      BINARY = 2
+      KTY    = 'RSA'.freeze
+      KTYS   = [KTY, OpenSSL::PKey::RSA].freeze
       RSA_KEY_ELEMENTS = %i[n e d p q dp dq qi].freeze
 
       def initialize(keypair, kid = nil)
         raise ArgumentError, 'keypair must be of type OpenSSL::PKey::RSA' unless keypair.is_a?(OpenSSL::PKey::RSA)
-        super
-        self.kid ||= generate_kid
+        super(keypair, kid || generate_kid(keypair.public_key))
       end
 
       def private?
@@ -36,7 +36,7 @@ module JWT
 
       private
 
-      def generate_kid
+      def generate_kid(public_key)
         sequence = OpenSSL::ASN1::Sequence([OpenSSL::ASN1::Integer.new(public_key.n),
                                             OpenSSL::ASN1::Integer.new(public_key.e)])
         OpenSSL::Digest::SHA256.hexdigest(sequence.to_der)
