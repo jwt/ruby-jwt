@@ -16,6 +16,12 @@ If you have further questions related to development or usage, join us: [ruby-jw
 * Ruby 1.9.3 support was dropped at December 31st, 2016.
 * Version 1.5.3 yanked. See: [#132](https://github.com/jwt/ruby-jwt/issues/132) and [#133](https://github.com/jwt/ruby-jwt/issues/133)
 
+## Sponsors
+
+|Logo|Message|
+|-|-|
+|![auth0 logo](https://user-images.githubusercontent.com/83319/31722733-de95bbde-b3ea-11e7-96bf-4f4e8f915588.png)|If you want to quickly add secure token-based authentication to Ruby projects, feel free to check Auth0's Ruby SDK and free plan at [auth0.com/developers](https://auth0.com/developers?utm_source=GHsponsor&utm_medium=GHsponsor&utm_campaign=rubyjwt&utm_content=auth)|
+
 ## Installing
 
 ### Using Rubygems:
