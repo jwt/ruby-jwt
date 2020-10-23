@@ -20,7 +20,6 @@ Gem::Specification.new do |spec|
   spec.test_files = spec.files.grep(%r{^(test|spec|features)/})
   spec.require_paths = %w[lib]
 
-  spec.add_development_dependency 'appraisal'
   spec.add_development_dependency 'bundler'
   spec.add_development_dependency 'rake'
   spec.add_development_dependency 'rspec'
@@ -28,7 +27,4 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency 'simplecov-json'
   spec.add_development_dependency 'codeclimate-test-reporter'
   spec.add_development_dependency 'codacy-coverage'
-  spec.add_development_dependency 'rbnacl'
-  # RSASSA-PSS support provided by OpenSSL +2.1
-  spec.add_development_dependency 'openssl', '~> 2.1'
 end
