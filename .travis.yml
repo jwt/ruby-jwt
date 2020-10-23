@@ -1,3 +1,6 @@
+sudo: required
+cache: bundler
+dist: trusty
 language: ruby
 rvm:
   - 2.3
@@ -9,7 +12,8 @@ rvm:
   - truffleruby-head
 gemfile:
   - gemfiles/standalone.gemfile
-  - gemfiles/openssl_2.1.gemfile
+  - gemfiles/openssl.gemfile
+  - gemfiles/rbnacl.gemfile
 script: 
   - bundle exec rspec 
   - bundle exec codeclimate-test-reporter
