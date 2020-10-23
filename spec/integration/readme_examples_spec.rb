@@ -79,7 +79,7 @@ describe 'README.md code test' do
         { 'data' => 'test' },
         { 'alg' => 'PS256' }
       ]
-    end
+    end if OpenSSL::VERSION >= '2.1'
   end
 
   context 'claims' do

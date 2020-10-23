@@ -7,7 +7,7 @@ describe JWT do
   let(:payload) { { 'user_id' => 'some@user.tld' } }
 
   let :data do
-    {
+   data = {
       :secret => 'My$ecretK3y',
       :rsa_private => OpenSSL::PKey.read(File.read(File.join(CERT_PATH, 'rsa-2048-private.pem'))),
       :rsa_public => OpenSSL::PKey.read(File.read(File.join(CERT_PATH, 'rsa-2048-public.pem'))),
@@ -19,8 +19,6 @@ describe JWT do
       'ES384_public' => OpenSSL::PKey.read(File.read(File.join(CERT_PATH, 'ec384-public.pem'))),
       'ES512_private' => OpenSSL::PKey.read(File.read(File.join(CERT_PATH, 'ec512-private.pem'))),
       'ES512_public' => OpenSSL::PKey.read(File.read(File.join(CERT_PATH, 'ec512-public.pem'))),
-      'ED25519_private' =>  RbNaCl::Signatures::Ed25519::SigningKey.new('abcdefghijklmnopqrstuvwxyzABCDEF'),
-      'ED25519_public' => RbNaCl::Signatures::Ed25519::SigningKey.new('abcdefghijklmnopqrstuvwxyzABCDEF').verify_key,
       'NONE' => 'eyJhbGciOiJub25lIn0.eyJ1c2VyX2lkIjoic29tZUB1c2VyLnRsZCJ9.',
       'HS256' => 'eyJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoic29tZUB1c2VyLnRsZCJ9.kWOVtIOpWcG7JnyJG0qOkTDbOy636XrrQhMm_8JrRQ8',
       'HS512256' => 'eyJhbGciOiJIUzUxMjI1NiJ9.eyJ1c2VyX2lkIjoic29tZUB1c2VyLnRsZCJ9.Ds_4ibvf7z4QOBoKntEjDfthy3WJ-3rKMspTEcHE2bA',
@@ -36,6 +34,14 @@ describe JWT do
       'PS384' => '',
       'PS512' => ''
     }
+
+    if defined?(RbNaCl)
+      data.merge!(
+        'ED25519_private' =>  RbNaCl::Signatures::Ed25519::SigningKey.new('abcdefghijklmnopqrstuvwxyzABCDEF'),
+        'ED25519_public' => RbNaCl::Signatures::Ed25519::SigningKey.new('abcdefghijklmnopqrstuvwxyzABCDEF').verify_key,
+      )
+    end
+    data
   end
 
   after(:each) do
@@ -99,7 +105,7 @@ describe JWT do
       expect(validator).to receive(:validate!) { true }
 
       payload = {}
-      JWT.encode payload, "secret", JWT::Algos::Hmac::SUPPORTED.sample
+      JWT.encode payload, "secret", 'HS256'
     end
 
     it 'does not validate the payload if it is not present' do
@@ -107,11 +113,14 @@ describe JWT do
       expect(JWT::ClaimsValidator).not_to receive(:new) { validator }
 
       payload = nil
-      JWT.encode payload, "secret", JWT::Algos::Hmac::SUPPORTED.sample
+      JWT.encode payload, "secret", 'HS256'
     end
   end
 
-  %w[HS256 HS512256 HS384 HS512].each do |alg|
+  algorithms = %w[HS256 HS384 HS512]
+  algorithms << 'HS512256' if defined?(RbNaCl)
+
+  algorithms.each do |alg|
     context "alg: #{alg}" do
       it 'should generate a valid token' do
         token = JWT.encode payload, data[:secret], alg
@@ -180,38 +189,40 @@ describe JWT do
     end
   end
 
-  %w[ED25519].each do |alg|
-    context "alg: #{alg}" do
-      before(:each) do
-        data[alg] = JWT.encode payload, data["#{alg}_private"], alg
-      end
+  if defined?(RbNaCl)
+    %w[ED25519].each do |alg|
+      context "alg: #{alg}" do
+        before(:each) do
+          data[alg] = JWT.encode payload, data["#{alg}_private"], alg
+        end
 
-      let(:wrong_key) { OpenSSL::PKey.read(File.read(File.join(CERT_PATH, 'ec256-wrong-public.pem'))) }
+        let(:wrong_key) { OpenSSL::PKey.read(File.read(File.join(CERT_PATH, 'ec256-wrong-public.pem'))) }
 
-      it 'should generate a valid token' do
-        jwt_payload, header = JWT.decode data[alg], data["#{alg}_public"], true, algorithm: alg
+        it 'should generate a valid token' do
+          jwt_payload, header = JWT.decode data[alg], data["#{alg}_public"], true, algorithm: alg
 
-        expect(header['alg']).to eq alg
-        expect(jwt_payload).to eq payload
-      end
+          expect(header['alg']).to eq alg
+          expect(jwt_payload).to eq payload
+        end
 
-      it 'should decode a valid token' do
-        jwt_payload, header = JWT.decode data[alg], data["#{alg}_public"], true, algorithm: alg
+        it 'should decode a valid token' do
+          jwt_payload, header = JWT.decode data[alg], data["#{alg}_public"], true, algorithm: alg
 
-        expect(header['alg']).to eq alg
-        expect(jwt_payload).to eq payload
-      end
+          expect(header['alg']).to eq alg
+          expect(jwt_payload).to eq payload
+        end
 
-      it 'wrong key should raise JWT::DecodeError' do
-        expect do
-          JWT.decode data[alg], wrong_key
-        end.to raise_error JWT::DecodeError
-      end
+        it 'wrong key should raise JWT::DecodeError' do
+          expect do
+            JWT.decode data[alg], wrong_key
+          end.to raise_error JWT::DecodeError
+        end
 
-      it 'wrong key and verify = false should not raise JWT::DecodeError' do
-        expect do
-          JWT.decode data[alg], wrong_key, false
-        end.not_to raise_error
+        it 'wrong key and verify = false should not raise JWT::DecodeError' do
+          expect do
+            JWT.decode data[alg], wrong_key, false
+          end.not_to raise_error
+        end
       end
     end
   end
@@ -252,51 +263,64 @@ describe JWT do
     end
   end
 
-  %w[PS256 PS384 PS512].each do |alg|
-    context "alg: #{alg}" do
-      before(:each) do
-        data[alg] = JWT.encode payload, data[:rsa_private], alg
+  unless OpenSSL::VERSION >= '2.1'
+    %w[PS256 PS384 PS512].each do |alg|
+      context "alg: #{alg}" do
+        it 'raises error about OpenSSL version' do
+          expect { JWT.encode payload, data[:rsa_private], alg }.to raise_error(
+            JWT::RequiredDependencyError,
+            /You currently have OpenSSL .*. PS support requires >= 2.1/
+          )
+        end
       end
+    end
+  else
+    %w[PS256 PS384 PS512].each do |alg|
+      context "alg: #{alg}" do
+        before(:each) do
+          data[alg] = JWT.encode payload, data[:rsa_private], alg
+        end
 
-      let(:wrong_key) { data[:wrong_rsa_public] }
+        let(:wrong_key) { data[:wrong_rsa_public] }
 
-      it 'should generate a valid token' do
-        token = data[alg]
+        it 'should generate a valid token' do
+          token = data[alg]
 
-        header, body, signature = token.split('.')
+          header, body, signature = token.split('.')
 
-        expect(header).to eql(Base64.strict_encode64({ alg: alg }.to_json))
-        expect(body).to   eql(Base64.strict_encode64(payload.to_json))
+          expect(header).to eql(Base64.strict_encode64({ alg: alg }.to_json))
+          expect(body).to   eql(Base64.strict_encode64(payload.to_json))
 
-        # Validate signature is made of up header and body of JWT
-        translated_alg  = alg.gsub('PS', 'sha')
-        valid_signature = data[:rsa_public].verify_pss(
-          translated_alg,
-          JWT::Base64.url_decode(signature),
-          [header, body].join('.'),
-          salt_length: :auto,
-          mgf1_hash:   translated_alg
-        )
-        expect(valid_signature).to be true
-      end
+          # Validate signature is made of up header and body of JWT
+          translated_alg  = alg.gsub('PS', 'sha')
+          valid_signature = data[:rsa_public].verify_pss(
+            translated_alg,
+            JWT::Base64.url_decode(signature),
+            [header, body].join('.'),
+            salt_length: :auto,
+            mgf1_hash:   translated_alg
+          )
+          expect(valid_signature).to be true
+        end
 
-      it 'should decode a valid token' do
-        jwt_payload, header = JWT.decode data[alg], data[:rsa_public], true, algorithm: alg
+        it 'should decode a valid token' do
+          jwt_payload, header = JWT.decode data[alg], data[:rsa_public], true, algorithm: alg
 
-        expect(header['alg']).to eq alg
-        expect(jwt_payload).to eq payload
-      end
+          expect(header['alg']).to eq alg
+          expect(jwt_payload).to eq payload
+        end
 
-      it 'wrong key should raise JWT::DecodeError' do
-        expect do
-          JWT.decode data[alg], wrong_key
-        end.to raise_error JWT::DecodeError
-      end
+        it 'wrong key should raise JWT::DecodeError' do
+          expect do
+            JWT.decode data[alg], wrong_key
+          end.to raise_error JWT::DecodeError
+        end
 
-      it 'wrong key and verify = false should not raise JWT::DecodeError' do
-        expect do
-          JWT.decode data[alg], wrong_key, false
-        end.not_to raise_error
+        it 'wrong key and verify = false should not raise JWT::DecodeError' do
+          expect do
+            JWT.decode data[alg], wrong_key, false
+          end.not_to raise_error
+        end
       end
     end
   end
