@@ -1,33 +1,25 @@
-sudo: required
-cache: bundler
-dist: trusty
 language: ruby
 rvm:
   - 2.3
   - 2.4
   - 2.5
   - 2.6
+  - 2.7
+  - ruby-head
   - truffleruby-head
 gemfile:
   - gemfiles/standalone.gemfile
-  - gemfiles/rails_5.0.gemfile
-  - gemfiles/rails_5.1.gemfile
-  - gemfiles/rails_5.2.gemfile
-  - gemfiles/rails_6.0.gemfile
-script: "bundle exec rspec && bundle exec codeclimate-test-reporter"
+  - gemfiles/openssl_2.1.gemfile
+script: 
+  - bundle exec rspec 
+  - bundle exec codeclimate-test-reporter
 before_install:
   - sudo add-apt-repository ppa:chris-lea/libsodium -y
   - sudo apt-get update -q
   - sudo apt-get install libsodium-dev -y
   - gem install bundler
-
 matrix:
   fast_finish: true
-  exclude:
-    - gemfile: gemfiles/rails_6.0.gemfile
-      rvm: 2.3
-    - gemfile: gemfiles/rails_6.0.gemfile
-      rvm: 2.4
-  include:
-    - gemfile: gemfiles/standalone.gemfile
-      rvm: truffleruby-head
+  allow_failures:
+    - rvm: truffleruby-head
+    - rvm: ruby-head
