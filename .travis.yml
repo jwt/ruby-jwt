@@ -1,6 +1,4 @@
-sudo: required
 cache: bundler
-dist: trusty
 language: ruby
 rvm:
   - 2.3
@@ -18,7 +16,6 @@ script:
   - bundle exec rspec 
   - bundle exec codeclimate-test-reporter
 before_install:
-  - sudo add-apt-repository ppa:chris-lea/libsodium -y
   - sudo apt-get update -q
   - sudo apt-get install libsodium-dev -y
   - gem install bundler
