@@ -15,14 +15,18 @@ gemfile:
   - gemfiles/openssl.gemfile
   - gemfiles/rbnacl.gemfile
 script: 
-  - bundle exec rspec 
-  - bundle exec codeclimate-test-reporter
+  - bundle exec rspec
 before_install:
   - sudo apt-get update -q
   - sudo apt-get install libsodium-dev -y
   - gem install bundler
 matrix:
   fast_finish: true
+  includes:
+    - rvm: 2.7
+      name: "Run Code Climate"
+      after_script:
+        - bundle exec codeclimate-test-reporter
   allow_failures:
     - rvm: 2.2
     - rvm: 2.1
