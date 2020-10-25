@@ -1,7 +1,6 @@
 cache: bundler
 language: ruby
 rvm:
-  - 2.7
   - 2.6
   - 2.5
   - 2.4
@@ -24,7 +23,7 @@ matrix:
   fast_finish: true
   includes:
     - rvm: 2.7
-      name: "Run Code Climate"
+      name: "Ruby 2.7 and Code Climate"
       after_script:
         - bundle exec codeclimate-test-reporter
   allow_failures:
