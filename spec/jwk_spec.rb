@@ -5,6 +5,7 @@ require 'jwt'
 
 describe JWT::JWK do
   let(:rsa_key) { OpenSSL::PKey::RSA.new(2048) }
+  let(:ec_key) { OpenSSL::PKey::EC.new("secp384r1").generate_key! }
 
   describe '.import' do
     let(:keypair) { rsa_key.public_key }
@@ -53,6 +54,11 @@ describe JWT::JWK do
     context 'when secret key is given' do
       let(:keypair) { 'secret-key' }
       it { is_expected.to be_a ::JWT::JWK::HMAC }
+    end
+
+    context 'when EC key is given' do
+      let(:keypair) { ec_key }
+      it { is_expected.to be_a ::JWT::JWK::EC }
     end
   end
 end

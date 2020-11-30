@@ -48,6 +48,8 @@ describe JWT::JWK::EC do
       it 'returns a hash with the public parts of the key' do
         expect(subject).to be_a Hash
         expect(subject).to include(:kty, :kid, :x, :y)
+
+        # Don't include private `d` if not explicitly requested.
         expect(subject).not_to include(:d)
       end
 
@@ -58,11 +60,24 @@ describe JWT::JWK::EC do
         end
       end
     end
+
+    context 'when private key is requested' do
+      subject { described_class.new(keypair).export(include_private: true) }
+      let(:keypair) { ec_key }
+      it 'returns a hash with the both parts of the key' do
+        expect(subject).to be_a Hash
+        expect(subject).to include(:kty, :kid, :x, :y)
+
+        # `d` is the private part.
+        expect(subject).to include(:d)
+      end
+    end
   end
 
   describe '.import' do
     subject { described_class.import(params) }
-    let(:exported_key) { described_class.new(keypair).export }
+    let(:include_private) { false }
+    let(:exported_key) { described_class.new(keypair).export(include_private: include_private) }
 
     ['P-256', 'P-384', 'P-521'].each do |crv|
       context "when crv=#{crv}" do
@@ -70,17 +85,20 @@ describe JWT::JWK::EC do
         let(:ec_key) { OpenSSL::PKey::EC.new(openssl_curve).generate_key! }
 
         context 'when keypair is private' do
+          let(:include_private) { true }
           let(:keypair) { ec_key }
           let(:params) { exported_key }
 
-          it 'returns a public key' do
-            # Exporting a key exports only the public parts, so the reimported
-            # key becomes public.  This is odd, but this behavior is consistent
-            # with the traditional behavior of the RSA JWK tokens.
-            ## expect(subject.private?).to eq true
-
+          it 'returns a private key' do
+            expect(subject.private?).to eq true
             expect(subject).to be_a described_class
-            expect(subject.export).to eq(exported_key)
+
+            # Regular export returns only the non-private parts.
+            public_only = exported_key.select{ |k, v| k != :d }
+            expect(subject.export).to eq(public_only)
+
+            # Private export returns the original input.
+            expect(subject.export(include_private: true)).to eq(exported_key)
           end
 
           context 'with a custom "kid" value' do
@@ -93,14 +111,16 @@ describe JWT::JWK::EC do
           end
         end
 
-        context 'returns a public key' do
-          let(:keypair) { ec_key.tap { |x| x.private_key = nil } }
-          let(:params) { exported_key }
+        context 'when keypair is public' do
+          context 'returns a public key' do
+            let(:keypair) { ec_key.tap { |x| x.private_key = nil } }
+            let(:params) { exported_key }
 
-          it 'returns a hash with the public parts of the key' do
-            expect(subject).to be_a described_class
-            expect(subject.private?).to eq false
-            expect(subject.export).to eq(exported_key)
+            it 'returns a hash with the public parts of the key' do
+              expect(subject).to be_a described_class
+              expect(subject.private?).to eq false
+              expect(subject.export).to eq(exported_key)
+            end
           end
         end
       end

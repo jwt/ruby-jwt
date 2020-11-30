@@ -2,35 +2,43 @@
 
 module JWT
   module JWK
-    class EC
+    class EC < KeyBase
       extend Forwardable
       def_delegators :@keypair, :private?, :public_key
 
-      attr_reader :keypair
-      attr_reader :kid
-
       KTY    = 'EC'.freeze
+      KTYS   = [KTY, OpenSSL::PKey::EC].freeze
       BINARY = 2
 
       def initialize(keypair, kid = nil)
         raise ArgumentError, 'keypair must be of type OpenSSL::PKey::EC' unless keypair.is_a?(OpenSSL::PKey::EC)
 
-        @keypair = keypair
-        @kid = kid || generate_kid(@keypair)
+        kid ||= generate_kid(keypair)
+        super(keypair, kid)
       end
 
-      def export
+      def export(options = {})
         crv, x_octets, y_octets = keypair_components(keypair)
-        {
+        exported_hash = {
           kty: KTY,
           crv: crv,
           x: encode_octets(x_octets),
           y: encode_octets(y_octets),
           kid: kid
         }
+        return exported_hash unless private? && options[:include_private] == true
+
+        append_private_parts(exported_hash)
       end
 
       private
+
+      def append_private_parts(the_hash)
+        octets = keypair.private_key.to_bn.to_s(BINARY)
+        the_hash.merge(
+          d: encode_octets(octets)
+        )
+      end
 
       def generate_kid(ec_keypair)
         _crv, x_octets, y_octets = keypair_components(ec_keypair)
@@ -70,10 +78,10 @@ module JWT
           # See https://tools.ietf.org/html/rfc7518#section-6.2.1 for an
           # explanation of the relevant parameters.
 
-          jwk_crv, jwk_x, jwk_y, jwk_kid = jwk_attrs(jwk_data, %i[crv x y kid])
+          jwk_crv, jwk_x, jwk_y, jwk_d, jwk_kid = jwk_attrs(jwk_data, %i[crv x y d kid])
           raise Jwt::JWKError, 'Key format is invalid for EC' unless jwk_crv && jwk_x && jwk_y
 
-          new(ec_pkey(jwk_crv, jwk_x, jwk_y), jwk_kid)
+          new(ec_pkey(jwk_crv, jwk_x, jwk_y, jwk_d), jwk_kid)
         end
 
         def to_openssl_curve(crv)
@@ -96,7 +104,7 @@ module JWT
           end
         end
 
-        def ec_pkey(jwk_crv, jwk_x, jwk_y)
+        def ec_pkey(jwk_crv, jwk_x, jwk_y, jwk_d)
           curve = to_openssl_curve(jwk_crv)
 
           x_octets = decode_octets(jwk_x)
@@ -118,6 +126,7 @@ module JWT
           )
 
           key.public_key = point
+          key.private_key = OpenSSL::BN.new(decode_octets(jwk_d), 2) if jwk_d
 
           key
         end
