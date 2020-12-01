@@ -10,6 +10,7 @@ module JWT
   class IncorrectAlgorithm < DecodeError; end
   class ImmatureSignature < DecodeError; end
   class InvalidIssuerError < DecodeError; end
+  class UnsupportedEcdsaCurve < IncorrectAlgorithm; end
   class InvalidIatError < DecodeError; end
   class InvalidAudError < DecodeError; end
   class InvalidSubError < DecodeError; end
