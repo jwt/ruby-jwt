@@ -4,7 +4,7 @@ require_relative '../spec_helper'
 require 'jwt'
 
 describe JWT::JWK::EC do
-  let(:ec_key) { OpenSSL::PKey::EC.new("secp384r1").generate_key! }
+  let(:ec_key) { OpenSSL::PKey::EC.new("secp384r1").generate_key }
 
   describe '.new' do
     subject { described_class.new(keypair) }
@@ -82,7 +82,7 @@ describe JWT::JWK::EC do
     ['P-256', 'P-384', 'P-521'].each do |crv|
       context "when crv=#{crv}" do
         let(:openssl_curve) { JWT::JWK::EC.to_openssl_curve(crv) }
-        let(:ec_key) { OpenSSL::PKey::EC.new(openssl_curve).generate_key! }
+        let(:ec_key) { OpenSSL::PKey::EC.new(openssl_curve).generate_key }
 
         context 'when keypair is private' do
           let(:include_private) { true }
