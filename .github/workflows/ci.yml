@@ -9,6 +9,7 @@ on:
       - "*"
 jobs:
   test:
+    name: "Ruby {{ matrix.ruby }}"
     strategy:
       fail-fast: false
       matrix:
@@ -21,6 +22,8 @@ jobs:
         experimental: [false]
         include:
           - ruby: "ruby-head"
+            experimental: true
+          - ruby: "truffleruby-head"
             experimental: true
     runs-on: ubuntu-latest
     continue-on-error: ${{ matrix.experimental }}
