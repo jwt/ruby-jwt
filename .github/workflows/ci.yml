@@ -9,27 +9,41 @@ on:
       - "*"
 jobs:
   test:
-    name: "Ruby {{ matrix.ruby }}"
     strategy:
       fail-fast: false
       matrix:
         ruby:
-        - 2.3
-        - 2.4
-        - 2.5
-        - 2.6
-        - 2.7
-        experimental: [false]
+          - 2.3
+          - 2.4
+          - 2.5
+          - 2.6
+          - 2.7
+        gemfile:
+          - gemfiles/standalone.gemfile
+          - gemfiles/openssl.gemfile
+          - gemfiles/rbnacl.gemfile
+        allow_failure: [false]
         include:
+          - ruby: 2.1
+            allow_failure: true
+          - ruby: 2.2
+            allow_failure: true
           - ruby: "ruby-head"
-            experimental: true
+            allow_failure: true
           - ruby: "truffleruby-head"
-            experimental: true
+            allow_failure: true
     runs-on: ubuntu-latest
-    continue-on-error: ${{ matrix.experimental }}
+    continue-on-error: ${{ matrix.allow_failure }}
+    env:
+      BUNDLE_GEMFILE: ${{ matrix.gemfile }}
 
     steps:
     - uses: actions/checkout@v2
+
+    - name: Install libsodium
+      run: |
+        sudo apt-get update -q
+        sudo apt-get install libsodium-dev -y
 
     - name: Set up Ruby
       uses: ruby/setup-ruby@v1
