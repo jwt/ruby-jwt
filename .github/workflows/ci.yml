@@ -22,18 +22,20 @@ jobs:
           - gemfiles/standalone.gemfile
           - gemfiles/openssl.gemfile
           - gemfiles/rbnacl.gemfile
-        allow_failure: [false]
+        experimental: [false]
         include:
           - ruby: 2.1
-            allow_failure: true
+            experimental: true
           - ruby: 2.2
-            allow_failure: true
+            experimental: true
+          - ruby: 2.7
+            coverage: "true"
           - ruby: "ruby-head"
-            allow_failure: true
+            experimental: true
           - ruby: "truffleruby-head"
-            allow_failure: true
-    runs-on: ubuntu-latest
-    continue-on-error: ${{ matrix.allow_failure }}
+            experimental: true
+    runs-on: ubuntu-20.04
+    continue-on-error: ${{ matrix.experimental }}
     env:
       BUNDLE_GEMFILE: ${{ matrix.gemfile }}
 
@@ -53,3 +55,7 @@ jobs:
 
     - name: Run tests
       run: bundle exec rspec
+
+    - name: Report coverage
+      if: ${{ success() && matrix.coverage == 'true' }}
+      run: bundle exec codeclimate-test-reporter
