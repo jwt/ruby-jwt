@@ -30,6 +30,7 @@ jobs:
             experimental: true
           - ruby: 2.7
             coverage: "true"
+            gemfile: 'gemfiles/rbnacl.gemfile'
           - ruby: "ruby-head"
             experimental: true
           - ruby: "truffleruby-head"
