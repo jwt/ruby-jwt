@@ -1,5 +1,5 @@
 ---
-name: ci
+name: test
 on:
   push:
     branches:
