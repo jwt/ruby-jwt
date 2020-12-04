@@ -4,7 +4,7 @@ module JWT
   module JWK
     class EC < KeyBase
       extend Forwardable
-      def_delegators :@keypair, :private?, :public_key
+      def_delegators :@keypair, :public_key
 
       KTY    = 'EC'.freeze
       KTYS   = [KTY, OpenSSL::PKey::EC].freeze
@@ -15,6 +15,10 @@ module JWT
 
         kid ||= generate_kid(keypair)
         super(keypair, kid)
+      end
+
+      def private?
+        @keypair.private_key?
       end
 
       def export(options = {})
