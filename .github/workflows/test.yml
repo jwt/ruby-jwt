@@ -24,10 +24,10 @@ jobs:
           - gemfiles/rbnacl.gemfile
         experimental: [false]
         include:
-          - ruby: 2.1
-            experimental: true
-          - ruby: 2.2
-            experimental: true
+#          - ruby: 2.1
+#            experimental: true
+#          - ruby: 2.2
+#            experimental: true
           - ruby: 2.7
             coverage: "true"
             gemfile: 'gemfiles/rbnacl.gemfile'
