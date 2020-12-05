@@ -5,6 +5,10 @@ AllCops:
     - 'config/**/*'
     - 'script/**/*'
 
+Metrics/BlockLength:
+  Exclude:
+    - 'spec/**/*'
+
 Style/AlignParameters:
   EnforcedStyle: with_fixed_indentation
 
