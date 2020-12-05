@@ -10,6 +10,8 @@ module JWT
                RbNaCl::Signatures::Ed25519::SigningKey,
                RbNaCl::Signatures::Ed25519::VerifyKey]
 
+      ED25519 = 'Ed25519'.freeze
+
       attr_reader :kid
 
       def initialize(key, kid = nil)
@@ -33,6 +35,34 @@ module JWT
       end
 
       def kid
+        @kid ||= generate_kid
+      end
+
+      def generate_kid
+        Thumbprint.new(self).to_s
+      end
+
+      def members
+        {
+          kty: KTY,
+          crv: ED25519,
+          x: ::JWT::Base64.url_encode(@verify_key.to_bytes),
+        }
+      end
+
+      def export(options = {})
+        exported_hash = members.merge(kid: kid)
+        return exported_hash unless private? && options[:include_private] == true
+
+        append_private_parts(exported_hash)
+      end
+
+      private
+
+      def append_private_parts(the_hash)
+        the_hash.merge(
+          d: ::JWT::Base64.url_encode(@signing_key.to_bytes)
+        )
       end
     end
   end

@@ -21,6 +21,13 @@ module JWT
         nil
       end
 
+      def members
+        {
+          kty: KTY,
+          k: keypair
+        }
+      end
+
       # See https://tools.ietf.org/html/rfc7517#appendix-A.3
       def export(options = {})
         exported_hash = {

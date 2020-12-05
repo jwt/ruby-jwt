@@ -38,4 +38,17 @@ describe JWT::JWK::OKP do
       it { is_expected.to eq(false) }
     end
   end
+
+  describe '#export' do
+    subject { instance.export }
+    context 'when private key is given' do
+      let(:key) { private_key }
+      it 'exports the public key' do
+         expect(subject).to include(crv: 'Ed25519', kty: 'OKP')
+         expect(subject.keys).to eq([:kty, :crv, :x, :kid])
+         expect(subject[:x].size).to eq(43)
+         expect(subject[:kid].size).to eq(43)
+      end
+    end
+  end
 end if defined?(RbNaCl)

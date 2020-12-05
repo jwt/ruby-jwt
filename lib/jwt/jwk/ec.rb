@@ -21,15 +21,18 @@ module JWT
         @keypair.private_key?
       end
 
-      def export(options = {})
+      def members
         crv, x_octets, y_octets = keypair_components(keypair)
-        exported_hash = {
+        {
           kty: KTY,
           crv: crv,
           x: encode_octets(x_octets),
-          y: encode_octets(y_octets),
-          kid: kid
+          y: encode_octets(y_octets)
         }
+      end
+
+      def export(options = {})
+        exported_hash = members.merge(kid: kid)
         return exported_hash unless private? && options[:include_private] == true
 
         append_private_parts(exported_hash)

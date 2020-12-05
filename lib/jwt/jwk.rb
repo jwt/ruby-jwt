@@ -45,6 +45,7 @@ module JWT
   end
 end
 
+require_relative 'jwk/thumbprint'
 require_relative 'jwk/key_base'
 require_relative 'jwk/ec'
 require_relative 'jwk/rsa'

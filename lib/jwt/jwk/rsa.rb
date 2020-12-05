@@ -21,13 +21,16 @@ module JWT
         keypair.public_key
       end
 
-      def export(options = {})
-        exported_hash = {
+      def members
+        {
           kty: KTY,
           n: encode_open_ssl_bn(public_key.n),
-          e: encode_open_ssl_bn(public_key.e),
-          kid: kid
+          e: encode_open_ssl_bn(public_key.e)
         }
+      end
+
+      def export(options = {})
+        exported_hash = members.merge(kid: kid)
 
         return exported_hash unless private? && options[:include_private] == true
 
