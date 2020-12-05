@@ -28,6 +28,10 @@ module JWT
         super
       end
 
+      def keypair
+        @verify_key
+      end
+
       def public_key
         @verify_key
       end
