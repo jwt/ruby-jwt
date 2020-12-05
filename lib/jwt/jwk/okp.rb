@@ -6,7 +6,9 @@ module JWT
     class OKP < KeyBase
       BINARY = 2
       KTY    = 'OKP'.freeze
-      KTYS   = [KTY, RbNaCl::Signatures::Ed25519::SigningKey, RbNaCl::Signatures::Ed25519::VerifyKey]
+      KTYS   = [KTY, 
+               RbNaCl::Signatures::Ed25519::SigningKey,
+               RbNaCl::Signatures::Ed25519::VerifyKey]
 
       attr_reader :kid
 
@@ -24,6 +26,13 @@ module JWT
         @kid = kid
         
         super
+      end
+
+      def private?
+        !@signing_key.nil?
+      end
+
+      def kid
       end
     end
   end
