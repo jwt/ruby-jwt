@@ -76,7 +76,7 @@ describe JWT do
 
     context 'when jwk keys are loaded from JSON with string keys' do
       it 'decodes the token' do
-        key_loader = ->(options) { JSON.parse(JSON.generate(public_jwks)) }
+        key_loader = ->(_options) { JSON.parse(JSON.generate(public_jwks)) }
         payload, _header = described_class.decode(signed_token, nil, true, { algorithms: ['RS512'], jwks: key_loader})
         expect(payload).to eq(token_payload)
       end

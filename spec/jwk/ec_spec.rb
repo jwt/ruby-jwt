@@ -94,7 +94,7 @@ describe JWT::JWK::EC do
             expect(subject).to be_a described_class
 
             # Regular export returns only the non-private parts.
-            public_only = exported_key.select{ |k, v| k != :d }
+            public_only = exported_key.reject { |k, _v| k == :d }
             expect(subject.export).to eq(public_only)
 
             # Private export returns the original input.

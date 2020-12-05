@@ -28,16 +28,16 @@ module JWT
         super
       end
 
+      def public_key
+        @verify_key
+      end
+
       def private?
         !@signing_key.nil?
       end
 
       def kid
         @kid ||= generate_kid
-      end
-
-      def generate_kid
-        Thumbprint.new(self).to_s
       end
 
       def members
@@ -56,6 +56,10 @@ module JWT
       end
 
       private
+
+      def generate_kid
+        Thumbprint.new(self).to_s
+      end
 
       def append_private_parts(the_hash)
         the_hash.merge(
