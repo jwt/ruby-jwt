@@ -1,8 +1,5 @@
 # frozen_string_literal: true
 
-require_relative '../spec_helper'
-require 'jwt'
-
 describe JWT::JWK::HMAC do
   let(:hmac_key) { 'secret-key' }
 

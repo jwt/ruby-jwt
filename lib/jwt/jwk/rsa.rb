@@ -8,9 +8,12 @@ module JWT
       KTYS   = [KTY, OpenSSL::PKey::RSA].freeze
       RSA_KEY_ELEMENTS = %i[n e d p q dp dq qi].freeze
 
+      attr_reader :keypair
+
       def initialize(keypair, kid = nil)
         raise ArgumentError, 'keypair must be of type OpenSSL::PKey::RSA' unless keypair.is_a?(OpenSSL::PKey::RSA)
-        super(keypair, kid || generate_kid(keypair.public_key))
+        @keypair = keypair
+        @kid = kid
       end
 
       def private?
@@ -19,6 +22,15 @@ module JWT
 
       def public_key
         keypair.public_key
+      end
+  
+      def private_key
+        return nil unless private?
+        @keypair
+      end
+
+      def kid
+        @kid ||= generate_kid(keypair.public_key)
       end
 
       def members
@@ -36,6 +48,8 @@ module JWT
 
         append_private_parts(exported_hash)
       end
+
+
 
       private
 

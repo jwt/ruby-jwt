@@ -1,8 +1,5 @@
 # frozen_string_literal: true
 
-require_relative '../spec_helper'
-require 'jwt'
-
 describe JWT::JWK::Thumbprint do
   describe '#to_s' do
     context 'when example from RFC is given' do

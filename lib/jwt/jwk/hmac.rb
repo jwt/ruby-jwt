@@ -6,11 +6,11 @@ module JWT
       KTY = 'oct'.freeze
       KTYS = [KTY, String].freeze
 
+      attr_reader :keypair
       def initialize(keypair, kid = nil)
         raise ArgumentError, 'keypair must be of type String' unless keypair.is_a?(String)
-
-        super
-        @kid = kid || generate_kid
+        @keypair = keypair
+        @kid = kid
       end
 
       def private?
@@ -19,6 +19,14 @@ module JWT
 
       def public_key
         nil
+      end
+
+      def private_key
+        keypair
+      end
+
+      def kid
+        @kid ||= generate_kid
       end
 
       def members

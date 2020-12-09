@@ -14,6 +14,8 @@ end
 
 SimpleCov.start if ENV['COVERAGE']
 
+require 'jwt'
+
 CERT_PATH = File.join(File.dirname(__FILE__), 'fixtures', 'certs')
 
 RSpec.configure do |config|

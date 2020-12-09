@@ -4,7 +4,6 @@ module JWT
   module JWK
     # https://tools.ietf.org/html/rfc8037
     class OKP < KeyBase
-      BINARY = 2
       KTY    = 'OKP'.freeze
       KTYS   = [KTY,
                 RbNaCl::Signatures::Ed25519::SigningKey,
@@ -24,12 +23,14 @@ module JWT
         end
 
         @kid = kid
-
-        super
       end
 
       def keypair
         @verify_key
+      end
+
+      def private_key
+        @signing_key
       end
 
       def public_key
@@ -69,6 +70,28 @@ module JWT
         the_hash.merge(
           d: ::JWT::Base64.url_encode(@signing_key.to_bytes)
         )
+      end
+
+      class << self
+        def import(jwk_data)
+          attributes = jwk_attributes(jwk_data, :x, :d, :kid)
+
+          key = if attributes[:d]
+                  RbNaCl::Signatures::Ed25519::SigningKey.new(::JWT::Base64.url_decode(attributes[:d]))
+                else
+                  RbNaCl::Signatures::Ed25519::VerifyKey.new(::JWT::Base64.url_decode(attributes[:x]))
+                end
+
+          new(key, attributes[:kid])
+        end
+
+        private
+
+        def jwk_attributes(jwk_data, *attributes)
+          attributes.each_with_object({}) do |attribute, hash|
+            hash[attribute] = jwk_data[attribute] || jwk_data[attribute.to_s]
+          end
+        end
       end
     end
   end
