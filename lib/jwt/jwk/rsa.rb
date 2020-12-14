@@ -90,7 +90,7 @@ module JWT
             rsa_key
           end
         else
-          def populate_key(rsa_key, rsa_parameters) # rubocop:disable Metrics/CyclomaticComplexity
+          def populate_key(rsa_key, rsa_parameters)
             rsa_key.n = rsa_parameters[:n]
             rsa_key.e = rsa_parameters[:e]
             rsa_key.d = rsa_parameters[:d] if rsa_parameters[:d]

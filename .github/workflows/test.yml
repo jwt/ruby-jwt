@@ -8,6 +8,19 @@ on:
     branches:
       - "*"
 jobs:
+  lint:
+    name: RuboCop
+    timeout-minutes: 30
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Ruby
+      uses: ruby/setup-ruby@v1
+      with:
+        ruby-version: "2.4"
+        bundler-cache: true
+    - name: Run RuboCop
+      run: bundle exec rubocop
   test:
     strategy:
       fail-fast: false

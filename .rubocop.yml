@@ -1,20 +1,15 @@
-AllCops:
-  Exclude:
-    - 'bin/**/*'
-    - 'db/**/*'
-    - 'config/**/*'
-    - 'script/**/*'
+inherit_from: .rubocop_todo.yml
 
-Style/AlignParameters:
+Layout/AlignParameters:
   EnforcedStyle: with_fixed_indentation
 
-Style/CaseIndentation:
+Layout/CaseIndentation:
   EnforcedStyle: end
 
 Style/AsciiComments:
   Enabled: false
 
-Style/IndentHash:
+Layout/IndentHash:
   Enabled: false
 
 Style/CollectionMethods:
@@ -39,7 +34,7 @@ Style/GuardClause:
 Style/IfUnlessModifier:
   Enabled: false
 
-Style/SpaceInsideHashLiteralBraces:
+Layout/SpaceInsideHashLiteralBraces:
   Enabled: false
 
 Style/Lambda:
@@ -55,13 +50,17 @@ Metrics/AbcSize:
   Max: 20
 
 Metrics/ClassLength:
-  Max: 100
+  Max: 101
 
 Metrics/ModuleLength:
   Max: 100
 
 Metrics/LineLength:
   Enabled: false
+
+Metrics/BlockLength:
+  Exclude:
+    - spec/**/*_spec.rb
 
 Metrics/MethodLength:
   Max: 15
@@ -75,10 +74,10 @@ Lint/EndAlignment:
 Style/FormatString:
   Enabled: false
 
-Style/MultilineMethodCallIndentation:
+Layout/MultilineMethodCallIndentation:
   EnforcedStyle: indented
 
-Style/MultilineOperationIndentation:
+Layout/MultilineOperationIndentation:
   EnforcedStyle: indented
 
 Style/WordArray:
@@ -87,7 +86,7 @@ Style/WordArray:
 Style/RedundantSelf:
   Enabled: false
 
-Style/AlignHash:
+Layout/AlignHash:
   Enabled: true
   EnforcedLastArgumentHashStyle: always_ignore
 
