@@ -6,11 +6,11 @@ module JWT
       extend Forwardable
       def_delegators :@keypair, :public_key
       attr_reader :keypair
-      
+
       KTY    = 'EC'.freeze
       KTYS   = [KTY, OpenSSL::PKey::EC].freeze
       BINARY = 2
-      
+
       def initialize(keypair, kid = nil)
         raise ArgumentError, 'keypair must be of type OpenSSL::PKey::EC' unless keypair.is_a?(OpenSSL::PKey::EC)
 

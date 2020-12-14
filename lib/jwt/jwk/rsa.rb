@@ -23,7 +23,7 @@ module JWT
       def public_key
         keypair.public_key
       end
-  
+
       def private_key
         return nil unless private?
         @keypair
@@ -48,8 +48,6 @@ module JWT
 
         append_private_parts(exported_hash)
       end
-
-
 
       private
 

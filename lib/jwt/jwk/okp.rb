@@ -77,10 +77,10 @@ module JWT
           attributes = jwk_attributes(jwk_data, :x, :d, :kid)
 
           key = if attributes[:d]
-                  RbNaCl::Signatures::Ed25519::SigningKey.new(::JWT::Base64.url_decode(attributes[:d]))
-                else
-                  RbNaCl::Signatures::Ed25519::VerifyKey.new(::JWT::Base64.url_decode(attributes[:x]))
-                end
+            RbNaCl::Signatures::Ed25519::SigningKey.new(::JWT::Base64.url_decode(attributes[:d]))
+          else
+            RbNaCl::Signatures::Ed25519::VerifyKey.new(::JWT::Base64.url_decode(attributes[:x]))
+          end
 
           new(key, attributes[:kid])
         end
