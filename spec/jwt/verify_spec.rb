@@ -3,7 +3,7 @@
 require 'spec_helper'
 require 'jwt/verify'
 
-module JWT
+module JWT # rubocop:disable Metrics/ModuleLength
   RSpec.describe Verify do
     let(:base_payload) { { 'user_id' => 'some@user.tld' } }
     let(:options) { { leeway: 0 } }
