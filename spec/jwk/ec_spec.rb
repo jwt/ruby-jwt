@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 describe JWT::JWK::EC do
-  let(:ec_key) { OpenSSL::PKey::EC.new("secp384r1").generate_key }
+  let(:ec_key) { OpenSSL::PKey::EC.new('secp384r1').generate_key }
 
   describe '.new' do
     subject { described_class.new(keypair) }

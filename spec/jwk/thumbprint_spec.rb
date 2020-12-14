@@ -22,5 +22,23 @@ describe JWT::JWK::Thumbprint do
         expect(described_class.new(jwk).to_s).to eq('NzbLsXh8uDCcd-6MNwXF4W_7noWXFZAfHkxZsRGC9Xs')
       end
     end
+    context 'when HMAC key is given' do
+      let(:hmac_key) {
+        '
+        {
+          "kty":"oct",
+          "kid":"wPf4ZF5qlzoFxsGkft4eu1iWcehgAcahZL4XPV4dT-s",
+          "alg":"HS512",
+          "k":"B4uZ7IbZTnjdCQjUBXTpzMUznCYj3wdYDZcceeU0mLg"
+        }
+        '
+      }
+
+      let(:jwk) { JWT::JWK.import(JSON.parse(hmac_key)) }
+
+      it 'calculates the correct thumbprint' do
+        expect(described_class.new(jwk).to_s).to eq('wPf4ZF5qlzoFxsGkft4eu1iWcehgAcahZL4XPV4dT-s')
+      end
+    end
   end
 end

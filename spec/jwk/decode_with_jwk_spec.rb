@@ -80,14 +80,16 @@ describe JWT do
       end
     end
 
-    context 'when OKP keys are used' do
-      let(:keypair) { RbNaCl::Signatures::Ed25519::SigningKey.new(SecureRandom.hex) }
-      let(:algorithm) { 'ED25519' }
-      it 'decodes the token' do
-        key_loader = ->(_options) { JSON.parse(JSON.generate(public_jwks)) }
-        payload, _header = described_class.decode(signed_token, nil, true, { algorithms: [algorithm], jwks: key_loader})
-        expect(payload).to eq(token_payload)
+    if defined?(RbNaCl)
+      context 'when OKP keys are used' do
+        let(:keypair) { RbNaCl::Signatures::Ed25519::SigningKey.new(SecureRandom.hex) }
+        let(:algorithm) { 'ED25519' }
+        it 'decodes the token' do
+          key_loader = ->(_options) { JSON.parse(JSON.generate(public_jwks)) }
+          payload, _header = described_class.decode(signed_token, nil, true, { algorithms: [algorithm], jwks: key_loader})
+          expect(payload).to eq(token_payload)
+        end
       end
-    end if defined?(RbNaCl)
+    end
   end
 end
