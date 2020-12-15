@@ -6,10 +6,14 @@ module JWT
       KTY = 'oct'.freeze
       KTYS = [KTY, String].freeze
 
-      attr_reader :keypair
-      def initialize(keypair, kid = nil)
-        raise ArgumentError, 'keypair must be of type String' unless keypair.is_a?(String)
-        @keypair = keypair
+      attr_reader :secret
+
+      alias verify_key secret
+      alias signing_key secret
+
+      def initialize(secret, kid = nil)
+        raise ArgumentError, 'secret must be of type String' unless secret.is_a?(String)
+        @secret = secret
         @kid = kid
       end
 
@@ -53,9 +57,7 @@ module JWT
       private
 
       def generate_kid
-        sequence = OpenSSL::ASN1::Sequence([OpenSSL::ASN1::UTF8String.new(keypair),
-                                            OpenSSL::ASN1::UTF8String.new(KTY)])
-        OpenSSL::Digest::SHA256.hexdigest(sequence.to_der)
+        Thumbprint.new(self).to_s
       end
 
       class << self

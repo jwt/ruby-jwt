@@ -77,8 +77,9 @@ if defined?(RbNaCl)
         let(:exported_key) { described_class.new(public_key).export }
         it 'creates a new instance of the class' do
           expect(subject.private?).to eq(false)
-          expect(subject.keypair).to be_a(RbNaCl::Signatures::Ed25519::VerifyKey)
-          expect(subject.keypair.to_bytes).to eq(public_key.to_bytes)
+          expect(subject.verify_key).to be_a(RbNaCl::Signatures::Ed25519::VerifyKey)
+          expect(subject.signing_key).to eq(nil)
+          expect(subject.verify_key.to_bytes).to eq(public_key.to_bytes)
           expect(subject.kid).to eq(exported_key[:kid])
         end
       end
@@ -87,8 +88,9 @@ if defined?(RbNaCl)
         let(:exported_key) { described_class.new(private_key).export(include_private: true) }
         it 'creates a new instance of the class' do
           expect(subject.private?).to eq(true)
-          expect(subject.keypair).to be_a(RbNaCl::Signatures::Ed25519::VerifyKey)
-          expect(subject.keypair.to_bytes).to eq(public_key.to_bytes)
+          expect(subject.verify_key).to be_a(RbNaCl::Signatures::Ed25519::VerifyKey)
+          expect(subject.signing_key).to be_a(RbNaCl::Signatures::Ed25519::SigningKey)
+          expect(subject.verify_key.to_bytes).to eq(public_key.to_bytes)
           expect(subject.kid).to eq(exported_key[:kid])
         end
       end

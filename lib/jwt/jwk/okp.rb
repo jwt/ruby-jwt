@@ -11,6 +11,8 @@ module JWT
 
       ED25519 = 'Ed25519'.freeze
 
+      attr_reader :verify_key, :signing_key
+
       def initialize(key, kid = nil)
         case key
         when RbNaCl::Signatures::Ed25519::SigningKey
@@ -19,26 +21,15 @@ module JWT
         when RbNaCl::Signatures::Ed25519::VerifyKey
           @verify_key = key
         else
-          raise ArgumentError, 'key must be of type RbNaCl::Signatures::Ed25519::SigningKey or RbNaCl::Signatures::Ed25519::VerifyKey'
+          raise ArgumentError, 'key must be of type RbNaCl::Signatures::Ed25519::SigningKey or ' \
+                               'RbNaCl::Signatures::Ed25519::VerifyKey'
         end
 
         @kid = kid
       end
 
-      def keypair
-        @verify_key
-      end
-
-      def private_key
-        @signing_key
-      end
-
-      def public_key
-        @verify_key
-      end
-
       def private?
-        !@signing_key.nil?
+        !signing_key.nil?
       end
 
       def kid

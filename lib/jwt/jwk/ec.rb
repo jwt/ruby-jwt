@@ -3,27 +3,25 @@
 module JWT
   module JWK
     class EC < KeyBase
-      extend Forwardable
-      def_delegators :@keypair, :public_key
-      attr_reader :keypair
-
       KTY    = 'EC'.freeze
       KTYS   = [KTY, OpenSSL::PKey::EC].freeze
       BINARY = 2
 
+      attr_reader :verify_key, :signing_key
+
       def initialize(keypair, kid = nil)
         raise ArgumentError, 'keypair must be of type OpenSSL::PKey::EC' unless keypair.is_a?(OpenSSL::PKey::EC)
-
+        @verify_key = keypair.public_key
+        @signing_key = keypair if keypair.private?
         @kid = kid
-        @keypair = keypair
       end
 
       def private?
-        @keypair.private_key?
+        !signing_key.nil?
       end
 
       def members
-        crv, x_octets, y_octets = keypair_components(keypair)
+        crv, x_octets, y_octets = keypair_components(verify_key)
         {
           kty: KTY,
           crv: crv,
@@ -40,10 +38,14 @@ module JWT
       end
 
       def kid
-        @kid ||= generate_kid(keypair)
+        @kid ||= generate_kid
       end
 
       private
+
+      def generate_kid
+        Thumbprint.new(self).to_s
+      end
 
       def append_private_parts(the_hash)
         octets = keypair.private_key.to_bn.to_s(BINARY)
@@ -52,16 +54,9 @@ module JWT
         )
       end
 
-      def generate_kid(ec_keypair)
-        _crv, x_octets, y_octets = keypair_components(ec_keypair)
-        sequence = OpenSSL::ASN1::Sequence([OpenSSL::ASN1::Integer.new(OpenSSL::BN.new(x_octets, BINARY)),
-                                            OpenSSL::ASN1::Integer.new(OpenSSL::BN.new(y_octets, BINARY))])
-        OpenSSL::Digest::SHA256.hexdigest(sequence.to_der)
-      end
-
-      def keypair_components(ec_keypair)
-        encoded_point = ec_keypair.public_key.to_bn.to_s(BINARY)
-        case ec_keypair.group.curve_name
+      def keypair_components(verify_key)
+        encoded_point = verify_key.to_bn.to_s(BINARY)
+        case verify_key.group.curve_name
         when 'prime256v1'
           crv = 'P-256'
           x_octets, y_octets = encoded_point.unpack('xa32a32')

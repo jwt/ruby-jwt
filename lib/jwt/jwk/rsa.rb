@@ -8,36 +8,28 @@ module JWT
       KTYS   = [KTY, OpenSSL::PKey::RSA].freeze
       RSA_KEY_ELEMENTS = %i[n e d p q dp dq qi].freeze
 
-      attr_reader :keypair
+      attr_reader :verify_key, :signing_key
 
       def initialize(keypair, kid = nil)
         raise ArgumentError, 'keypair must be of type OpenSSL::PKey::RSA' unless keypair.is_a?(OpenSSL::PKey::RSA)
-        @keypair = keypair
+        @verify_key = keypair.public_key
+        @signing_key = keypair if keypair.private?
         @kid = kid
       end
 
       def private?
-        keypair.private?
-      end
-
-      def public_key
-        keypair.public_key
-      end
-
-      def private_key
-        return nil unless private?
-        @keypair
+        !signing_key.nil?
       end
 
       def kid
-        @kid ||= generate_kid(keypair.public_key)
+        @kid ||= generate_kid(verify_key)
       end
 
       def members
         {
           kty: KTY,
-          n: encode_open_ssl_bn(public_key.n),
-          e: encode_open_ssl_bn(public_key.e)
+          n: encode_open_ssl_bn(verify_key.n),
+          e: encode_open_ssl_bn(verify_key.e)
         }
       end
 
@@ -59,12 +51,12 @@ module JWT
 
       def append_private_parts(the_hash)
         the_hash.merge(
-          d: encode_open_ssl_bn(keypair.d),
-          p: encode_open_ssl_bn(keypair.p),
-          q: encode_open_ssl_bn(keypair.q),
-          dp: encode_open_ssl_bn(keypair.dmp1),
-          dq: encode_open_ssl_bn(keypair.dmq1),
-          qi: encode_open_ssl_bn(keypair.iqmp)
+          d: encode_open_ssl_bn(signing_key.d),
+          p: encode_open_ssl_bn(signing_key.p),
+          q: encode_open_ssl_bn(signing_key.q),
+          dp: encode_open_ssl_bn(signing_key.dmp1),
+          dq: encode_open_ssl_bn(signing_key.dmq1),
+          qi: encode_open_ssl_bn(signing_key.iqmp)
         )
       end
 
