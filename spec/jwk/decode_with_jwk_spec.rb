@@ -8,7 +8,7 @@ describe JWT do
     let(:token_payload) { {'data' => 'something'} }
     let(:token_headers) { { kid: jwk.kid } }
     let(:algorithm)     { 'RS512' }
-    let(:signed_token)  { described_class.encode(token_payload, jwk.private_key, algorithm, token_headers) }
+    let(:signed_token)  { described_class.encode(token_payload, jwk.signing_key, algorithm, token_headers) }
 
     context 'when JWK features are used manually' do
       it 'is able to decode the token' do

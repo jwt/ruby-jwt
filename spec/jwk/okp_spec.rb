@@ -25,9 +25,9 @@ if defined?(RbNaCl)
       end
     end
 
-    describe '#public_key' do
+    describe '#verify_key' do
       let(:key) { private_key }
-      subject { instance.public_key }
+      subject { instance.verify_key }
       it 'is the verify key' do
         expect(subject).to be_a(RbNaCl::Signatures::Ed25519::VerifyKey)
       end

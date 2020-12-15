@@ -25,10 +25,6 @@ module JWT
         nil
       end
 
-      def private_key
-        keypair
-      end
-
       def kid
         @kid ||= generate_kid
       end
@@ -36,7 +32,7 @@ module JWT
       def members
         {
           kty: KTY,
-          k: keypair
+          k: signing_key
         }
       end
 
@@ -50,7 +46,7 @@ module JWT
         return exported_hash unless private? && options[:include_private] == true
 
         exported_hash.merge(
-          k: keypair
+          k: signing_key
         )
       end
 

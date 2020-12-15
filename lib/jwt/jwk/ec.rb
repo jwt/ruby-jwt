@@ -11,8 +11,8 @@ module JWT
 
       def initialize(keypair, kid = nil)
         raise ArgumentError, 'keypair must be of type OpenSSL::PKey::EC' unless keypair.is_a?(OpenSSL::PKey::EC)
-        @verify_key = keypair.public_key
-        @signing_key = keypair if keypair.private_key?
+        @verify_key  = keypair.public_key
+        @signing_key = keypair.private_key if keypair.private_key?
         @kid = kid
       end
 
@@ -48,10 +48,8 @@ module JWT
       end
 
       def append_private_parts(the_hash)
-        octets = keypair.private_key.to_bn.to_s(BINARY)
-        the_hash.merge(
-          d: encode_octets(octets)
-        )
+        octets = signing_key.to_bn.to_s(BINARY)
+        the_hash.merge(d: encode_octets(octets))
       end
 
       def keypair_components(verify_key)

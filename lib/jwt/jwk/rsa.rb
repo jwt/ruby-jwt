@@ -17,6 +17,21 @@ module JWT
         @kid = kid
       end
 
+      def keypair
+        warn('[DEPRECATION] The ::JWT::JWK::RSA#keypair method is deprecated and going to be removed in future versions')
+        signing_key || verify_key
+      end
+
+      def public_key
+        warn('[DEPRECATION] The ::JWT::JWK::RSA#public_key method is deprecated and going to be removed in future versions')
+        verify_key
+      end
+
+      def private_key
+        warn('[DEPRECATION] The ::JWT::JWK::RSA#private_key method is deprecated and going to be removed in future versions')
+        signing_key
+      end
+
       def private?
         !signing_key.nil?
       end
