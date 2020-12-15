@@ -12,7 +12,7 @@ module JWT
       def initialize(keypair, kid = nil)
         raise ArgumentError, 'keypair must be of type OpenSSL::PKey::EC' unless keypair.is_a?(OpenSSL::PKey::EC)
         @verify_key = keypair.public_key
-        @signing_key = keypair if keypair.private?
+        @signing_key = keypair if keypair.private_key?
         @kid = kid
       end
 
