@@ -26,7 +26,7 @@ If you have further questions related to development or usage, join us: [ruby-jw
 
 ### Using Rubygems:
 ```bash
-sudo gem install jwt
+gem install jwt
 ```
 
 ### Using Bundler:
