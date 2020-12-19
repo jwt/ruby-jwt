@@ -5,6 +5,7 @@ require_relative 'jwk/key_finder'
 module JWT
   module JWK
     class << self
+      BINARY = 2
       def import(jwk_data)
         jwk_kty = jwk_data[:kty] || jwk_data['kty']
         raise JWT::JWKError, 'Key type (kty) not provided' unless jwk_kty
@@ -14,15 +15,19 @@ module JWT
         end.import(jwk_data)
       end
 
-      def create_from(keypair)
-        mappings.fetch(keypair.class) do |klass|
+      def create_from(key)
+        mappings.fetch(key.class) do |klass|
           raise JWT::JWKError, "Cannot create JWK from a #{klass.name}"
-        end.new(keypair)
+        end.new(key)
       end
 
       def classes
         @mappings = nil # reset the cached mappings
         @classes ||= []
+      end
+
+      def encode_open_ssl_bn(key_part)
+        ::JWT::Base64.url_encode(key_part.to_s(BINARY))
       end
 
       alias new create_from
@@ -45,7 +50,7 @@ module JWT
   end
 end
 
-require_relative 'jwk/key_base'
+require_relative 'jwk/key_algorithm'
 require_relative 'jwk/ec'
 require_relative 'jwk/rsa'
 require_relative 'jwk/hmac'
