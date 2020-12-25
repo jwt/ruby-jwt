@@ -525,10 +525,11 @@ We depend on [Bundler](http://rubygems.org/gems/bundler) for defining gemspec an
 rake release
 ```
 
-The tests are written with rspec. Given you have installed the dependencies via bundler, you can run tests with
+The tests are written with rspec. [Appraisal](https://github.com/thoughtbot/appraisal) is used to ensure compatibility with 3rd party dependencies providing cryptographic features.
 
 ```bash
-bundle exec rspec
+bundle install
+bundle exec appraisal rake test
 ```
 
 **If you want a release cut with your PR, please include a version bump according to [Semantic Versioning](http://semver.org/)**

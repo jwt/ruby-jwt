@@ -1,9 +1,6 @@
-require 'spec_helper'
-require 'jwt'
-require 'jwt/encode'
-require 'jwt/decode'
+# frozen_string_literal: true
 
-describe JWT do
+RSpec.describe JWT do
   let(:payload) { { 'user_id' => 'some@user.tld' } }
 
   let :data do
@@ -263,7 +260,7 @@ describe JWT do
     end
   end
 
-  unless OpenSSL::VERSION >= '2.1'
+  unless ::Gem::Version.new(OpenSSL::VERSION) >= ::Gem::Version.new('2.1')
     %w[PS256 PS384 PS512].each do |alg|
       context "alg: #{alg}" do
         it 'raises error about OpenSSL version' do

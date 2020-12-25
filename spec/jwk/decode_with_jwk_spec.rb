@@ -1,9 +1,6 @@
 # frozen_string_literal: true
 
-require_relative '../spec_helper'
-require 'jwt'
-
-describe JWT do
+RSpec.describe JWT do
   describe '.decode for JWK usecase' do
     let(:keypair)       { OpenSSL::PKey::RSA.new(2048) }
     let(:jwk)           { JWT::JWK.new(keypair) }

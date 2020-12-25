@@ -1,9 +1,6 @@
 # frozen_string_literal: true
 
-require_relative '../spec_helper'
-require 'jwt'
-
-describe 'README.md code test' do
+RSpec.describe 'README.md code test' do
   context 'algorithm usage' do
     let(:payload) { { data: 'test' } }
 
@@ -79,7 +76,7 @@ describe 'README.md code test' do
         { 'data' => 'test' },
         { 'alg' => 'PS256' }
       ]
-    end if OpenSSL::VERSION >= '2.1'
+    end if ::Gem::Version.new(OpenSSL::VERSION) >= ::Gem::Version.new('2.1')
   end
 
   context 'claims' do
