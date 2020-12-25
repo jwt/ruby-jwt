@@ -1,5 +1,4 @@
-require 'spec_helper'
-require 'jwt/claims_validator'
+# frozen_string_literal: true
 
 RSpec.describe JWT::ClaimsValidator do
   let(:validator) { described_class.new(claims) }

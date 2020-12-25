@@ -6,7 +6,7 @@ engines:
     enabled: true
   rubocop:
     enabled: true
-    channel: rubocop-0-49
+    channel: rubocop-0-52
   duplication:
     config:
       languages:

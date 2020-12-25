@@ -1,9 +1,6 @@
 # frozen_string_literal: true
 
-require_relative '../spec_helper'
-require 'jwt'
-
-describe JWT::JWK::EC do
+RSpec.describe JWT::JWK::EC do
   let(:ec_key) { OpenSSL::PKey::EC.new("secp384r1").generate_key }
 
   describe '.new' do
