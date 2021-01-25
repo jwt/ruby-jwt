@@ -424,6 +424,8 @@ begin
   #decoded_token = JWT.decode token, hmac_secret, true, { verify_jti: true, algorithm: 'HS256' }
   # Alternatively, pass a proc with your own code to check if the JTI has already been used
   decoded_token = JWT.decode token, hmac_secret, true, { verify_jti: proc { |jti| my_validation_method(jti) }, algorithm: 'HS256' }
+  # or
+  decoded_token = JWT.decode token, hmac_secret, true, { verify_jti: proc { |jti, payload| my_validation_method(jti, payload) }, algorithm: 'HS256' }
 rescue JWT::InvalidJtiError
   # Handle invalid token, e.g. logout user or deny access
   puts 'Error'
