@@ -31,6 +31,7 @@ module JWT
     ToVerify = Struct.new(:algorithm, :public_key, :signing_input, :signature)
 
     def sign(algorithm, msg, key)
+      algorithm = algorithm.upcase
       algo = ALGOS.find do |alg|
         alg.const_get(:SUPPORTED).include? algorithm
       end
@@ -38,7 +39,8 @@ module JWT
     end
 
     def verify(algorithm, key, signing_input, signature)
-      return true if algorithm == 'none'
+      algorithm = algorithm.upcase
+      return true if algorithm == 'NONE'
 
       raise JWT::DecodeError, 'No verification key available' unless key
 
