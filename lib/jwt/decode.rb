@@ -43,22 +43,23 @@ module JWT
     end
 
     def options_includes_algo_in_header?
-      allowed_algorithms.include? header['alg']
+      allowed_algorithms.include? header['alg'].upcase
     end
 
     def allowed_algorithms
       # Order is very important - first check for string keys, next for symbols
-      if @options.key?('algorithm')
-        [@options['algorithm']]
-      elsif @options.key?(:algorithm)
-        [@options[:algorithm]]
-      elsif @options.key?('algorithms')
-        @options['algorithms'] || []
-      elsif @options.key?(:algorithms)
-        @options[:algorithms] || []
-      else
-        []
-      end
+      algos = if @options.key?('algorithm')
+                @options['algorithm']
+              elsif @options.key?(:algorithm)
+                @options[:algorithm]
+              elsif @options.key?('algorithms')
+                @options['algorithms']
+              elsif @options.key?(:algorithms)
+                @options[:algorithms]
+              else
+                []
+              end
+      Array(algos).map(&:upcase)
     end
 
     def find_key(&keyfinder)

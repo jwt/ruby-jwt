@@ -510,4 +510,26 @@ describe JWT do
       end.not_to raise_error
     end
   end
+
+  context 'algorithm case insensitivity' do
+    let(:payload) { { 'a' => 1, 'b' => 'b' } }
+
+    it 'ignores algorithm casing during encode/decode' do
+      enc = JWT.encode(payload, '', 'hs256')
+      expect(JWT.decode(enc, '')).to eq([payload, { 'alg' => 'hs256'}])
+
+      enc = JWT.encode(payload, data[:rsa_private], 'ps384')
+      puts JWT.decode(enc, nil, false, algorithm: 'ps384').inspect
+      expect(JWT.decode(enc, data[:rsa_public], true, algorithm: 'PS384')).to eq([payload, { 'alg' => 'ps384'}])
+
+      enc = JWT.encode(payload, data[:rsa_private], 'RS512')
+      expect(JWT.decode(enc, data[:rsa_public], true, algorithm: 'rs512')).to eq([payload, { 'alg' => 'RS512'}])
+    end
+
+    it 'raises error for invalid algorithm' do
+      expect do
+        JWT.encode(payload, '', 'xyz')
+      end.to raise_error(NotImplementedError)
+    end
+  end
 end
