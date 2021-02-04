@@ -291,6 +291,12 @@ rescue JWT::ExpiredSignature
 end
 ```
 
+The Expiration Claim verification can be disabled.
+```ruby
+# Decode token without raising JWT::ExpiredSignature error
+JWT.decode token, hmac_secret, true, { verify_expiration: false, algorithm: 'HS256' }
+```
+
 **Adding Leeway**
 
 ```ruby
@@ -329,6 +335,12 @@ begin
 rescue JWT::ImmatureSignature
   # Handle invalid token, e.g. logout user or deny access
 end
+```
+
+The Not Before Claim verification can be disabled.
+```ruby
+# Decode token without raising JWT::ImmatureSignature error
+JWT.decode token, hmac_secret, true, { verify_not_before: false, algorithm: 'HS256' }
 ```
 
 **Adding Leeway**
