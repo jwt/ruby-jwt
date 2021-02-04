@@ -49,16 +49,16 @@ module JWT
     def allowed_algorithms
       # Order is very important - first check for string keys, next for symbols
       algos = if @options.key?('algorithm')
-                @options['algorithm']
-              elsif @options.key?(:algorithm)
-                @options[:algorithm]
-              elsif @options.key?('algorithms')
-                @options['algorithms']
-              elsif @options.key?(:algorithms)
-                @options[:algorithms]
-              else
-                []
-              end
+        @options['algorithm']
+      elsif @options.key?(:algorithm)
+        @options[:algorithm]
+      elsif @options.key?('algorithms')
+        @options['algorithms']
+      elsif @options.key?(:algorithms)
+        @options[:algorithms]
+      else
+        []
+      end
       Array(algos).map(&:upcase)
     end
 
