@@ -190,7 +190,7 @@ describe JWT do
   end
 
   if defined?(RbNaCl)
-    %w[ED25519].each do |alg|
+    %w[Ed25519 ED25519].each do |alg|
       context "alg: #{alg}" do
         before(:each) do
           data[alg] = JWT.encode payload, data["#{alg}_private"], alg
