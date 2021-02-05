@@ -2,12 +2,7 @@
 
 require 'jwt/security_utils'
 require 'openssl'
-require 'jwt/algos/hmac'
-require 'jwt/algos/eddsa'
-require 'jwt/algos/ecdsa'
-require 'jwt/algos/rsa'
-require 'jwt/algos/ps'
-require 'jwt/algos/unsupported'
+require 'jwt/algos'
 begin
   require 'rbnacl'
 rescue LoadError
@@ -19,35 +14,21 @@ module JWT
   # Signature logic for JWT
   module Signature
     extend self
-    ALGOS = [
-      Algos::Hmac,
-      Algos::Ecdsa,
-      Algos::Rsa,
-      Algos::Eddsa,
-      Algos::Ps,
-      Algos::Unsupported
-    ].freeze
     ToSign = Struct.new(:algorithm, :msg, :key)
     ToVerify = Struct.new(:algorithm, :public_key, :signing_input, :signature)
 
     def sign(algorithm, msg, key)
-      algorithm = algorithm.upcase
-      algo = ALGOS.find do |alg|
-        alg.const_get(:SUPPORTED).include? algorithm
-      end
-      algo.sign ToSign.new(algorithm, msg, key)
+      algo, code = Algos.find(algorithm)
+      algo.sign ToSign.new(code, msg, key)
     end
 
     def verify(algorithm, key, signing_input, signature)
-      algorithm = algorithm.upcase
-      return true if algorithm == 'NONE'
+      return true if algorithm.upcase == 'NONE'
 
       raise JWT::DecodeError, 'No verification key available' unless key
 
-      algo = ALGOS.find do |alg|
-        alg.const_get(:SUPPORTED).include? algorithm
-      end
-      verified = algo.verify(ToVerify.new(algorithm, key, signing_input, signature))
+      algo, code = Algos.find(algorithm)
+      verified = algo.verify(ToVerify.new(code, key, signing_input, signature))
       raise(JWT::VerificationError, 'Signature verification raised') unless verified
     rescue OpenSSL::PKey::PKeyError
       raise JWT::VerificationError, 'Signature verification raised'

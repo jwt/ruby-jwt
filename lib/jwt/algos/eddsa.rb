@@ -3,7 +3,7 @@ module JWT
     module Eddsa
       module_function
 
-      SUPPORTED = %w[ED25519].freeze
+      SUPPORTED = %w[Ed25519].freeze
 
       def sign(to_sign)
         algorithm, msg, key = to_sign.values
