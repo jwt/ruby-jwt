@@ -37,8 +37,8 @@ describe JWT do
 
     if defined?(RbNaCl)
       data.merge!(
-        'ED25519_private' =>  RbNaCl::Signatures::Ed25519::SigningKey.new('abcdefghijklmnopqrstuvwxyzABCDEF'),
-        'ED25519_public' => RbNaCl::Signatures::Ed25519::SigningKey.new('abcdefghijklmnopqrstuvwxyzABCDEF').verify_key,
+        'Ed25519_private' =>  RbNaCl::Signatures::Ed25519::SigningKey.new('abcdefghijklmnopqrstuvwxyzABCDEF'),
+        'Ed25519_public' => RbNaCl::Signatures::Ed25519::SigningKey.new('abcdefghijklmnopqrstuvwxyzABCDEF').verify_key,
       )
     end
     data
@@ -190,7 +190,7 @@ describe JWT do
   end
 
   if defined?(RbNaCl)
-    %w[ED25519].each do |alg|
+    %w[Ed25519].each do |alg|
       context "alg: #{alg}" do
         before(:each) do
           data[alg] = JWT.encode payload, data["#{alg}_private"], alg
@@ -516,11 +516,10 @@ describe JWT do
 
     it 'ignores algorithm casing during encode/decode' do
       enc = JWT.encode(payload, '', 'hs256')
-      expect(JWT.decode(enc, '')).to eq([payload, { 'alg' => 'hs256'}])
+      expect(JWT.decode(enc, '')).to eq([payload, { 'alg' => 'HS256'}])
 
       enc = JWT.encode(payload, data[:rsa_private], 'ps384')
-      puts JWT.decode(enc, nil, false, algorithm: 'ps384').inspect
-      expect(JWT.decode(enc, data[:rsa_public], true, algorithm: 'PS384')).to eq([payload, { 'alg' => 'ps384'}])
+      expect(JWT.decode(enc, data[:rsa_public], true, algorithm: 'PS384')).to eq([payload, { 'alg' => 'PS384'}])
 
       enc = JWT.encode(payload, data[:rsa_private], 'RS512')
       expect(JWT.decode(enc, data[:rsa_public], true, algorithm: 'rs512')).to eq([payload, { 'alg' => 'RS512'}])

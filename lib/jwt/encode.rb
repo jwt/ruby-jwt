@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require_relative './algos'
 require_relative './claims_validator'
 
 # JWT::Encode module
@@ -12,7 +13,7 @@ module JWT
     def initialize(options)
       @payload   = options[:payload]
       @key       = options[:key]
-      @algorithm = options[:algorithm]
+      _, @algorithm = Algos.find(options[:algorithm])
       @headers   = options[:headers].each_with_object({}) { |(key, value), headers| headers[key.to_s] = value }
     end
 
