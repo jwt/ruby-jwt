@@ -3,7 +3,7 @@ module JWT
     module None
       module_function
 
-      SUPPORTED = ['none']
+      SUPPORTED = %w[none].freeze
       def verify(*)
       end
 
