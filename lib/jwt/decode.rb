@@ -43,7 +43,7 @@ module JWT
     end
 
     def options_includes_algo_in_header?
-      allowed_algorithms.include? header['alg'].upcase
+      allowed_algorithms.any? { |alg| alg.casecmp?(header['alg']) }
     end
 
     def allowed_algorithms
@@ -59,7 +59,7 @@ module JWT
       else
         []
       end
-      Array(algos).map(&:upcase)
+      Array(algos)
     end
 
     def find_key(&keyfinder)

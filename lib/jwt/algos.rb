@@ -5,6 +5,7 @@ require 'jwt/algos/eddsa'
 require 'jwt/algos/ecdsa'
 require 'jwt/algos/rsa'
 require 'jwt/algos/ps'
+require 'jwt/algos/none'
 require 'jwt/algos/unsupported'
 
 # JWT::Signature module
@@ -18,15 +19,26 @@ module JWT
       Algos::Rsa,
       Algos::Eddsa,
       Algos::Ps,
+      Algos::None,
       Algos::Unsupported
     ].freeze
 
     def find(algorithm)
-      ALGOS.each do |alg|
-        code = alg.const_get(:SUPPORTED).find {|a| a.upcase == algorithm.upcase }
-        return [alg, code] if code
+      indexed[algorithm && algorithm.downcase]
+    end
+
+    private
+
+    def indexed
+      @indexed ||= begin
+        algos = ALGOS.dup
+        fallback = [algos.pop, nil]
+        algos.each_with_object(Hash.new(fallback)) do |alg, hash|
+          alg.const_get(:SUPPORTED).each do |code|
+            hash[code.downcase] = [alg, code]
+          end
+        end
       end
-      nil
     end
   end
 end
