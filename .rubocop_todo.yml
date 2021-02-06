@@ -126,11 +126,12 @@ Style/MethodCallWithoutArgsParentheses:
   Exclude:
     - 'spec/jwt_spec.rb'
 
-# Offense count: 1
+# Offense count: 2
 # Configuration parameters: EnforcedStyle.
 # SupportedStyles: module_function, extend_self
 Style/ModuleFunction:
   Exclude:
+    - 'lib/jwt/algos.rb'
     - 'lib/jwt/signature.rb'
 
 # Offense count: 1
