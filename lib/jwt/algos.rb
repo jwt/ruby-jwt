@@ -13,6 +13,7 @@ module JWT
   # Signature logic for JWT
   module Algos
     extend self
+
     ALGOS = [
       Algos::Hmac,
       Algos::Ecdsa,

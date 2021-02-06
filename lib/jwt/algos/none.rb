@@ -4,11 +4,10 @@ module JWT
       module_function
 
       SUPPORTED = %w[none].freeze
-      def verify(*)
-      end
 
-      def sign(*)
-      end
+      def verify(*); end
+
+      def sign(*); end
     end
   end
 end
