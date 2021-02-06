@@ -3,7 +3,7 @@ module JWT
     module Unsupported
       module_function
 
-      SUPPORTED = []
+      SUPPORTED = [].freeze
       def verify(*)
         raise JWT::VerificationError, 'Algorithm not supported'
       end
