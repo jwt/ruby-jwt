@@ -3,7 +3,7 @@ module JWT
     module Unsupported
       module_function
 
-      SUPPORTED = Object.new.tap { |object| object.define_singleton_method(:find) { |*| true } }
+      SUPPORTED = []
       def verify(*)
         raise JWT::VerificationError, 'Algorithm not supported'
       end
