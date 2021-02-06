@@ -5,12 +5,12 @@ module JWT
 
       SUPPORTED = [].freeze
 
-      def verify(*)
-        raise JWT::VerificationError, 'Algorithm not supported'
-      end
-
       def sign(*)
         raise NotImplementedError, 'Unsupported signing method'
+      end
+
+      def verify(*)
+        raise JWT::VerificationError, 'Algorithm not supported'
       end
     end
   end
