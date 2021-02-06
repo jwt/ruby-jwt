@@ -11,10 +11,10 @@ module JWT
     ALG_KEY  = 'alg'.freeze
 
     def initialize(options)
-      @payload   = options[:payload]
-      @key       = options[:key]
+      @payload = options[:payload]
+      @key = options[:key]
       _, @algorithm = Algos.find(options[:algorithm])
-      @headers   = options[:headers].each_with_object({}) { |(key, value), headers| headers[key.to_s] = value }
+      @headers = options[:headers].each_with_object({}) { |(key, value), headers| headers[key.to_s] = value }
     end
 
     def segments
