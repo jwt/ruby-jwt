@@ -43,7 +43,7 @@ module JWT
     end
 
     def options_includes_algo_in_header?
-      allowed_algorithms.any? { |alg| alg.casecmp?(header['alg']) }
+      allowed_algorithms.any? { |alg| alg.casecmp(header['alg']) == 0 }
     end
 
     def allowed_algorithms
