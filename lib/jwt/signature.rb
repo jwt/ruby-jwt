@@ -23,7 +23,7 @@ module JWT
     end
 
     def verify(algorithm, key, signing_input, signature)
-      return true if algorithm.casecmp('none') == 0
+      return true if algorithm.casecmp('none').zero?
 
       raise JWT::DecodeError, 'No verification key available' unless key
 
