@@ -518,8 +518,8 @@ describe JWT do
       enc = JWT.encode(payload, '', 'hs256')
       expect(JWT.decode(enc, '')).to eq([payload, { 'alg' => 'HS256'}])
 
-      enc = JWT.encode(payload, data[:rsa_private], 'ps384')
-      expect(JWT.decode(enc, data[:rsa_public], true, algorithm: 'PS384')).to eq([payload, { 'alg' => 'PS384'}])
+      enc = JWT.encode(payload, data[:rsa_private], 'rs512')
+      expect(JWT.decode(enc, data[:rsa_public], true, algorithm: 'RS512')).to eq([payload, { 'alg' => 'RS512'}])
 
       enc = JWT.encode(payload, data[:rsa_private], 'RS512')
       expect(JWT.decode(enc, data[:rsa_public], true, algorithm: 'rs512')).to eq([payload, { 'alg' => 'RS512'}])
