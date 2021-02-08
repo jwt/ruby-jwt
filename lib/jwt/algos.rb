@@ -32,9 +32,8 @@ module JWT
 
     def indexed
       @indexed ||= begin
-        algos = ALGOS.dup
-        fallback = [algos.pop, nil]
-        algos.each_with_object(Hash.new(fallback)) do |alg, hash|
+        fallback = [Algos::Unsupported, nil]
+        ALGOS.each_with_object(Hash.new(fallback)) do |alg, hash|
           alg.const_get(:SUPPORTED).each do |code|
             hash[code.downcase] = [alg, code]
           end
