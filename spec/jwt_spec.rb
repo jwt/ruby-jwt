@@ -37,8 +37,8 @@ describe JWT do
 
     if defined?(RbNaCl)
       data.merge!(
-        'Ed25519_private' =>  RbNaCl::Signatures::Ed25519::SigningKey.new('abcdefghijklmnopqrstuvwxyzABCDEF'),
-        'Ed25519_public' => RbNaCl::Signatures::Ed25519::SigningKey.new('abcdefghijklmnopqrstuvwxyzABCDEF').verify_key,
+        'ED25519_private' =>  RbNaCl::Signatures::Ed25519::SigningKey.new('abcdefghijklmnopqrstuvwxyzABCDEF'),
+        'ED25519_public' => RbNaCl::Signatures::Ed25519::SigningKey.new('abcdefghijklmnopqrstuvwxyzABCDEF').verify_key,
       )
     end
     data
@@ -190,7 +190,7 @@ describe JWT do
   end
 
   if defined?(RbNaCl)
-    %w[Ed25519].each do |alg|
+    %w[ED25519].each do |alg|
       context "alg: #{alg}" do
         before(:each) do
           data[alg] = JWT.encode payload, data["#{alg}_private"], alg
