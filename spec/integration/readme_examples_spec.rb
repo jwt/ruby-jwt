@@ -234,7 +234,7 @@ describe 'README.md code test' do
       jwk = JWT::JWK.new(OpenSSL::PKey::RSA.new(2048))
       payload, headers = { data: 'data' }, { kid: jwk.kid }
 
-      token = JWT.encode(payload, jwk.keypair, 'RS512', headers)
+      token = JWT.encode(payload, jwk.signing_key, 'RS512', headers)
 
       # The jwk loader would fetch the set of JWKs from a trusted source
       jwk_loader = ->(options) do

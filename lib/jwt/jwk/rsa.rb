@@ -1,69 +1,35 @@
 # frozen_string_literal: true
 
+require_relative 'rsa/private_key'
+require_relative 'rsa/public_key'
+
 module JWT
   module JWK
-    class RSA < KeyBase
-      BINARY = 2
-      KTY    = 'RSA'.freeze
-      KTYS   = [KTY, OpenSSL::PKey::RSA].freeze
+    module RSA
+      include KeyAlgorithm
+
+      BINARY           = 2
+      KTY              = 'RSA'.freeze
+      KTYS             = [KTY, OpenSSL::PKey::RSA].freeze
       RSA_KEY_ELEMENTS = %i[n e d p q dp dq qi].freeze
 
-      def initialize(keypair, kid = nil)
-        raise ArgumentError, 'keypair must be of type OpenSSL::PKey::RSA' unless keypair.is_a?(OpenSSL::PKey::RSA)
-        super(keypair, kid || generate_kid(keypair.public_key))
-      end
-
-      def private?
-        keypair.private?
-      end
-
-      def public_key
-        keypair.public_key
-      end
-
-      def export(options = {})
-        exported_hash = {
-          kty: KTY,
-          n: encode_open_ssl_bn(public_key.n),
-          e: encode_open_ssl_bn(public_key.e),
-          kid: kid
-        }
-
-        return exported_hash unless private? && options[:include_private] == true
-
-        append_private_parts(exported_hash)
-      end
-
-      private
-
-      def generate_kid(public_key)
-        sequence = OpenSSL::ASN1::Sequence([OpenSSL::ASN1::Integer.new(public_key.n),
-                                            OpenSSL::ASN1::Integer.new(public_key.e)])
-        OpenSSL::Digest::SHA256.hexdigest(sequence.to_der)
-      end
-
-      def append_private_parts(the_hash)
-        the_hash.merge(
-          d: encode_open_ssl_bn(keypair.d),
-          p: encode_open_ssl_bn(keypair.p),
-          q: encode_open_ssl_bn(keypair.q),
-          dp: encode_open_ssl_bn(keypair.dmp1),
-          dq: encode_open_ssl_bn(keypair.dmq1),
-          qi: encode_open_ssl_bn(keypair.iqmp)
-        )
-      end
-
-      def encode_open_ssl_bn(key_part)
-        ::JWT::Base64.url_encode(key_part.to_s(BINARY))
-      end
-
       class << self
+        def create(keypair, kid = nil)
+          if keypair.is_a?(OpenSSL::PKey::RSA) && keypair.private?
+            PrivateKey.new(keypair, kid)
+          else
+            PublicKey.new(keypair, kid)
+          end
+        end
+
+        alias new create
+
         def import(jwk_data)
           pkey_params = jwk_attributes(jwk_data, *RSA_KEY_ELEMENTS) do |value|
             decode_open_ssl_bn(value)
           end
           kid = jwk_attributes(jwk_data, :kid)[:kid]
-          self.new(rsa_pkey(pkey_params), kid)
+          create(rsa_pkey(pkey_params), kid)
         end
 
         private

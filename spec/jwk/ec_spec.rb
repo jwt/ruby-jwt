@@ -2,9 +2,20 @@
 
 require_relative '../spec_helper'
 require 'jwt'
+require_relative 'jwk_key_interface_shared'
 
 describe JWT::JWK::EC do
   let(:ec_key) { OpenSSL::PKey::EC.new("secp384r1").generate_key }
+
+  describe described_class::PrivateKey do
+    subject { described_class.new(ec_key) }
+    include_context 'JWK Key interface'
+  end
+
+  describe described_class::PublicKey do
+    subject { described_class.new(ec_key.public_key) }
+    include_context 'JWK Key interface'
+  end
 
   describe '.new' do
     subject { described_class.new(keypair) }
@@ -12,16 +23,38 @@ describe JWT::JWK::EC do
     context 'when a keypair with both keys given' do
       let(:keypair) { ec_key }
       it 'creates an instance of the class' do
-        expect(subject).to be_a described_class
-        expect(subject.private?).to eq true
+        expect(subject).to be_a described_class::PrivateKey
+      end
+
+      it 'declares capabilities' do
+        expect(subject.capabilities).to eq(%i[verify sign])
+      end
+
+      it 'has accessors to keys' do
+        expect(subject.signing_key).to eq(keypair)
+        expect(subject.verify_key.public_key).to eq(keypair.public_key)
+
+        expect{ subject.encryption_key }.to raise_error(::JWT::JWKError, 'encryption_key is not available')
+        expect{ subject.decryption_key }.to raise_error(::JWT::JWKError, 'decryption_key is not available')
       end
     end
 
     context 'when a keypair with only public key is given' do
-      let(:keypair) { ec_key.tap { |x| x.private_key = nil } }
+      let(:keypair) { ec_key.public_key }
       it 'creates an instance of the class' do
-        expect(subject).to be_a described_class
-        expect(subject.private?).to eq false
+        expect(subject).to be_a described_class::PublicKey
+      end
+
+      it 'declares capabilities' do
+        expect(subject.capabilities).to eq(%i[verify])
+      end
+
+      it 'has accessors to keys' do
+        expect(subject.verify_key.public_key).to eq(keypair)
+
+        expect{ subject.signing_key }.to raise_error(::JWT::JWKError, 'signing_key is not available')
+        expect{ subject.encryption_key }.to raise_error(::JWT::JWKError, 'encryption_key is not available')
+        expect{ subject.decryption_key }.to raise_error(::JWT::JWKError, 'decryption_key is not available')
       end
     end
   end
@@ -90,8 +123,7 @@ describe JWT::JWK::EC do
           let(:params) { exported_key }
 
           it 'returns a private key' do
-            expect(subject.private?).to eq true
-            expect(subject).to be_a described_class
+            expect(subject).to be_a described_class::PrivateKey
 
             # Regular export returns only the non-private parts.
             public_only = exported_key.select{ |k, v| k != :d }
@@ -117,8 +149,7 @@ describe JWT::JWK::EC do
             let(:params) { exported_key }
 
             it 'returns a hash with the public parts of the key' do
-              expect(subject).to be_a described_class
-              expect(subject.private?).to eq false
+              expect(subject).to be_a described_class::PublicKey
               expect(subject.export).to eq(exported_key)
             end
           end

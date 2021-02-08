@@ -2,9 +2,15 @@
 
 require_relative '../spec_helper'
 require 'jwt'
+require_relative 'jwk_key_interface_shared'
 
 describe JWT::JWK::HMAC do
   let(:hmac_key) { 'secret-key' }
+
+  describe described_class::Secret do
+    subject { described_class.new(hmac_key) }
+    include_context 'JWK Key interface'
+  end
 
   describe '.new' do
     subject { described_class.new(key) }
@@ -12,8 +18,19 @@ describe JWT::JWK::HMAC do
     context 'when a secret key given' do
       let(:key) { hmac_key }
       it 'creates an instance of the class' do
-        expect(subject).to be_a described_class
-        expect(subject.private?).to eq true
+        expect(subject).to be_a described_class::Secret
+      end
+
+      it 'declares capabilities' do
+        expect(subject.capabilities).to eq(%i[verify sign])
+      end
+
+      it 'has accessors to keys' do
+        expect(subject.signing_key).to eq(key)
+        expect(subject.verify_key).to eq(key)
+
+        expect { subject.encryption_key }.to raise_error(::JWT::JWKError, 'encryption_key is not available')
+        expect { subject.decryption_key }.to raise_error(::JWT::JWKError, 'decryption_key is not available')
       end
     end
   end
@@ -49,7 +66,7 @@ describe JWT::JWK::HMAC do
       let(:params) { exported_key }
 
       it 'returns a key' do
-        expect(subject).to be_a described_class
+        expect(subject).to be_a described_class::Secret
         expect(subject.export(include_private: true)).to eq(exported_key)
       end
 

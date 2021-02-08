@@ -17,7 +17,7 @@ module JWT
         raise ::JWT::DecodeError, 'No keys found in jwks' if jwks_keys.empty?
         raise ::JWT::DecodeError, "Could not find public key for kid #{kid}" unless jwk
 
-        ::JWT::JWK.import(jwk).keypair
+        ::JWT::JWK.import(jwk).verify_key
       end
 
       private
