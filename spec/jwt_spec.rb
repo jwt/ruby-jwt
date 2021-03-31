@@ -5,6 +5,7 @@ RSpec.describe JWT do
 
   let :data do
    data = {
+      :empty_token => 'e30K.e30K.e30K',
       :secret => 'My$ecretK3y',
       :rsa_private => OpenSSL::PKey.read(File.read(File.join(CERT_PATH, 'rsa-2048-private.pem'))),
       :rsa_public => OpenSSL::PKey.read(File.read(File.join(CERT_PATH, 'rsa-2048-public.pem'))),
@@ -409,6 +410,14 @@ RSpec.describe JWT do
 
           expect(header['alg']).to eq 'HS256'
           expect(jwt_payload).to eq payload
+        end
+      end
+
+      context 'token is missing algorithm' do
+        it 'should raise JWT::IncorrectAlgorithm' do
+          expect do
+            JWT.decode data[:empty_token]
+          end.to raise_error JWT::IncorrectAlgorithm
         end
       end
     end

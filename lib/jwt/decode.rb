@@ -34,6 +34,7 @@ module JWT
 
     def verify_signature
       raise(JWT::IncorrectAlgorithm, 'An algorithm must be specified') if allowed_algorithms.empty?
+      raise(JWT::IncorrectAlgorithm, 'Token is missing alg header') unless header['alg']
       raise(JWT::IncorrectAlgorithm, 'Expected a different algorithm') unless options_includes_algo_in_header?
 
       @key = find_key(&@keyfinder) if @keyfinder
