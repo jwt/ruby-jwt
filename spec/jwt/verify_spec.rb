@@ -243,7 +243,7 @@ RSpec.describe ::JWT::Verify do
         it "must raise error when #{method} option is set to true" do
           expect do
             described_class.verify_claims(payload, options.merge(method => true).merge(fail_verifications_options))
-          end.to raise_error
+          end.to raise_error JWT::DecodeError
         end
       end
     end
