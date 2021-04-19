@@ -72,7 +72,3 @@ jobs:
 
     - name: Run tests
       run: bundle exec rspec
-
-    - name: Report coverage
-      if: ${{ success() && matrix.coverage == 'true' }}
-      run: bundle exec codeclimate-test-reporter
