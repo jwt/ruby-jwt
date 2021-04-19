@@ -2,8 +2,6 @@
 
 require 'rspec'
 require 'simplecov'
-require 'simplecov-json'
-require 'codeclimate-test-reporter'
 
 SimpleCov.start do
   root File.join(File.dirname(__FILE__), '..')
