@@ -12,11 +12,11 @@ module JWT
     # major version
     MAJOR = 2
     # minor version
-    MINOR = 2
+    MINOR = 3
     # tiny version
-    TINY  = 3
+    TINY  = 0
     # alpha, beta, etc. tag
-    PRE   = nil
+    PRE   = 'dev'
 
     # Build version string
     STRING = [MAJOR, MINOR, TINY, PRE].compact.join('.')
