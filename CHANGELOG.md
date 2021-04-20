@@ -1,8 +1,8 @@
 # Changelog
 
-## [2.2.3](https://github.com/jwt/ruby-jwt/tree/2.2.3) (2021-04-19)
+## [v2.2.3](https://github.com/jwt/ruby-jwt/tree/v2.2.3) (2021-04-19)
 
-[Full Changelog](https://github.com/jwt/ruby-jwt/compare/v2.2.2...2.2.3)
+[Full Changelog](https://github.com/jwt/ruby-jwt/compare/v2.2.2...v2.2.3)
 
 **Implemented enhancements:**
 
