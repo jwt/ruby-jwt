@@ -66,7 +66,7 @@ module JWT
           crv = 'P-521'
           x_octets, y_octets = encoded_point.unpack('xa66a66')
         else
-          raise Jwt::JWKError, "Unsupported curve '#{ec_keypair.group.curve_name}'"
+          raise JWT::JWKError, "Unsupported curve '#{ec_keypair.group.curve_name}'"
         end
         [crv, x_octets, y_octets]
       end
@@ -85,7 +85,7 @@ module JWT
           # explanation of the relevant parameters.
 
           jwk_crv, jwk_x, jwk_y, jwk_d, jwk_kid = jwk_attrs(jwk_data, %i[crv x y d kid])
-          raise Jwt::JWKError, 'Key format is invalid for EC' unless jwk_crv && jwk_x && jwk_y
+          raise JWT::JWKError, 'Key format is invalid for EC' unless jwk_crv && jwk_x && jwk_y
 
           new(ec_pkey(jwk_crv, jwk_x, jwk_y, jwk_d), jwk_kid)
         end
