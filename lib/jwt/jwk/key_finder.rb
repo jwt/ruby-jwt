@@ -5,7 +5,7 @@ module JWT
     class KeyFinder
       def initialize(options)
         jwks_or_loader = options[:jwks]
-        @jwks          = jwks_or_loader if jwks_or_loader.is_a?(Hash)
+        @jwks          = jwks_or_loader.is_a?(Hash) ? jwks_or_loader : {} 
         @jwk_loader    = jwks_or_loader if jwks_or_loader.respond_to?(:call)
       end
 
