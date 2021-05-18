@@ -16,7 +16,7 @@ Gem::Specification.new do |spec|
   spec.required_ruby_version = '>= 2.1'
   spec.metadata = {
     'bug_tracker_uri' => 'https://github.com/jwt/ruby-jwt/issues',
-    'changelog_uri'   => 'https://github.com/jwt/ruby-jwt/blob/master/CHANGELOG.md'
+    'changelog_uri'   => "https://github.com/jwt/ruby-jwt/blob/v#{JWT.gem_version}/CHANGELOG.md"
   }
 
   spec.files = `git ls-files -z`.split("\x0").reject { |f| f.match(%r{^(spec|gemfiles|coverage|bin)/}) }
