@@ -38,7 +38,7 @@ And run `bundle install`
 
 ## Algorithms and Usage
 
-The JWT spec supports NONE, HMAC, RSASSA, ECDSA and RSASSA-PSS algorithms for cryptographic signing. Currently the jwt gem supports NONE, HMAC, RSASSA and ECDSA. If you are using cryptographic signing, you need to specify the algorithm in the options hash whenever you call JWT.decode to ensure that an attacker [cannot bypass the algorithm verification step](https://auth0.com/blog/2015/03/31/critical-vulnerabilities-in-json-web-token-libraries/). **It is strongly recommended that you hard code the algorithm, as you may leave yourself vulnerable by dynamically picking the algorithm**
+The JWT spec supports NONE, HMAC, RSASSA, ECDSA and RSASSA-PSS algorithms for cryptographic signing. Currently the jwt gem supports NONE, HMAC, RSASSA and ECDSA. If you are using cryptographic signing, you need to specify the algorithm in the options hash whenever you call JWT.decode to ensure that an attacker [cannot bypass the algorithm verification step](https://auth0.com/blog/critical-vulnerabilities-in-json-web-token-libraries/). **It is strongly recommended that you hard code the algorithm, as you may leave yourself vulnerable by dynamically picking the algorithm**
 
 See: [ JSON Web Algorithms (JWA) 3.1. "alg" (Algorithm) Header Parameter Values for JWS](https://tools.ietf.org/html/rfc7518#section-3.1)
 
