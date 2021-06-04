@@ -537,4 +537,34 @@ RSpec.describe JWT do
       end.to raise_error(NotImplementedError)
     end
   end
+
+  describe '::JWT.decode with verify_iat parameter' do
+    let!(:time_now) { Time.now }
+    let(:token)     { ::JWT.encode({ pay: 'load', iat: iat}, 'secret', 'HS256') }
+
+    subject(:decoded_token) { ::JWT.decode(token, 'secret', true, verify_iat: true) }
+
+    before { allow(Time).to receive(:now) { time_now } }
+
+    context 'when iat is exactly the same as Time.now and iat is given as a float' do
+      let(:iat) { time_now.to_f }
+      it 'considers iat valid' do
+        expect(decoded_token).to be_an(Array)
+      end
+    end
+
+    context 'when iat is exactly the same as Time.now and iat is given as floored integer' do
+      let(:iat) { time_now.to_f.floor }
+      it 'considers iat valid' do
+        expect(decoded_token).to be_an(Array)
+      end
+    end
+
+    context 'when iat is 1 second before Time.now' do
+      let(:iat) { time_now.to_i + 1 }
+      it 'raises an error' do
+        expect { decoded_token }.to raise_error(::JWT::InvalidIatError, 'Invalid iat')
+      end
+    end
+  end
 end
