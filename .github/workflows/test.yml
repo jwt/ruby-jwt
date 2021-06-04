@@ -31,7 +31,7 @@ jobs:
           - 2.5
           - 2.6
           - 2.7
-          - 3.0
+          - "3.0"
         gemfile:
           - gemfiles/standalone.gemfile
           - gemfiles/openssl.gemfile
