@@ -76,7 +76,7 @@ puts decoded_token
 * HS512 - HMAC using SHA-512 hash algorithm
 
 ```ruby
-# The secret is required. A JWT::DecodeError will be raised if it isn't present.
+# The secret must be a string. A JWT::DecodeError will be raised if it isn't provided.
 hmac_secret = 'my$ecretK3y'
 
 token = JWT.encode payload, hmac_secret, 'HS256'
