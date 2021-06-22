@@ -460,6 +460,28 @@ rescue JWT::InvalidSubError
 end
 ```
 
+### Finding a Key
+
+To dynamically find the key for verifying the JWT signature, pass a block to the decode block. The block receives headers and the original payload as parameters. It should return with the key to verify the signature that was used to sign the JWT.
+
+```ruby
+issuers = %w[My_Awesome_Company1 My_Awesome_Company2]
+iss_payload = { data: 'data', iss: issuers.first }
+
+secrets = { issuers.first => hmac_secret, issuers.last => 'hmac_secret2' }
+
+token = JWT.encode iss_payload, hmac_secret, 'HS256'
+
+begin
+  # Add iss to the validation to check if the token has been manipulated
+  decoded_token = JWT.decode(token, nil, true, { iss: issuers, verify_iss: true, algorithm: 'HS256' }) do |_headers, payload|
+    secrets[payload['iss']]
+  end
+rescue JWT::InvalidIssuerError
+  # Handle invalid token, e.g. logout user or deny access
+end
+```
+
 ### JSON Web Key (JWK)
 
 JWK is a JSON structure representing a cryptographic key. Currently only supports RSA public keys.

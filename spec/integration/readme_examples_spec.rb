@@ -226,6 +226,21 @@ RSpec.describe 'README.md code test' do
       end.not_to raise_error
     end
 
+    it 'find_key' do
+      issuers = %w[My_Awesome_Company1 My_Awesome_Company2]
+      iss_payload = { data: 'data', iss: issuers.first }
+
+      secrets = { issuers.first => hmac_secret, issuers.last => 'hmac_secret2' }
+
+      token = JWT.encode iss_payload, hmac_secret, 'HS256'
+
+      expect do
+        # Add iss to the validation to check if the token has been manipulated
+        JWT.decode(token, nil, true, { iss: issuers, verify_iss: true, algorithm: 'HS256' }) do |_headers, payload|
+          secrets[payload['iss']]
+        end
+      end.not_to raise_error
+    end
 
     it 'JWK' do
       jwk = JWT::JWK.new(OpenSSL::PKey::RSA.new(2048))
