@@ -15,7 +15,7 @@ RSpec.describe JWT::JWK::EC do
     end
 
     context 'when a keypair with only public key is given' do
-      let(:keypair) { ec_key.tap { |x| x.private_key = nil } }
+      let(:keypair) { OpenSSL::PKey::EC.new(ec_key.public_key.group).tap { |ec| ec.public_key = ec_key.public_key } }
       it 'creates an instance of the class' do
         expect(subject).to be_a described_class
         expect(subject.private?).to eq false
