@@ -482,6 +482,14 @@ rescue JWT::InvalidIssuerError
 end
 ```
 
+### Required Claims
+
+You can specify claims that must be present for decoding to be successful. JWT::MissingRequiredClaim will be raised if any are missing
+```ruby
+# Will raise a JWT::ExpiredSignature error if the 'exp' claim is absent
+JWT.decode token, hmac_secret, true, { required_claims: ['exp'], algorithm: 'HS256' }
+```
+
 ### JSON Web Key (JWK)
 
 JWK is a JSON structure representing a cryptographic key. Currently only supports RSA public keys.

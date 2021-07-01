@@ -248,4 +248,18 @@ RSpec.describe ::JWT::Verify do
       end
     end
   end
+
+  context '.verify_required_claims(payload, options)' do
+    it 'must raise JWT::MissingRequiredClaim if a required claim is absent' do
+      expect do
+        described_class.verify_required_claims(base_payload, options.merge(required_claims: ['exp']))
+      end.to raise_error JWT::MissingRequiredClaim
+    end
+
+    it 'must verify the claims if all required claims are present' do
+      payload = base_payload.merge('exp' => (Time.now.to_i + 5), 'custom_claim' => true)
+      described_class.verify_required_claims(payload, options.merge(required_claims: ['exp', 'custom_claim']))
+    end
+  end
+
 end

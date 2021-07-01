@@ -71,6 +71,7 @@ module JWT
 
     def verify_claims
       Verify.verify_claims(payload, @options)
+      Verify.verify_required_claims(payload, @options)
     end
 
     def validate_segment_count!
