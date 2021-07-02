@@ -220,31 +220,31 @@ RSpec.describe ::JWT::Verify do
     it 'must allow a matching sub' do
       described_class.verify_sub(base_payload.merge('sub' => sub), options.merge(sub: sub))
     end
+  end
 
-    context '.verify_claims' do
-      let(:fail_verifications_options) { { iss: 'mismatched-issuer', aud: 'no-match', sub: 'some subject' } }
-      let(:fail_verifications_payload) {
-        {
-          'exp' => (Time.now.to_i - 50),
-          'jti' => '   ',
-          'iss' => 'some-issuer',
-          'nbf' => (Time.now.to_i + 50),
-          'iat' => 'not a number',
-          'sub' => 'not-a-match'
-        }
+  context '.verify_claims' do
+    let(:fail_verifications_options) { { iss: 'mismatched-issuer', aud: 'no-match', sub: 'some subject' } }
+    let(:fail_verifications_payload) {
+      {
+        'exp' => (Time.now.to_i - 50),
+        'jti' => '   ',
+        'iss' => 'some-issuer',
+        'nbf' => (Time.now.to_i + 50),
+        'iat' => 'not a number',
+        'sub' => 'not-a-match'
       }
+    }
 
-      %w[verify_aud verify_expiration verify_iat verify_iss verify_jti verify_not_before verify_sub].each do |method|
-        let(:payload) { base_payload.merge(fail_verifications_payload) }
-        it "must skip verification when #{method} option is set to false" do
-          described_class.verify_claims(payload, options.merge(method => false))
-        end
+    %w[verify_aud verify_expiration verify_iat verify_iss verify_jti verify_not_before verify_sub].each do |method|
+      let(:payload) { base_payload.merge(fail_verifications_payload) }
+      it "must skip verification when #{method} option is set to false" do
+        described_class.verify_claims(payload, options.merge(method => false))
+      end
 
-        it "must raise error when #{method} option is set to true" do
-          expect do
-            described_class.verify_claims(payload, options.merge(method => true).merge(fail_verifications_options))
-          end.to raise_error JWT::DecodeError
-        end
+      it "must raise error when #{method} option is set to true" do
+        expect do
+          described_class.verify_claims(payload, options.merge(method => true).merge(fail_verifications_options))
+        end.to raise_error JWT::DecodeError
       end
     end
   end
