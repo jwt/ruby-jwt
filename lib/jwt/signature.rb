@@ -30,6 +30,7 @@ module JWT
       algo, code = Algos.find(algorithm)
       verified = algo.verify(ToVerify.new(code, key, signing_input, signature))
       raise(JWT::VerificationError, 'Signature verification raised') unless verified
+      true
     rescue OpenSSL::PKey::PKeyError
       raise JWT::VerificationError, 'Signature verification raised'
     ensure
