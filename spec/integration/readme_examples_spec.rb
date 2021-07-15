@@ -226,6 +226,20 @@ RSpec.describe 'README.md code test' do
       end.not_to raise_error
     end
 
+    it 'required_claims' do
+      payload = { data: 'test' }
+
+      token = JWT.encode payload, hmac_secret, 'HS256'
+
+      expect do
+        JWT.decode token, hmac_secret, true, :required_claims => ['exp'], :algorithm => 'HS256'
+      end.to raise_error(JWT::MissingRequiredClaim)
+
+      expect do
+        JWT.decode token, hmac_secret, true, :required_claims => ['data'], :algorithm => 'HS256'
+      end.not_to raise_error
+    end
+
     it 'find_key' do
       issuers = %w[My_Awesome_Company1 My_Awesome_Company2]
       iss_payload = { data: 'data', iss: issuers.first }
