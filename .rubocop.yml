@@ -50,7 +50,7 @@ Style/SignalException:
   Enabled: false
 
 Metrics/AbcSize:
-  Max: 20
+  Max: 21
 
 Metrics/ClassLength:
   Max: 101

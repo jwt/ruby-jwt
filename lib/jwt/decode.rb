@@ -15,14 +15,12 @@ module JWT
       @options = options
       @segments = jwt.split('.')
       @verify = verify
-      @signature = ''
       @keyfinder = keyfinder
     end
 
     def decode_segments
       validate_segment_count!
       if @verify
-        decode_crypto
         verify_signature
         verify_claims
       end
@@ -40,7 +38,7 @@ module JWT
       @key = find_key(&@keyfinder) if @keyfinder
       @key = ::JWT::JWK::KeyFinder.new(jwks: @options[:jwks]).key_for(header['kid']) if @options[:jwks]
 
-      Signature.verify(header['alg'], @key, signing_input, @signature)
+      Signature.verify(header['alg'], @key, signing_input, signature)
     end
 
     def options_includes_algo_in_header?
@@ -85,24 +83,33 @@ module JWT
       @segments.count
     end
 
-    def decode_crypto
-      @signature = JWT::Base64.url_decode(@segments[2] || '')
+    def signature
+      @signature ||= JWT::Base64.url_decode(@segments[2] || '')
     end
 
     def header
-      @header ||= parse_and_decode @segments[0]
+      @header ||= decode_and_parse_header(@segments[0])
     end
 
     def payload
-      @payload ||= parse_and_decode @segments[1]
+      @payload ||= decode_and_parse_payload(@segments[1])
     end
 
     def signing_input
       @segments.first(2).join('.')
     end
 
-    def parse_and_decode(segment)
-      JWT::JSON.parse(JWT::Base64.url_decode(segment))
+    def decode_and_parse_header(raw_header)
+      json_parse(JWT::Base64.url_decode(raw_header))
+    end
+
+    def decode_and_parse_payload(raw_payload)
+      raw_payload = @options[:decode_payload_proc].call(header, raw_payload, signature) if @options[:decode_payload_proc]
+      json_parse(JWT::Base64.url_decode(raw_payload))
+    end
+
+    def json_parse(decoded_segment)
+      JWT::JSON.parse(decoded_segment)
     rescue ::JSON::ParserError
       raise JWT::DecodeError, 'Invalid segment encoding'
     end
