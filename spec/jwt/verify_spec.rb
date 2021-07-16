@@ -261,5 +261,4 @@ RSpec.describe ::JWT::Verify do
       described_class.verify_required_claims(payload, options.merge(required_claims: ['exp', 'custom_claim']))
     end
   end
-
 end
