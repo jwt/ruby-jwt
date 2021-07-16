@@ -232,11 +232,11 @@ RSpec.describe 'README.md code test' do
       token = JWT.encode payload, hmac_secret, 'HS256'
 
       expect do
-        JWT.decode token, hmac_secret, true, :required_claims => ['exp'], :algorithm => 'HS256'
+        JWT.decode token, hmac_secret, true, required_claims: ['exp'], algorithm: 'HS256'
       end.to raise_error(JWT::MissingRequiredClaim)
 
       expect do
-        JWT.decode token, hmac_secret, true, :required_claims => ['data'], :algorithm => 'HS256'
+        JWT.decode token, hmac_secret, true, required_claims: ['data'], algorithm: 'HS256'
       end.not_to raise_error
     end
 
