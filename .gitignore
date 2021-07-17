@@ -9,3 +9,5 @@ coverage/
 .vscode/
 .bundle
 *gemfile.lock
+.byebug_history
+*.gem
