@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'jwt/base64'
+require 'jwt/extension'
 require 'jwt/json'
 require 'jwt/decode'
 require 'jwt/default_options'
@@ -14,6 +15,10 @@ require 'jwt/jwk'
 # https://tools.ietf.org/html/rfc7519
 module JWT
   include JWT::DefaultOptions
+
+  def self.included(cls)
+    cls.extend(JWT::Extension::ClassMethods)
+  end
 
   module_function
 
