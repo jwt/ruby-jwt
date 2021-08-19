@@ -438,6 +438,13 @@ RSpec.describe JWT do
     end
   end
 
+  context 'when token is not a String' do
+    it 'raises JWT::DecodeError' do
+      expect { JWT.decode(nil, nil, true) }.to raise_error(JWT::DecodeError, 'NilClass JSON web token')
+      expect { JWT.decode(1, nil, true) }.to raise_error(JWT::DecodeError, 'Integer JSON web token')
+    end
+  end
+
   context 'a token with no segments' do
     it 'raises JWT::DecodeError' do
       expect { JWT.decode('ThisIsNotAValidJWTToken', nil, true) }.to raise_error(JWT::DecodeError, 'Not enough or too many segments')

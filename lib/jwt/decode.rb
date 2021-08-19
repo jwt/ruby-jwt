@@ -9,7 +9,7 @@ module JWT
   # Decoding logic for JWT
   class Decode
     def initialize(jwt, key, verify, options, &keyfinder)
-      raise(JWT::DecodeError, 'Nil JSON web token') unless jwt
+      raise(JWT::DecodeError, "#{jwt.class} JSON web token") unless jwt.class == String
       @jwt = jwt
       @key = key
       @options = options
