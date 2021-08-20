@@ -78,5 +78,89 @@ RSpec.describe JWT do
         expect(payload).to eq(token_payload)
       end
     end
+
+    context 'mixing algorithms using kid header' do
+      let(:hmac_jwk)           { JWT::JWK.new('secret') }
+      let(:rsa_jwk)            { JWT::JWK.new(OpenSSL::PKey::RSA.new(2048)) }
+      let(:ec_jwk_secp384r1)   { JWT::JWK.new(OpenSSL::PKey::EC.new('secp384r1').generate_key) }
+      let(:ec_jwk_secp521r1)   { JWT::JWK.new(OpenSSL::PKey::EC.new('secp521r1').generate_key) }
+      let(:jwks)               { { keys: [hmac_jwk.export(include_private: true), rsa_jwk.export, ec_jwk_secp384r1.export, ec_jwk_secp521r1.export] } }
+
+      context 'when RSA key is pointed to as HMAC secret' do
+        let(:signed_token) { described_class.encode({'foo' => 'bar'}, 'is not really relevant in the scenario', 'HS256', { kid: rsa_jwk.kid }) }
+
+        it 'fails in some way' do
+          expect { described_class.decode(signed_token, nil, true, algorithms: ['HS256'], jwks: jwks) }.to(
+            raise_error do |e|
+              if defined?(RbNaCl)
+                expect(e).to be_a(NoMethodError)
+                expect(e.message).to match(/undefined method `bytesize'/)
+              else
+                expect(e).to be_a(TypeError)
+                expect(e.message).to eq('no implicit conversion of OpenSSL::PKey::RSA into String')
+              end
+            end
+          )
+        end
+      end
+
+      context 'when EC key is pointed to as HMAC secret' do
+        let(:signed_token) { described_class.encode({'foo' => 'bar'}, 'is not really relevant in the scenario', 'HS256', { kid: ec_jwk_secp384r1.kid }) }
+
+        it 'fails in some way' do
+          expect { described_class.decode(signed_token, nil, true, algorithms: ['HS256'], jwks: jwks) }.to(
+            raise_error do |e|
+              if defined?(RbNaCl)
+                expect(e).to be_a(NoMethodError)
+                expect(e.message).to match(/undefined method `bytesize'/)
+              else
+                expect(e).to be_a(TypeError)
+                expect(e.message).to eq('no implicit conversion of OpenSSL::PKey::EC into String')
+              end
+            end
+          )
+        end
+      end
+
+      context 'when EC key is pointed to as RSA public key' do
+        let(:signed_token) { described_class.encode({'foo' => 'bar'}, rsa_jwk.keypair, 'RS512', { kid: ec_jwk_secp384r1.kid }) }
+
+        it 'fails in some way' do
+          expect { described_class.decode(signed_token, nil, true, algorithms: ['RS512'], jwks: jwks) }.to(
+            raise_error(JWT::VerificationError, 'Signature verification raised')
+          )
+        end
+      end
+
+      context 'when HMAC secret is pointed to as RSA public key' do
+        let(:signed_token) { described_class.encode({'foo' => 'bar'}, rsa_jwk.keypair, 'RS512', { kid: hmac_jwk.kid }) }
+
+        it 'fails in some way' do
+          expect { described_class.decode(signed_token, nil, true, algorithms: ['RS512'], jwks: jwks) }.to(
+            raise_error(NoMethodError, /undefined method `verify' for \"secret\":String/)
+          )
+        end
+      end
+
+      context 'when HMAC secret is pointed to as EC public key' do
+        let(:signed_token) { described_class.encode({'foo' => 'bar'}, ec_jwk_secp384r1.keypair, 'ES384', { kid: hmac_jwk.kid }) }
+
+        it 'fails in some way' do
+          expect { described_class.decode(signed_token, nil, true, algorithms: ['ES384'], jwks: jwks) }.to(
+            raise_error(NoMethodError, /undefined method `group' for \"secret\":String/)
+          )
+        end
+      end
+
+      context 'when ES384 key is pointed to as ES512 key' do
+        let(:signed_token) { described_class.encode({'foo' => 'bar'}, ec_jwk_secp384r1.keypair, 'ES512', { kid: ec_jwk_secp521r1.kid }) }
+
+        it 'fails in some way' do
+          expect { described_class.decode(signed_token, nil, true, algorithms: ['ES512'], jwks: jwks) }.to(
+            raise_error(JWT::IncorrectAlgorithm, 'payload algorithm is ES512 but ES384 signing key was provided')
+          )
+        end
+      end
+    end
   end
 end
