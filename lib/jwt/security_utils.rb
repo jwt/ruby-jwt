@@ -33,21 +33,5 @@ module JWT
       sig_char = signature[byte_size..-1] || ''
       OpenSSL::ASN1::Sequence.new([sig_bytes, sig_char].map { |int| OpenSSL::ASN1::Integer.new(OpenSSL::BN.new(int, 2)) }).to_der
     end
-
-    def rbnacl_fixup(algorithm, key)
-      algorithm = algorithm.sub('HS', 'SHA').to_sym
-
-      return [] unless defined?(RbNaCl) && RbNaCl::HMAC.constants(false).include?(algorithm)
-
-      authenticator = RbNaCl::HMAC.const_get(algorithm)
-
-      # Fall back to OpenSSL for keys larger than 32 bytes.
-      return [] if key.bytesize > authenticator.key_bytes
-
-      [
-        authenticator,
-        key.bytes.fill(0, key.bytesize...authenticator.key_bytes).pack('C*')
-      ]
-    end
   end
 end
