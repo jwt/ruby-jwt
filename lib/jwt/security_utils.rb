@@ -3,17 +3,27 @@ module JWT
   #
   # @see: https://github.com/rails/rails/blob/master/activesupport/lib/active_support/security_utils.rb
   module SecurityUtils
-    module_function
+    if defined?(OpenSSL.fixed_length_secure_compare)
+      def fixed_length_secure_compare(a, b)
+        OpenSSL.fixed_length_secure_compare(a, b)
+      end
+    else
+      def fixed_length_secure_compare(a, b)
+        raise ArgumentError, 'string length mismatch.' unless a.bytesize == b.bytesize
 
-    def secure_compare(left, right)
-      left_bytesize = left.bytesize
+        l = a.unpack "C#{a.bytesize}"
 
-      return false unless left_bytesize == right.bytesize
-
-      unpacked_left = left.unpack "C#{left_bytesize}"
-      result = 0
-      right.each_byte { |byte| result |= byte ^ unpacked_left.shift }
-      result.zero?
+        res = 0
+        b.each_byte { |byte| res |= byte ^ l.shift }
+        res.zero?
+      end
     end
+
+    module_function :fixed_length_secure_compare
+
+    def secure_compare(a, b)
+      a.bytesize == b.bytesize && fixed_length_secure_compare(a, b)
+    end
+    module_function :secure_compare
   end
 end
