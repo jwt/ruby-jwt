@@ -24,7 +24,13 @@ module JWT
       def verify(to_verify)
         require_openssl!
 
-        SecurityUtils.verify_ps(to_verify.algorithm, to_verify.public_key, to_verify.signing_input, to_verify.signature)
+        formatted_algorithm = to_verify.algorithm.sub('PS', 'sha')
+
+        to_verify.public_key.verify_pss(formatted_algorithm,
+          to_verify.signature,
+          to_verify.signing_input,
+          salt_length: :auto,
+          mgf1_hash: formatted_algorithm)
       end
 
       def require_openssl!
