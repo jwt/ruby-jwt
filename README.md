@@ -371,6 +371,8 @@ end
 ```
 
 You can also pass a Regexp or Proc (with arity 1), verification will pass if the regexp matches or the proc returns truthy.
+On supported ruby versions (>= 2.5) you can also delegate to methods, on older versions you will have
+to convert them to proc (using `to_proc`)
 
 ```ruby
 JWT.decode token, hmac_secret, true,
