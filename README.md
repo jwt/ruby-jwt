@@ -392,6 +392,7 @@ JWT.decode token, hmac_secret, true,
            verify_iss: true,
            algorithm: 'HS256'
 
+# somewhere in the same class:
 def valid_issuer?(issuer)
   # custom validation
 end
