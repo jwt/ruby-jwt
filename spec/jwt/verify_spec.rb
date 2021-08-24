@@ -203,7 +203,7 @@ RSpec.describe ::JWT::Verify do
       it 'must allow a method that returns true to pass' do
         described_class.verify_iss(payload, options.merge(iss: method(:issuer_start_with_ruby?)))
       end
-    end
+    end if Method.instance_methods.include?(:===)
   end
 
   context '.verify_jti(payload, options)' do
