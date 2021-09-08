@@ -518,7 +518,7 @@ end
 or by passing JWK as a simple Hash
 
 ```
-jwks = { keys: [{ ... }] } # keys needs to be Symbol
+jwks = { keys: [{ ... }] } # keys accepts both of string and symbol
 JWT.decode(token, nil, true, { algorithms: ['RS512'], jwks: jwks})
 ```
 
