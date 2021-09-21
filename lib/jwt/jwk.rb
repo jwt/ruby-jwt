@@ -14,10 +14,10 @@ module JWT
         end.import(jwk_data)
       end
 
-      def create_from(keypair)
+      def create_from(keypair, kid = nil)
         mappings.fetch(keypair.class) do |klass|
           raise JWT::JWKError, "Cannot create JWK from a #{klass.name}"
-        end.new(keypair)
+        end.new(keypair, kid)
       end
 
       def classes
