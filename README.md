@@ -495,7 +495,7 @@ JWT.decode token, hmac_secret, true, { required_claims: ['exp'], algorithm: 'HS2
 JWK is a JSON structure representing a cryptographic key. Currently only supports RSA public keys.
 
 ```ruby
-jwk = JWT::JWK.new(OpenSSL::PKey::RSA.new(2048))
+jwk = JWT::JWK.new(OpenSSL::PKey::RSA.new(2048), "optional-kid")
 payload, headers = { data: 'data' }, { kid: jwk.kid }
 
 token = JWT.encode(payload, jwk.keypair, 'RS512', headers)

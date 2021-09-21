@@ -41,7 +41,8 @@ RSpec.describe JWT::JWK do
   end
 
   describe '.new' do
-    subject { described_class.new(keypair) }
+    let(:kid) { nil }
+    subject { described_class.new(keypair, kid) }
 
     context 'when RSA key is given' do
       let(:keypair) { rsa_key }
@@ -56,6 +57,14 @@ RSpec.describe JWT::JWK do
     context 'when EC key is given' do
       let(:keypair) { ec_key }
       it { is_expected.to be_a ::JWT::JWK::EC }
+    end
+
+    context 'when kid is given' do
+      let(:keypair) { rsa_key }
+      let(:kid) { "CUSTOM_KID" }
+      it 'sets the kid' do
+        expect(subject.kid).to eq(kid)
+      end
     end
   end
 end
