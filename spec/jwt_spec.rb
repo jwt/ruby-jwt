@@ -34,9 +34,13 @@ RSpec.describe JWT do
     }
 
     if defined?(RbNaCl)
+      ed25519_private = RbNaCl::Signatures::Ed25519::SigningKey.new('abcdefghijklmnopqrstuvwxyzABCDEF')
+      ed25519_public =  ed25519_private.verify_key
       data.merge!(
-        'ED25519_private' =>  RbNaCl::Signatures::Ed25519::SigningKey.new('abcdefghijklmnopqrstuvwxyzABCDEF'),
-        'ED25519_public' => RbNaCl::Signatures::Ed25519::SigningKey.new('abcdefghijklmnopqrstuvwxyzABCDEF').verify_key,
+        'ED25519_private' =>  ed25519_private,
+        'ED25519_public' => ed25519_public,
+        'EdDSA_private' =>  ed25519_private,
+        'EdDSA_public' => ed25519_public,
       )
     end
     data
@@ -188,7 +192,7 @@ RSpec.describe JWT do
   end
 
   if defined?(RbNaCl)
-    %w[ED25519].each do |alg|
+    %w[ED25519 EdDSA].each do |alg|
       context "alg: #{alg}" do
         before(:each) do
           data[alg] = JWT.encode payload, data["#{alg}_private"], alg
