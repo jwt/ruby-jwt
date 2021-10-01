@@ -136,12 +136,6 @@ Style/ModuleFunction:
 
 # Offense count: 1
 # Cop supports --auto-correct.
-Style/MultilineIfModifier:
-  Exclude:
-    - 'spec/integration/readme_examples_spec.rb'
-
-# Offense count: 1
-# Cop supports --auto-correct.
 Style/MutableConstant:
   Exclude:
     - 'lib/jwt/version.rb'

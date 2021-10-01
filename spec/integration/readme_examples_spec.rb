@@ -65,18 +65,20 @@ RSpec.describe 'README.md code test' do
       ]
     end
 
-    it 'RSASSA-PSS' do
-      rsa_private = OpenSSL::PKey::RSA.generate 2048
-      rsa_public = rsa_private.public_key
+    if ::Gem::Version.new(OpenSSL::VERSION) >= ::Gem::Version.new('2.1')
+      it 'RSASSA-PSS' do
+        rsa_private = OpenSSL::PKey::RSA.generate 2048
+        rsa_public = rsa_private.public_key
 
-      token = JWT.encode payload, rsa_private, 'PS256'
-      decoded_token = JWT.decode token, rsa_public, true, algorithm: 'PS256'
+        token = JWT.encode payload, rsa_private, 'PS256'
+        decoded_token = JWT.decode token, rsa_public, true, algorithm: 'PS256'
 
-      expect(decoded_token).to eq [
-        { 'data' => 'test' },
-        { 'alg' => 'PS256' }
-      ]
-    end if ::Gem::Version.new(OpenSSL::VERSION) >= ::Gem::Version.new('2.1')
+        expect(decoded_token).to eq [
+          { 'data' => 'test' },
+          { 'alg' => 'PS256' }
+        ]
+      end
+    end
   end
 
   context 'claims' do
