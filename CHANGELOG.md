@@ -1,5 +1,39 @@
 # Changelog
 
+## [v2.3.0](https://github.com/jwt/ruby-jwt/tree/v2.3.0) (2021-10-03)
+
+[Full Changelog](https://github.com/jwt/ruby-jwt/compare/v2.2.3...v2.3.0)
+
+**Closed issues:**
+
+- \[SECURITY\] Algorithm Confusion Through kid Header [\#440](https://github.com/jwt/ruby-jwt/issues/440)
+- JWT to memory [\#436](https://github.com/jwt/ruby-jwt/issues/436)
+- ArgumentError: wrong number of arguments \(given 2, expected 1\) [\#429](https://github.com/jwt/ruby-jwt/issues/429)
+- HMAC section of README outdated [\#421](https://github.com/jwt/ruby-jwt/issues/421)
+- NoMethodError: undefined method `zero?' for nil:NilClass if JWT has no 'alg' field [\#410](https://github.com/jwt/ruby-jwt/issues/410)
+- Release new version [\#409](https://github.com/jwt/ruby-jwt/issues/409)
+- NameError: uninitialized constant JWT::JWK [\#403](https://github.com/jwt/ruby-jwt/issues/403)
+
+**Merged pull requests:**
+
+- Fix Style/MultilineIfModifier issues [\#447](https://github.com/jwt/ruby-jwt/pull/447) ([anakinj](https://github.com/anakinj))
+- feat\(EdDSA\): Accept EdDSA as algorithm header [\#446](https://github.com/jwt/ruby-jwt/pull/446) ([Pierre-Michard](https://github.com/Pierre-Michard))
+- Pass kid param through JWT::JWK.create\_from [\#445](https://github.com/jwt/ruby-jwt/pull/445) ([shaun-guth-allscripts](https://github.com/shaun-guth-allscripts))
+- fix document about passing JWKs as a simple Hash [\#443](https://github.com/jwt/ruby-jwt/pull/443) ([takayamaki](https://github.com/takayamaki))
+- Tests for mixing JWK keys with mismatching algorithms [\#441](https://github.com/jwt/ruby-jwt/pull/441) ([anakinj](https://github.com/anakinj))
+- verify\_claims test shouldnt be within the verify\_sub test [\#431](https://github.com/jwt/ruby-jwt/pull/431) ([andyjdavis](https://github.com/andyjdavis))
+- Allow decode options to specify required claims [\#430](https://github.com/jwt/ruby-jwt/pull/430) ([andyjdavis](https://github.com/andyjdavis))
+- Fix OpenSSL::PKey::EC public\_key handing in tests [\#427](https://github.com/jwt/ruby-jwt/pull/427) ([anakinj](https://github.com/anakinj))
+- Add documentation for find\_key [\#426](https://github.com/jwt/ruby-jwt/pull/426) ([ritikesh](https://github.com/ritikesh))
+- Give ruby 3.0 as a string to avoid number formatting issues [\#424](https://github.com/jwt/ruby-jwt/pull/424) ([anakinj](https://github.com/anakinj))
+- Tests for iat verification behaviour [\#423](https://github.com/jwt/ruby-jwt/pull/423) ([anakinj](https://github.com/anakinj))
+- Remove HMAC with nil secret from documentation [\#422](https://github.com/jwt/ruby-jwt/pull/422) ([boardfish](https://github.com/boardfish))
+- Update broken link in README [\#420](https://github.com/jwt/ruby-jwt/pull/420) ([severin](https://github.com/severin))
+- Add metadata for RubyGems [\#418](https://github.com/jwt/ruby-jwt/pull/418) ([nickhammond](https://github.com/nickhammond))
+- Fixed a typo about class name  [\#417](https://github.com/jwt/ruby-jwt/pull/417) ([mai-f](https://github.com/mai-f))
+- Fix references for v2.2.3 on CHANGELOG [\#416](https://github.com/jwt/ruby-jwt/pull/416) ([vyper](https://github.com/vyper))
+- Raise IncorrectAlgorithm if token has no alg header [\#411](https://github.com/jwt/ruby-jwt/pull/411) ([bouk](https://github.com/bouk))
+
 ## [v2.2.3](https://github.com/jwt/ruby-jwt/tree/v2.2.3) (2021-04-19)
 
 [Full Changelog](https://github.com/jwt/ruby-jwt/compare/v2.2.2...v2.2.3)
@@ -31,6 +65,7 @@
 
 **Merged pull requests:**
 
+- Prepare 2.2.3 release [\#415](https://github.com/jwt/ruby-jwt/pull/415) ([excpt](https://github.com/excpt))
 - Remove codeclimate code coverage dev dependency [\#414](https://github.com/jwt/ruby-jwt/pull/414) ([excpt](https://github.com/excpt))
 - Add forwardable dependency [\#408](https://github.com/jwt/ruby-jwt/pull/408) ([anakinj](https://github.com/anakinj))
 - Ignore casing of algorithm [\#405](https://github.com/jwt/ruby-jwt/pull/405) ([johnnyshields](https://github.com/johnnyshields))
