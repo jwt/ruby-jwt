@@ -15,7 +15,8 @@ module JWT
       def sign(to_sign)
         algorithm, msg, key = to_sign.values
         curve_definition = curve_by_name(key.group.curve_name)
-        if algorithm != curve_definition[:algorithm]
+        key_algorithm = curve_definition[:algorithm]
+        if algorithm != key_algorithm
           raise IncorrectAlgorithm, "payload algorithm is #{algorithm} but #{key_algorithm} signing key was provided"
         end
 
@@ -26,7 +27,8 @@ module JWT
       def verify(to_verify)
         algorithm, public_key, signing_input, signature = to_verify.values
         curve_definition = curve_by_name(public_key.group.curve_name)
-        if algorithm != curve_definition[:algorithm]
+        key_algorithm = curve_definition[:algorithm]
+        if algorithm != key_algorithm
           raise IncorrectAlgorithm, "payload algorithm is #{algorithm} but #{key_algorithm} verification key was provided"
         end
         digest = OpenSSL::Digest.new(curve_definition[:digest])
