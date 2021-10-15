@@ -486,7 +486,7 @@ end
 
 You can specify claims that must be present for decoding to be successful. JWT::MissingRequiredClaim will be raised if any are missing
 ```ruby
-# Will raise a JWT::ExpiredSignature error if the 'exp' claim is absent
+# Will raise a JWT::MissingRequiredClaim error if the 'exp' claim is absent
 JWT.decode token, hmac_secret, true, { required_claims: ['exp'], algorithm: 'HS256' }
 ```
 
