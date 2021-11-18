@@ -29,9 +29,7 @@ module JWT
 
       def require_openssl!
         if Object.const_defined?('OpenSSL')
-          major, minor = OpenSSL::VERSION.split('.').first(2)
-
-          unless major.to_i >= 2 && minor.to_i >= 1
+          if ::Gem::Version.new(OpenSSL::VERSION) < ::Gem::Version.new('2.1')
             raise JWT::RequiredDependencyError, "You currently have OpenSSL #{OpenSSL::VERSION}. PS support requires >= 2.1"
           end
         else
