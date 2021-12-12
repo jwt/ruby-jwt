@@ -17,7 +17,7 @@ jobs:
     - name: Set up Ruby
       uses: ruby/setup-ruby@v1
       with:
-        ruby-version: "2.4"
+        ruby-version: "2.6"
         bundler-cache: true
     - name: Run RuboCop
       run: bundle exec rubocop
@@ -26,9 +26,6 @@ jobs:
       fail-fast: false
       matrix:
         ruby:
-          - 2.3
-          - 2.4
-          - 2.5
           - 2.6
           - 2.7
           - "3.0"
@@ -38,12 +35,6 @@ jobs:
           - gemfiles/rbnacl.gemfile
         experimental: [false]
         include:
-          - ruby: 2.1
-            gemfile: 'gemfiles/rbnacl.gemfile'
-            experimental: false
-          - ruby: 2.2
-            gemfile: 'gemfiles/rbnacl.gemfile'
-            experimental: false
           - ruby: 2.7
             coverage: "true"
             gemfile: 'gemfiles/rbnacl.gemfile'
