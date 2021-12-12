@@ -3,6 +3,9 @@ inherit_from: .rubocop_todo.yml
 AllCops:
   TargetRubyVersion: 2.1
 
+Gemspec/RequiredRubyVersion:
+  Enabled: false
+
 Layout/AlignParameters:
   EnforcedStyle: with_fixed_indentation
 

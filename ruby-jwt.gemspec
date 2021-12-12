@@ -13,7 +13,7 @@ Gem::Specification.new do |spec|
   spec.description = 'A pure ruby implementation of the RFC 7519 OAuth JSON Web Token (JWT) standard.'
   spec.homepage = 'https://github.com/jwt/ruby-jwt'
   spec.license = 'MIT'
-  spec.required_ruby_version = '>= 2.1'
+  spec.required_ruby_version = '>= 2.6'
   spec.metadata = {
     'bug_tracker_uri' => 'https://github.com/jwt/ruby-jwt/issues',
     'changelog_uri'   => "https://github.com/jwt/ruby-jwt/blob/v#{JWT.gem_version}/CHANGELOG.md"
