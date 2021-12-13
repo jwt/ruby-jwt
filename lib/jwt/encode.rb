@@ -55,11 +55,11 @@ module JWT
     def encode_signature
       return '' if @algorithm == ALG_NONE
 
-      JWT::Base64.url_encode(JWT::Signature.sign(@algorithm, encoded_header_and_payload, @key))
+      Base64.urlsafe_encode64(JWT::Signature.sign(@algorithm, encoded_header_and_payload, @key), padding: false)
     end
 
     def encode(data)
-      JWT::Base64.url_encode(JWT::JSON.generate(data))
+      Base64.urlsafe_encode64(JWT::JSON.generate(data), padding: false)
     end
 
     def combine(*parts)
