@@ -23,6 +23,7 @@ module JWT
       validate_segment_count!
       if @verify
         decode_crypto
+        set_key
         verify_signature
         verify_claims
       end
@@ -33,18 +34,32 @@ module JWT
     private
 
     def verify_signature
+      return unless @key || @verify
+
+      return if none_algorithm?
+
+      raise JWT::DecodeError, 'No verification key available' unless @key
+
+      return if Array(@key).any? { |key| verify_signature_for?(key) }
+
+      raise(JWT::VerificationError, 'Signature verification failed')
+    end
+
+    def set_key
       raise(JWT::IncorrectAlgorithm, 'An algorithm must be specified') if allowed_algorithms.empty?
-      raise(JWT::IncorrectAlgorithm, 'Token is missing alg header') unless header['alg']
+      raise(JWT::IncorrectAlgorithm, 'Token is missing alg header') unless algorithm
       raise(JWT::IncorrectAlgorithm, 'Expected a different algorithm') unless options_includes_algo_in_header?
 
       @key = find_key(&@keyfinder) if @keyfinder
       @key = ::JWT::JWK::KeyFinder.new(jwks: @options[:jwks]).key_for(header['kid']) if @options[:jwks]
+    end
 
-      Signature.verify(header['alg'], @key, signing_input, @signature)
+    def verify_signature_for?(key)
+      Signature.verify(algorithm, key, signing_input, @signature)
     end
 
     def options_includes_algo_in_header?
-      allowed_algorithms.any? { |alg| alg.casecmp(header['alg']).zero? }
+      allowed_algorithms.any? { |alg| alg.casecmp(algorithm).zero? }
     end
 
     def allowed_algorithms
@@ -65,8 +80,10 @@ module JWT
 
     def find_key(&keyfinder)
       key = (keyfinder.arity == 2 ? yield(header, payload) : yield(header))
-      raise JWT::DecodeError, 'No verification key available' unless key
-      key
+      # key can be of type [string, nil, OpenSSL::PKey, Array]
+      return key if key && !Array(key).empty?
+
+      raise JWT::DecodeError, 'No verification key available'
     end
 
     def verify_claims
@@ -77,7 +94,7 @@ module JWT
     def validate_segment_count!
       return if segment_length == 3
       return if !@verify && segment_length == 2 # If no verifying required, the signature is not needed
-      return if segment_length == 2 && header['alg'] == 'none'
+      return if segment_length == 2 && none_algorithm?
 
       raise(JWT::DecodeError, 'Not enough or too many segments')
     end
@@ -86,8 +103,16 @@ module JWT
       @segments.count
     end
 
+    def none_algorithm?
+      algorithm.casecmp('none').zero?
+    end
+
     def decode_crypto
       @signature = JWT::Base64.url_decode(@segments[2] || '')
+    end
+
+    def algorithm
+      header['alg']
     end
 
     def header

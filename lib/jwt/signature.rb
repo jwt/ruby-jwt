@@ -23,13 +23,8 @@ module JWT
     end
 
     def verify(algorithm, key, signing_input, signature)
-      return true if algorithm.casecmp('none').zero?
-
-      raise JWT::DecodeError, 'No verification key available' unless key
-
       algo, code = Algos.find(algorithm)
-      verified = algo.verify(ToVerify.new(code, key, signing_input, signature))
-      raise(JWT::VerificationError, 'Signature verification raised') unless verified
+      algo.verify(ToVerify.new(code, key, signing_input, signature))
     rescue OpenSSL::PKey::PKeyError
       raise JWT::VerificationError, 'Signature verification raised'
     ensure

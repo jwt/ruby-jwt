@@ -357,6 +357,118 @@ RSpec.describe JWT do
   end
 
   context 'Verify' do
+    context 'when key given as an array with multiple possible keys' do
+      let(:payload) { { 'data' => 'data'} }
+      let(:token)   { JWT.encode(payload, secret, 'HS256') }
+      let(:secret)  { 'hmac_secret' }
+
+      it 'should be able to verify signature when block returns multiple keys' do
+        decoded_token = JWT.decode(token, nil, true, { algorithm: 'HS256' }) do
+          ['not_the_secret', secret]
+        end
+        expect(decoded_token.first).to eq(payload)
+      end
+
+      it 'should be able to verify signature when multiple keys given as a parameter' do
+        decoded_token = JWT.decode(token, ['not_the_secret', secret], true, { algorithm: 'HS256' })
+        expect(decoded_token.first).to eq(payload)
+      end
+
+      it 'should fail if only invalid keys are given' do
+        expect do
+          JWT.decode(token, ['not_the_secret', 'not_the_secret_2'], true, { algorithm: 'HS256' })
+        end.to raise_error(JWT::VerificationError, 'Signature verification failed')
+      end
+    end
+
+    context 'when encoded payload is used to extract key through find_key' do
+      it 'should be able to find a key using the block passed to decode' do
+        payload_data = { key: 'secret' }
+        token = JWT.encode payload_data, data[:secret], 'HS256'
+
+        expect do
+          JWT.decode(token, nil, true, { algorithm: 'HS256' }) do |_headers, payload|
+            data[payload['key'].to_sym]
+          end
+        end.not_to raise_error
+      end
+
+      it 'should be able to verify signature when block returns multiple keys' do
+        iss = 'My_Awesome_Company'
+        iss_payload = { data: 'data', iss: iss }
+
+        secrets = { iss => ['hmac_secret2', data[:secret]] }
+
+        token = JWT.encode iss_payload, data[:secret], 'HS256'
+
+        expect do
+          JWT.decode(token, nil, true, { iss: iss, verify_iss: true, algorithm: 'HS256' }) do |_headers, payload|
+            secrets[payload['iss']]
+          end
+        end.not_to raise_error
+      end
+
+      it 'should be able to find a key using the block passed to decode with iss verification' do
+        iss = 'My_Awesome_Company'
+        iss_payload = { data: 'data', iss: iss }
+
+        secrets = { iss => data[:secret] }
+
+        token = JWT.encode iss_payload, data[:secret], 'HS256'
+
+        expect do
+          JWT.decode(token, nil, true, { iss: iss, verify_iss: true, algorithm: 'HS256' }) do |_headers, payload|
+            secrets[payload['iss']]
+          end
+        end.not_to raise_error
+      end
+
+      it 'should be able to verify signature when block returns multiple keys with iss verification' do
+        iss = 'My_Awesome_Company'
+        iss_payload = { data: 'data', iss: iss }
+
+        secrets = { iss => ['hmac_secret2', data[:secret]] }
+
+        token = JWT.encode iss_payload, data[:secret], 'HS256'
+
+        expect do
+          JWT.decode(token, nil, true, { iss: iss, verify_iss: true, algorithm: 'HS256' }) do |_headers, payload|
+            secrets[payload['iss']]
+          end
+        end.not_to raise_error
+      end
+
+      it 'should be able to find a key using a block with multiple issuers' do
+        issuers = %w[My_Awesome_Company1 My_Awesome_Company2]
+        iss_payload = { data: 'data', iss: issuers.first }
+
+        secrets = { issuers.first => data[:secret], issuers.last => 'hmac_secret2' }
+
+        token = JWT.encode iss_payload, data[:secret], 'HS256'
+
+        expect do
+          JWT.decode(token, nil, true, { iss: issuers, verify_iss: true, algorithm: 'HS256' }) do |_headers, payload|
+            secrets[payload['iss']]
+          end
+        end.not_to raise_error
+      end
+
+      it 'should be able to verify signature when block returns multiple keys with multiple issuers' do
+        issuers = %w[My_Awesome_Company1 My_Awesome_Company2]
+        iss_payload = { data: 'data', iss: issuers.first }
+
+        secrets = { issuers.first => [data[:secret], 'hmac_secret1'], issuers.last => 'hmac_secret2' }
+
+        token = JWT.encode iss_payload, data[:secret], 'HS256'
+
+        expect do
+          JWT.decode(token, nil, true, { iss: issuers, verify_iss: true, algorithm: 'HS256' }) do |_headers, payload|
+            secrets[payload['iss']]
+          end
+        end.not_to raise_error
+      end
+    end
+
     context 'algorithm' do
       it 'should raise JWT::IncorrectAlgorithm on mismatch' do
         token = JWT.encode payload, data[:secret], 'HS256'
