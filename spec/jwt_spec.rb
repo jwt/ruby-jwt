@@ -297,7 +297,7 @@ RSpec.describe JWT do
           translated_alg  = alg.gsub('PS', 'sha')
           valid_signature = data[:rsa_public].verify_pss(
             translated_alg,
-            JWT::Base64.url_decode(signature),
+            Base64.urlsafe_decode64(signature),
             [header, body].join('.'),
             salt_length: :auto,
             mgf1_hash:   translated_alg
@@ -579,13 +579,6 @@ RSpec.describe JWT do
     end
   end
 
-  context 'Base64' do
-    it 'urlsafe replace + / with - _' do
-      allow(Base64).to receive(:encode64) { 'string+with/non+url-safe/characters_' }
-      expect(JWT::Base64.url_encode('foo')).to eq('string-with_non-url-safe_characters_')
-    end
-  end
-
   it 'should not verify token even if the payload has claims' do
     head = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9'
     load = 'eyJ1c2VyX2lkIjo1NCwiZXhwIjoxNTA0MzkwODA0fQ'
@@ -611,7 +604,7 @@ RSpec.describe JWT do
   context 'when the alg value is given as a header parameter' do
 
     it 'does not override the actual algorithm used' do
-      headers = JSON.parse(::JWT::Base64.url_decode(JWT.encode('Hello World', 'secret', 'HS256', { alg: 'HS123'}).split('.').first))
+      headers = JSON.parse(Base64.urlsafe_decode64(JWT.encode('Hello World', 'secret', 'HS256', { alg: 'HS123'}).split('.').first))
       expect(headers['alg']).to eq('HS256')
     end
 

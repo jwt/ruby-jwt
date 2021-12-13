@@ -54,7 +54,7 @@ module JWT
       end
 
       def encode_open_ssl_bn(key_part)
-        ::JWT::Base64.url_encode(key_part.to_s(BINARY))
+        Base64.urlsafe_encode64(key_part.to_s(BINARY), padding: false)
       end
 
       class << self
@@ -107,7 +107,7 @@ module JWT
         def decode_open_ssl_bn(jwk_data)
           return nil unless jwk_data
 
-          OpenSSL::BN.new(::JWT::Base64.url_decode(jwk_data), BINARY)
+          OpenSSL::BN.new(Base64.urlsafe_decode64(jwk_data), BINARY)
         end
       end
     end
