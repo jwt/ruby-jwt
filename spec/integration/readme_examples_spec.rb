@@ -269,7 +269,6 @@ RSpec.describe 'README.md code test' do
         @cached_keys = nil if options[:invalidate] # need to reload the keys
         @cached_keys ||= { keys: [jwk.export] }
       end
-
       expect do
         JWT.decode(token, nil, true, { algorithms: ['RS512'], jwks: jwk_loader})
       end.not_to raise_error
