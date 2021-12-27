@@ -23,7 +23,7 @@ RSpec.describe 'SMART Health Cards decoder and verifier' do
     'eyJ6aXAiOiJERUYiLCJhbGciOiJFUzI1NiIsImtpZCI6IjNLZmRnLVh3UC03Z1h5eXd0VWZVQUR3QnVtRE9QS01ReC1pRUxMMTFXOXMifQ.3ZJJb9swEIX_SjC9ytoSR5VutQt0Q4sWTXMpfKCpscWCi8BFsBvov3dIO2haJDn1VN1GM_PxvUfegXAOOhi8H11XFG5EnjvFrB-QST_knNneFXhgapToCpoOaCEDvd1BV11ftldtednU-XL5MoOJQ3cH_jgidN9_M__GvTgVi1gQ6uk5oVTQ4ifzwuhnB7mZRF-1sMmAW-xRe8Hk17D9gdxHSbtB2Fu0LnI6uMrLvCJe_LsKupcYZyw6EyzHmyQfzo3sbAe4kZJoJyV0gD2SRyIHKb9ZSQP3-11JA_fFI-DPZIf2Y4ZM4QnClJDEg1eaZqxLZ-zFhDrm-N4MsV7lsJnJ4FaQ-dfMR1bVLqtFWS3qEuY5e1RN9byad39G7DzzwSW78cI9xguaGOdC49r0icBNL_Q-CXdH51Gd3w_dzCCb3Nh9EZMtnOgLPh0IwNMm1GUD82bOYDxHkOTs0KKO2h4mSEOG82BTK5q9EeqEqJPhMtqiqHbGKnqPUQvj3tiI7IUbJUtxrtYXb1CjZfLirXGj8ExSUBSiNP5TUNu4CmX6qicTrP_LBOv2XyfYxAaFCFb09PPjh-P6MDTjdfhCjV8.F248favB7uvtKSo9GbwIC-QtmpWeAsB-AtiFq2iACiDZQE0s38603dJp50vc1HEvZAB80RXecKQ1LYdkZbq8Rw'
   end
 
-  subject(:smart_health_card_decoded) do
+  subject(:smart_health_card_decoder) do
     test_class = self
 
     Class.new do
@@ -56,7 +56,7 @@ RSpec.describe 'SMART Health Cards decoder and verifier' do
 
   context 'when valid token is given' do
     it 'extracts the payload' do
-      payload, header = smart_health_card_decoded.decode!(smart_health_card_token)
+      payload, header = smart_health_card_decoder.decode!(smart_health_card_token)
       expect(payload).to include('iss' => 'https://spec.smarthealth.cards/examples/issuer')
       expect(header).to eq(
         {'alg' => 'ES256',
