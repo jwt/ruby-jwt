@@ -2,7 +2,7 @@
 
 source "https://rubygems.org"
 
-gem "rubocop", "~> 0.52.0"
+gem "rubocop", "~> 1.23.0"
 gem "openssl", "~> 2.1"
 
 gemspec path: "../"

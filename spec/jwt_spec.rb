@@ -4,7 +4,7 @@ RSpec.describe JWT do
   let(:payload) { { 'user_id' => 'some@user.tld' } }
 
   let :data do
-   data = {
+    data = {
       :empty_token => 'e30K.e30K.e30K',
       :secret => 'My$ecretK3y',
       :rsa_private => OpenSSL::PKey.read(File.read(File.join(CERT_PATH, 'rsa-2048-private.pem'))),
@@ -486,13 +486,13 @@ RSpec.describe JWT do
         token = JWT.encode payload, data[:rsa_private], 'RS256'
 
         expect do
-          JWT.decode(token, nil, true, { algorithms: ['RS384'] }) do |_,_|
+          JWT.decode(token, nil, true, { algorithms: ['RS384'] }) do |_, _|
             # unsuccessful keyfinder public key network call here
           end
         end.to raise_error JWT::IncorrectAlgorithm
 
         expect do
-          JWT.decode(token, nil, true, { 'algorithms' => ['RS384'] }) do |_,_|
+          JWT.decode(token, nil, true, { 'algorithms' => ['RS384'] }) do |_, _|
             # unsuccessful keyfinder public key network call here
           end
         end.to raise_error JWT::IncorrectAlgorithm
@@ -562,7 +562,7 @@ RSpec.describe JWT do
 
   context 'a token with not enough segments' do
     it 'raises JWT::DecodeError' do
-      token = JWT.encode('ThisIsNotAValidJWTToken', 'secret').split('.').slice(1,2).join
+      token = JWT.encode('ThisIsNotAValidJWTToken', 'secret').split('.').slice(1, 2).join
       expect { JWT.decode(token, nil, true) }.to raise_error(JWT::DecodeError, 'Not enough or too many segments')
     end
   end
@@ -602,7 +602,6 @@ RSpec.describe JWT do
   end
 
   context 'when the alg value is given as a header parameter' do
-
     it 'does not override the actual algorithm used' do
       headers = JSON.parse(Base64.urlsafe_decode64(JWT.encode('Hello World', 'secret', 'HS256', { alg: 'HS123'}).split('.').first))
       expect(headers['alg']).to eq('HS256')

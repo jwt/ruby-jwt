@@ -7,7 +7,7 @@ RSpec.describe JWT::JWK do
   describe '.import' do
     let(:keypair) { rsa_key.public_key }
     let(:exported_key) { described_class.new(keypair).export }
-    let(:params)  { exported_key }
+    let(:params) { exported_key }
 
     subject { described_class.import(params) }
 

@@ -5,25 +5,9 @@ AllCops:
   NewCops: enable
   SuggestExtensions: false
 
-Gemspec/RequiredRubyVersion:
-  Enabled: false
-
-Layout/ParameterAlignment:
-  EnforcedStyle: with_fixed_indentation
-
-Layout/CaseIndentation:
-  EnforcedStyle: end
-
-Style/AsciiComments:
-  Enabled: false
-
-Layout/FirstHashElementIndentation:
-  Enabled: false
-
-Style/CollectionMethods:
-  Enabled: true
-  PreferredMethods:
-      inject: 'inject'
+Bundler/OrderedGems:
+  Exclude:
+    - 'gemfiles/*.gemfile'
 
 Style/Documentation:
   Enabled: false
