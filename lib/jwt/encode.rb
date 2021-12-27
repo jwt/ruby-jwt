@@ -11,6 +11,7 @@ module JWT
     ALG_KEY  = 'alg'.freeze
 
     def initialize(options)
+      @options = options
       @payload = options[:payload]
       @key = options[:key]
       _, @algorithm = Algos.find(options[:algorithm])
@@ -48,6 +49,8 @@ module JWT
       if @payload && @payload.is_a?(Hash)
         ClaimsValidator.new(@payload).validate!
       end
+
+      return @options[:encode_payload_proc].call(@payload) unless @options[:encode_payload_proc].nil?
 
       encode(@payload)
     end

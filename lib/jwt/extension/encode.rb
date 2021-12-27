@@ -8,16 +8,17 @@ module JWT
         @algorithm
       end
 
-      def signing_key(value = nil)
-        @signing_key = value unless value.nil?
-        @signing_key
+      def encode_payload(&block)
+        @encode_payload = block if block_given?
+        @encode_payload
       end
 
-      def encode(payload, options = {})
+      def encode!(payload, options = {})
         ::JWT::Encode.new(
           payload: payload,
           key: signing_key_from_options(options),
           algorithm: self.algorithm,
+          encode_payload_proc: self.encode_payload,
           headers: Array(options[:headers])
         ).segments
       end

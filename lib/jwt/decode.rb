@@ -135,17 +135,32 @@ module JWT
     end
 
     def decode_and_parse_header(raw_header)
-      json_parse(raw_header)
+      json_parse(decode_header(raw_header))
     end
 
     def decode_and_parse_payload(raw_payload)
-      raw_payload = @options[:decode_payload_proc].call(header, raw_payload, @signature) if @options[:decode_payload_proc]
-      json_parse(raw_payload)
+      decode_payload(raw_payload)
+    end
+
+    def decode_payload(raw_segment)
+      if @options[:decode_payload_proc]
+        @options[:decode_payload_proc].call(raw_segment, header, @signature)
+      else
+        json_parse(Base64.urlsafe_decode64(raw_segment))
+      end
+    rescue ArgumentError
+      raise JWT::DecodeError, 'Invalid segment encoding'
+    end
+
+    def decode_header(raw_segment)
+      Base64.urlsafe_decode64(raw_segment)
+    rescue ArgumentError
+      raise JWT::DecodeError, 'Invalid segment encoding'
     end
 
     def json_parse(decoded_segment)
-      JWT::JSON.parse(Base64.urlsafe_decode64(decoded_segment))
-    rescue ::JSON::ParserError, ArgumentError
+      JWT::JSON.parse(decoded_segment)
+    rescue ::JSON::ParserError
       raise JWT::DecodeError, 'Invalid segment encoding'
     end
   end

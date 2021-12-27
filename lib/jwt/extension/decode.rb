@@ -8,21 +8,38 @@ module JWT
         @decode_payload
       end
 
-      def decode(payload, options = {})
-        segments = ::JWT::Decode.new(payload,
-                                     options.delete(:key),
-                                     true,
-                                     create_decode_options(options)).decode_segments
-        {
-          header: segments.last,
-          payload: segments.first
-        }
+      def algorithms(value = nil)
+        @algorithms = value unless value.nil?
+        @algorithms
+      end
+
+      def jwk_resolver(&block)
+        @jwk_resolver = block if block_given?
+        @jwk_resolver
+      end
+
+      def decode!(payload, options = {})
+        ::JWT::Decode.new(payload,
+                          decode_signing_key_from_options(options),
+                          true,
+                          create_decode_options(options)).decode_segments
       end
 
       private
 
+      def decode_signing_key_from_options(options)
+        options[:signing_key] || self.signing_key
+      end
+
       def create_decode_options(given_options)
-        ::JWT::DefaultOptions::DEFAULT_OPTIONS.merge(decode_payload_proc: self.decode_payload).merge(given_options)
+        ::JWT::DefaultOptions::DEFAULT_OPTIONS.merge(decode_payload_proc: self.decode_payload,
+                                                     algorithms: self.decoding_algorithms,
+                                                     jwks: self.jwk_resolver)
+          .merge(given_options)
+      end
+
+      def decoding_algorithms
+        (Array(self.algorithm) + Array(self.algorithms)).uniq
       end
     end
   end

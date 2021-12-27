@@ -6,6 +6,7 @@ RSpec.describe JWT::Extension do
   subject(:extension) do
     Class.new do
       include JWT
+      algorithm 'HS256'
     end
   end
 
@@ -13,26 +14,26 @@ RSpec.describe JWT::Extension do
   let(:payload) { { 'pay' => 'load'} }
   let(:encoded_payload) { ::JWT.encode(payload, secret, 'HS256') }
 
-  describe '.decode' do
-    it { is_expected.to respond_to(:decode) }
+  describe '.decode!' do
+    it { is_expected.to respond_to(:decode!) }
 
-    context 'when nothing special is defined' do
+    context 'when nothing but algorithm is defined' do
       it 'verifies a token and returns the data' do
-        expect(extension.decode(encoded_payload, key: secret)).to eq(header: { 'alg' => 'HS256' }, payload: payload)
+        expect(extension.decode!(encoded_payload, signing_key: secret)).to eq([payload, { 'alg' => 'HS256' }])
       end
     end
 
     context 'when a decode_payload block manipulates the payload' do
       before do
-        extension.decode_payload do |_header, raw_payload, _signature|
+        extension.decode_payload do |raw_payload, _header, _signature|
           payload_content = JWT::JSON.parse(Base64.urlsafe_decode64(raw_payload))
           payload_content['pay'].reverse!
-          Base64.urlsafe_encode64(JWT::JSON.generate(payload_content))
+          payload_content
         end
       end
 
-      it 'lets decode_payload process the raw payload before verifying' do
-        expect(extension.decode(encoded_payload, key: secret)).to eq(header: { 'alg' => 'HS256' }, payload: {'pay' => 'daol'})
+      it 'uses the defined decode_payload to process the raw payload' do
+        expect(extension.decode!(encoded_payload, signing_key: secret)).to eq([{'pay' => 'daol'}, { 'alg' => 'HS256' }])
       end
     end
   end
