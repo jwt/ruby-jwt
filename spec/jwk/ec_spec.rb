@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.describe JWT::JWK::EC do
-  let(:ec_key) { OpenSSL::PKey::EC.new("secp384r1").generate_key }
+  let(:ec_key) { OpenSSL::PKey::EC.new('secp384r1').generate_key }
 
   describe '.new' do
     subject { described_class.new(keypair) }
@@ -91,7 +91,7 @@ RSpec.describe JWT::JWK::EC do
             expect(subject).to be_a described_class
 
             # Regular export returns only the non-private parts.
-            public_only = exported_key.select { |k, v| k != :d }
+            public_only = exported_key.reject { |k, _v| k == :d }
             expect(subject.export).to eq(public_only)
 
             # Private export returns the original input.

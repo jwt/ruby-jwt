@@ -40,7 +40,7 @@ RSpec.describe JWT do
         'ED25519_private' =>  ed25519_private,
         'ED25519_public' => ed25519_public,
         'EdDSA_private' =>  ed25519_private,
-        'EdDSA_public' => ed25519_public,
+        'EdDSA_public' => ed25519_public
       )
     end
     data
@@ -102,20 +102,20 @@ RSpec.describe JWT do
 
   context 'payload validation' do
     it 'validates the payload with the ClaimsValidator if the payload is a hash' do
-      validator = double()
+      validator = double
       expect(JWT::ClaimsValidator).to receive(:new) { validator }
       expect(validator).to receive(:validate!) { true }
 
       payload = {}
-      JWT.encode payload, "secret", 'HS256'
+      JWT.encode payload, 'secret', 'HS256'
     end
 
     it 'does not validate the payload if it is not present' do
-      validator = double()
+      validator = double
       expect(JWT::ClaimsValidator).not_to receive(:new) { validator }
 
       payload = nil
-      JWT.encode payload, "secret", 'HS256'
+      JWT.encode payload, 'secret', 'HS256'
     end
   end
 
@@ -265,18 +265,7 @@ RSpec.describe JWT do
     end
   end
 
-  unless ::Gem::Version.new(OpenSSL::VERSION) >= ::Gem::Version.new('2.1')
-    %w[PS256 PS384 PS512].each do |alg|
-      context "alg: #{alg}" do
-        it 'raises error about OpenSSL version' do
-          expect { JWT.encode payload, data[:rsa_private], alg }.to raise_error(
-            JWT::RequiredDependencyError,
-            /You currently have OpenSSL .*. PS support requires >= 2.1/
-          )
-        end
-      end
-    end
-  else
+  if ::Gem::Version.new(OpenSSL::VERSION) >= ::Gem::Version.new('2.1')
     %w[PS256 PS384 PS512].each do |alg|
       context "alg: #{alg}" do
         before(:each) do
@@ -322,6 +311,17 @@ RSpec.describe JWT do
           expect do
             JWT.decode data[alg], wrong_key, false
           end.not_to raise_error
+        end
+      end
+    end
+  else
+    %w[PS256 PS384 PS512].each do |alg|
+      context "alg: #{alg}" do
+        it 'raises error about OpenSSL version' do
+          expect { JWT.encode payload, data[:rsa_private], alg }.to raise_error(
+            JWT::RequiredDependencyError,
+            /You currently have OpenSSL .*. PS support requires >= 2.1/
+          )
         end
       end
     end
@@ -614,7 +614,7 @@ RSpec.describe JWT do
       expect(headers['alg']).to eq('HS256')
     end
 
-    it "should generate the same token" do
+    it 'should generate the same token' do
       expect(JWT.encode('Hello World', 'secret', 'HS256', { alg: 'HS256'})).to eq JWT.encode('Hello World', 'secret', 'HS256')
     end
   end

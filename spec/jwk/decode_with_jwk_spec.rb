@@ -73,7 +73,7 @@ RSpec.describe JWT do
 
     context 'when jwk keys are loaded from JSON with string keys' do
       it 'decodes the token' do
-        key_loader = ->(options) { JSON.parse(JSON.generate(public_jwks)) }
+        key_loader = ->(_options) { JSON.parse(JSON.generate(public_jwks)) }
         payload, _header = described_class.decode(signed_token, nil, true, { algorithms: ['RS512'], jwks: key_loader})
         expect(payload).to eq(token_payload)
       end
@@ -137,7 +137,7 @@ RSpec.describe JWT do
 
         it 'fails in some way' do
           expect { described_class.decode(signed_token, nil, true, algorithms: ['RS512'], jwks: jwks) }.to(
-            raise_error(NoMethodError, /undefined method `verify' for \"secret\":String/)
+            raise_error(NoMethodError, /undefined method `verify' for "secret":String/)
           )
         end
       end
@@ -147,7 +147,7 @@ RSpec.describe JWT do
 
         it 'fails in some way' do
           expect { described_class.decode(signed_token, nil, true, algorithms: ['ES384'], jwks: jwks) }.to(
-            raise_error(NoMethodError, /undefined method `group' for \"secret\":String/)
+            raise_error(NoMethodError, /undefined method `group' for "secret":String/)
           )
         end
       end

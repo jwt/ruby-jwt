@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.describe ::JWT::Algos::Ecdsa do
   describe '.curve_by_name' do
     subject { described_class.curve_by_name(curve_name) }

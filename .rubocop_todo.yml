@@ -37,24 +37,10 @@ Layout/HashAlignment:
     - 'lib/jwt/algos/ecdsa.rb'
 
 # Offense count: 1
-# Cop supports --auto-correct.
-Lint/AmbiguousOperatorPrecedence:
-  Exclude:
-    - 'spec/integration/readme_examples_spec.rb'
-
-# Offense count: 1
 Lint/MissingSuper:
   Exclude:
     - 'lib/jwt/jwk/key_base.rb'
 
-# Offense count: 3
-# Cop supports --auto-correct.
-# Configuration parameters: IgnoreEmptyBlocks, AllowUnusedKeywordArguments.
-Lint/UnusedBlockArgument:
-  Exclude:
-    - 'spec/jwk/decode_with_jwk_spec.rb'
-    - 'spec/jwk/ec_spec.rb'
-    - 'spec/jwt/verify_spec.rb'
 
 # Offense count: 1
 # Configuration parameters: IgnoredMethods, CountRepeatedAttributes.
@@ -85,9 +71,6 @@ Style/FrozenStringLiteralComment:
     - 'Gemfile'
     - 'Rakefile'
     - 'bin/console.rb'
-    - 'gemfiles/openssl.gemfile'
-    - 'gemfiles/rbnacl.gemfile'
-    - 'gemfiles/standalone.gemfile'
     - 'lib/jwt/algos/ecdsa.rb'
     - 'lib/jwt/algos/eddsa.rb'
     - 'lib/jwt/algos/hmac.rb'
@@ -99,7 +82,6 @@ Style/FrozenStringLiteralComment:
     - 'lib/jwt/default_options.rb'
     - 'lib/jwt/security_utils.rb'
     - 'ruby-jwt.gemspec'
-    - 'spec/jwt/algos/ecdsa_spec.rb'
 
 # Offense count: 2
 # Cop supports --auto-correct.
@@ -107,20 +89,6 @@ Style/HashTransformKeys:
   Exclude:
     - 'lib/jwt/claims_validator.rb'
     - 'lib/jwt/encode.rb'
-
-# Offense count: 1
-# Cop supports --auto-correct.
-# Configuration parameters: InverseMethods, InverseBlocks.
-Style/InverseMethods:
-  Exclude:
-    - 'spec/jwk/ec_spec.rb'
-
-# Offense count: 2
-# Cop supports --auto-correct.
-# Configuration parameters: IgnoredMethods.
-Style/MethodCallWithoutArgsParentheses:
-  Exclude:
-    - 'spec/jwt_spec.rb'
 
 # Offense count: 1
 # Cop supports --auto-correct.
@@ -143,12 +111,6 @@ Style/OptionalBooleanParameter:
   Exclude:
     - 'lib/jwt.rb'
 
-# Offense count: 1
-# Cop supports --auto-correct.
-Style/ParallelAssignment:
-  Exclude:
-    - 'spec/integration/readme_examples_spec.rb'
-
 # Offense count: 5
 # Cop supports --auto-correct.
 Style/RedundantFreeze:
@@ -157,12 +119,6 @@ Style/RedundantFreeze:
     - 'lib/jwt/jwk/ec.rb'
     - 'lib/jwt/jwk/hmac.rb'
     - 'lib/jwt/jwk/rsa.rb'
-
-# Offense count: 4
-# Cop supports --auto-correct.
-Style/RedundantRegexpEscape:
-  Exclude:
-    - 'spec/jwk/decode_with_jwk_spec.rb'
 
 # Offense count: 1
 # Cop supports --auto-correct.
@@ -178,31 +134,3 @@ Style/SlicingWithRange:
   Exclude:
     - 'lib/jwt/security_utils.rb'
 
-# Offense count: 27
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyle, ConsistentQuotesInMultiline.
-# SupportedStyles: single_quotes, double_quotes
-Style/StringLiterals:
-  Exclude:
-    - 'bin/console.rb'
-    - 'gemfiles/openssl.gemfile'
-    - 'gemfiles/rbnacl.gemfile'
-    - 'gemfiles/standalone.gemfile'
-    - 'spec/jwk/ec_spec.rb'
-    - 'spec/jwk/rsa_spec.rb'
-    - 'spec/jwk_spec.rb'
-    - 'spec/jwt_spec.rb'
-
-# Offense count: 1
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyleForMultiline.
-# SupportedStylesForMultiline: comma, consistent_comma, no_comma
-Style/TrailingCommaInArguments:
-  Exclude:
-    - 'spec/jwt_spec.rb'
-
-# Offense count: 1
-# Cop supports --auto-correct.
-Style/UnlessElse:
-  Exclude:
-    - 'spec/jwt_spec.rb'

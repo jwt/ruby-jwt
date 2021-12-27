@@ -2,7 +2,7 @@
 
 RSpec.describe JWT::JWK do
   let(:rsa_key) { OpenSSL::PKey::RSA.new(2048) }
-  let(:ec_key) { OpenSSL::PKey::EC.new("secp384r1").generate_key }
+  let(:ec_key) { OpenSSL::PKey::EC.new('secp384r1').generate_key }
 
   describe '.import' do
     let(:keypair) { rsa_key.public_key }
@@ -34,7 +34,7 @@ RSpec.describe JWT::JWK do
 
     context 'when keypair with defined kid is imported' do
       it 'returns the predefined kid if jwt_data contains a kid' do
-        params[:kid] = "CUSTOM_KID"
+        params[:kid] = 'CUSTOM_KID'
         expect(subject.export).to eq(params)
       end
     end
@@ -61,7 +61,7 @@ RSpec.describe JWT::JWK do
 
     context 'when kid is given' do
       let(:keypair) { rsa_key }
-      let(:kid) { "CUSTOM_KID" }
+      let(:kid) { 'CUSTOM_KID' }
       it 'sets the kid' do
         expect(subject.kid).to eq(kid)
       end
