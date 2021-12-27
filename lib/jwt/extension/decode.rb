@@ -25,8 +25,6 @@ module JWT
                           create_decode_options(options)).decode_segments
       end
 
-      private
-
       def decode_signing_key_from_options(options)
         options[:signing_key] || self.signing_key
       end

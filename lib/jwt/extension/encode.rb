@@ -23,8 +23,6 @@ module JWT
         ).segments
       end
 
-      private
-
       def signing_key_from_options(options)
         key = options[:signing_key] || self.signing_key
         raise ::JWT::SigningKeyMissing, 'No key given for signing' if key.nil?
