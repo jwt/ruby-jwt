@@ -2,6 +2,8 @@ module JWT
   # Collection of security methods
   #
   # @see: https://github.com/rails/rails/blob/master/activesupport/lib/active_support/security_utils.rb
+
+  # rubocop:disable Naming/MethodParameterName
   module SecurityUtils
     if defined?(OpenSSL.fixed_length_secure_compare)
       def fixed_length_secure_compare(a, b)
@@ -26,4 +28,6 @@ module JWT
     end
     module_function :secure_compare
   end
+
+  # rubocop:enable Naming/MethodParameterName
 end
