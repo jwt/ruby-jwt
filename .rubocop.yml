@@ -6,6 +6,7 @@ AllCops:
   SuggestExtensions: false
   Exclude:
     - 'gemfiles/*.gemfile'
+    - 'vendor/**/*'
 
 Style/Documentation:
   Enabled: false
