@@ -178,7 +178,7 @@ RSpec.describe ::JWT::Verify do
 
     it 'it should not throw arguement error with 2 args' do
       expect do
-        described_class.verify_jti(payload, options.merge(verify_jti: ->(_jti, pl) {
+        described_class.verify_jti(payload, options.merge(verify_jti: ->(_jti, _pl) {
           true
         }))
       end.to_not raise_error

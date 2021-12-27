@@ -93,9 +93,9 @@ RSpec.describe JWT::JWK::RSA do
     end
 
     context 'when jwk_data is given without e and/or n' do
-      let(:params) { { kty: "RSA" } }
+      let(:params) { { kty: 'RSA' } }
       it 'raises an error' do
-        expect { subject }.to raise_error(JWT::JWKError, "Key format is invalid for RSA")
+        expect { subject }.to raise_error(JWT::JWKError, 'Key format is invalid for RSA')
       end
     end
   end

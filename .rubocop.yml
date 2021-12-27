@@ -4,8 +4,6 @@ AllCops:
   TargetRubyVersion: 2.6
   NewCops: enable
   SuggestExtensions: false
-
-Bundler/OrderedGems:
   Exclude:
     - 'gemfiles/*.gemfile'
 

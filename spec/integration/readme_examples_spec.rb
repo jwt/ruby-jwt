@@ -86,7 +86,7 @@ RSpec.describe 'README.md code test' do
 
     context 'exp' do
       it 'without leeway' do
-        exp = Time.now.to_i + 4 * 3600
+        exp = Time.now.to_i + (4 * 3600)
         exp_payload = { data: 'data', exp: exp }
 
         token = JWT.encode exp_payload, hmac_secret, 'HS256'
@@ -260,7 +260,8 @@ RSpec.describe 'README.md code test' do
 
     it 'JWK' do
       jwk = JWT::JWK.new(OpenSSL::PKey::RSA.new(2048))
-      payload, headers = { data: 'data' }, { kid: jwk.kid }
+      payload = { data: 'data' }
+      headers = { kid: jwk.kid }
 
       token = JWT.encode(payload, jwk.keypair, 'RS512', headers)
 
