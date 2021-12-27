@@ -1,0 +1,10 @@
+plugins:
+  fixme:
+    enabled: true
+  bundler-audit:
+    enabled: true
+  shellcheck:
+    enabled: true
+  rubocop:
+    enabled: true
+    channel: rubocop-1-23-0

@@ -1,12 +1,14 @@
 inherit_from: .rubocop_todo.yml
 
 AllCops:
-  TargetRubyVersion: 2.1
+  TargetRubyVersion: 2.6
+  NewCops: enable
+  SuggestExtensions: false
 
 Gemspec/RequiredRubyVersion:
   Enabled: false
 
-Layout/AlignParameters:
+Layout/ParameterAlignment:
   EnforcedStyle: with_fixed_indentation
 
 Layout/CaseIndentation:
@@ -15,7 +17,7 @@ Layout/CaseIndentation:
 Style/AsciiComments:
   Enabled: false
 
-Layout/IndentHash:
+Layout/FirstHashElementIndentation:
   Enabled: false
 
 Style/CollectionMethods:
@@ -27,10 +29,6 @@ Style/Documentation:
   Enabled: false
 
 Style/BlockDelimiters:
-  Exclude:
-    - spec/**/*_spec.rb
-
-Style/BracesAroundHashParameters:
   Exclude:
     - spec/**/*_spec.rb
 
@@ -53,7 +51,7 @@ Style/SignalException:
   Enabled: false
 
 Metrics/AbcSize:
-  Max: 20
+  Max: 25
 
 Metrics/ClassLength:
   Max: 101
@@ -61,7 +59,7 @@ Metrics/ClassLength:
 Metrics/ModuleLength:
   Max: 100
 
-Metrics/LineLength:
+Layout/LineLength:
   Enabled: false
 
 Metrics/BlockLength:
@@ -74,7 +72,7 @@ Metrics/MethodLength:
 Style/SingleLineBlockParams:
   Enabled: false
 
-Lint/EndAlignment:
+Layout/EndAlignment:
   EnforcedStyleAlignWith: variable
 
 Style/FormatString:
@@ -92,7 +90,7 @@ Style/WordArray:
 Style/RedundantSelf:
   Enabled: false
 
-Layout/AlignHash:
+Layout/HashAlignment:
   Enabled: true
   EnforcedLastArgumentHashStyle: always_ignore
 
