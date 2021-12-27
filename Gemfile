@@ -2,4 +2,4 @@ source 'https://rubygems.org'
 
 gemspec
 
-gem 'rubocop', '~> 1.23.0' # Same as codeclimate default
+gem 'rubocop', '~> 1.23.0' # Keep .codeclimate.yml channel in sync with this one

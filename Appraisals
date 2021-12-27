@@ -1,4 +1,5 @@
 appraise 'standalone' do
+  # No additions
 end
 
 appraise 'openssl' do

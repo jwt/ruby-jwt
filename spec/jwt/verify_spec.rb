@@ -84,7 +84,7 @@ RSpec.describe ::JWT::Verify do
     end
 
     it 'must ignore configured leeway' do
-      expect{described_class.verify_iat(payload.merge('iat' => (iat + 60)), options.merge(leeway: 70)) }
+      expect { described_class.verify_iat(payload.merge('iat' => (iat + 60)), options.merge(leeway: 70)) }
         .to raise_error(JWT::InvalidIatError)
     end
 
