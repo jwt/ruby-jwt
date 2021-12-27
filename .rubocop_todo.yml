@@ -71,12 +71,6 @@ Style/ClassEqualityComparison:
 
 # Offense count: 1
 # Cop supports --auto-correct.
-Style/Encoding:
-  Exclude:
-    - 'lib/jwt/version.rb'
-
-# Offense count: 1
-# Cop supports --auto-correct.
 Style/ExpandPathArguments:
   Exclude:
     - 'ruby-jwt.gemspec'
