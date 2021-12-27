@@ -16,10 +16,19 @@ module JWT
       def encode(payload, options = {})
         ::JWT::Encode.new(
           payload: payload,
-          key: self.signing_key,
+          key: signing_key_from_options(options),
           algorithm: self.algorithm,
-          headers: options[:headers]
+          headers: Array(options[:headers])
         ).segments
+      end
+
+      private
+
+      def signing_key_from_options(options)
+        key = options[:signing_key] || self.signing_key
+        raise ::JWT::SigningKeyMissing, 'No key given for signing' if key.nil?
+
+        key
       end
     end
   end

@@ -13,10 +13,6 @@ RSpec.describe JWT::Extension do
   let(:payload) { { 'pay' => 'load'} }
   let(:encoded_payload) { ::JWT.encode(payload, secret, 'HS256') }
 
-  describe '.encode' do
-    it { is_expected.to respond_to(:encode) }
-  end
-
   describe '.decode' do
     it { is_expected.to respond_to(:decode) }
 
