@@ -677,7 +677,7 @@ RSpec.describe JWT do
   end
 
   describe '::JWT.decode with x5c parameter' do
-    let(:alg) { "RS256" }
+    let(:alg) { 'RS256' }
     let(:root_certificates) { [instance_double('OpenSSL::X509::Certificate')] }
     let(:key_finder) { instance_double('::JWT::X5cKeyFinder') }
 
