@@ -12,9 +12,11 @@ A ruby implementation of the [RFC 7519 OAuth JSON Web Token (JWT)](https://tools
 If you have further questions related to development or usage, join us: [ruby-jwt google group](https://groups.google.com/forum/#!forum/ruby-jwt).
 
 ## Announcements
-
+* Ruby 2.4 support is going to be dropped in version 2.4.0
 * Ruby 1.9.3 support was dropped at December 31st, 2016.
 * Version 1.5.3 yanked. See: [#132](https://github.com/jwt/ruby-jwt/issues/132) and [#133](https://github.com/jwt/ruby-jwt/issues/133)
+
+See [CHANGELOG.md](CHANGELOG.md) for a complete set of changes.
 
 ## Sponsors
 
@@ -576,7 +578,7 @@ JWT.decode(token, nil, true, { algorithms: ['RS512'], jwks: jwks})
 
 ### Importing and exporting JSON Web Keys
 
-The ::JWT::JWK class can be used to import and export both the public key (default behaviour) and the private key. To include the private key in the export pass the  `include_private` parameter to the export method.
+The ::JWT::JWK class can be used to import and export both the public key (default behaviour) and the private key. To include the private key in the export pass the `include_private` parameter to the export method.
 
 ```ruby
 jwk = JWT::JWK.new(OpenSSL::PKey::RSA.new(2048))
@@ -585,27 +587,14 @@ jwk_hash = jwk.export
 jwk_hash_with_private_key = jwk.export(include_private: true)
 ```
 
-# Development and Tests
+## How to contribute
 
-We depend on [Bundler](http://rubygems.org/gems/bundler) for defining gemspec and performing releases to rubygems.org, which can be done with
-
-```bash
-rake release
-```
-
-The tests are written with rspec. [Appraisal](https://github.com/thoughtbot/appraisal) is used to ensure compatibility with 3rd party dependencies providing cryptographic features.
-
-```bash
-bundle install
-bundle exec appraisal rake test
-```
-
-**If you want a release cut with your PR, please include a version bump according to [Semantic Versioning](http://semver.org/)**
+See [CONTRIBUTING](CONTRIBUTING.md).
 
 ## Contributors
 
-See `AUTHORS` file.
+See [AUTHORS](AUTHORS).
 
 ## License
 
-See `LICENSE` file.
+See [LICENSE](LICENSE).
