@@ -1,0 +1,27 @@
+---
+name: coverage
+on:
+  push:
+    branches:
+      - "master"
+jobs:
+ coverage:
+    name: coverage
+    runs-on: ubuntu-20.04
+    env:
+      BUNDLE_GEMFILE: 'gemfiles/rbnacl.gemfile'
+      CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
+    steps:
+      - uses: actions/checkout@v2
+      - name: Install libsodium
+        run: |
+          sudo apt-get update -q
+          sudo apt-get install libsodium-dev -y
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: "2.7"
+          bundler-cache: true
+      - uses: paambaati/codeclimate-action@v3.0.0
+        with:
+          coverageCommand: bundle exec rspec
