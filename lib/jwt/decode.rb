@@ -1,14 +1,11 @@
 # frozen_string_literal: true
 
-require 'json'
+require_relative 'decode_behaviour'
 
-require 'jwt/signature'
-require 'jwt/verify'
-require 'jwt/x5c_key_finder'
-# JWT::Decode module
 module JWT
   # Decoding logic for JWT
   class Decode
+    include DecodeBehaviour
     def initialize(jwt, key, verify, options, &keyfinder)
       raise(JWT::DecodeError, 'Nil JSON web token') unless jwt
       @jwt = jwt
@@ -27,13 +24,15 @@ module JWT
         verify_algo
         set_key
         verify_signature
-        verify_claims
+        verify_claims!(options)
       end
       raise(JWT::DecodeError, 'Not enough or too many segments') unless header && payload
       [payload, header]
     end
 
     private
+
+    attr_reader :options
 
     def verify_signature
       return unless @key || @verify
@@ -91,11 +90,6 @@ module JWT
       return key if key && !Array(key).empty?
 
       raise JWT::DecodeError, 'No verification key available'
-    end
-
-    def verify_claims
-      Verify.verify_claims(payload, @options)
-      Verify.verify_required_claims(payload, @options)
     end
 
     def validate_segment_count!

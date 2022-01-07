@@ -1,11 +1,11 @@
 # frozen_string_literal: true
 
-require 'jwt/signature'
-require 'jwt/verify'
-require 'jwt/x5c_key_finder'
+require_relative 'decode_behaviour'
 
 module JWT
   class DecodeToken
+    include DecodeBehaviour
+
     def initialize(token, options = {})
       raise ArgumentError, 'Provided token is not a String object' unless token.is_a?(String)
 
@@ -19,7 +19,7 @@ module JWT
       if verify?
         verify_alg_header!
         verify_signature!
-        verify_claims!
+        verify_claims!(options)
       end
 
       [payload, header]
@@ -98,11 +98,6 @@ module JWT
       else
         algorithm.verify(signing_input, signature, key: key, header: header, payload: payload)
       end
-    end
-
-    def verify_claims!
-      Verify.verify_claims(payload, options)
-      Verify.verify_required_claims(payload, options)
     end
 
     def validate_segment_count!

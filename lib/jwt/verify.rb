@@ -18,7 +18,7 @@ module JWT
 
       def verify_claims(payload, options)
         options.each do |key, val|
-          next unless key.to_s =~ /verify/
+          next unless key.to_s =~ /verify./
           Verify.send(key, payload, options) if val
         end
       end
