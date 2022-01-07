@@ -6,6 +6,10 @@ require 'jwt/x5c_key_finder'
 
 module JWT
   module DecodeMethods
+    def verify?
+      options[:verify] != false
+    end
+
     def segments
       @segments ||= token.split('.')
     end

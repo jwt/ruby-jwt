@@ -31,6 +31,6 @@ module JWT
   end
 
   def decode(jwt, key = nil, verify = true, options = {}, &keyfinder)
-    Decode.new(jwt, key, verify, DEFAULT_OPTIONS.merge(options), &keyfinder).decode_segments
+    Decode.new(jwt, DEFAULT_OPTIONS.merge(key: key, verify: verify).merge(options), &keyfinder).decode_segments
   end
 end

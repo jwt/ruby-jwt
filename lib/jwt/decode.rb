@@ -5,12 +5,11 @@ require_relative 'decode_methods'
 module JWT
   class Decode
     include DecodeMethods
-    def initialize(token, key, verify, options, &keyfinder)
+
+    def initialize(token, options, &keyfinder)
       raise(JWT::DecodeError, 'Nil JSON web token') unless token
       @token = token
-      @key = key
       @options = options
-      @verify = verify
       @keyfinder = keyfinder
     end
 
@@ -29,20 +28,14 @@ module JWT
 
     attr_reader :options, :token
 
-    def verify?
-      @verify != false
-    end
-
     def verify_signature
-      return unless key || verify?
-
       return if none_algorithm?
 
       raise JWT::DecodeError, 'No verification key available' unless key
 
       return if Array(key).any? { |k| verify_signature_for?(algorithm, k) }
 
-      raise(JWT::VerificationError, 'Signature verification failed')
+      raise JWT::VerificationError, 'Signature verification failed'
     end
 
     def verify_algo

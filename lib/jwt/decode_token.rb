@@ -33,10 +33,6 @@ module JWT
       @algorithms ||= Array(options[:algorithms])
     end
 
-    def verify?
-      options[:verify] != false
-    end
-
     def key
       @key ||= resolve_key
     end
