@@ -17,7 +17,7 @@ module JWT
 
     def decode_segments
       validate_segment_count!
-      if @verify
+      if verify?
         verify_algo
         set_key
         verify_signature
@@ -36,7 +36,7 @@ module JWT
     end
 
     def verify_signature
-      return unless @key || @verify
+      return unless @key || verify?
 
       return if none_algorithm?
 
