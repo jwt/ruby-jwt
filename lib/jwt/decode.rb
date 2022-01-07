@@ -7,7 +7,7 @@ module JWT
     include DecodeMethods
 
     def initialize(token, options, &keyfinder)
-      raise(JWT::DecodeError, 'Nil JSON web token') unless token
+      raise JWT::DecodeError, 'Nil JSON web token' unless token
       @token = token
       @options = options
       @keyfinder = keyfinder
@@ -20,13 +20,13 @@ module JWT
         verify_signature!
         verify_claims!(options)
       end
-      raise(JWT::DecodeError, 'Not enough or too many segments') unless header && payload
+      raise JWT::DecodeError, 'Not enough or too many segments' unless header && payload
       [payload, header]
     end
 
     private
 
-    attr_reader :options, :token
+    attr_reader :options, :token, :keyfinder
 
     def verify_signature!
       return if none_algorithm?
@@ -45,7 +45,7 @@ module JWT
     end
 
     def key
-      @key ||= (@keyfinder && find_key(&@keyfinder)) || resolve_key
+      @key ||= (keyfinder && find_key(@keyfinder)) || resolve_key
     end
 
     def options_includes_algo_in_header?
