@@ -14,7 +14,13 @@ module JWT
       @options = options
       @payload = options[:payload]
       @key = options[:key]
-      _, @algorithm = Algos.find(options[:algorithm])
+
+      if (@algorithm_implementation = options[:algorithm_implementation]).nil?
+        _, @algorithm = Algos.find(options[:algorithm])
+      else
+        @algorithm = @algorithm_implementation.alg
+      end
+
       @headers = options[:headers].each_with_object({}) { |(key, value), headers| headers[key.to_s] = value }
     end
 
@@ -58,7 +64,13 @@ module JWT
     def encode_signature
       return '' if @algorithm == ALG_NONE
 
-      Base64.urlsafe_encode64(JWT::Signature.sign(@algorithm, encoded_header_and_payload, @key), padding: false)
+      Base64.urlsafe_encode64(signature, padding: false)
+    end
+
+    def signature
+      return @algorithm_implementation.sign(encoded_header_and_payload, key: @key) if @algorithm_implementation
+
+      JWT::Signature.sign(@algorithm, encoded_header_and_payload, @key)
     end
 
     def encode(data)

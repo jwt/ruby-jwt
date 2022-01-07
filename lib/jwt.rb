@@ -2,6 +2,7 @@
 
 require 'base64'
 require 'jwt/extension'
+require 'jwt/decode_token'
 require 'jwt/json'
 require 'jwt/decode'
 require 'jwt/default_options'

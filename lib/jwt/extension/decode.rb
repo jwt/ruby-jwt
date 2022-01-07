@@ -18,26 +18,24 @@ module JWT
         @jwk_resolver
       end
 
-      def decode!(payload, options = {})
-        ::JWT::Decode.new(payload,
-                          decode_signing_key_from_options(options),
-                          true,
-                          create_decode_options(options)).decode_segments
+      def decode!(token, options = {})
+        Internals.decode!(token, options, self)
       end
 
-      def decode_signing_key_from_options(options)
-        options[:signing_key] || self.signing_key
-      end
+      module Internals
+        class << self
+          def decode!(token, options, context)
+            ::JWT::DecodeToken.new(token, build_decode_options(options, context)).decoded_segments
+          end
 
-      def create_decode_options(given_options)
-        ::JWT::DefaultOptions::DEFAULT_OPTIONS.merge(decode_payload_proc: self.decode_payload,
-                                                     algorithms: self.decoding_algorithms,
-                                                     jwks: self.jwk_resolver)
-          .merge(given_options)
-      end
-
-      def decoding_algorithms
-        (Array(self.algorithm) + Array(self.algorithms)).uniq
+          def build_decode_options(options, context)
+            ::JWT::DefaultOptions::DEFAULT_OPTIONS.merge(key: options[:signing_key] || context.verification_key || context.signing_key,
+                                                         decode_payload_proc: context.decode_payload,
+                                                         algorithms: (Array(context.algorithm) + Array(context.algorithms)).uniq,
+                                                         jwks: context.jwk_resolver)
+              .merge(options)
+          end
+        end
       end
     end
   end

@@ -14,20 +14,33 @@ module JWT
       end
 
       def encode!(payload, options = {})
-        ::JWT::Encode.new(
-          payload: payload,
-          key: signing_key_from_options(options),
-          algorithm: self.algorithm,
-          encode_payload_proc: self.encode_payload,
-          headers: Array(options[:headers])
-        ).segments
+        Internals.encode!(payload, options, self)
       end
 
-      def signing_key_from_options(options)
-        key = options[:signing_key] || self.signing_key
-        raise ::JWT::SigningKeyMissing, 'No key given for signing' if key.nil?
+      module Internals
+        class << self
+          def encode!(payload, options, context)
+            ::JWT::Encode.new(build_options(payload, options, context)).segments
+          end
 
-        key
+          def build_options(payload, options, context)
+            opts = {
+              payload: payload,
+              key: options[:key] || context.signing_key,
+              encode_payload_proc: context.encode_payload,
+              headers: Array(options[:headers])
+            }
+
+            if (algo = context.algorithm).is_a?(String)
+              opts[:algorithm] = algo
+              raise ::JWT::SigningKeyMissing, 'No key given for signing' if opts[:key].nil?
+            else
+              opts[:algorithm_implementation] = algo
+            end
+
+            opts
+          end
+        end
       end
     end
   end
