@@ -694,4 +694,25 @@ RSpec.describe JWT do
       expect(jwt_payload).to eq payload
     end
   end
+
+  describe 'when JWT is not signed and decoding allows it' do
+    let(:none_token) { ::JWT.encode({ what: 'ever' }, nil, 'none') }
+    it 'does not raise' do
+      expect(::JWT.decode(none_token, nil, true, algorithms: 'none')).to eq([{'what' => 'ever'}, {'alg' => 'none'}])
+    end
+  end
+
+  describe 'when JWT is not signed and decoding allows it but key is given' do
+    let(:none_token) { ::JWT.encode({ what: 'ever' }, nil, 'none') }
+    it 'does not raise' do
+      expect(::JWT.decode(none_token, 'key', true, algorithms: 'none')).to eq([{'what' => 'ever'}, {'alg' => 'none'}])
+    end
+  end
+
+  describe 'when JWT is decoded with no key' do
+    let(:no_key_token) { ::JWT.encode({ what: 'ever' }, nil, 'HS512') }
+    it 'raise' do
+      expect { ::JWT.decode(no_key_token, nil, true, algorithms: 'HS512') }.to raise_error(JWT::DecodeError, 'No verification key available')
+    end
+  end
 end
