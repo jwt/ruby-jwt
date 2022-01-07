@@ -16,8 +16,8 @@ module JWT
     def decode_segments
       validate_segment_count!
       if verify?
-        verify_algo
-        verify_signature
+        verify_algo!
+        verify_signature!
         verify_claims!(options)
       end
       raise(JWT::DecodeError, 'Not enough or too many segments') unless header && payload
@@ -28,7 +28,7 @@ module JWT
 
     attr_reader :options, :token
 
-    def verify_signature
+    def verify_signature!
       return if none_algorithm?
 
       raise JWT::DecodeError, 'No verification key available' unless key
@@ -38,10 +38,10 @@ module JWT
       raise JWT::VerificationError, 'Signature verification failed'
     end
 
-    def verify_algo
-      raise(JWT::IncorrectAlgorithm, 'An algorithm must be specified') if allowed_algorithms.empty?
-      raise(JWT::IncorrectAlgorithm, 'Token is missing alg header') unless algorithm
-      raise(JWT::IncorrectAlgorithm, 'Expected a different algorithm') unless options_includes_algo_in_header?
+    def verify_algo!
+      raise JWT::IncorrectAlgorithm, 'An algorithm must be specified' if allowed_algorithms.empty?
+      raise JWT::IncorrectAlgorithm, 'Token is missing alg header' unless algorithm
+      raise JWT::IncorrectAlgorithm, 'Expected a different algorithm' unless options_includes_algo_in_header?
     end
 
     def key
