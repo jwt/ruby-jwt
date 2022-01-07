@@ -31,7 +31,7 @@ module JWT
     def verify_signature!
       return if none_algorithm?
 
-      raise JWT::DecodeError, 'No verification key available' unless key
+      raise JWT::DecodeError, 'No verification key available' if Array(key).empty?
 
       return if Array(key).any? { |k| verify_signature_for?(algorithm, k) }
 
@@ -45,7 +45,7 @@ module JWT
     end
 
     def key
-      @key ||= (keyfinder && find_key(@keyfinder)) || resolve_key
+      @key ||= use_keyfinder || resolve_key
     end
 
     def options_includes_algo_in_header?
@@ -68,12 +68,10 @@ module JWT
       Array(algos)
     end
 
-    def find_key(&keyfinder)
-      key = (keyfinder.arity == 2 ? yield(header, payload) : yield(header))
+    def use_keyfinder
+      return nil unless keyfinder
+      (keyfinder.arity == 2 ? keyfinder.call(header, payload) : keyfinder.call(header))
       # key can be of type [string, nil, OpenSSL::PKey, Array]
-      return key if key && !Array(key).empty?
-
-      raise JWT::DecodeError, 'No verification key available'
     end
 
     def none_algorithm?
