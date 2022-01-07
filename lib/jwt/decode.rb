@@ -1,11 +1,10 @@
 # frozen_string_literal: true
 
-require_relative 'decode_behaviour'
+require_relative 'decode_methods'
 
 module JWT
-  # Decoding logic for JWT
   class Decode
-    include DecodeBehaviour
+    include DecodeMethods
     def initialize(token, key, verify, options, &keyfinder)
       raise(JWT::DecodeError, 'Nil JSON web token') unless token
       @token = token
@@ -19,7 +18,6 @@ module JWT
       validate_segment_count!
       if verify?
         verify_algo
-        set_key
         verify_signature
         verify_claims!(options)
       end
@@ -36,13 +34,13 @@ module JWT
     end
 
     def verify_signature
-      return unless @key || verify?
+      return unless key || verify?
 
       return if none_algorithm?
 
-      raise JWT::DecodeError, 'No verification key available' unless @key
+      raise JWT::DecodeError, 'No verification key available' unless key
 
-      return if Array(@key).any? { |key| verify_signature_for?(key) }
+      return if Array(key).any? { |k| verify_signature_for?(algorithm, k) }
 
       raise(JWT::VerificationError, 'Signature verification failed')
     end
@@ -53,16 +51,8 @@ module JWT
       raise(JWT::IncorrectAlgorithm, 'Expected a different algorithm') unless options_includes_algo_in_header?
     end
 
-    def set_key
-      @key = find_key(&@keyfinder) if @keyfinder
-      @key = ::JWT::JWK::KeyFinder.new(jwks: options[:jwks]).key_for(header['kid']) if options[:jwks]
-      if (x5c_options = options[:x5c])
-        @key = X5cKeyFinder.new(x5c_options[:root_certificates], x5c_options[:crls]).from(header['x5c'])
-      end
-    end
-
-    def verify_signature_for?(key)
-      Signature.verify(algorithm, key, signing_input, signature)
+    def key
+      @key ||= (@keyfinder && find_key(&@keyfinder)) || resolve_key
     end
 
     def options_includes_algo_in_header?

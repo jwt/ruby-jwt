@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
-require_relative 'decode_behaviour'
+require_relative 'decode_methods'
 
 module JWT
   class DecodeToken
-    include DecodeBehaviour
+    include DecodeMethods
 
     def initialize(token, options = {})
       raise ArgumentError, 'Provided token is not a String object' unless token.is_a?(String)
@@ -38,14 +38,7 @@ module JWT
     end
 
     def key
-      @key ||=
-        if options[:jwks]
-          ::JWT::JWK::KeyFinder.new(jwks: options[:jwks]).key_for(header['kid'])
-        elsif (x5c_options = options[:x5c])
-          ::JWT::X5cKeyFinder.new(x5c_options[:root_certificates], x5c_options[:crls]).from(header['x5c'])
-        else
-          options[:key]
-        end
+      @key ||= resolve_key
     end
 
     def verify_alg_header!
@@ -68,16 +61,6 @@ module JWT
       return if valid_algorithms.any? { |algorithm| verify_signature_for?(algorithm, key) }
 
       raise JWT::VerificationError, 'Signature verification failed'
-    end
-
-    def verify_signature_for?(algorithm, key)
-      if algorithm.is_a?(String)
-        raise JWT::DecodeError, 'No verification key available' unless key
-
-        Array(key).any? { |k| Signature.verify(algorithm, k, signing_input, signature) }
-      else
-        algorithm.verify(signing_input, signature, key: key, header: header, payload: payload)
-      end
     end
   end
 end

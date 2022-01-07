@@ -5,7 +5,7 @@ require 'jwt/verify'
 require 'jwt/x5c_key_finder'
 
 module JWT
-  module DecodeBehaviour
+  module DecodeMethods
     def segments
       @segments ||= token.split('.')
     end
@@ -33,6 +33,26 @@ module JWT
       return if segment_count == 2 && (!verify? || header['alg'] == 'none')
 
       raise JWT::DecodeError, 'Not enough or too many segments'
+    end
+
+    def verify_signature_for?(algorithm, key)
+      if algorithm.is_a?(String)
+        raise JWT::DecodeError, 'No verification key available' unless key
+
+        Array(key).any? { |k| Signature.verify(algorithm, k, signing_input, signature) }
+      else
+        algorithm.verify(signing_input, signature, key: key, header: header, payload: payload)
+      end
+    end
+
+    def resolve_key
+      if options[:jwks]
+        ::JWT::JWK::KeyFinder.new(jwks: options[:jwks]).key_for(header['kid'])
+      elsif (x5c_options = options[:x5c])
+        ::JWT::X5cKeyFinder.new(x5c_options[:root_certificates], x5c_options[:crls]).from(header['x5c'])
+      else
+        options[:key]
+      end
     end
 
     def verify_claims!(claim_options)
