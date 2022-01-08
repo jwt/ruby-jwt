@@ -695,23 +695,30 @@ RSpec.describe JWT do
     end
   end
 
-  describe 'when JWT is not signed and decoding allows it' do
-    let(:none_token) { ::JWT.encode({ what: 'ever' }, nil, 'none') }
-    it 'does not raise' do
-      expect(::JWT.decode(none_token, nil, true, algorithms: 'none')).to eq([{'what' => 'ever'}, {'alg' => 'none'}])
+  describe 'when none token is and decoding without key and with verification' do
+    let(:none_token) { ::JWT.encode(payload, nil, 'none') }
+    it 'decodes the token' do
+      expect(::JWT.decode(none_token, nil, true, algorithms: 'none')).to eq([payload, {'alg' => 'none'}])
     end
   end
 
-  describe 'when JWT is not signed and decoding allows it but key is given' do
-    let(:none_token) { ::JWT.encode({ what: 'ever' }, nil, 'none') }
-    it 'does not raise' do
-      expect(::JWT.decode(none_token, 'key', true, algorithms: 'none')).to eq([{'what' => 'ever'}, {'alg' => 'none'}])
+  describe 'when none token is decoded with a key given' do
+    let(:none_token) { ::JWT.encode(payload, nil, 'none') }
+    it 'decodes the token' do
+      expect(::JWT.decode(none_token, 'key', true, algorithms: 'none')).to eq([payload, {'alg' => 'none'}])
     end
   end
 
-  describe 'when JWT is decoded with no key' do
-    let(:no_key_token) { ::JWT.encode({ what: 'ever' }, nil, 'HS512') }
-    it 'raise' do
+  describe 'when none token is decoded without verify' do
+    let(:none_token) { ::JWT.encode(payload, nil, 'none') }
+    it 'decodes the token' do
+      expect(::JWT.decode(none_token, 'key', false)).to eq([payload, {'alg' => 'none'}])
+    end
+  end
+
+  describe 'when token signed with nil and decoded with nil' do
+    let(:no_key_token) { ::JWT.encode(payload, nil, 'HS512') }
+    it 'raises JWT::DecodeError' do
       expect { ::JWT.decode(no_key_token, nil, true, algorithms: 'HS512') }.to raise_error(JWT::DecodeError, 'No verification key available')
     end
   end
