@@ -75,10 +75,6 @@ module JWT
         Base64.urlsafe_encode64(octets, padding: false)
       end
 
-      def encode_open_ssl_bn(key_part)
-        Base64.urlsafe_encode64(key_part.to_s(BINARY), padding: false)
-      end
-
       class << self
         def import(jwk_data)
           # See https://tools.ietf.org/html/rfc7518#section-6.2.1 for an

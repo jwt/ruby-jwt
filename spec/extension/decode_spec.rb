@@ -69,5 +69,19 @@ RSpec.describe JWT::Extension do
         expect(extension.decode!(encoded_payload, algorithms: ['HS512', 'HS256'])).to eq([payload, { 'alg' => 'HS256' }])
       end
     end
+
+    context 'when payload is invalid JSON' do
+      before do
+        extension.encode_payload do |payload|
+          Base64.urlsafe_encode64(payload.inspect, padding: false)
+        end
+      end
+
+      let(:encoded_payload) { extension.encode!(payload) }
+
+      it 'raises JWT::DecodeError' do
+        expect { extension.decode!(encoded_payload) }.to raise_error(JWT::DecodeError, 'Invalid segment encoding')
+      end
+    end
   end
 end

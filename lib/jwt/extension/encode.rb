@@ -28,14 +28,12 @@ module JWT
               payload: payload,
               key: options[:key] || context.signing_key,
               encode_payload_proc: context.encode_payload,
-              headers: Array(options[:headers])
+              headers: options[:headers],
+              algorithm: context.algorithm
             }
 
-            if (algo = context.algorithm).is_a?(String)
-              opts[:algorithm] = algo
-              raise ::JWT::SigningKeyMissing, 'No key given for signing' if opts[:key].nil?
-            else
-              opts[:algorithm_implementation] = algo
+            if opts[:algorithm].is_a?(String) && opts[:key].nil?
+              raise ::JWT::SigningKeyMissing, 'No key given for signing'
             end
 
             opts

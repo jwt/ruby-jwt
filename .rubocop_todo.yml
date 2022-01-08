@@ -83,13 +83,6 @@ Style/FrozenStringLiteralComment:
     - 'lib/jwt/security_utils.rb'
     - 'ruby-jwt.gemspec'
 
-# Offense count: 2
-# Cop supports --auto-correct.
-Style/HashTransformKeys:
-  Exclude:
-    - 'lib/jwt/claims_validator.rb'
-    - 'lib/jwt/encode.rb'
-
 # Offense count: 1
 # Cop supports --auto-correct.
 # Configuration parameters: EnforcedStyle, Autocorrect.

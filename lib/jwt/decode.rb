@@ -53,8 +53,12 @@ module JWT
     end
 
     def allowed_algorithms
+      Array(algorithm_from_options)
+    end
+
+    def algorithm_from_options
       # Order is very important - first check for string keys, next for symbols
-      algos = if options.key?('algorithm')
+      if options.key?('algorithm')
         options['algorithm']
       elsif options.key?(:algorithm)
         options[:algorithm]
@@ -62,10 +66,7 @@ module JWT
         options['algorithms']
       elsif options.key?(:algorithms)
         options[:algorithms]
-      else
-        []
       end
-      Array(algos)
     end
 
     def use_keyfinder
