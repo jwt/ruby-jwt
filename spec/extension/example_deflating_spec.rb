@@ -40,8 +40,8 @@ RSpec.describe 'Deflating payload processor' do
 
   context 'when decoding presigned and zipped token' do
     let(:secret) { 's3cr3t' }
-
     let(:presigned_token) { 'eyJhbGciOiJIUzUxMiJ9.H4sIAKTUyWEAA6tWKkisVLJSyslPTFGqBQAsM7zZDgAAAA==.GK1DXdMN7i6OA_1_xUYU3lThZwY94MgUYRivRIaLTIP-yrmZfxLrbpe3Llkrr1HIrDQhjPPwskiR5oob14hv9A' }
+
     it 'verifies and decodes the payload' do
       expect(subject.decode!(presigned_token)).to eq([{'pay' => 'load'}, {'alg' => 'HS512'}])
     end

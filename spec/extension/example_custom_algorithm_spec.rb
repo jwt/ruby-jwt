@@ -10,8 +10,8 @@ RSpec.describe 'Custom Signing algorithm' do
           'CustomStatic'
         end
 
-        def valid_alg?(_alg)
-          true
+        def valid_alg?(algorithm_from_header)
+          algorithm_from_header == self.alg
         end
 
         def sign(_to_sign, _options)

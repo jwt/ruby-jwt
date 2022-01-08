@@ -12,6 +12,11 @@ module JWT
         @verification_key = value unless value.nil?
         @verification_key
       end
+
+      def key(value = nil)
+        verification_key(value)
+        signing_key(value)
+      end
     end
   end
 end

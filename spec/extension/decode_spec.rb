@@ -4,9 +4,12 @@ require 'securerandom'
 
 RSpec.describe JWT::Extension do
   subject(:extension) do
+    secret_key = secret
+
     Class.new do
       include JWT
       algorithm 'HS256'
+      key secret_key
     end
   end
 
@@ -19,7 +22,7 @@ RSpec.describe JWT::Extension do
 
     context 'when nothing but algorithm is defined' do
       it 'verifies a token and returns the data' do
-        expect(extension.decode!(encoded_payload, signing_key: secret)).to eq([payload, { 'alg' => 'HS256' }])
+        expect(extension.decode!(encoded_payload, key: secret)).to eq([payload, { 'alg' => 'HS256' }])
       end
     end
 
@@ -33,7 +36,37 @@ RSpec.describe JWT::Extension do
       end
 
       it 'uses the defined decode_payload to process the raw payload' do
-        expect(extension.decode!(encoded_payload, signing_key: secret)).to eq([{'pay' => 'daol'}, { 'alg' => 'HS256' }])
+        expect(extension.decode!(encoded_payload)).to eq([{'pay' => 'daol'}, { 'alg' => 'HS256' }])
+      end
+    end
+
+    context 'when block given' do
+      it 'calls it with payload and header' do
+        expect { |b| extension.decode!(encoded_payload, &b) }.to yield_with_args(payload, { 'alg' => 'HS256' })
+      end
+    end
+
+    context 'when given block returns something' do
+      it 'returns what the block returned' do
+        expect(extension.decode!(encoded_payload) { '123' }).to eq('123')
+      end
+    end
+
+    context 'when signing key is invalid' do
+      it 'raises JWT::VerificationError' do
+        expect { extension.decode!(encoded_payload, key: 'invalid') }.to raise_error(JWT::VerificationError, 'Signature verification failed')
+      end
+    end
+
+    context 'when algorithm is not matching the one in the token' do
+      it 'raises JWT::VerificationError' do
+        expect { extension.decode!(encoded_payload, algorithms: ['HS512']) }.to raise_error(JWT::IncorrectAlgorithm, 'Expected a different algorithm')
+      end
+    end
+
+    context 'when one of the given algorithms match' do
+      it 'raises JWT::VerificationError' do
+        expect(extension.decode!(encoded_payload, algorithms: ['HS512', 'HS256'])).to eq([payload, { 'alg' => 'HS256' }])
       end
     end
   end
