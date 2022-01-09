@@ -695,6 +695,31 @@ RSpec.describe JWT do
     end
   end
 
+  describe 'when keyfinder given with 1 argument' do
+    let(:token) { JWT.encode(payload, 'HS256', 'HS256') }
+    it 'decodes the token' do
+      expect(JWT.decode(token, nil, true, algorithm: 'HS256') { |header| header['alg'] }).to include(payload)
+    end
+  end
+
+  describe 'when keyfinder given with 2 arguments' do
+    let(:token) { JWT.encode(payload, payload['user_id'], 'HS256') }
+    it 'decodes the token' do
+      expect(JWT.decode(token, nil, true, algorithm: 'HS256') { |_header, payload| payload['user_id'] }).to include(payload)
+    end
+  end
+
+  describe 'when keyfinder given with 3 arguments' do
+    let(:token) { JWT.encode(payload, 'HS256', 'HS256') }
+    it 'decodes the token but does not pass the payload' do
+      expect(JWT.decode(token, nil, true, algorithm: 'HS256') do |header, token_payload, nothing|
+        expect(token_payload).to eq(nil)  # This behaviour is not correct, the payload should be available in the keyfinder
+        expect(nothing).to eq(nil)
+        header['alg']
+      end).to include(payload)
+    end
+  end
+
   describe 'when none token is and decoding without key and with verification' do
     let(:none_token) { ::JWT.encode(payload, nil, 'none') }
     it 'decodes the token' do
