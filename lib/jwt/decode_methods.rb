@@ -26,6 +26,10 @@ module JWT
       @payload ||= decode_payload(segments[1])
     end
 
+    def algorithm_in_header
+      header['alg']
+    end
+
     def signing_input
       segments.first(2).join('.')
     end
@@ -43,15 +47,15 @@ module JWT
       if algorithm.is_a?(String)
         raise JWT::DecodeError, 'No verification key available' unless key
 
-        Array(key).any? { |k| Signature.verify(algorithm, k, signing_input, signature) }
+        Array(key).any? { |single_key| Signature.verify(algorithm, single_key, signing_input, signature) }
       else
         algorithm.verify(signing_input, signature, key: key, header: header, payload: payload)
       end
     end
 
     def resolve_key
-      if options[:jwks]
-        ::JWT::JWK::KeyFinder.new(jwks: options[:jwks]).key_for(header['kid'])
+      if (jwks = options[:jwks])
+        ::JWT::JWK::KeyFinder.new(jwks: jwks).key_for(header['kid'])
       elsif (x5c_options = options[:x5c])
         ::JWT::X5cKeyFinder.new(x5c_options[:root_certificates], x5c_options[:crls]).from(header['x5c'])
       else
@@ -69,11 +73,11 @@ module JWT
     end
 
     def decode_payload(raw_segment)
-      if options[:decode_payload_proc]
-        options[:decode_payload_proc].call(raw_segment, header, signature)
-      else
-        decode_segment_default(raw_segment)
+      if (decode_proc = options[:decode_payload_proc])
+        return decode_proc.call(raw_segment, header, signature)
       end
+
+      decode_segment_default(raw_segment)
     end
 
     def decode_segment_default(raw_segment)

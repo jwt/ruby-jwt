@@ -33,14 +33,14 @@ module JWT
 
       raise JWT::DecodeError, 'No verification key available' if Array(key).empty?
 
-      return if Array(key).any? { |k| verify_signature_for?(algorithm, k) }
+      return if Array(key).any? { |single_key| verify_signature_for?(algorithm_in_header, single_key) }
 
       raise JWT::VerificationError, 'Signature verification failed'
     end
 
     def verify_algo!
       raise JWT::IncorrectAlgorithm, 'An algorithm must be specified' if allowed_algorithms.empty?
-      raise JWT::IncorrectAlgorithm, 'Token is missing alg header' unless algorithm
+      raise JWT::IncorrectAlgorithm, 'Token is missing alg header' unless algorithm_in_header
       raise JWT::IncorrectAlgorithm, 'Expected a different algorithm' unless options_includes_algo_in_header?
     end
 
@@ -49,7 +49,7 @@ module JWT
     end
 
     def options_includes_algo_in_header?
-      allowed_algorithms.any? { |alg| alg.casecmp(algorithm).zero? }
+      allowed_algorithms.any? { |alg| alg.casecmp(algorithm_in_header).zero? }
     end
 
     def allowed_algorithms
@@ -76,11 +76,7 @@ module JWT
     end
 
     def none_algorithm?
-      algorithm.casecmp('none').zero?
-    end
-
-    def algorithm
-      header['alg']
+      algorithm_in_header.casecmp('none').zero?
     end
   end
 end

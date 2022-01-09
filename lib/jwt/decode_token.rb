@@ -46,9 +46,9 @@ module JWT
     def valid_algorithms
       @valid_algorithms ||= algorithms.select do |algorithm|
         if algorithm.is_a?(String)
-          header['alg'] == algorithm
+          algorithm == algorithm_in_header
         else
-          algorithm.valid_alg?(header['alg'])
+          algorithm.valid_alg?(algorithm_in_header)
         end
       end
     end
