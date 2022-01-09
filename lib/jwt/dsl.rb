@@ -5,7 +5,6 @@ require_relative 'dsl/decode'
 require_relative 'dsl/encode'
 
 module JWT
-  # Module to gather the different parts of the DSL
   module DSL
     def self.included(cls)
       cls.extend(JWT::DSL::Keys)

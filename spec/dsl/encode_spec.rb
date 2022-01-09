@@ -41,5 +41,27 @@ RSpec.describe JWT::DSL do
         expect(jwt_class.encode!(payload)).to eq(::JWT.encode(payload, secret, 'HS256'))
       end
     end
+
+    context 'when key is given as block' do
+      before do
+        jwt_class.algorithm('HS256')
+        jwt_class.key { secret }
+      end
+
+      it 'uses the secret from the block' do
+        expect(jwt_class.encode!(payload)).to eq(::JWT.encode(payload, secret, 'HS256'))
+      end
+    end
+
+    context 'when signing_key is given as block' do
+      before do
+        jwt_class.algorithm('HS256')
+        jwt_class.signing_key { secret }
+      end
+
+      it 'uses the secret from the block' do
+        expect(jwt_class.encode!(payload)).to eq(::JWT.encode(payload, secret, 'HS256'))
+      end
+    end
   end
 end

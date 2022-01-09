@@ -59,8 +59,10 @@ module JWT
         ::JWT::JWK::KeyFinder.new(jwks: jwks).key_for(header['kid'])
       elsif (x5c_options = options[:x5c])
         ::JWT::X5cKeyFinder.new(x5c_options[:root_certificates], x5c_options[:crls]).from(header['x5c'])
+      elsif (key = options[:key]).respond_to?(:call)
+        key.call(header)
       else
-        options[:key]
+        key
       end
     end
 

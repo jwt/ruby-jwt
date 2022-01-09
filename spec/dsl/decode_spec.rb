@@ -116,5 +116,17 @@ RSpec.describe JWT::DSL do
         expect(jwt_class.decode!(encoded_payload)).to eq([payload, { 'alg' => 'HS256' }])
       end
     end
+
+    context 'when key is given as block' do
+      let(:secret) { 'HS256' }
+
+      before do
+        jwt_class.key { |header| header['alg'] }
+      end
+
+      it 'uses the block to resolve the key' do
+        expect(jwt_class.decode!(encoded_payload)).to eq([payload, { 'alg' => 'HS256' }])
+      end
+    end
   end
 end

@@ -2,7 +2,6 @@
 
 module JWT
   module DSL
-    # DSL methods for decoding related functionality
     module Decode
       def decode_payload(&block)
         @decode_payload = block if block_given?

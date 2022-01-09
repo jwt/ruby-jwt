@@ -33,7 +33,11 @@ module JWT
     end
 
     def key
-      options[:key]
+      if (key = options[:key]).respond_to?(:call)
+        key.call
+      else
+        key
+      end
     end
 
     def encoded_header

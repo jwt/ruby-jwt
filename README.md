@@ -596,7 +596,7 @@ A few examples use-cases be found from the [specs](spec/dsl/examples)
   module AppToken
     include ::JWT
     algorithm 'HS256'
-    key 'async_secret'
+    key { 'secret' }
   end
 
   encoded_token = AppToken.encode!(data: 'data', exp: Time.now.to_i+3600)
