@@ -14,7 +14,8 @@ RSpec.describe JWT::DSL do
   end
 
   let(:secret) { SecureRandom.hex }
-  let(:payload) { { 'pay' => 'load'} }
+  let(:exp) { Time.now.to_i + 60 }
+  let(:payload) { { 'pay' => 'load', 'exp' => exp } }
   let(:encoded_payload) { ::JWT.encode(payload, secret, 'HS256') }
 
   describe '.decode!' do
@@ -36,7 +37,7 @@ RSpec.describe JWT::DSL do
       end
 
       it 'uses the defined decode_payload to process the raw payload' do
-        expect(extension.decode!(encoded_payload)).to eq([{'pay' => 'daol'}, { 'alg' => 'HS256' }])
+        expect(extension.decode!(encoded_payload).first['pay']).to eq('daol')
       end
     end
 
@@ -81,6 +82,26 @@ RSpec.describe JWT::DSL do
 
       it 'raises JWT::DecodeError' do
         expect { extension.decode!(encoded_payload) }.to raise_error(JWT::DecodeError, 'Invalid segment encoding')
+      end
+    end
+
+    context 'when token is expired' do
+      let(:exp) { Time.now.to_i - 20 }
+
+      it 'allows token to be 30 seconds overdue' do
+        expect { extension.decode!(encoded_payload) }.to raise_error(JWT::ExpiredSignature, 'Signature has expired')
+      end
+    end
+
+    context 'when expiration_leeway is set to 30 seconds' do
+      before do
+        extension.expiration_leeway 30
+      end
+
+      let(:exp) { Time.now.to_i - 20 }
+
+      it 'allows token to be 30 seconds overdue' do
+        expect(extension.decode!(encoded_payload)).to eq([payload, { 'alg' => 'HS256' }])
       end
     end
   end

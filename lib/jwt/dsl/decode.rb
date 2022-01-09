@@ -4,6 +4,8 @@ module JWT
   module DSL
     # DSL methods for decoding related functionality
     module Decode
+      DEFAULT_EXPIRATION_LEEWAY = 0
+
       def decode_payload(&block)
         @decode_payload = block if block_given?
         @decode_payload
@@ -17,6 +19,11 @@ module JWT
       def jwk_resolver(&block)
         @jwk_resolver = block if block_given?
         @jwk_resolver
+      end
+
+      def expiration_leeway(value = nil)
+        @expiration_leeway = value unless value.nil?
+        @expiration_leeway || DEFAULT_EXPIRATION_LEEWAY
       end
 
       def decode!(token, options = {})
@@ -36,6 +43,7 @@ module JWT
           def build_decode_options(options, context)
             ::JWT::DefaultOptions::DEFAULT_OPTIONS.merge(key: options[:key] || context.verification_key || context.signing_key,
                                                          decode_payload_proc: context.decode_payload,
+                                                         leeway: context.expiration_leeway,
                                                          algorithms: (Array(context.algorithm) + Array(context.algorithms)).uniq,
                                                          jwks: context.jwk_resolver)
               .merge(options)

@@ -70,9 +70,9 @@ module JWT
       end
     end
 
+    # key can be of type [string, nil, OpenSSL::PKey, Array]
     def use_keyfinder
       keyfinder&.call(header, payload)
-      # key can be of type [string, nil, OpenSSL::PKey, Array]
     end
 
     def none_algorithm?

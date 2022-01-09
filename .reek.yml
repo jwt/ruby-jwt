@@ -3,3 +3,5 @@ detectors:
     enabled: false
   MissingSafeMethod:
     enabled: false
+  NilCheck:
+    enabled: false
