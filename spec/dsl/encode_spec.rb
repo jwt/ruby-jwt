@@ -63,5 +63,18 @@ RSpec.describe JWT::DSL do
         expect(jwt_class.encode!(payload)).to eq(::JWT.encode(payload, secret, 'HS256'))
       end
     end
+
+    context 'when expiration is set on the class and is negative' do
+      before do
+        jwt_class.algorithm('HS256')
+        jwt_class.expiration(-10)
+        jwt_class.signing_key(secret)
+      end
+
+      it 'will only generate expired tokens' do
+        token = jwt_class.encode!(payload)
+        expect { jwt_class.decode!(token) }.to raise_error(JWT::ExpiredSignature, 'Signature has expired')
+      end
+    end
   end
 end

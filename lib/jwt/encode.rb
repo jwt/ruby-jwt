@@ -29,7 +29,7 @@ module JWT
     attr_reader :headers, :options, :algorithm, :alg
 
     def payload
-      options[:payload]
+      @payload ||= append_exp(options[:payload])
     end
 
     def key
@@ -82,6 +82,15 @@ module JWT
       return unless payload.is_a?(Hash)
 
       ClaimsValidator.new(payload).validate!
+    end
+
+    def append_exp(payload)
+      return payload unless (expiration = options[:expiration])
+      return payload if payload.key?('exp') || payload.key?(:exp)
+
+      payload['exp'] = Time.now.to_i + expiration
+
+      payload
     end
 
     class << self

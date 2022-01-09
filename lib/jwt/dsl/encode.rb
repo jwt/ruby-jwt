@@ -13,6 +13,11 @@ module JWT
         @encode_payload
       end
 
+      def expiration(value = nil)
+        @expiration = value unless value.nil?
+        @expiration
+      end
+
       def encode!(payload, options = {})
         Internals.encode!(payload, options, self)
       end
@@ -29,7 +34,8 @@ module JWT
               key: options[:key] || context.signing_key,
               encode_payload_proc: context.encode_payload,
               headers: options[:headers],
-              algorithm: context.algorithm
+              algorithm: context.algorithm,
+              expiration: context.expiration
             }
 
             if opts[:algorithm].is_a?(String) && opts[:key].nil?
