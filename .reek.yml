@@ -1,3 +1,5 @@
 detectors:
   IrresponsibleModule:
     enabled: false
+  MissingSafeMethod:
+    enabled: false
