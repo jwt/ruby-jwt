@@ -8,7 +8,7 @@ module JWT
     include DecodeMethods
 
     def initialize(token, options = {})
-      raise ArgumentError, 'Provided token is not a String object' unless token.is_a?(String)
+      raise JWT::DecodeError, 'Provided token is not a String object' unless token.is_a?(String)
 
       @token   = token
       @options = options
