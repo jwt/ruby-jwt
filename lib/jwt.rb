@@ -15,8 +15,6 @@ require 'jwt/jwk'
 # Should be up to date with the latest spec:
 # https://tools.ietf.org/html/rfc7519
 module JWT
-  include JWT::DefaultOptions
-
   def self.included(cls)
     cls.include(::JWT::DSL)
   end
@@ -31,6 +29,6 @@ module JWT
   end
 
   def decode(jwt, key = nil, verify = true, options = {}, &keyfinder)
-    Decode.new(jwt, DEFAULT_OPTIONS.merge(key: key, verify: verify).merge(options), &keyfinder).decode_segments
+    Decode.new(jwt, DefaultOptions::DECODE_DEFAULT_OPTIONS.merge(key: key, verify: verify).merge(options), &keyfinder).decode_segments
   end
 end
