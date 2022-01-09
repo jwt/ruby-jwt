@@ -32,9 +32,11 @@ module JWT
     def verify_signature!
       return if none_algorithm?
 
-      raise JWT::DecodeError, 'No verification key available' if Array(key).empty?
+      keys = Array(key)
 
-      return if Array(key).any? { |single_key| verify_signature_for?(algorithm_in_header, single_key) }
+      raise JWT::DecodeError, 'No verification key available' if keys.empty?
+
+      return if keys.any? { |single_key| verify_signature_for?(algorithm_in_header, single_key) }
 
       raise JWT::VerificationError, 'Signature verification failed'
     end
