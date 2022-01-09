@@ -1,7 +1,8 @@
 # frozen_string_literal: true
 
 module JWT
-  module Extension
+  module DSL
+    # DSL methods for encoding related functionality
     module Encode
       def algorithm(value = nil)
         @algorithm = value unless value.nil?

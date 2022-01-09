@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require 'base64'
-require 'jwt/extension'
+require 'jwt/dsl'
 require 'jwt/decode_token'
 require 'jwt/json'
 require 'jwt/decode'
@@ -18,7 +18,7 @@ module JWT
   include JWT::DefaultOptions
 
   def self.included(cls)
-    cls.include(JWT::Extension)
+    cls.include(::JWT::DSL)
   end
 
   module_function

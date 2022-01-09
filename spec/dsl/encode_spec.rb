@@ -2,7 +2,7 @@
 
 require 'securerandom'
 
-RSpec.describe JWT::Extension do
+RSpec.describe JWT::DSL do
   subject(:extension) do
     Class.new do
       include JWT

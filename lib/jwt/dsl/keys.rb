@@ -1,7 +1,8 @@
 # frozen_string_literal: true
 
 module JWT
-  module Extension
+  module DSL
+    # DSL methods for setting keys
     module Keys
       def signing_key(value = nil)
         @signing_key = value unless value.nil?

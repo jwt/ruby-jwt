@@ -3,6 +3,7 @@
 require_relative 'decode_methods'
 
 module JWT
+  # Decode logic to support the ::JWT::Extensions::Decode functionality
   class DecodeToken
     include DecodeMethods
 

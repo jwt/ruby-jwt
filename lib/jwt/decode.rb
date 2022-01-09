@@ -3,6 +3,7 @@
 require_relative 'decode_methods'
 
 module JWT
+  # Backwards compatible Decoding logic for the JWT Gem. Used by the ::JWT.decode method
   class Decode
     include DecodeMethods
 

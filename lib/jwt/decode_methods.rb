@@ -5,6 +5,7 @@ require 'jwt/verify'
 require 'jwt/x5c_key_finder'
 
 module JWT
+  # Shared methods and behaviours used by ::JWT::DecodeToken and ::JWT::Decode
   module DecodeMethods
     def verify?
       options[:verify] != false
