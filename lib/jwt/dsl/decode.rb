@@ -11,7 +11,7 @@ module JWT
 
       def algorithms(value = nil)
         @algorithms = value unless value.nil?
-        @algorithms
+        Array(@algorithms || ::JWT::DefaultOptions::ALGORITHMS_DEFAULT)
       end
 
       def jwk_resolver(&block)
@@ -39,12 +39,13 @@ module JWT
           end
 
           def build_decode_options(options, context)
-            ::JWT::DefaultOptions::DECODE_DEFAULT_OPTIONS.merge(key: options[:key] || context.verification_key || context.signing_key,
-                                                                decode_payload_proc: context.decode_payload,
-                                                                leeway: context.expiration_leeway,
-                                                                algorithms: (Array(context.algorithm) + Array(context.algorithms)).uniq,
-                                                                jwks: context.jwk_resolver)
-              .merge(options)
+            JWT::DefaultOptions::VERIFY_CLAIMS_DEFAULTS.merge(
+              key: options[:key] || context.verification_key || context.signing_key,
+              decode_payload_proc: context.decode_payload,
+              leeway: context.expiration_leeway,
+              algorithms: (Array(context.algorithm) + Array(context.algorithms)).uniq,
+              jwks: context.jwk_resolver
+            ).merge(options)
           end
         end
       end
