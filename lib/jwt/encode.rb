@@ -7,8 +7,6 @@ module JWT
   class Encode
     def initialize(options)
       @options = options
-      @payload = options[:payload]
-      @key     = options[:key]
 
       if (algo = options[:algorithm]).respond_to?(:sign)
         @algorithm = algo
@@ -23,12 +21,20 @@ module JWT
 
     def segments
       validate_claims!
-      combine(encoded_header_and_payload, encoded_signature)
+      self.class.combine(encoded_header_and_payload, encoded_signature)
     end
 
     private
 
-    attr_reader :payload, :headers, :options, :algorithm, :key, :alg
+    attr_reader :headers, :options, :algorithm, :alg
+
+    def payload
+      options[:payload]
+    end
+
+    def key
+      options[:key]
+    end
 
     def encoded_header
       @encoded_header ||= encode_header
@@ -43,11 +49,11 @@ module JWT
     end
 
     def encoded_header_and_payload
-      @encoded_header_and_payload ||= combine(encoded_header, encoded_payload)
+      @encoded_header_and_payload ||= self.class.combine(encoded_header, encoded_payload)
     end
 
     def encode_header
-      encode(headers)
+      self.class.encode(headers)
     end
 
     def encode_payload
@@ -55,7 +61,7 @@ module JWT
         return encode_proc.call(payload)
       end
 
-      encode(payload)
+      self.class.encode(payload)
     end
 
     def encode_signature
@@ -74,12 +80,14 @@ module JWT
       ClaimsValidator.new(payload).validate!
     end
 
-    def encode(data)
-      Base64.urlsafe_encode64(JWT::JSON.generate(data), padding: false)
-    end
+    class << self
+      def encode(data)
+        Base64.urlsafe_encode64(JWT::JSON.generate(data), padding: false)
+      end
 
-    def combine(*parts)
-      parts.join('.')
+      def combine(*parts)
+        parts.join('.')
+      end
     end
   end
 end
