@@ -71,8 +71,7 @@ module JWT
     end
 
     def use_keyfinder
-      return nil unless keyfinder
-      (keyfinder.arity == 2 ? keyfinder.call(header, payload) : keyfinder.call(header))
+      keyfinder&.call(header, payload)
       # key can be of type [string, nil, OpenSSL::PKey, Array]
     end
 
