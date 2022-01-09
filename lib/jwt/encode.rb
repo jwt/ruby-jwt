@@ -10,10 +10,10 @@ module JWT
       @payload = options[:payload]
       @key     = options[:key]
 
-      if (algo = options[:algorithm]).is_a?(String) || algo.nil?
-        _, @alg = Algos.find(algo)
-      else
+      if (algo = options[:algorithm]).respond_to?(:sign)
         @algorithm = algo
+      else
+        _, @alg = Algos.find(algo)
       end
 
       @headers = (options[:headers] || {}).transform_keys(&:to_s)
@@ -22,8 +22,7 @@ module JWT
     end
 
     def segments
-      ClaimsValidator.new(payload).validate! if payload.is_a?(Hash)
-
+      validate_claims!
       combine(encoded_header_and_payload, encoded_signature)
     end
 
@@ -52,7 +51,9 @@ module JWT
     end
 
     def encode_payload
-      return options[:encode_payload_proc].call(payload) if options[:encode_payload_proc]
+      if (encode_proc = options[:encode_payload_proc])
+        return encode_proc.call(payload)
+      end
 
       encode(payload)
     end
@@ -65,6 +66,12 @@ module JWT
       return algorithm.sign(encoded_header_and_payload, key: key) if algorithm
 
       JWT::Signature.sign(alg, encoded_header_and_payload, key)
+    end
+
+    def validate_claims!
+      return unless payload.is_a?(Hash)
+
+      ClaimsValidator.new(payload).validate!
     end
 
     def encode(data)
