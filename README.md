@@ -584,6 +584,26 @@ jwk_hash = jwk.export
 jwk_hash_with_private_key = jwk.export(include_private: true)
 ```
 
+## DSL for creating JWT encoders and decoders
+
+As an alternative to `::JWT.decode` and `::JWT.encode` there is a possibility to use a DSL to define the behaviour for the token handling. This approach allows you to define custom algorithms, encoders and logic for you JWT tokens.
+
+A few examples use-cases be found from the [specs](spec/dsl/examples)
+
+```ruby
+  require 'jwt'
+
+  module AppToken
+    include ::JWT
+    algorithm 'HS256'
+    key 'async_secret'
+  end
+
+  encoded_token = AppToken.encode!(data: 'data', exp: Time.now.to_i+3600)
+
+  payload, headers = AppToken.decode!(encoded_token)
+```
+
 # Development and Tests
 
 We depend on [Bundler](http://rubygems.org/gems/bundler) for defining gemspec and performing releases to rubygems.org, which can be done with
