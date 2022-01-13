@@ -57,7 +57,7 @@ module JWT
 
       case iss
       when *options_iss
-        return
+        nil
       else
         raise(JWT::InvalidIssuerError, "Invalid issuer. Expected #{options_iss}, received #{iss || '<none>'}")
       end
