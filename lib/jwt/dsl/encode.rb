@@ -34,8 +34,8 @@ module JWT
               key: options[:key] || context.signing_key,
               encode_payload_proc: context.encode_payload,
               headers: options[:headers],
-              algorithm: context.algorithm,
-              expiration: context.expiration
+              algorithm: options[:algorithm] || context.algorithm,
+              expiration: options[:expiration] || context.expiration
             }
 
             if opts[:algorithm].is_a?(String) && opts[:key].nil?

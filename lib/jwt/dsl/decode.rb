@@ -42,7 +42,7 @@ module JWT
               key: options[:key] || context.verification_key || context.signing_key,
               decode_payload_proc: context.decode_payload,
               leeway: context.expiration_leeway,
-              algorithms: (Array(context.algorithm) + Array(context.algorithms)).uniq,
+              algorithms: (Array(options[:algorithms]) + Array(context.algorithm) + Array(context.algorithms)).uniq,
               jwks: context.jwk_resolver
             ).merge(options)
           end
