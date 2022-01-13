@@ -181,11 +181,11 @@ RSpec.describe ::JWT::Verify do
     end
     context 'when iss is a Method instance' do
       def issuer_start_with_first?(issuer)
-        issuer && issuer.start_with?('first')
+        issuer&.start_with?('first')
       end
 
       def issuer_start_with_ruby?(issuer)
-        issuer && issuer.start_with?('ruby')
+        issuer&.start_with?('ruby')
       end
 
       it 'must raise JWT::InvalidIssuerError when the method returns false' do
@@ -203,7 +203,7 @@ RSpec.describe ::JWT::Verify do
       it 'must allow a method that returns true to pass' do
         described_class.verify_iss(payload, options.merge(iss: method(:issuer_start_with_ruby?)))
       end
-    end if Method.instance_methods.include?(:===)
+    end
   end
 
   context '.verify_jti(payload, options)' do
