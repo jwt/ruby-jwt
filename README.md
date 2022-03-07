@@ -42,7 +42,7 @@ The JWT spec supports NONE, HMAC, RSASSA, ECDSA and RSASSA-PSS algorithms for cr
 
 See: [ JSON Web Algorithms (JWA) 3.1. "alg" (Algorithm) Header Parameter Values for JWS](https://tools.ietf.org/html/rfc7518#section-3.1)
 
-**NONE**
+### **NONE**
 
 * none - unsigned token
 
@@ -68,7 +68,7 @@ decoded_token = JWT.decode token, nil, false
 puts decoded_token
 ```
 
-**HMAC**
+### **HMAC**
 
 * HS256 - HMAC using SHA-256 hash algorithm
 * HS512256 - HMAC using SHA-512-256 hash algorithm (only available with RbNaCl; see note below)
@@ -100,7 +100,7 @@ Note: If [RbNaCl](https://github.com/cryptosphere/rbnacl) is loadable, ruby-jwt 
 [libsodium](https://github.com/jedisct1/libsodium), it can be installed
 on MacOS with `brew install libsodium`.
 
-**RSA**
+### **RSA**
 
 * RS256 - RSA using SHA-256 hash algorithm
 * RS384 - RSA using SHA-384 hash algorithm
@@ -125,7 +125,7 @@ decoded_token = JWT.decode token, rsa_public, true, { algorithm: 'RS256' }
 puts decoded_token
 ```
 
-**ECDSA**
+### **ECDSA**
 
 * ES256 - ECDSA using P-256 and SHA-256
 * ES384 - ECDSA using P-384 and SHA-384
@@ -152,7 +152,7 @@ decoded_token = JWT.decode token, ecdsa_public, true, { algorithm: 'ES256' }
 puts decoded_token
 ```
 
-**EDDSA**
+### **EDDSA**
 
 In order to use this algorithm you need to add the `RbNaCl` gem to you `Gemfile`.
 
@@ -181,7 +181,7 @@ decoded_token = JWT.decode token, public_key, true, { algorithm: 'ED25519' }
 
 ```
 
-**RSASSA-PSS**
+### **RSASSA-PSS**
 
 In order to use this algorithm you need to add the `openssl` gem to you `Gemfile` with a version greater or equal to `2.1`.
 
