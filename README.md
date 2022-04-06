@@ -543,7 +543,7 @@ end
 
 ### JSON Web Key (JWK)
 
-JWK is a JSON structure representing a cryptographic key. Currently only supports RSA public keys.
+JWK is a JSON structure representing a cryptographic key. Currently only supports RSA, EC and HMAC keys.
 
 ```ruby
 jwk = JWT::JWK.new(OpenSSL::PKey::RSA.new(2048), "optional-kid")
