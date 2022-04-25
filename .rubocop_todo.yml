@@ -15,16 +15,6 @@ Gemspec/RequireMFA:
     - 'ruby-jwt.gemspec'
 
 # Offense count: 1
-Lint/MissingSuper:
-  Exclude:
-    - 'lib/jwt/jwk/key_base.rb'
-
-# Offense count: 1
-# Configuration parameters: IgnoredMethods, CountRepeatedAttributes.
-Metrics/AbcSize:
-  Max: 25
-
-# Offense count: 1
 # Configuration parameters: AllowedMethods.
 # AllowedMethods: respond_to_missing?
 Style/OptionalBooleanParameter:

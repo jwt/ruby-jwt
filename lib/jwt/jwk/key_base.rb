@@ -11,6 +11,7 @@ module JWT
       end
 
       def self.inherited(klass)
+        super
         ::JWT::JWK.classes << klass
       end
     end
