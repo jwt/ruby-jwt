@@ -4,12 +4,13 @@ module JWT
   module JWK
     class RSA < KeyBase
       BINARY = 2
-      KTY    = 'RSA'.freeze
+      KTY    = 'RSA'
       KTYS   = [KTY, OpenSSL::PKey::RSA].freeze
       RSA_KEY_ELEMENTS = %i[n e d p q dp dq qi].freeze
 
       def initialize(keypair, kid = nil)
         raise ArgumentError, 'keypair must be of type OpenSSL::PKey::RSA' unless keypair.is_a?(OpenSSL::PKey::RSA)
+
         super(keypair, kid || generate_kid(keypair.public_key))
       end
 

@@ -8,7 +8,7 @@ RSpec.describe JWT::ClaimsValidator do
 
     shared_examples_for 'a NumericDate claim' do |claim|
       context "when #{claim} payload is an integer" do
-        let(:claims) { { claim => 12345 } }
+        let(:claims) { { claim => 12_345 } }
 
         it 'does not raise error' do
           expect { subject }.not_to raise_error

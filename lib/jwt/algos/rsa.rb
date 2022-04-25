@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module JWT
   module Algos
     module Rsa
@@ -7,7 +9,8 @@ module JWT
 
       def sign(to_sign)
         algorithm, msg, key = to_sign.values
-        raise EncodeError, "The given key is a #{key.class}. It has to be an OpenSSL::PKey::RSA instance." if key.class == String
+        raise EncodeError, "The given key is a #{key.class}. It has to be an OpenSSL::PKey::RSA instance." if key.instance_of?(String)
+
         key.sign(OpenSSL::Digest.new(algorithm.sub('RS', 'sha')), msg)
       end
 

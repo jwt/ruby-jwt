@@ -3,7 +3,7 @@
 module JWT
   module JWK
     class HMAC < KeyBase
-      KTY = 'oct'.freeze
+      KTY = 'oct'
       KTYS = [KTY, String].freeze
 
       def initialize(keypair, kid = nil)

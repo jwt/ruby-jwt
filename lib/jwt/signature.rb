@@ -13,7 +13,8 @@ end
 module JWT
   # Signature logic for JWT
   module Signature
-    extend self
+    module_function
+
     ToSign = Struct.new(:algorithm, :msg, :key)
     ToVerify = Struct.new(:algorithm, :public_key, :signing_input, :signature)
 

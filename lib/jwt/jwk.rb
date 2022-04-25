@@ -36,6 +36,7 @@ module JWT
       def generate_mappings
         classes.each_with_object({}) do |klass, hash|
           next unless klass.const_defined?('KTYS')
+
           Array(klass::KTYS).each do |kty|
             hash[kty] = klass
           end
