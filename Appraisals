@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 appraise 'standalone' do
   # No additions
 end

@@ -14,33 +14,10 @@ Gemspec/RequireMFA:
   Exclude:
     - 'ruby-jwt.gemspec'
 
-# Offense count: 10
-# Cop supports --auto-correct.
-Layout/EmptyLineAfterGuardClause:
-  Exclude:
-    - 'lib/jwt/algos/ecdsa.rb'
-    - 'lib/jwt/algos/eddsa.rb'
-    - 'lib/jwt/algos/rsa.rb'
-    - 'lib/jwt/decode.rb'
-    - 'lib/jwt/jwk.rb'
-    - 'lib/jwt/jwk/rsa.rb'
-    - 'lib/jwt/verify.rb'
-
-# Offense count: 3
-# Cop supports --auto-correct.
-# Configuration parameters: AllowMultipleStyles, EnforcedHashRocketStyle, EnforcedColonStyle, EnforcedLastArgumentHashStyle.
-# SupportedHashRocketStyles: key, separator, table
-# SupportedColonStyles: key, separator, table
-# SupportedLastArgumentHashStyles: always_inspect, always_ignore, ignore_implicit, ignore_explicit
-Layout/HashAlignment:
-  Exclude:
-    - 'lib/jwt/algos/ecdsa.rb'
-
 # Offense count: 1
 Lint/MissingSuper:
   Exclude:
     - 'lib/jwt/jwk/key_base.rb'
-
 
 # Offense count: 1
 # Configuration parameters: IgnoredMethods, CountRepeatedAttributes.
@@ -48,89 +25,8 @@ Metrics/AbcSize:
   Max: 25
 
 # Offense count: 1
-# Cop supports --auto-correct.
-# Configuration parameters: IgnoredMethods.
-# IgnoredMethods: ==, equal?, eql?
-Style/ClassEqualityComparison:
-  Exclude:
-    - 'lib/jwt/algos/rsa.rb'
-
-# Offense count: 1
-# Cop supports --auto-correct.
-Style/ExpandPathArguments:
-  Exclude:
-    - 'ruby-jwt.gemspec'
-
-# Offense count: 19
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyle.
-# SupportedStyles: always, always_true, never
-Style/FrozenStringLiteralComment:
-  Exclude:
-    - 'Appraisals'
-    - 'Gemfile'
-    - 'Rakefile'
-    - 'bin/console.rb'
-    - 'lib/jwt/algos/ecdsa.rb'
-    - 'lib/jwt/algos/eddsa.rb'
-    - 'lib/jwt/algos/hmac.rb'
-    - 'lib/jwt/algos/none.rb'
-    - 'lib/jwt/algos/ps.rb'
-    - 'lib/jwt/algos/rsa.rb'
-    - 'lib/jwt/algos/unsupported.rb'
-    - 'lib/jwt/claims_validator.rb'
-    - 'lib/jwt/default_options.rb'
-    - 'lib/jwt/security_utils.rb'
-    - 'ruby-jwt.gemspec'
-
-# Offense count: 2
-# Cop supports --auto-correct.
-Style/HashTransformKeys:
-  Exclude:
-    - 'lib/jwt/claims_validator.rb'
-    - 'lib/jwt/encode.rb'
-
-# Offense count: 1
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyle, Autocorrect.
-# SupportedStyles: module_function, extend_self, forbidden
-Style/ModuleFunction:
-  Exclude:
-    - 'lib/jwt/signature.rb'
-
-# Offense count: 1
-# Cop supports --auto-correct.
-# Configuration parameters: Strict.
-Style/NumericLiterals:
-  MinDigits: 6
-
-# Offense count: 1
 # Configuration parameters: AllowedMethods.
 # AllowedMethods: respond_to_missing?
 Style/OptionalBooleanParameter:
   Exclude:
     - 'lib/jwt.rb'
-
-# Offense count: 5
-# Cop supports --auto-correct.
-Style/RedundantFreeze:
-  Exclude:
-    - 'lib/jwt/encode.rb'
-    - 'lib/jwt/jwk/ec.rb'
-    - 'lib/jwt/jwk/hmac.rb'
-    - 'lib/jwt/jwk/rsa.rb'
-
-# Offense count: 1
-# Cop supports --auto-correct.
-# Configuration parameters: ConvertCodeThatCanStartToReturnNil, AllowedMethods.
-# AllowedMethods: present?, blank?, presence, try, try!
-Style/SafeNavigation:
-  Exclude:
-    - 'lib/jwt/encode.rb'
-
-# Offense count: 1
-# Cop supports --auto-correct.
-Style/SlicingWithRange:
-  Exclude:
-    - 'lib/jwt/security_utils.rb'
-

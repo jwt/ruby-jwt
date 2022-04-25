@@ -7,14 +7,14 @@ require_relative './claims_validator'
 module JWT
   # Encoding logic for JWT
   class Encode
-    ALG_NONE = 'none'.freeze
-    ALG_KEY  = 'alg'.freeze
+    ALG_NONE = 'none'
+    ALG_KEY  = 'alg'
 
     def initialize(options)
       @payload = options[:payload]
       @key = options[:key]
       _, @algorithm = Algos.find(options[:algorithm])
-      @headers = options[:headers].each_with_object({}) { |(key, value), headers| headers[key.to_s] = value }
+      @headers = options[:headers].transform_keys(&:to_s)
     end
 
     def segments
@@ -45,7 +45,7 @@ module JWT
     end
 
     def encode_payload
-      if @payload && @payload.is_a?(Hash)
+      if @payload.is_a?(Hash)
         ClaimsValidator.new(@payload).validate!
       end
 

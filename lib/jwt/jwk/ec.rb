@@ -8,7 +8,7 @@ module JWT
       extend Forwardable
       def_delegators :@keypair, :public_key
 
-      KTY    = 'EC'.freeze
+      KTY    = 'EC'
       KTYS   = [KTY, OpenSSL::PKey::EC].freeze
       BINARY = 2
 

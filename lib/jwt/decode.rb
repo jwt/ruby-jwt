@@ -11,6 +11,7 @@ module JWT
   class Decode
     def initialize(jwt, key, verify, options, &keyfinder)
       raise(JWT::DecodeError, 'Nil JSON web token') unless jwt
+
       @jwt = jwt
       @key = key
       @options = options
@@ -30,6 +31,7 @@ module JWT
         verify_claims
       end
       raise(JWT::DecodeError, 'Not enough or too many segments') unless header && payload
+
       [payload, header]
     end
 

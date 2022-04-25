@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module JWT
   module DefaultOptions
     DEFAULT_OPTIONS = {

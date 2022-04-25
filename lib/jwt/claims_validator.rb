@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require_relative './error'
 
 module JWT
@@ -9,7 +11,7 @@ module JWT
     ].freeze
 
     def initialize(payload)
-      @payload = payload.each_with_object({}) { |(k, v), h| h[k.to_sym] = v }
+      @payload = payload.transform_keys(&:to_sym)
     end
 
     def validate!

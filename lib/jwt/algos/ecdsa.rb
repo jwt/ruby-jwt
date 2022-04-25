@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module JWT
   module Algos
     module Ecdsa
@@ -5,9 +7,9 @@ module JWT
 
       NAMED_CURVES = {
         'prime256v1' => 'ES256',
-        'secp256r1'  => 'ES256', # alias for prime256v1
-        'secp384r1'  => 'ES384',
-        'secp521r1'  => 'ES512'
+        'secp256r1' => 'ES256', # alias for prime256v1
+        'secp384r1' => 'ES384',
+        'secp521r1' => 'ES512'
       }.freeze
 
       SUPPORTED = NAMED_CURVES.values.uniq.freeze
@@ -31,6 +33,7 @@ module JWT
         if algorithm != key_algorithm
           raise IncorrectAlgorithm, "payload algorithm is #{algorithm} but #{key_algorithm} verification key was provided"
         end
+
         digest = OpenSSL::Digest.new(curve_definition[:digest])
         public_key.dsa_verify_asn1(digest.digest(signing_input), SecurityUtils.raw_to_asn1(signature, public_key))
       end
