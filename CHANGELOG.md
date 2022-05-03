@@ -1,5 +1,52 @@
 # Changelog
 
+## [v2.4.0](https://github.com/jwt/ruby-jwt/tree/v2.4.0) (2022-05-03)
+
+[Full Changelog](https://github.com/jwt/ruby-jwt/compare/v2.3.0...v2.4.0)
+
+**Implemented enhancements:**
+
+- Ensure presence of claims [\#244](https://github.com/jwt/ruby-jwt/issues/244)
+- Support verifying signature signed using x5c header [\#59](https://github.com/jwt/ruby-jwt/issues/59)
+- Add x5c header key finder [\#338](https://github.com/jwt/ruby-jwt/pull/338) ([bdewater](https://github.com/bdewater))
+
+**Security fixes:**
+
+- Importing JWK then exporting results in different `kid` [\#313](https://github.com/jwt/ruby-jwt/issues/313)
+
+**Closed issues:**
+
+- Is there a way to decode a ES256 encoded JWT with a root certificate but without a public key or a private key? [\#471](https://github.com/jwt/ruby-jwt/issues/471)
+- Encode output with extra quote [\#469](https://github.com/jwt/ruby-jwt/issues/469)
+- Please release new gem version [\#444](https://github.com/jwt/ruby-jwt/issues/444)
+- HS512 signature verification fails for valid tokens [\#438](https://github.com/jwt/ruby-jwt/issues/438)
+- ArgumentError: invalid base64 while calling JWT::JWK.import\(hash\) [\#361](https://github.com/jwt/ruby-jwt/issues/361)
+- NoMethodError (undefined method `encode' for JsonWebToken:Module\) [\#329](https://github.com/jwt/ruby-jwt/issues/329)
+
+**Merged pull requests:**
+
+- Fix RuboCop TODOs [\#476](https://github.com/jwt/ruby-jwt/pull/476) ([typhoon2099](https://github.com/typhoon2099))
+- Update note about supported JWK types [\#475](https://github.com/jwt/ruby-jwt/pull/475) ([dpashkevich](https://github.com/dpashkevich))
+- Make specific algorithms in README linkable [\#472](https://github.com/jwt/ruby-jwt/pull/472) ([milieu](https://github.com/milieu))
+- Add tests for keyfinder logic to ensure the argument count does not matter [\#467](https://github.com/jwt/ruby-jwt/pull/467) ([anakinj](https://github.com/anakinj))
+- More tests for none token [\#466](https://github.com/jwt/ruby-jwt/pull/466) ([anakinj](https://github.com/anakinj))
+- Improve non algorithm tests [\#465](https://github.com/jwt/ruby-jwt/pull/465) ([anakinj](https://github.com/anakinj))
+- Bring back Ruby 2.5 support and CodeClimate coverage reports [\#464](https://github.com/jwt/ruby-jwt/pull/464) ([anakinj](https://github.com/anakinj))
+- Fix a little RuboCop issue [\#462](https://github.com/jwt/ruby-jwt/pull/462) ([anakinj](https://github.com/anakinj))
+- Fixes with latest RuboCop [\#459](https://github.com/jwt/ruby-jwt/pull/459) ([anakinj](https://github.com/anakinj))
+- Removed bundler-audit from codeclimate config [\#458](https://github.com/jwt/ruby-jwt/pull/458) ([anakinj](https://github.com/anakinj))
+- Updated rubocop to 1.23.0 [\#457](https://github.com/jwt/ruby-jwt/pull/457) ([anakinj](https://github.com/anakinj))
+- Add Ruby 3.1 to test matrix [\#456](https://github.com/jwt/ruby-jwt/pull/456) ([anakinj](https://github.com/anakinj))
+- Use Ruby built-in url-safe base64 methods [\#454](https://github.com/jwt/ruby-jwt/pull/454) ([bdewater](https://github.com/bdewater))
+- Stop running tests on EOL rubies. [\#453](https://github.com/jwt/ruby-jwt/pull/453) ([anakinj](https://github.com/anakinj))
+- Fix openssl gem version check to support versons greater than 3 [\#452](https://github.com/jwt/ruby-jwt/pull/452) ([anakinj](https://github.com/anakinj))
+- Readme: Typo fix re MissingRequiredClaim [\#451](https://github.com/jwt/ruby-jwt/pull/451) ([antonmorant](https://github.com/antonmorant))
+- Fix for exception after mergeing \#385 [\#450](https://github.com/jwt/ruby-jwt/pull/450) ([anakinj](https://github.com/anakinj))
+- Create CODE\_OF\_CONDUCT.md [\#449](https://github.com/jwt/ruby-jwt/pull/449) ([loic5](https://github.com/loic5))
+- Allow regular expressions and procs to verify issuer [\#437](https://github.com/jwt/ruby-jwt/pull/437) ([rewritten](https://github.com/rewritten))
+- Add Support to be able to verify from multiple keys [\#425](https://github.com/jwt/ruby-jwt/pull/425) ([ritikesh](https://github.com/ritikesh))
+- Define the secp256r1 curve [\#385](https://github.com/jwt/ruby-jwt/pull/385) ([anakinj](https://github.com/anakinj))
+
 ## [v2.3.0](https://github.com/jwt/ruby-jwt/tree/v2.3.0) (2021-10-03)
 
 [Full Changelog](https://github.com/jwt/ruby-jwt/compare/v2.2.3...v2.3.0)
@@ -16,6 +63,7 @@
 
 **Merged pull requests:**
 
+- Release 2.3.0 [\#448](https://github.com/jwt/ruby-jwt/pull/448) ([excpt](https://github.com/excpt))
 - Fix Style/MultilineIfModifier issues [\#447](https://github.com/jwt/ruby-jwt/pull/447) ([anakinj](https://github.com/anakinj))
 - feat\(EdDSA\): Accept EdDSA as algorithm header [\#446](https://github.com/jwt/ruby-jwt/pull/446) ([Pierre-Michard](https://github.com/Pierre-Michard))
 - Pass kid param through JWT::JWK.create\_from [\#445](https://github.com/jwt/ruby-jwt/pull/445) ([shaun-guth-allscripts](https://github.com/shaun-guth-allscripts))
