@@ -9,7 +9,8 @@ module JWT
         'prime256v1' => 'ES256',
         'secp256r1' => 'ES256', # alias for prime256v1
         'secp384r1' => 'ES384',
-        'secp521r1' => 'ES512'
+        'secp521r1' => 'ES512',
+        'secp256k1' => 'ES256K'
       }.freeze
 
       SUPPORTED = NAMED_CURVES.values.uniq.freeze
@@ -45,7 +46,7 @@ module JWT
 
         {
           algorithm: algorithm,
-          digest: algorithm.sub('ES', 'sha')
+          digest: algorithm.sub('ES', 'sha').sub('K', '')
         }
       end
     end

@@ -130,6 +130,7 @@ puts decoded_token
 * ES256 - ECDSA using P-256 and SHA-256
 * ES384 - ECDSA using P-384 and SHA-384
 * ES512 - ECDSA using P-521 and SHA-512
+* ES256K - ECDSA using P-256K and SHA-256
 
 ```ruby
 ecdsa_key = OpenSSL::PKey::EC.new 'prime256v1'

@@ -19,6 +19,11 @@ RSpec.describe ::JWT::Algos::Ecdsa do
       it { is_expected.to eq(algorithm: 'ES512', digest: 'sha512') }
     end
 
+    context 'when secp256k1 is given' do
+      let(:curve_name) { 'secp256k1' }
+      it { is_expected.to eq(algorithm: 'ES256K', digest: 'sha256') }
+    end
+
     context 'when unkown is given' do
       let(:curve_name) { 'unkown' }
       it 'raises an error' do
