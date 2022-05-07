@@ -76,7 +76,7 @@ RSpec.describe JWT::JWK::EC do
     let(:include_private) { false }
     let(:exported_key) { described_class.new(keypair).export(include_private: include_private) }
 
-    ['P-256', 'P-384', 'P-521'].each do |crv|
+    ['P-256', 'P-384', 'P-521', 'P-256K'].each do |crv|
       context "when crv=#{crv}" do
         let(:openssl_curve) { JWT::JWK::EC.to_openssl_curve(crv) }
         let(:ec_key) { OpenSSL::PKey::EC.new(openssl_curve).generate_key }

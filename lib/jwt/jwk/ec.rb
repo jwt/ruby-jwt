@@ -59,6 +59,9 @@ module JWT
         when 'prime256v1'
           crv = 'P-256'
           x_octets, y_octets = encoded_point.unpack('xa32a32')
+        when 'secp256k1'
+          crv = 'P-256K'
+          x_octets, y_octets = encoded_point.unpack('xa32a32')
         when 'secp384r1'
           crv = 'P-384'
           x_octets, y_octets = encoded_point.unpack('xa48a48')
@@ -98,6 +101,7 @@ module JWT
           when 'P-256' then 'prime256v1'
           when 'P-384' then 'secp384r1'
           when 'P-521' then 'secp521r1'
+          when 'P-256K' then 'secp256k1'
           else raise JWT::JWKError, 'Invalid curve provided'
           end
         end
