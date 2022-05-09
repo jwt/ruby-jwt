@@ -37,7 +37,7 @@ Metrics/AbcSize:
   Max: 25
 
 Metrics/ClassLength:
-  Max: 103
+  Max: 105
 
 Metrics/ModuleLength:
   Max: 100
@@ -50,7 +50,7 @@ Metrics/BlockLength:
     - spec/**/*_spec.rb
 
 Metrics/MethodLength:
-  Max: 15
+  Max: 20
 
 Style/SingleLineBlockParams:
   Enabled: false
