@@ -6,14 +6,29 @@ module JWT
       module_function
 
       NAMED_CURVES = {
-        'prime256v1' => 'ES256',
-        'secp256r1' => 'ES256', # alias for prime256v1
-        'secp384r1' => 'ES384',
-        'secp521r1' => 'ES512',
-        'secp256k1' => 'ES256K'
+        'prime256v1' => {
+          algorithm: 'ES256',
+          digest: 'sha256'
+        },
+        'secp256r1' => { # alias for prime256v1
+          algorithm: 'ES256',
+          digest: 'sha256'
+        },
+        'secp384r1' => {
+          algorithm: 'ES384',
+          digest: 'sha384'
+        },
+        'secp521r1' => {
+          algorithm: 'ES512',
+          digest: 'sha512'
+        },
+        'secp256k1' => {
+          algorithm: 'ES256K',
+          digest: 'sha256'
+        }
       }.freeze
 
-      SUPPORTED = NAMED_CURVES.values.uniq.freeze
+      SUPPORTED = NAMED_CURVES.map { |_, c| c[:algorithm] }.uniq.freeze
 
       def sign(to_sign)
         algorithm, msg, key = to_sign.values
@@ -40,14 +55,9 @@ module JWT
       end
 
       def curve_by_name(name)
-        algorithm = NAMED_CURVES.fetch(name) do
+        NAMED_CURVES.fetch(name) do
           raise UnsupportedEcdsaCurve, "The ECDSA curve '#{name}' is not supported"
         end
-
-        {
-          algorithm: algorithm,
-          digest: algorithm.sub('ES', 'sha').sub('K', '')
-        }
       end
     end
   end
