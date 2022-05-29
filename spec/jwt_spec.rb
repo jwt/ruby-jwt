@@ -39,9 +39,9 @@ RSpec.describe JWT do
       ed25519_private = RbNaCl::Signatures::Ed25519::SigningKey.new('abcdefghijklmnopqrstuvwxyzABCDEF')
       ed25519_public =  ed25519_private.verify_key
       data.merge!(
-        'ED25519_private' =>  ed25519_private,
+        'ED25519_private' => ed25519_private,
         'ED25519_public' => ed25519_public,
-        'EdDSA_private' =>  ed25519_private,
+        'EdDSA_private' => ed25519_private,
         'EdDSA_public' => ed25519_public
       )
     end
@@ -291,7 +291,7 @@ RSpec.describe JWT do
             Base64.urlsafe_decode64(signature),
             [header, body].join('.'),
             salt_length: :auto,
-            mgf1_hash:   translated_alg
+            mgf1_hash: translated_alg
           )
           expect(valid_signature).to be true
         end
@@ -360,7 +360,7 @@ RSpec.describe JWT do
 
   context 'Verify' do
     context 'when key given as an array with multiple possible keys' do
-      let(:payload) { { 'data' => 'data'} }
+      let(:payload) { { 'data' => 'data' } }
       let(:token)   { JWT.encode(payload, secret, 'HS256') }
       let(:secret)  { 'hmac_secret' }
 
@@ -605,18 +605,18 @@ RSpec.describe JWT do
 
   context 'when the alg value is given as a header parameter' do
     it 'does not override the actual algorithm used' do
-      headers = JSON.parse(Base64.urlsafe_decode64(JWT.encode('Hello World', 'secret', 'HS256', { alg: 'HS123'}).split('.').first))
+      headers = JSON.parse(Base64.urlsafe_decode64(JWT.encode('Hello World', 'secret', 'HS256', { alg: 'HS123' }).split('.').first))
       expect(headers['alg']).to eq('HS256')
     end
 
     it 'should generate the same token' do
-      expect(JWT.encode('Hello World', 'secret', 'HS256', { alg: 'HS256'})).to eq JWT.encode('Hello World', 'secret', 'HS256')
+      expect(JWT.encode('Hello World', 'secret', 'HS256', { alg: 'HS256' })).to eq JWT.encode('Hello World', 'secret', 'HS256')
     end
   end
 
   context 'when hmac algorithm is used without secret key' do
     it 'encodes payload' do
-      payload = { a: 1, b: 'b'}
+      payload = { a: 1, b: 'b' }
 
       token = JWT.encode(payload, '', 'HS256')
 
@@ -632,13 +632,13 @@ RSpec.describe JWT do
 
     it 'ignores algorithm casing during encode/decode' do
       enc = JWT.encode(payload, '', 'hs256')
-      expect(JWT.decode(enc, '')).to eq([payload, { 'alg' => 'HS256'}])
+      expect(JWT.decode(enc, '')).to eq([payload, { 'alg' => 'HS256' }])
 
       enc = JWT.encode(payload, data[:rsa_private], 'rs512')
-      expect(JWT.decode(enc, data[:rsa_public], true, algorithm: 'RS512')).to eq([payload, { 'alg' => 'RS512'}])
+      expect(JWT.decode(enc, data[:rsa_public], true, algorithm: 'RS512')).to eq([payload, { 'alg' => 'RS512' }])
 
       enc = JWT.encode(payload, data[:rsa_private], 'RS512')
-      expect(JWT.decode(enc, data[:rsa_public], true, algorithm: 'rs512')).to eq([payload, { 'alg' => 'RS512'}])
+      expect(JWT.decode(enc, data[:rsa_public], true, algorithm: 'rs512')).to eq([payload, { 'alg' => 'RS512' }])
     end
 
     it 'raises error for invalid algorithm' do
@@ -650,7 +650,7 @@ RSpec.describe JWT do
 
   describe '::JWT.decode with verify_iat parameter' do
     let!(:time_now) { Time.now }
-    let(:token)     { ::JWT.encode({ pay: 'load', iat: iat}, 'secret', 'HS256') }
+    let(:token)     { ::JWT.encode({ pay: 'load', iat: iat }, 'secret', 'HS256') }
 
     subject(:decoded_token) { ::JWT.decode(token, 'secret', true, verify_iat: true) }
 
@@ -725,21 +725,21 @@ RSpec.describe JWT do
   describe 'when none token is and decoding without key and with verification' do
     let(:none_token) { ::JWT.encode(payload, nil, 'none') }
     it 'decodes the token' do
-      expect(::JWT.decode(none_token, nil, true, algorithms: 'none')).to eq([payload, {'alg' => 'none'}])
+      expect(::JWT.decode(none_token, nil, true, algorithms: 'none')).to eq([payload, { 'alg' => 'none' }])
     end
   end
 
   describe 'when none token is decoded with a key given' do
     let(:none_token) { ::JWT.encode(payload, nil, 'none') }
     it 'decodes the token' do
-      expect(::JWT.decode(none_token, 'key', true, algorithms: 'none')).to eq([payload, {'alg' => 'none'}])
+      expect(::JWT.decode(none_token, 'key', true, algorithms: 'none')).to eq([payload, { 'alg' => 'none' }])
     end
   end
 
   describe 'when none token is decoded without verify' do
     let(:none_token) { ::JWT.encode(payload, nil, 'none') }
     it 'decodes the token' do
-      expect(::JWT.decode(none_token, 'key', false)).to eq([payload, {'alg' => 'none'}])
+      expect(::JWT.decode(none_token, 'key', false)).to eq([payload, { 'alg' => 'none' }])
     end
   end
 

@@ -1,4 +1,3 @@
-styleguide: excpt/linters
 engines:
   reek:
     enabled: true
@@ -6,13 +5,13 @@ engines:
     enabled: true
   rubocop:
     enabled: true
-    channel: rubocop-0-52
+    channel: latest
   duplication:
     config:
       languages:
       - ruby
     enabled: true
   remark-lint:
-    enabled: true
+    enabled: false
 exclude_paths:
-- spec
+  - spec

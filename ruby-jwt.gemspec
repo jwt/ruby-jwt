@@ -18,7 +18,7 @@ Gem::Specification.new do |spec|
   spec.required_ruby_version = '>= 2.5'
   spec.metadata = {
     'bug_tracker_uri' => 'https://github.com/jwt/ruby-jwt/issues',
-    'changelog_uri'   => "https://github.com/jwt/ruby-jwt/blob/v#{JWT.gem_version}/CHANGELOG.md"
+    'changelog_uri' => "https://github.com/jwt/ruby-jwt/blob/v#{JWT.gem_version}/CHANGELOG.md"
   }
 
   spec.files = `git ls-files -z`.split("\x0").reject { |f| f.match(%r{^(spec|gemfiles|coverage|bin)/}) }
@@ -29,6 +29,7 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency 'appraisal'
   spec.add_development_dependency 'bundler'
   spec.add_development_dependency 'rake'
+  spec.add_development_dependency 'reek'
   spec.add_development_dependency 'rspec'
   spec.add_development_dependency 'simplecov'
 end

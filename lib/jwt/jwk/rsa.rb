@@ -64,7 +64,7 @@ module JWT
             decode_open_ssl_bn(value)
           end
           kid = jwk_attributes(jwk_data, :kid)[:kid]
-          self.new(rsa_pkey(pkey_params), kid)
+          new(rsa_pkey(pkey_params), kid)
         end
 
         private

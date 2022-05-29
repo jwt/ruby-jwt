@@ -50,7 +50,7 @@ module JWT
 
           raise JWT::JWKError, 'Key format is invalid for HMAC' unless jwk_k
 
-          self.new(jwk_k, jwk_kid)
+          new(jwk_k, jwk_kid)
         end
       end
     end
