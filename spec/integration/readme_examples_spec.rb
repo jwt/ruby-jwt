@@ -289,5 +289,33 @@ RSpec.describe 'README.md code test' do
         JWT.decode(token, nil, true, { algorithms: ['RS512'], jwks: jwk_loader })
       end.not_to raise_error
     end
+
+    it 'JWK with thumbprint as kid via symbol' do
+      JWT.configuration.jwk.kid_generator_type = :rfc7638_thumbprint
+
+      jwk = JWT::JWK.new(OpenSSL::PKey::RSA.new(2048))
+
+      jwk_hash = jwk.export
+
+      expect(jwk_hash[:kid].size).to eq(43)
+    end
+
+    it 'JWK with thumbprint as kid via type' do
+      JWT.configuration.jwk.kid_generator = ::JWT::JWK::Thumbprint
+
+      jwk = JWT::JWK.new(OpenSSL::PKey::RSA.new(2048))
+
+      jwk_hash = jwk.export
+
+      expect(jwk_hash[:kid].size).to eq(43)
+    end
+
+    it 'JWK with thumbprint given in the initializer' do
+      jwk = JWT::JWK.new(OpenSSL::PKey::RSA.new(2048), kid_generator: ::JWT::JWK::Thumbprint)
+
+      jwk_hash = jwk.export
+
+      expect(jwk_hash[:kid].size).to eq(43)
+    end
   end
 end

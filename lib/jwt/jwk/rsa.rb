@@ -8,10 +8,14 @@ module JWT
       KTYS   = [KTY, OpenSSL::PKey::RSA].freeze
       RSA_KEY_ELEMENTS = %i[n e d p q dp dq qi].freeze
 
-      def initialize(keypair, kid = nil)
+      attr_reader :keypair
+
+      def initialize(keypair, options = {})
         raise ArgumentError, 'keypair must be of type OpenSSL::PKey::RSA' unless keypair.is_a?(OpenSSL::PKey::RSA)
 
-        super(keypair, kid || generate_kid(keypair.public_key))
+        @keypair = keypair
+
+        super(options)
       end
 
       def private?
@@ -23,25 +27,28 @@ module JWT
       end
 
       def export(options = {})
-        exported_hash = {
-          kty: KTY,
-          n: encode_open_ssl_bn(public_key.n),
-          e: encode_open_ssl_bn(public_key.e),
-          kid: kid
-        }
+        exported_hash = members.merge(kid: kid)
 
         return exported_hash unless private? && options[:include_private] == true
 
         append_private_parts(exported_hash)
       end
 
-      private
+      def members
+        {
+          kty: KTY,
+          n: encode_open_ssl_bn(public_key.n),
+          e: encode_open_ssl_bn(public_key.e)
+        }
+      end
 
-      def generate_kid(public_key)
+      def key_digest
         sequence = OpenSSL::ASN1::Sequence([OpenSSL::ASN1::Integer.new(public_key.n),
                                             OpenSSL::ASN1::Integer.new(public_key.e)])
         OpenSSL::Digest::SHA256.hexdigest(sequence.to_der)
       end
+
+      private
 
       def append_private_parts(the_hash)
         the_hash.merge(
@@ -63,8 +70,7 @@ module JWT
           pkey_params = jwk_attributes(jwk_data, *RSA_KEY_ELEMENTS) do |value|
             decode_open_ssl_bn(value)
           end
-          kid = jwk_attributes(jwk_data, :kid)[:kid]
-          new(rsa_pkey(pkey_params), kid)
+          new(rsa_pkey(pkey_params), kid: jwk_attributes(jwk_data, :kid)[:kid])
         end
 
         private
