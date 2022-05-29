@@ -271,7 +271,7 @@ RSpec.describe 'README.md code test' do
         @cached_keys ||= { keys: [jwk.export] }
       end
       expect do
-        JWT.decode(token, nil, true, { algorithms: ['RS512'], jwks: jwk_loader})
+        JWT.decode(token, nil, true, { algorithms: ['RS512'], jwks: jwk_loader })
       end.not_to raise_error
     end
   end

@@ -55,7 +55,7 @@ describe JWT::X5cKeyFinder do
     let(:token_payload) { { 'data' => 'something' } }
     let(:encoded_token) { JWT.encode(token_payload, leaf_key, 'RS256', { 'x5c' => x5c_header }) }
     let(:decoded_payload) do
-      JWT.decode(encoded_token, nil, true, algorithms: ['RS256'], x5c: { root_certificates: [root_certificate], crls: [crl]}).first
+      JWT.decode(encoded_token, nil, true, algorithms: ['RS256'], x5c: { root_certificates: [root_certificate], crls: [crl] }).first
     end
 
     it 'returns the encoded payload after successful certificate path verification' do

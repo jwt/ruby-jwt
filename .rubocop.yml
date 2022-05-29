@@ -1,5 +1,3 @@
-inherit_from: .rubocop_todo.yml
-
 AllCops:
   TargetRubyVersion: 2.5
   NewCops: enable
@@ -21,16 +19,10 @@ Style/GuardClause:
 Style/IfUnlessModifier:
   Enabled: false
 
-Layout/SpaceInsideHashLiteralBraces:
-  Enabled: false
-
 Style/Lambda:
   Enabled: false
 
 Style/RaiseArgs:
-  Enabled: false
-
-Style/SignalException:
   Enabled: false
 
 Metrics/AbcSize:
@@ -42,21 +34,22 @@ Metrics/ClassLength:
 Metrics/ModuleLength:
   Max: 100
 
-Layout/LineLength:
-  Enabled: false
+Metrics/MethodLength:
+  Max: 20
 
 Metrics/BlockLength:
   Exclude:
     - spec/**/*_spec.rb
 
-Metrics/MethodLength:
-  Max: 20
-
-Style/SingleLineBlockParams:
+Layout/LineLength:
   Enabled: false
 
 Layout/EndAlignment:
   EnforcedStyleAlignWith: variable
+
+Layout/EmptyLineBetweenDefs:
+  Enabled: true
+  AllowAdjacentOneLineDefs: true
 
 Style/FormatString:
   Enabled: false
@@ -70,12 +63,5 @@ Layout/MultilineOperationIndentation:
 Style/WordArray:
   Enabled: false
 
-Style/RedundantSelf:
+Gemspec/RequireMFA:
   Enabled: false
-
-Layout/HashAlignment:
-  Enabled: true
-  EnforcedLastArgumentHashStyle: always_ignore
-
-Style/TrivialAccessors:
-  AllowPredicates: true
