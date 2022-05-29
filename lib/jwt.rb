@@ -3,7 +3,7 @@
 require 'jwt/base64'
 require 'jwt/json'
 require 'jwt/decode'
-require 'jwt/default_options'
+require 'jwt/configuration'
 require 'jwt/encode'
 require 'jwt/error'
 require 'jwt/jwk'
@@ -13,7 +13,7 @@ require 'jwt/jwk'
 # Should be up to date with the latest spec:
 # https://tools.ietf.org/html/rfc7519
 module JWT
-  include JWT::DefaultOptions
+  extend ::JWT::Configuration
 
   module_function
 
@@ -25,6 +25,6 @@ module JWT
   end
 
   def decode(jwt, key = nil, verify = true, options = {}, &keyfinder) # rubocop:disable Style/OptionalBooleanParameter
-    Decode.new(jwt, key, verify, DEFAULT_OPTIONS.merge(options), &keyfinder).decode_segments
+    Decode.new(jwt, key, verify, configuration.decode.to_h.merge(options), &keyfinder).decode_segments
   end
 end

@@ -7,6 +7,7 @@
 
 **Features:**
 
+- Support JWK thumbprints as key ids [#481](https://github.com/jwt/ruby-jwt/pull/481) ([@anakinj](https://github.com/anakinj)).
 - Your contribution here
 
 **Fixes and enhancements:**

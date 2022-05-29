@@ -3,14 +3,16 @@
 module JWT
   module JWK
     class HMAC < KeyBase
-      KTY = 'oct'
+      KTY  = 'oct'
       KTYS = [KTY, String].freeze
 
-      def initialize(keypair, kid = nil)
-        raise ArgumentError, 'keypair must be of type String' unless keypair.is_a?(String)
+      attr_reader :signing_key
 
-        super
-        @kid = kid || generate_kid
+      def initialize(signing_key, options = {})
+        raise ArgumentError, 'signing_key must be of type String' unless signing_key.is_a?(String)
+
+        @signing_key = signing_key
+        super(options)
       end
 
       def private?
@@ -31,14 +33,21 @@ module JWT
         return exported_hash unless private? && options[:include_private] == true
 
         exported_hash.merge(
-          k: keypair
+          k: signing_key
         )
       end
 
-      private
+      def members
+        {
+          kty: KTY,
+          k: signing_key
+        }
+      end
 
-      def generate_kid
-        sequence = OpenSSL::ASN1::Sequence([OpenSSL::ASN1::UTF8String.new(keypair),
+      alias keypair signing_key # for backwards compatibility
+
+      def key_digest
+        sequence = OpenSSL::ASN1::Sequence([OpenSSL::ASN1::UTF8String.new(signing_key),
                                             OpenSSL::ASN1::UTF8String.new(KTY)])
         OpenSSL::Digest::SHA256.hexdigest(sequence.to_der)
       end
@@ -50,7 +59,7 @@ module JWT
 
           raise JWT::JWKError, 'Key format is invalid for HMAC' unless jwk_k
 
-          new(jwk_k, jwk_kid)
+          new(jwk_k, kid: jwk_kid)
         end
       end
     end

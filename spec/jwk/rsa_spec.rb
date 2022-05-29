@@ -61,6 +61,30 @@ RSpec.describe JWT::JWK::RSA do
     end
   end
 
+  describe '.kid' do
+    context 'when configuration says to use :rfc7638_thumbprint' do
+      before do
+        JWT.configuration.jwk.kid_generator_type = :rfc7638_thumbprint
+      end
+
+      it 'generates the kid based on the thumbprint' do
+        expect(described_class.new(OpenSSL::PKey::RSA.new(2048)).kid.size).to eq(43)
+      end
+    end
+
+    context 'when kid is given as a String parameter' do
+      it 'uses the given kid' do
+        expect(described_class.new(OpenSSL::PKey::RSA.new(2048), 'given').kid).to eq('given')
+      end
+    end
+
+    context 'when kid is given as in a hash parameter' do
+      it 'uses the given kid' do
+        expect(described_class.new(OpenSSL::PKey::RSA.new(2048), kid: 'given').kid).to eq('given')
+      end
+    end
+  end
+
   describe '.import' do
     subject { described_class.import(params) }
     let(:exported_key) { described_class.new(rsa_key).export }

@@ -587,8 +587,39 @@ jwk_hash = jwk.export
 jwk_hash_with_private_key = jwk.export(include_private: true)
 ```
 
-## How to contribute
+### Key ID (kid) and JWKs
 
+The key id (kid) generation in the gem is a custom algorithm and not based on any standards. To use a standardized JWK thumbprint (RFC 7638) as the kid for JWKs a generator type can be specified in the global configuration or can be given to the JWK instance on initialization.
+
+```ruby
+JWT.configuration.jwk.kid_generator_type = :rfc7638_thumbprint
+# OR
+JWT.configuration.jwk.kid_generator = ::JWT::JWK::Thumbprint
+# OR
+jwk = JWT::JWK.new(OpenSSL::PKey::RSA.new(2048), kid_generator: ::JWT::JWK::Thumbprint)
+
+jwk_hash = jwk.export
+
+thumbprint_as_the_kid = jwk_hash[:kid]
+
+```
+
+# Development and Tests
+
+We depend on [Bundler](http://rubygems.org/gems/bundler) for defining gemspec and performing releases to rubygems.org, which can be done with
+
+```bash
+rake release
+```
+
+The tests are written with rspec. [Appraisal](https://github.com/thoughtbot/appraisal) is used to ensure compatibility with 3rd party dependencies providing cryptographic features.
+
+```bash
+bundle install
+bundle exec appraisal rake test
+```
+
+## How to contribute
 See [CONTRIBUTING](CONTRIBUTING.md).
 
 ## Contributors

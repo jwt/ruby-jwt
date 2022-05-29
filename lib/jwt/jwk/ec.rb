@@ -6,35 +6,49 @@ module JWT
   module JWK
     class EC < KeyBase
       extend Forwardable
-      def_delegators :@keypair, :public_key
+      def_delegators :keypair, :public_key
 
       KTY    = 'EC'
       KTYS   = [KTY, OpenSSL::PKey::EC].freeze
       BINARY = 2
 
-      def initialize(keypair, kid = nil)
+      attr_reader :keypair
+
+      def initialize(keypair, options = {})
         raise ArgumentError, 'keypair must be of type OpenSSL::PKey::EC' unless keypair.is_a?(OpenSSL::PKey::EC)
 
-        kid ||= generate_kid(keypair)
-        super(keypair, kid)
+        @keypair = keypair
+
+        super(options)
       end
 
       def private?
         @keypair.private_key?
       end
 
-      def export(options = {})
+      def members
         crv, x_octets, y_octets = keypair_components(keypair)
-        exported_hash = {
+        {
           kty: KTY,
           crv: crv,
           x: encode_octets(x_octets),
-          y: encode_octets(y_octets),
-          kid: kid
+          y: encode_octets(y_octets)
         }
+      end
+
+      def export(options = {})
+        exported_hash = members.merge(kid: kid)
+
         return exported_hash unless private? && options[:include_private] == true
 
         append_private_parts(exported_hash)
+      end
+
+      def key_digest
+        _crv, x_octets, y_octets = keypair_components(keypair)
+        sequence = OpenSSL::ASN1::Sequence([OpenSSL::ASN1::Integer.new(OpenSSL::BN.new(x_octets, BINARY)),
+                                            OpenSSL::ASN1::Integer.new(OpenSSL::BN.new(y_octets, BINARY))])
+        OpenSSL::Digest::SHA256.hexdigest(sequence.to_der)
       end
 
       private
@@ -44,13 +58,6 @@ module JWT
         the_hash.merge(
           d: encode_octets(octets)
         )
-      end
-
-      def generate_kid(ec_keypair)
-        _crv, x_octets, y_octets = keypair_components(ec_keypair)
-        sequence = OpenSSL::ASN1::Sequence([OpenSSL::ASN1::Integer.new(OpenSSL::BN.new(x_octets, BINARY)),
-                                            OpenSSL::ASN1::Integer.new(OpenSSL::BN.new(y_octets, BINARY))])
-        OpenSSL::Digest::SHA256.hexdigest(sequence.to_der)
       end
 
       def keypair_components(ec_keypair)
@@ -90,7 +97,7 @@ module JWT
           jwk_crv, jwk_x, jwk_y, jwk_d, jwk_kid = jwk_attrs(jwk_data, %i[crv x y d kid])
           raise JWT::JWKError, 'Key format is invalid for EC' unless jwk_crv && jwk_x && jwk_y
 
-          new(ec_pkey(jwk_crv, jwk_x, jwk_y, jwk_d), jwk_kid)
+          new(ec_pkey(jwk_crv, jwk_x, jwk_y, jwk_d), kid: jwk_kid)
         end
 
         def to_openssl_curve(crv)
