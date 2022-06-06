@@ -15,7 +15,7 @@ module JWT
     # tiny version
     TINY  = 0
     # alpha, beta, etc. tag
-    PRE   = 'beta1'
+    PRE   = nil
 
     # Build version string
     STRING = [MAJOR, MINOR, TINY, PRE].compact.join('.')
