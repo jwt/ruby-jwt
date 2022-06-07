@@ -118,6 +118,8 @@ module JWT
 
     def decode_crypto
       @signature = Base64.urlsafe_decode64(@segments[2] || '')
+    rescue ArgumentError
+      raise(JWT::DecodeError, 'Invalid segment encoding')
     end
 
     def algorithm
