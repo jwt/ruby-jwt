@@ -1,4 +1,10 @@
 # Changelog
+## [v2.4.1](https://github.com/jwt/ruby-jwt/tree/v2.4.1) (2022-06-07)
+
+**Fixes and enhancements:**
+- Raise JWT::DecodeError on invalid signature [\#484](https://github.com/jwt/ruby-jwt/pull/484) ([@freakyfelt!](https://github.com/freakyfelt!)).
+
+[Full Changelog](https://github.com/jwt/ruby-jwt/compare/v2.4.0...v2.4.1)
 
 ## [v2.4.0](https://github.com/jwt/ruby-jwt/tree/v2.4.0) (2022-06-06)
 
@@ -13,7 +19,6 @@
 - Author driven changelog process [#463](https://github.com/jwt/ruby-jwt/pull/463) - [@anakinj](https://github.com/anakinj).
 - Allow regular expressions and procs to verify issuer [\#437](https://github.com/jwt/ruby-jwt/pull/437) ([rewritten](https://github.com/rewritten)).
 - Add Support to be able to verify from multiple keys [\#425](https://github.com/jwt/ruby-jwt/pull/425) ([ritikesh](https://github.com/ritikesh)).
-- Your contribution here
 
 **Fixes and enhancements:**
 - Readme: Typo fix re MissingRequiredClaim [\#451](https://github.com/jwt/ruby-jwt/pull/451) ([antonmorant](https://github.com/antonmorant)).
@@ -21,7 +26,6 @@
 - Make specific algorithms in README linkable [\#472](https://github.com/jwt/ruby-jwt/pull/472) ([milieu](https://github.com/milieu)).
 - Update note about supported JWK types [\#475](https://github.com/jwt/ruby-jwt/pull/475) ([dpashkevich](https://github.com/dpashkevich)).
 - Create CODE\_OF\_CONDUCT.md [\#449](https://github.com/jwt/ruby-jwt/pull/449) ([loic5](https://github.com/loic5)).
-- Your contribution here
 
 ## [v2.3.0](https://github.com/jwt/ruby-jwt/tree/v2.3.0) (2021-10-03)
 
