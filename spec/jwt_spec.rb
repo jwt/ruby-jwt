@@ -575,6 +575,12 @@ RSpec.describe JWT do
     end
   end
 
+  context 'a token with invalid Base64 segments' do
+    it 'raises JWT::DecodeError' do
+      expect { JWT.decode('hello.there.world') }.to raise_error(JWT::DecodeError, 'Invalid segment encoding')
+    end
+  end
+
   context 'a token with two segments but does not require verifying' do
     it 'raises something else than "Not enough or too many segments"' do
       expect { JWT.decode('ThisIsNotAValidJWTToken.second', nil, false) }.to raise_error(JWT::DecodeError, 'Invalid segment encoding')
