@@ -288,7 +288,7 @@ RSpec.describe JWT do
           translated_alg  = alg.gsub('PS', 'sha')
           valid_signature = data[:rsa_public].verify_pss(
             translated_alg,
-            Base64.urlsafe_decode64(signature),
+            ::JWT::Base64.url_decode(signature),
             [header, body].join('.'),
             salt_length: :auto,
             mgf1_hash: translated_alg
@@ -611,7 +611,7 @@ RSpec.describe JWT do
 
   context 'when the alg value is given as a header parameter' do
     it 'does not override the actual algorithm used' do
-      headers = JSON.parse(Base64.urlsafe_decode64(JWT.encode('Hello World', 'secret', 'HS256', { alg: 'HS123' }).split('.').first))
+      headers = JSON.parse(::JWT::Base64.url_decode(JWT.encode('Hello World', 'secret', 'HS256', { alg: 'HS123' }).split('.').first))
       expect(headers['alg']).to eq('HS256')
     end
 
