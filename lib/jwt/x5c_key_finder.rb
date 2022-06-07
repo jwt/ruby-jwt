@@ -47,7 +47,7 @@ module JWT
         x5c_header_or_certificates
       else
         x5c_header_or_certificates.map do |encoded|
-          OpenSSL::X509::Certificate.new(::Base64.strict_decode64(encoded))
+          OpenSSL::X509::Certificate.new(::JWT::Base64.url_decode(encoded))
         end
       end
     end
