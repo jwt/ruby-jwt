@@ -755,4 +755,11 @@ RSpec.describe JWT do
       expect { ::JWT.decode(no_key_token, nil, true, algorithms: 'HS512') }.to raise_error(JWT::DecodeError, 'No verification key available')
     end
   end
+
+  context 'when token ends with a newline char' do
+    let(:token) { "#{JWT.encode(payload, 'secret', 'HS256')}\n" }
+    it 'ignores the newline and decodes the token' do
+      expect(JWT.decode(token, 'secret', true, algorithm: 'HS256')).to include(payload)
+    end
+  end
 end
