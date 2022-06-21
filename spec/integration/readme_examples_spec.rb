@@ -65,6 +65,24 @@ RSpec.describe 'README.md code test' do
       ]
     end
 
+    it 'EDDSA' do
+      old_eddsa_key = RbNaCl::Signatures::Ed25519::SigningKey.generate
+      old_eddsa_public = old_eddsa_key.verify_key
+
+      eddsa_key = RbNaCl::Signatures::Ed25519::SigningKey.generate
+      eddsa_public = eddsa_key.verify_key
+
+      token = JWT.encode payload, eddsa_key, 'ED25519'
+      decoded_token = JWT.decode token, nil, true, algorithm: 'ED25519' do |_header|
+        [old_eddsa_public, eddsa_public]
+      end
+
+      expect(decoded_token).to eq [
+        { 'data' => 'test' },
+        { 'alg' => 'ED25519' }
+      ]
+    end
+
     if ::Gem::Version.new(OpenSSL::VERSION) >= ::Gem::Version.new('2.1')
       it 'RSASSA-PSS' do
         rsa_private = OpenSSL::PKey::RSA.generate 2048
