@@ -39,6 +39,7 @@ Metrics/MethodLength:
 
 Metrics/BlockLength:
   Exclude:
+    - ruby-jwt.gemspec
     - spec/**/*_spec.rb
 
 Layout/LineLength:
