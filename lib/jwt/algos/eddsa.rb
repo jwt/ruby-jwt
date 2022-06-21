@@ -27,6 +27,8 @@ module JWT
         raise DecodeError, "key given is a #{public_key.class} but has to be a RbNaCl::Signatures::Ed25519::VerifyKey" if public_key.class != RbNaCl::Signatures::Ed25519::VerifyKey
 
         public_key.verify(signature, signing_input)
+      rescue RbNaCl::CryptoError
+        false
       end
     end
   end
