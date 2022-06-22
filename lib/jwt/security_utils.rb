@@ -18,10 +18,6 @@ module JWT
       result.zero?
     end
 
-    def verify_rsa(algorithm, public_key, signing_input, signature)
-      public_key.verify(OpenSSL::Digest.new(algorithm.sub('RS', 'sha')), signature, signing_input)
-    end
-
     def verify_ps(algorithm, public_key, signing_input, signature)
       formatted_algorithm = algorithm.sub('PS', 'sha')
 

@@ -3,19 +3,36 @@
 module JWT
   module Algos
     module Rsa
-      module_function
+      ALGORITHMS_AND_DIGESTS = {
+        'RS256' => OpenSSL::Digest::SHA256,
+        'RS384' => OpenSSL::Digest::SHA384,
+        'RS512' => OpenSSL::Digest::SHA512
+      }.freeze
 
-      SUPPORTED = %w[RS256 RS384 RS512].freeze
+      SUPPORTED = ALGORITHMS_AND_DIGESTS.keys.freeze
 
-      def sign(to_sign)
-        algorithm, msg, key = to_sign.values
-        raise EncodeError, "The given key is a #{key.class}. It has to be an OpenSSL::PKey::RSA instance." if key.instance_of?(String)
+      class << self
+        def sign(to_sign)
+          algorithm, msg, key = to_sign.values
 
-        key.sign(OpenSSL::Digest.new(algorithm.sub('RS', 'sha')), msg)
-      end
+          raise EncodeError, "The given key is a #{key.class}. It has to be an OpenSSL::PKey::RSA instance." unless key.is_a?(OpenSSL::PKey::RSA)
 
-      def verify(to_verify)
-        SecurityUtils.verify_rsa(to_verify.algorithm, to_verify.public_key, to_verify.signing_input, to_verify.signature)
+          key.sign(digest_for(algorithm), msg)
+        end
+
+        def verify(to_verify)
+          verification_key = to_verify.public_key
+
+          raise VerificationError, "The given key is a #{verification_key.class}. It has to be an OpenSSL::PKey::RSA instance." unless verification_key.is_a?(OpenSSL::PKey::RSA)
+
+          verification_key.verify(digest_for(to_verify.algorithm), to_verify.signature, to_verify.signing_input)
+        end
+
+        private
+
+        def digest_for(algorithm)
+          ALGORITHMS_AND_DIGESTS[algorithm].new
+        end
       end
     end
   end

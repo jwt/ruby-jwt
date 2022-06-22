@@ -127,17 +127,7 @@ RSpec.describe JWT do
 
         it 'fails in some way' do
           expect { described_class.decode(signed_token, nil, true, algorithms: ['RS512'], jwks: jwks) }.to(
-            raise_error(JWT::VerificationError, 'Signature verification raised')
-          )
-        end
-      end
-
-      context 'when HMAC secret is pointed to as RSA public key' do
-        let(:signed_token) { described_class.encode({ 'foo' => 'bar' }, rsa_jwk.keypair, 'RS512', { kid: hmac_jwk.kid }) }
-
-        it 'fails in some way' do
-          expect { described_class.decode(signed_token, nil, true, algorithms: ['RS512'], jwks: jwks) }.to(
-            raise_error(NoMethodError, /undefined method `verify' for "secret":String/)
+            raise_error(JWT::VerificationError)
           )
         end
       end

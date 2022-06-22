@@ -7,6 +7,7 @@
 
 **Fixes and enhancements:**
 
+- Improved RSA algorithm [#494](https://github.com/jwt/ruby-jwt/pull/494) ([@anakinj](https://github.com/anakinj)).
 - Your contribution here
 
 ## [v2.5.0](https://github.com/jwt/ruby-jwt/tree/v2.5.0) (2022-08-25)

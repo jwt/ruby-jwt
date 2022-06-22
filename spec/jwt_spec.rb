@@ -771,4 +771,24 @@ RSpec.describe JWT do
       expect(JWT.decode(token, 'secret', true, algorithm: 'HS256')).to include(payload)
     end
   end
+
+  context 'when RSA key is given as a String on encoding' do
+    it 'raises a ::JWT::EncodeError' do
+      expect { JWT.encode(payload, 'secret', 'RS256') }.to raise_error(::JWT::EncodeError, 'The given key is a String. It has to be an OpenSSL::PKey::RSA instance.')
+    end
+  end
+
+  context 'when RSA key is given as a Integer on encoding' do
+    it 'raises a ::JWT::EncodeError' do
+      expect { JWT.encode(payload, 123, 'RS256') }.to raise_error(::JWT::EncodeError, 'The given key is a Integer. It has to be an OpenSSL::PKey::RSA instance.')
+    end
+  end
+
+  context 'when RSA key is given as a String on decoding' do
+    let(:token) { JWT.encode(payload, OpenSSL::PKey::RSA.new(2048), 'RS256') }
+
+    it 'raises a ::JWT::DecodeError' do
+      expect { JWT.decode(token, 'secret', true, algorithm: 'RS256') }.to raise_error(::JWT::DecodeError, 'The given key is a String. It has to be an OpenSSL::PKey::RSA instance.')
+    end
+  end
 end
