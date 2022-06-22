@@ -200,7 +200,7 @@ RSpec.describe JWT do
           data[alg] = JWT.encode payload, data["#{alg}_private"], alg
         end
 
-        let(:wrong_key) { OpenSSL::PKey.read(File.read(File.join(CERT_PATH, 'ec256-wrong-public.pem'))) }
+        let(:wrong_key) { RbNaCl::Signatures::Ed25519::SigningKey.generate.verify_key }
 
         it 'should generate a valid token' do
           jwt_payload, header = JWT.decode data[alg], data["#{alg}_public"], true, algorithm: alg
@@ -218,7 +218,7 @@ RSpec.describe JWT do
 
         it 'wrong key should raise JWT::DecodeError' do
           expect do
-            JWT.decode data[alg], wrong_key
+            JWT.decode data[alg], wrong_key, true, algorithm: alg
           end.to raise_error JWT::DecodeError
         end
 
