@@ -1,10 +1,25 @@
 # Changelog
+
+
+## [v2.5.0](https://github.com/jwt/ruby-jwt/tree/v2.5.0) (NEXT)
+
+[Full Changelog](https://github.com/jwt/ruby-jwt/compare/v2.4.1...master)
+
+**Features:**
+
+- Your contribution here
+
+**Fixes and enhancements:**
+- Bring back the old Base64 (RFC2045) deocode mechanisms [#488](https://github.com/jwt/ruby-jwt/pull/488) ([@anakinj](https://github.com/anakinj)).
+- Rescue RbNaCl exception for EdDSA wrong key [#491](https://github.com/jwt/ruby-jwt/pull/491) ([@n-studio](https://github.com/n-studio)).
+- Your contribution here
+
 ## [v2.4.1](https://github.com/jwt/ruby-jwt/tree/v2.4.1) (2022-06-07)
+
+[Full Changelog](https://github.com/jwt/ruby-jwt/compare/v2.4.0...v2.4.1)
 
 **Fixes and enhancements:**
 - Raise JWT::DecodeError on invalid signature [\#484](https://github.com/jwt/ruby-jwt/pull/484) ([@freakyfelt!](https://github.com/freakyfelt!)).
-
-[Full Changelog](https://github.com/jwt/ruby-jwt/compare/v2.4.0...v2.4.1)
 
 ## [v2.4.0](https://github.com/jwt/ruby-jwt/tree/v2.4.0) (2022-06-06)
 
