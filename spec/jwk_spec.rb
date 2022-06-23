@@ -2,7 +2,7 @@
 
 RSpec.describe JWT::JWK do
   let(:rsa_key) { OpenSSL::PKey::RSA.new(2048) }
-  let(:ec_key) { OpenSSL::PKey::EC.new('secp384r1').generate_key }
+  let(:ec_key) { OpenSSL::PKey::EC.generate('secp384r1') }
 
   describe '.import' do
     let(:keypair) { rsa_key.public_key }

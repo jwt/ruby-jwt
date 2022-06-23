@@ -82,8 +82,8 @@ RSpec.describe JWT do
     context 'mixing algorithms using kid header' do
       let(:hmac_jwk)           { JWT::JWK.new('secret') }
       let(:rsa_jwk)            { JWT::JWK.new(OpenSSL::PKey::RSA.new(2048)) }
-      let(:ec_jwk_secp384r1)   { JWT::JWK.new(OpenSSL::PKey::EC.new('secp384r1').generate_key) }
-      let(:ec_jwk_secp521r1)   { JWT::JWK.new(OpenSSL::PKey::EC.new('secp521r1').generate_key) }
+      let(:ec_jwk_secp384r1)   { JWT::JWK.new(OpenSSL::PKey::EC.generate('secp384r1')) }
+      let(:ec_jwk_secp521r1)   { JWT::JWK.new(OpenSSL::PKey::EC.generate('secp521r1')) }
       let(:jwks)               { { keys: [hmac_jwk.export(include_private: true), rsa_jwk.export, ec_jwk_secp384r1.export, ec_jwk_secp521r1.export] } }
 
       context 'when RSA key is pointed to as HMAC secret' do

@@ -20,4 +20,9 @@ module JWT
     # Build version string
     STRING = [MAJOR, MINOR, TINY, PRE].compact.join('.')
   end
+
+  def self.openssl_3?
+    return false if OpenSSL::OPENSSL_VERSION.include?('LibreSSL')
+    return true if OpenSSL::OPENSSL_VERSION_NUMBER >= 3 * 0x10000000
+  end
 end
