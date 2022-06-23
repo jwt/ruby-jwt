@@ -53,13 +53,10 @@ RSpec.describe 'README.md code test' do
     end
 
     it 'ECDSA' do
-      ecdsa_key = OpenSSL::PKey::EC.new 'prime256v1'
-      ecdsa_key.generate_key
-      ecdsa_public = OpenSSL::PKey::EC.new ecdsa_key
-      ecdsa_public.private_key = nil
+      ecdsa_key = OpenSSL::PKey::EC.generate('prime256v1')
 
       token = JWT.encode payload, ecdsa_key, 'ES256'
-      decoded_token = JWT.decode token, ecdsa_public, true, algorithm: 'ES256'
+      decoded_token = JWT.decode token, ecdsa_key, true, algorithm: 'ES256'
 
       expect(decoded_token).to eq [
         { 'data' => 'test' },

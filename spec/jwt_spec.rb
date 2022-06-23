@@ -235,7 +235,7 @@ RSpec.describe JWT do
   %w[ES256 ES384 ES512 ES256K].each do |alg|
     context "alg: #{alg}" do
       before(:each) do
-        data[alg] = JWT.encode payload, data["#{alg}_private"], alg
+        data[alg] = JWT.encode(payload, data["#{alg}_private"], alg)
       end
 
       let(:wrong_key) { OpenSSL::PKey.read(File.read(File.join(CERT_PATH, 'ec256-wrong-public.pem'))) }
@@ -343,15 +343,13 @@ RSpec.describe JWT do
     end
 
     it 'ECDSA curve_name should raise JWT::IncorrectAlgorithm' do
-      key = OpenSSL::PKey::EC.new 'secp256k1'
-      key.generate_key
+      key = OpenSSL::PKey::EC.generate('secp256k1')
 
       expect do
         JWT.encode payload, key, 'ES256'
       end.to raise_error JWT::IncorrectAlgorithm
 
       token = JWT.encode payload, data['ES256_private'], 'ES256'
-      key.private_key = nil
 
       expect do
         JWT.decode token, key

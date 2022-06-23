@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.describe JWT::JWK::EC do
-  let(:ec_key) { OpenSSL::PKey::EC.new('secp384r1').generate_key }
+  let(:ec_key) { OpenSSL::PKey::EC.generate('secp384r1') }
 
   describe '.new' do
     subject { described_class.new(keypair) }
@@ -15,7 +15,7 @@ RSpec.describe JWT::JWK::EC do
     end
 
     context 'when a keypair with only public key is given' do
-      let(:keypair) { OpenSSL::PKey::EC.new(ec_key.public_key.group).tap { |ec| ec.public_key = ec_key.public_key } }
+      let(:keypair) { OpenSSL::PKey.read(File.read(File.join(CERT_PATH, 'ec256-public.pem'))) }
       it 'creates an instance of the class' do
         expect(subject).to be_a described_class
         expect(subject.private?).to eq false
@@ -41,7 +41,7 @@ RSpec.describe JWT::JWK::EC do
     end
 
     context 'when keypair with public key is exported' do
-      let(:keypair) { ec_key.tap { |x| x.private_key = nil } }
+      let(:keypair) { OpenSSL::PKey.read(File.read(File.join(CERT_PATH, 'ec256-public.pem'))) }
       it 'returns a hash with the public parts of the key' do
         expect(subject).to be_a Hash
         expect(subject).to include(:kty, :kid, :x, :y)
@@ -79,7 +79,7 @@ RSpec.describe JWT::JWK::EC do
     ['P-256', 'P-384', 'P-521', 'P-256K'].each do |crv|
       context "when crv=#{crv}" do
         let(:openssl_curve) { JWT::JWK::EC.to_openssl_curve(crv) }
-        let(:ec_key) { OpenSSL::PKey::EC.new(openssl_curve).generate_key }
+        let(:ec_key) { OpenSSL::PKey::EC.generate(openssl_curve) }
 
         context 'when keypair is private' do
           let(:include_private) { true }
@@ -110,7 +110,7 @@ RSpec.describe JWT::JWK::EC do
 
         context 'when keypair is public' do
           context 'returns a public key' do
-            let(:keypair) { ec_key.tap { |x| x.private_key = nil } }
+            let(:keypair) { OpenSSL::PKey.read(File.read(File.join(CERT_PATH, 'ec256-public.pem'))) }
             let(:params) { exported_key }
 
             it 'returns a hash with the public parts of the key' do
