@@ -22,7 +22,7 @@ jobs:
     - name: Run RuboCop
       run: bundle exec rubocop
   test:
-    name: ${{ matrix.os }} ${{ matrix.ruby }}
+    name: ${{ matrix.os }} - Ruby ${{ matrix.ruby }}
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
