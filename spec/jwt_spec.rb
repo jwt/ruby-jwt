@@ -629,6 +629,7 @@ RSpec.describe JWT do
 
   context 'when hmac algorithm is used without secret key' do
     it 'encodes payload' do
+      pending 'Different behaviour on OpenSSL 3.0 (https://github.com/openssl/openssl/issues/13089)' if ::JWT.openssl_3?
       payload = { a: 1, b: 'b' }
 
       token = JWT.encode(payload, '', 'HS256')
@@ -644,8 +645,8 @@ RSpec.describe JWT do
     let(:payload) { { 'a' => 1, 'b' => 'b' } }
 
     it 'ignores algorithm casing during encode/decode' do
-      enc = JWT.encode(payload, '', 'hs256')
-      expect(JWT.decode(enc, '')).to eq([payload, { 'alg' => 'HS256' }])
+      enc = JWT.encode(payload, 'secret', 'hs256')
+      expect(JWT.decode(enc, 'secret')).to eq([payload, { 'alg' => 'HS256' }])
 
       enc = JWT.encode(payload, data[:rsa_private], 'rs512')
       expect(JWT.decode(enc, data[:rsa_public], true, algorithm: 'RS512')).to eq([payload, { 'alg' => 'RS512' }])
@@ -759,6 +760,7 @@ RSpec.describe JWT do
   describe 'when token signed with nil and decoded with nil' do
     let(:no_key_token) { ::JWT.encode(payload, nil, 'HS512') }
     it 'raises JWT::DecodeError' do
+      pending 'Different behaviour on OpenSSL 3.0 (https://github.com/openssl/openssl/issues/13089)' if ::JWT.openssl_3?
       expect { ::JWT.decode(no_key_token, nil, true, algorithms: 'HS512') }.to raise_error(JWT::DecodeError, 'No verification key available')
     end
   end
