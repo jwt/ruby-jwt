@@ -12,7 +12,7 @@ A ruby implementation of the [RFC 7519 OAuth JSON Web Token (JWT)](https://tools
 If you have further questions related to development or usage, join us: [ruby-jwt google group](https://groups.google.com/forum/#!forum/ruby-jwt).
 
 ## Announcements
-* Ruby 2.4 support is going to be dropped in version 2.4.0
+* Ruby 2.4 support was dropped in version 2.4.0
 * Ruby 1.9.3 support was dropped at December 31st, 2016.
 * Version 1.5.3 yanked. See: [#132](https://github.com/jwt/ruby-jwt/issues/132) and [#133](https://github.com/jwt/ruby-jwt/issues/133)
 
