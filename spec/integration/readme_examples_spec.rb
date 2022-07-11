@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'logger'
+
 RSpec.describe 'README.md code test' do
   context 'algorithm usage' do
     let(:payload) { { data: 'test' } }
@@ -273,21 +275,55 @@ RSpec.describe 'README.md code test' do
       end.not_to raise_error
     end
 
-    it 'JWK' do
-      jwk = JWT::JWK.new(OpenSSL::PKey::RSA.new(2048))
-      payload = { data: 'data' }
-      headers = { kid: jwk.kid }
+    context 'The JWK loader example' do
+      let(:logger_output) { StringIO.new }
+      let(:logger) { Logger.new(logger_output) }
 
-      token = JWT.encode(payload, jwk.keypair, 'RS512', headers)
+      it 'works as expected' do
+        jwk = JWT::JWK.new(OpenSSL::PKey::RSA.new(2048), 'optional-kid')
+        payload = { data: 'data' }
+        headers = { kid: jwk.kid }
 
-      # The jwk loader would fetch the set of JWKs from a trusted source
-      jwk_loader = ->(options) do
-        @cached_keys = nil if options[:invalidate] # need to reload the keys
-        @cached_keys ||= { keys: [jwk.export] }
-      end
-      expect do
+        token = JWT.encode(payload, jwk.keypair, 'RS512', headers)
+
+        # The jwk loader would fetch the set of JWKs from a trusted source,
+        # to avoid malicious invalidations some kind of protection needs to be implemented.
+        # This example only allows cache invalidations every 5 minutes.
+        jwk_loader = ->(options) do
+          if options[:kid_not_found] && @cache_last_update < Time.now.to_i - 300
+            logger.info("Invalidating JWK cache. #{options[:kid]} not found from previous cache")
+            @cached_keys = nil
+          end
+          @cached_keys ||= begin
+            @cache_last_update = Time.now.to_i
+            { keys: [jwk.export] }
+          end
+        end
+
+        begin
+          JWT.decode(token, nil, true, { algorithms: ['RS512'], jwks: jwk_loader })
+        rescue JWT::JWKError
+          # Handle problems with the provided JWKs
+        rescue JWT::DecodeError
+          # Handle other decode related issues e.g. no kid in header, no matching public key found etc.
+        end
+
+        ## This is not in the example but verifies that the cache is invalidated after 5 minutes
+        jwk = JWT::JWK.new(OpenSSL::PKey::RSA.new(2048), 'new-kid')
+
+        headers = { kid: jwk.kid }
+
+        token = JWT.encode(payload, jwk.keypair, 'RS512', headers)
+        @cache_last_update = Time.now.to_i - 301
+
         JWT.decode(token, nil, true, { algorithms: ['RS512'], jwks: jwk_loader })
-      end.not_to raise_error
+        expect(logger_output.string.chomp).to match(/^I, .* : Invalidating JWK cache. new-kid not found from previous cache/)
+
+        jwk = JWT::JWK.new(OpenSSL::PKey::RSA.new(2048), 'yet-another-new-kid')
+        headers = { kid: jwk.kid }
+        token = JWT.encode(payload, jwk.keypair, 'RS512', headers)
+        expect { JWT.decode(token, nil, true, { algorithms: ['RS512'], jwks: jwk_loader }) }.to raise_error(JWT::DecodeError, 'Could not find public key for kid yet-another-new-kid')
+      end
     end
 
     it 'JWK with thumbprint as kid via symbol' do
