@@ -546,30 +546,41 @@ end
 
 ### JSON Web Key (JWK)
 
-JWK is a JSON structure representing a cryptographic key. Currently only supports RSA, EC and HMAC keys.
+JWK is a JSON structure representing a cryptographic key. Currently only supports RSA, EC and HMAC keys. The `jwks` option can be given as a lambda that evaluates every time a kid is resolved.
+
+If the kid is not found from the given set the loader will be called a second time with the `kid_not_found` option set to `true`. The application can choose to implement some kind of JWK cache invalidation or other mechanism to handle such cases.
 
 ```ruby
-jwk = JWT::JWK.new(OpenSSL::PKey::RSA.new(2048), "optional-kid")
-payload, headers = { data: 'data' }, { kid: jwk.kid }
+  jwk = JWT::JWK.new(OpenSSL::PKey::RSA.new(2048), 'optional-kid')
+  payload = { data: 'data' }
+  headers = { kid: jwk.kid }
 
-token = JWT.encode(payload, jwk.keypair, 'RS512', headers)
+  token = JWT.encode(payload, jwk.keypair, 'RS512', headers)
 
-# The jwk loader would fetch the set of JWKs from a trusted source
-jwk_loader = ->(options) do
-  @cached_keys = nil if options[:invalidate] # need to reload the keys
-  @cached_keys ||= { keys: [jwk.export] }
-end
+  # The jwk loader would fetch the set of JWKs from a trusted source,
+  # to avoid malicious requests triggering cache invalidations there needs to be some kind of grace time or other logic for determining the validity of the invalidation.
+  # This example only allows cache invalidations every 5 minutes.
+  jwk_loader = ->(options) do
+    if options[:kid_not_found] && @cache_last_update < Time.now.to_i - 300
+      logger.info("Invalidating JWK cache. #{options[:kid]} not found from previous cache")
+      @cached_keys = nil
+    end
+    @cached_keys ||= begin
+      @cache_last_update = Time.now.to_i
+      { keys: [jwk.export] }
+    end
+  end
 
-begin
-  JWT.decode(token, nil, true, { algorithms: ['RS512'], jwks: jwk_loader})
-rescue JWT::JWKError
-  # Handle problems with the provided JWKs
-rescue JWT::DecodeError
-  # Handle other decode related issues e.g. no kid in header, no matching public key found etc.
-end
+  begin
+    JWT.decode(token, nil, true, { algorithms: ['RS512'], jwks: jwk_loader })
+  rescue JWT::JWKError
+    # Handle problems with the provided JWKs
+  rescue JWT::DecodeError
+    # Handle other decode related issues e.g. no kid in header, no matching public key found etc.
+  end
 ```
 
-or by passing JWK as a simple Hash
+or by passing the JWKs as a simple Hash
 
 ```
 jwks = { keys: [{ ... }] } # keys accepts both of string and symbol

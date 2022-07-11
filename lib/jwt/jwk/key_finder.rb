@@ -28,7 +28,7 @@ module JWT
         return jwk if jwk
 
         if reloadable?
-          load_keys(invalidate: true)
+          load_keys(invalidate: true, kid_not_found: true, kid: kid) # invalidate for backwards compatibility
           return find_key(kid)
         end
 
