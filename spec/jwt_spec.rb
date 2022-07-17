@@ -6,6 +6,7 @@ RSpec.describe JWT do
   let :data do
     data = {
       :empty_token => 'e30K.e30K.e30K',
+      :empty_token_2_segment => 'e30K.e30K.',
       :secret => 'My$ecretK3y',
       :rsa_private => OpenSSL::PKey.read(File.read(File.join(CERT_PATH, 'rsa-2048-private.pem'))),
       :rsa_public => OpenSSL::PKey.read(File.read(File.join(CERT_PATH, 'rsa-2048-public.pem'))),
@@ -536,6 +537,14 @@ RSpec.describe JWT do
           expect do
             JWT.decode data[:empty_token]
           end.to raise_error JWT::IncorrectAlgorithm
+        end
+
+        context '2-segment token' do
+          it 'should raise JWT::IncorrectAlgorithm' do
+            expect do
+              JWT.decode data[:empty_token_2_segment]
+            end.to raise_error JWT::DecodeError
+          end
         end
       end
     end

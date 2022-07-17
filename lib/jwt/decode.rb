@@ -113,7 +113,7 @@ module JWT
     end
 
     def none_algorithm?
-      algorithm.casecmp('none').zero?
+      algorithm == 'none'
     end
 
     def decode_crypto
