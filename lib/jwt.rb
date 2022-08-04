@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require 'jwt/version'
 require 'jwt/base64'
 require 'jwt/json'
 require 'jwt/decode'
