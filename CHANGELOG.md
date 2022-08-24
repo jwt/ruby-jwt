@@ -1,22 +1,20 @@
 # Changelog
 
 
-## [v2.5.0](https://github.com/jwt/ruby-jwt/tree/v2.5.0) (NEXT)
+## [v2.5.0](https://github.com/jwt/ruby-jwt/tree/v2.5.0) (2022-08-24)
 
-[Full Changelog](https://github.com/jwt/ruby-jwt/compare/v2.4.1...master)
+[Full Changelog](https://github.com/jwt/ruby-jwt/compare/v2.4.1...v2.5.0)
 
 **Features:**
 
 - Support JWK thumbprints as key ids [#481](https://github.com/jwt/ruby-jwt/pull/481) ([@anakinj](https://github.com/anakinj)).
-- Your contribution here
+- Support OpenSSL >= 3.0 [#496](https://github.com/jwt/ruby-jwt/pull/496) ([@anakinj](https://github.com/anakinj)).
 
 **Fixes and enhancements:**
 - Bring back the old Base64 (RFC2045) deocode mechanisms [#488](https://github.com/jwt/ruby-jwt/pull/488) ([@anakinj](https://github.com/anakinj)).
 - Rescue RbNaCl exception for EdDSA wrong key [#491](https://github.com/jwt/ruby-jwt/pull/491) ([@n-studio](https://github.com/n-studio)).
 - New parameter name for cases when kid is not found using JWK key loader proc [#501](https://github.com/jwt/ruby-jwt/pull/501) ([@anakinj](https://github.com/anakinj)).
 - Fix NoMethodError when a 2 segment token is missing 'alg' header [#502](https://github.com/jwt/ruby-jwt/pull/502) ([@cmrd-senya](https://github.com/cmrd-senya)).
-- Support OpenSSL >= 3.0 [#496](https://github.com/jwt/ruby-jwt/pull/496) ([@anakinj](https://github.com/anakinj)).
-- Your contribution here
 
 ## [v2.4.1](https://github.com/jwt/ruby-jwt/tree/v2.4.1) (2022-06-07)
 
