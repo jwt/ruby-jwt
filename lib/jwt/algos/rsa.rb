@@ -7,15 +7,14 @@ module JWT
 
       SUPPORTED = %w[RS256 RS384 RS512].freeze
 
-      def sign(to_sign)
-        algorithm, msg, key = to_sign.values
+      def sign(algorithm, msg, key)
         raise EncodeError, "The given key is a #{key.class}. It has to be an OpenSSL::PKey::RSA instance." if key.instance_of?(String)
 
         key.sign(OpenSSL::Digest.new(algorithm.sub('RS', 'sha')), msg)
       end
 
-      def verify(to_verify)
-        SecurityUtils.verify_rsa(to_verify.algorithm, to_verify.public_key, to_verify.signing_input, to_verify.signature)
+      def verify(algorithm, public_key, signing_input, signature)
+        SecurityUtils.verify_rsa(algorithm, public_key, signing_input, signature)
       end
     end
   end

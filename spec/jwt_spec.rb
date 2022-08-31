@@ -729,7 +729,7 @@ RSpec.describe JWT do
     let(:token) { JWT.encode(payload, 'HS256', 'HS256') }
     it 'decodes the token but does not pass the payload' do
       expect(JWT.decode(token, nil, true, algorithm: 'HS256') do |header, token_payload, nothing|
-        expect(token_payload).to eq(nil)  # This behaviour is not correct, the payload should be available in the keyfinder
+        expect(token_payload).to eq(nil) # This behaviour is not correct, the payload should be available in the keyfinder
         expect(nothing).to eq(nil)
         header['alg']
       end).to include(payload)
@@ -769,6 +769,77 @@ RSpec.describe JWT do
     let(:token) { "#{JWT.encode(payload, 'secret', 'HS256')}\n" }
     it 'ignores the newline and decodes the token' do
       expect(JWT.decode(token, 'secret', true, algorithm: 'HS256')).to include(payload)
+    end
+  end
+
+  context 'when multiple algorithms given' do
+    let(:token) { JWT.encode(payload, 'secret', 'HS256') }
+
+    it 'starts trying with the algorithm referred in the header' do
+      expect(::JWT::Algos::Rsa).not_to receive(:verify)
+      JWT.decode(token, 'secret', true, algorithm: ['RS512', 'HS256'])
+    end
+  end
+
+  context 'when algorithm is given as a custom class' do
+    let(:custom_algorithm) do
+      Module.new do
+        module_function
+
+        def sign(*)
+          'custom_signature'
+        end
+
+        def verify(data:, signature:, verification_key:) # rubocop:disable Lint/UnusedMethodArgument
+          signature == 'custom_signature'
+        end
+
+        def alg
+          'custom'
+        end
+
+        def valid_alg?(alg)
+          alg == self.alg
+        end
+      end
+    end
+
+    it 'uses whatever is the implementation' do
+      token = JWT.encode(payload, 'secret', custom_algorithm)
+      expect(token).to eq('eyJhbGciOiJjdXN0b20ifQ.eyJ1c2VyX2lkIjoic29tZUB1c2VyLnRsZCJ9.Y3VzdG9tX3NpZ25hdHVyZQ')
+      expect(JWT.decode(token, 'secret', true, algorithm: custom_algorithm))
+    end
+  end
+
+  context 'when algorithm is a custom class and multiple is given' do
+    let(:custom_algorithm) do
+      Class.new do
+        def initialize(signature)
+          @signature = signature
+        end
+
+        def sign(*)
+          'custom_signature'
+        end
+
+        def verify(data:, signature:, verification_key:) # rubocop:disable Lint/UnusedMethodArgument
+          signature == @signature
+        end
+
+        def alg
+          'custom'
+        end
+
+        def valid_alg?(alg)
+          alg == self.alg
+        end
+      end
+    end
+
+    it 'uses tries until something matches' do
+      token = JWT.encode(payload, 'secret', custom_algorithm.new('custom_signature'))
+      expect(token).to eq('eyJhbGciOiJjdXN0b20ifQ.eyJ1c2VyX2lkIjoic29tZUB1c2VyLnRsZCJ9.Y3VzdG9tX3NpZ25hdHVyZQ')
+      expect(JWT.decode(token, 'secret', true, algorithms: [custom_algorithm.new('not_this'), custom_algorithm.new('custom_signature')]))
     end
   end
 end
