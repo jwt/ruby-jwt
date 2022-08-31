@@ -7,10 +7,9 @@ require 'jwt/algos/rsa'
 require 'jwt/algos/ps'
 require 'jwt/algos/none'
 require 'jwt/algos/unsupported'
+require 'jwt/algos/algo_wrapper'
 
-# JWT::Signature module
 module JWT
-  # Signature logic for JWT
   module Algos
     extend self
 
@@ -28,14 +27,19 @@ module JWT
       indexed[algorithm && algorithm.downcase]
     end
 
+    def create(algorithm)
+      cls, alg = indexed[algorithm && algorithm.downcase]
+      Algos::AlgoWrapper.new(alg, cls)
+    end
+
     private
 
     def indexed
       @indexed ||= begin
         fallback = [Algos::Unsupported, nil]
-        ALGOS.each_with_object(Hash.new(fallback)) do |alg, hash|
-          alg.const_get(:SUPPORTED).each do |code|
-            hash[code.downcase] = [alg, code]
+        ALGOS.each_with_object(Hash.new(fallback)) do |cls, hash|
+          cls.const_get(:SUPPORTED).each do |alg|
+            hash[alg.downcase] = [cls, alg]
           end
         end
       end

@@ -30,8 +30,7 @@ module JWT
 
       SUPPORTED = NAMED_CURVES.map { |_, c| c[:algorithm] }.uniq.freeze
 
-      def sign(to_sign)
-        algorithm, msg, key = to_sign.values
+      def sign(algorithm, msg, key)
         curve_definition = curve_by_name(key.group.curve_name)
         key_algorithm = curve_definition[:algorithm]
         if algorithm != key_algorithm

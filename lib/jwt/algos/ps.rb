@@ -9,10 +9,8 @@ module JWT
 
       SUPPORTED = %w[PS256 PS384 PS512].freeze
 
-      def sign(to_sign)
+      def sign(algorithm, msg, key)
         require_openssl!
-
-        algorithm, msg, key = to_sign.values
 
         key_class = key.class
 

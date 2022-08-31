@@ -771,4 +771,24 @@ RSpec.describe JWT do
       expect(JWT.decode(token, 'secret', true, algorithm: 'HS256')).to include(payload)
     end
   end
+
+  context 'when algorithm is given as a custom class' do
+    let(:custom_algorithm) do
+      Module.new do
+        module_function
+
+        def sign(*)
+          'custom_signature'
+        end
+
+        def alg
+          'custom'
+        end
+      end
+    end
+
+    it 'uses whatever is the implementation' do
+      expect(JWT.encode(payload, 'secret', custom_algorithm)).to eq('eyJhbGciOiJjdXN0b20ifQ.eyJ1c2VyX2lkIjoic29tZUB1c2VyLnRsZCJ9.Y3VzdG9tX3NpZ25hdHVyZQ')
+    end
+  end
 end

@@ -15,13 +15,7 @@ module JWT
   module Signature
     module_function
 
-    ToSign = Struct.new(:algorithm, :msg, :key)
     ToVerify = Struct.new(:algorithm, :public_key, :signing_input, :signature)
-
-    def sign(algorithm, msg, key)
-      algo, code = Algos.find(algorithm)
-      algo.sign ToSign.new(code, msg, key)
-    end
 
     def verify(algorithm, key, signing_input, signature)
       algo, code = Algos.find(algorithm)

@@ -7,8 +7,7 @@ module JWT
 
       SUPPORTED = %w[ED25519 EdDSA].freeze
 
-      def sign(to_sign)
-        algorithm, msg, key = to_sign.values
+      def sign(algorithm, msg, key)
         if key.class != RbNaCl::Signatures::Ed25519::SigningKey
           raise EncodeError, "Key given is a #{key.class} but has to be an RbNaCl::Signatures::Ed25519::SigningKey"
         end
