@@ -729,7 +729,7 @@ RSpec.describe JWT do
     let(:token) { JWT.encode(payload, 'HS256', 'HS256') }
     it 'decodes the token but does not pass the payload' do
       expect(JWT.decode(token, nil, true, algorithm: 'HS256') do |header, token_payload, nothing|
-        expect(token_payload).to eq(nil)  # This behaviour is not correct, the payload should be available in the keyfinder
+        expect(token_payload).to eq(nil) # This behaviour is not correct, the payload should be available in the keyfinder
         expect(nothing).to eq(nil)
         header['alg']
       end).to include(payload)
@@ -781,14 +781,24 @@ RSpec.describe JWT do
           'custom_signature'
         end
 
+        def verify(data:, signature:, verification_key:) # rubocop:disable Lint/UnusedMethodArgument
+          signature == 'custom_signature'
+        end
+
         def alg
           'custom'
+        end
+
+        def valid_alg?(alg)
+          alg == self.alg
         end
       end
     end
 
     it 'uses whatever is the implementation' do
-      expect(JWT.encode(payload, 'secret', custom_algorithm)).to eq('eyJhbGciOiJjdXN0b20ifQ.eyJ1c2VyX2lkIjoic29tZUB1c2VyLnRsZCJ9.Y3VzdG9tX3NpZ25hdHVyZQ')
+      token = JWT.encode(payload, 'secret', custom_algorithm)
+      expect(token).to eq('eyJhbGciOiJjdXN0b20ifQ.eyJ1c2VyX2lkIjoic29tZUB1c2VyLnRsZCJ9.Y3VzdG9tX3NpZ25hdHVyZQ')
+      expect(JWT.decode(token, 'secret', true, algorithm: custom_algorithm))
     end
   end
 end

@@ -18,8 +18,7 @@ module JWT
         key.sign(msg)
       end
 
-      def verify(to_verify)
-        algorithm, public_key, signing_input, signature = to_verify.values
+      def verify(algorithm, public_key, signing_input, signature)
         unless SUPPORTED.map(&:downcase).map(&:to_sym).include?(algorithm.downcase.to_sym)
           raise IncorrectAlgorithm, "payload algorithm is #{algorithm} but #{key.primitive} signing key was provided"
         end

@@ -55,7 +55,7 @@ module JWT
     end
 
     def signature
-      @algorithm.sign(data: encoded_header_and_payload, key: @key)
+      @algorithm.sign(data: encoded_header_and_payload, signing_key: @key)
     end
 
     def validate_claims!

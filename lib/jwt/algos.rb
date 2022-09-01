@@ -1,5 +1,13 @@
 # frozen_string_literal: true
 
+begin
+  require 'rbnacl'
+rescue LoadError
+  raise if defined?(RbNaCl)
+end
+require 'openssl'
+
+require 'jwt/security_utils'
 require 'jwt/algos/hmac'
 require 'jwt/algos/eddsa'
 require 'jwt/algos/ecdsa'
@@ -28,7 +36,7 @@ module JWT
     end
 
     def create(algorithm)
-      cls, alg = indexed[algorithm && algorithm.downcase]
+      cls, alg = find(algorithm)
       Algos::AlgoWrapper.new(alg, cls)
     end
 

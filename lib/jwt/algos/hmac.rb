@@ -17,8 +17,7 @@ module JWT
         end
       end
 
-      def verify(to_verify)
-        algorithm, public_key, signing_input, signature = to_verify.values
+      def verify(algorithm, public_key, signing_input, signature)
         authenticator, padded_key = SecurityUtils.rbnacl_fixup(algorithm, public_key)
         if authenticator && padded_key
           begin

@@ -41,8 +41,7 @@ module JWT
         SecurityUtils.asn1_to_raw(key.dsa_sign_asn1(digest.digest(msg)), key)
       end
 
-      def verify(to_verify)
-        algorithm, public_key, signing_input, signature = to_verify.values
+      def verify(algorithm, public_key, signing_input, signature)
         curve_definition = curve_by_name(public_key.group.curve_name)
         key_algorithm = curve_definition[:algorithm]
         if algorithm != key_algorithm
