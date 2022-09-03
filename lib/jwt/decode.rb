@@ -88,13 +88,28 @@ module JWT
     end
 
     def allowed_algorithms
-      @allowed_algorithms ||= given_algorithms.map do |alg|
-        if alg.respond_to?(:verify)
+      @allowed_algorithms ||= resolve_allowed_algorithms
+    end
+
+    def resolve_allowed_algorithms
+      algs = given_algorithms.map do |alg|
+        if Algos.implementation?(alg)
           alg
         else
           Algos.create(alg)
         end
       end
+
+      sort_by_alg_header(algs)
+    end
+
+    # Move algorithms matching the JWT alg header to the beginning of the list
+    def sort_by_alg_header(algs)
+      priority_alg_indxs = algs.index { |alg| alg.valid_alg?(alg_in_header) }
+
+      algs.insert(0, algs.delete_at(priority_alg_indxs)) if priority_alg_indxs
+
+      algs
     end
 
     def find_key(&keyfinder)

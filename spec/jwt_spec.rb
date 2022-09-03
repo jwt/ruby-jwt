@@ -772,6 +772,15 @@ RSpec.describe JWT do
     end
   end
 
+  context 'when multiple algorithms given' do
+    let(:token) { JWT.encode(payload, 'secret', 'HS256') }
+
+    it 'starts trying with the algorithm referred in the header' do
+      expect(::JWT::Algos::Rsa).not_to receive(:verify)
+      JWT.decode(token, 'secret', true, algorithm: ['RS512', 'HS256'])
+    end
+  end
+
   context 'when algorithm is given as a custom class' do
     let(:custom_algorithm) do
       Module.new do

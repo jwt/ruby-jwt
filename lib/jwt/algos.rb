@@ -40,6 +40,11 @@ module JWT
       Algos::AlgoWrapper.new(alg, cls)
     end
 
+    def implementation?(algorithm)
+      algorithm.respond_to?(:sign) &&
+        algorithm.respond_to?(:verify)
+    end
+
     private
 
     def indexed

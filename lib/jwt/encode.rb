@@ -25,7 +25,7 @@ module JWT
     private
 
     def resolve_algorithm(algorithm)
-      return algorithm if algorithm.respond_to?(:sign)
+      return algorithm if Algos.implementation?(algorithm)
 
       Algos.create(algorithm)
     end
