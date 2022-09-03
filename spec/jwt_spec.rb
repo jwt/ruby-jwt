@@ -839,7 +839,7 @@ RSpec.describe JWT do
     it 'uses tries until something matches' do
       token = JWT.encode(payload, 'secret', custom_algorithm.new('custom_signature'))
       expect(token).to eq('eyJhbGciOiJjdXN0b20ifQ.eyJ1c2VyX2lkIjoic29tZUB1c2VyLnRsZCJ9.Y3VzdG9tX3NpZ25hdHVyZQ')
-      expect(JWT.decode(token, 'secret', true, algorithms: ['HS256', custom_algorithm.new('not_this'), custom_algorithm.new('custom_signature')]))
+      expect(JWT.decode(token, 'secret', true, algorithms: [custom_algorithm.new('not_this'), custom_algorithm.new('custom_signature')]))
     end
   end
 end
