@@ -105,6 +105,8 @@ module JWT
 
     # Move algorithms matching the JWT alg header to the beginning of the list
     def sort_by_alg_header(algs)
+      return algs if algs.size <= 1
+
       priority_alg_indxs = algs.index { |alg| alg.valid_alg?(alg_in_header) }
 
       algs.insert(0, algs.delete_at(priority_alg_indxs)) if priority_alg_indxs
