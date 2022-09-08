@@ -107,11 +107,7 @@ module JWT
     def sort_by_alg_header(algs)
       return algs if algs.size <= 1
 
-      priority_alg_indxs = algs.index { |alg| alg.valid_alg?(alg_in_header) }
-
-      algs.insert(0, algs.delete_at(priority_alg_indxs)) if priority_alg_indxs
-
-      algs
+      algs.partition { |alg| alg.valid_alg?(alg_in_header) }.flatten
     end
 
     def find_key(&keyfinder)
