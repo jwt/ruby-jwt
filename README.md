@@ -1,7 +1,7 @@
 # JWT
 
 [![Gem Version](https://badge.fury.io/rb/jwt.svg)](https://badge.fury.io/rb/jwt)
-[![Build Status](https://github.com/jwt/ruby-jwt/workflows/test/badge.svg?branch=master)](https://github.com/jwt/ruby-jwt/actions)
+[![Build Status](https://github.com/jwt/ruby-jwt/workflows/test/badge.svg?branch=main)](https://github.com/jwt/ruby-jwt/actions)
 [![Code Climate](https://codeclimate.com/github/jwt/ruby-jwt/badges/gpa.svg)](https://codeclimate.com/github/jwt/ruby-jwt)
 [![Test Coverage](https://codeclimate.com/github/jwt/ruby-jwt/badges/coverage.svg)](https://codeclimate.com/github/jwt/ruby-jwt/coverage)
 [![Issue Count](https://codeclimate.com/github/jwt/ruby-jwt/badges/issue_count.svg)](https://codeclimate.com/github/jwt/ruby-jwt)
