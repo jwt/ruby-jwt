@@ -12,19 +12,19 @@ git remote add upstream https://github.com/jwt/ruby-jwt
 
 ## Create a branch for your implementation
 
-Make sure you have the latest upstream master branch of the project.
+Make sure you have the latest upstream main branch of the project.
 
 ```
 git fetch --all
-git checkout master
-git rebase upstream/master
-git push origin master
+git checkout main
+git rebase upstream/main
+git push origin main
 git checkout -b fix-a-little-problem
 ```
 
 ## Running the tests and linter
 
-Before you start with your implementation make sure you are able to get a succesful test run with the current revision.
+Before you start with your implementation make sure you are able to get a successful test run with the current revision.
 
 The tests are written with rspec and [Appraisal](https://github.com/thoughtbot/appraisal) is used to ensure compatibility with 3rd party dependencies providing cryptographic features.
 
@@ -78,12 +78,12 @@ A maintainer will review and probably merge you changes when time allows, be pat
 
 ## Keeping your branch up-to-date
 
-It's recommended that you keep your branch up-to-date by rebasing to the upstream master.
+It's recommended that you keep your branch up-to-date by rebasing to the upstream main.
 
 ```
 git fetch upstream
 git checkout fix-a-little-problem
-git rebase upstream/master
+git rebase upstream/main
 git push origin fix-a-little-problem -f
 ```
 
