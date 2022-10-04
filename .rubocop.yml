@@ -62,6 +62,3 @@ Layout/MultilineOperationIndentation:
 
 Style/WordArray:
   Enabled: false
-
-Gemspec/RequireMFA:
-  Enabled: false
