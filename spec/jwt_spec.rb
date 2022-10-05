@@ -781,65 +781,91 @@ RSpec.describe JWT do
     end
   end
 
-  context 'when algorithm is given as a custom class' do
-    let(:custom_algorithm) do
-      Module.new do
-        module_function
-
-        def sign(*)
-          'custom_signature'
-        end
-
-        def verify(data:, signature:, verification_key:) # rubocop:disable Lint/UnusedMethodArgument
-          signature == 'custom_signature'
-        end
-
-        def alg
-          'custom'
-        end
-
-        def valid_alg?(alg)
-          alg == self.alg
-        end
-      end
-    end
-
-    it 'uses whatever is the implementation' do
-      token = JWT.encode(payload, 'secret', custom_algorithm)
-      expect(token).to eq('eyJhbGciOiJjdXN0b20ifQ.eyJ1c2VyX2lkIjoic29tZUB1c2VyLnRsZCJ9.Y3VzdG9tX3NpZ25hdHVyZQ')
-      expect(JWT.decode(token, 'secret', true, algorithm: custom_algorithm))
-    end
-  end
-
-  context 'when algorithm is a custom class and multiple is given' do
+  context 'when algorithm is a custom class' do
     let(:custom_algorithm) do
       Class.new do
-        def initialize(signature)
+        attr_reader :alg
+
+        def initialize(signature: 'custom_signature', alg: 'custom')
           @signature = signature
+          @alg = alg
         end
 
         def sign(*)
-          'custom_signature'
+          @signature
         end
 
         def verify(data:, signature:, verification_key:) # rubocop:disable Lint/UnusedMethodArgument
           signature == @signature
         end
 
-        def alg
-          'custom'
-        end
-
         def valid_alg?(alg)
           alg == self.alg
         end
       end
     end
 
-    it 'uses tries until something matches' do
-      token = JWT.encode(payload, 'secret', custom_algorithm.new('custom_signature'))
-      expect(token).to eq('eyJhbGciOiJjdXN0b20ifQ.eyJ1c2VyX2lkIjoic29tZUB1c2VyLnRsZCJ9.Y3VzdG9tX3NpZ25hdHVyZQ')
-      expect(JWT.decode(token, 'secret', true, algorithms: [custom_algorithm.new('not_this'), custom_algorithm.new('custom_signature')]))
+    let(:token) { JWT.encode(payload, 'secret', custom_algorithm.new) }
+    let(:expected_token) { 'eyJhbGciOiJjdXN0b20ifQ.eyJ1c2VyX2lkIjoic29tZUB1c2VyLnRsZCJ9.Y3VzdG9tX3NpZ25hdHVyZQ' }
+
+    it 'can be used for encoding' do
+      expect(token).to eq(expected_token)
+    end
+
+    it 'can be used for decoding' do
+      expect(JWT.decode(token, 'secret', true, algorithm: custom_algorithm.new)).to eq([payload, { 'alg' => 'custom' }])
+    end
+
+    context 'when multiple custom algorithms are given for decoding' do
+      it 'tries until the first match' do
+        expect(JWT.decode(token, 'secret', true, algorithms: [custom_algorithm.new(signature: 'not_this'), custom_algorithm.new])).to eq([payload, { 'alg' => 'custom' }])
+      end
+    end
+
+    context 'when alg is not matching' do
+      it 'fails the validation process' do
+        expect { JWT.decode(token, 'secret', true, algorithms: custom_algorithm.new(alg: 'not_a_match')) }.to raise_error(JWT::IncorrectAlgorithm, 'Expected a different algorithm')
+      end
+    end
+
+    context 'when signature is not matching' do
+      it 'fails the validation process' do
+        expect { JWT.decode(token, 'secret', true, algorithms: custom_algorithm.new(signature: 'not_a_match')) }.to raise_error(JWT::VerificationError, 'Signature verification failed')
+      end
+    end
+
+    context 'when #sign method is missing' do
+      before do
+        custom_algorithm.instance_eval do
+          remove_method :sign
+        end
+      end
+
+      # This behaviour should be somehow nicer
+      it 'raises an error on encoding' do
+        expect { token }.to raise_error(NoMethodError)
+      end
+
+      it 'allows decoding' do
+        expect(JWT.decode(expected_token, 'secret', true, algorithm: custom_algorithm.new)).to eq([payload, { 'alg' => 'custom' }])
+      end
+    end
+
+    context 'when #verify method is missing' do
+      before do
+        custom_algorithm.instance_eval do
+          remove_method :verify
+        end
+      end
+
+      it 'can be used for encoding' do
+        expect(token).to eq(expected_token)
+      end
+
+      # This behaviour should be somehow nicer
+      it 'raises error on decoding' do
+        expect { JWT.decode(expected_token, 'secret', true, algorithm: custom_algorithm.new) }.to raise_error(NoMethodError)
+      end
     end
   end
 end

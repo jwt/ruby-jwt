@@ -41,7 +41,7 @@ module JWT
     end
 
     def implementation?(algorithm)
-      algorithm.respond_to?(:sign) &&
+      algorithm.respond_to?(:sign) ||
         algorithm.respond_to?(:verify)
     end
 
