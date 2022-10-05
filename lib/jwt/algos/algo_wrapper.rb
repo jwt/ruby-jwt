@@ -3,23 +3,23 @@
 module JWT
   module Algos
     class AlgoWrapper
-      attr_reader :alg
+      attr_reader :alg, :cls
 
       def initialize(alg, cls)
         @alg = alg
         @cls = cls
       end
 
-      def valid_alg?(alg)
-        alg && @alg.casecmp(alg).zero?
+      def valid_alg?(alg_to_check)
+        alg_to_check && alg.casecmp(alg_to_check).zero?
       end
 
       def sign(data:, signing_key:)
-        @cls.sign(@alg, data, signing_key)
+        cls.sign(alg, data, signing_key)
       end
 
       def verify(data:, signature:, verification_key:)
-        @cls.verify(alg, verification_key, data, signature)
+        cls.verify(alg, verification_key, data, signature)
       rescue OpenSSL::PKey::PKeyError # These should be moved to the algorithms that actually need this, but left here to ensure nothing will break.
         raise JWT::VerificationError, 'Signature verification raised'
       ensure
