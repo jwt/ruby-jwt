@@ -11,7 +11,7 @@ module JWT
       end
 
       def valid_alg?(alg_to_check)
-        alg_to_check && alg.casecmp(alg_to_check).zero?
+        alg.casecmp(alg_to_check)&.zero? == true
       end
 
       def sign(data:, signing_key:)
