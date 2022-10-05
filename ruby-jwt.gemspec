@@ -22,7 +22,12 @@ Gem::Specification.new do |spec|
     'rubygems_mfa_required' => 'true'
   }
 
-  spec.files = `git ls-files -z`.split("\x0").reject { |f| f.match(%r{^(spec|gemfiles|coverage|bin)/}) }
+  spec.files = `git ls-files -z`.split("\x0").reject do |f|
+    f.match(%r{^(spec|gemfiles|coverage|bin)/}) || # Irrelevant folders
+      f.match(/^\.+/) || # Files and folders starting with .
+      f.match(/^(Appraisals|Gemfile|Rakefile)$/) # Irrelevant files
+  end
+
   spec.executables = []
   spec.require_paths = %w[lib]
 
