@@ -41,9 +41,18 @@ jobs:
           - gemfiles/rbnacl.gemfile
         experimental: [false]
         include:
-          - { os: ubuntu-22.04, ruby: "3.1", gemfile: 'gemfiles/standalone.gemfile', experimental: false }
-          - { os: ubuntu-20.04, ruby: "truffleruby-head", gemfile: 'gemfiles/standalone.gemfile', experimental: true }
-          - { os: ubuntu-22.04, ruby: "head", gemfile: 'gemfiles/standalone.gemfile', experimental: true }
+          - os: ubuntu-22.04
+            ruby: "3.1"
+            gemfile: 'gemfiles/standalone.gemfile'
+            experimental: false
+          - os: ubuntu-20.04
+            ruby: "truffleruby-head"
+            gemfile: 'gemfiles/standalone.gemfile'
+            experimental: true
+          - os: ubuntu-22.04
+            ruby: "head"
+            gemfile: 'gemfiles/standalone.gemfile'
+            experimental: true
     continue-on-error: ${{ matrix.experimental }}
     env:
       BUNDLE_GEMFILE: ${{ matrix.gemfile }}
