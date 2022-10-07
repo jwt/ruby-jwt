@@ -78,9 +78,27 @@ RSpec.describe JWT::JWK::RSA do
       end
     end
 
-    context 'when kid is given as in a hash parameter' do
+    context 'when kid is given in a hash parameter' do
       it 'uses the given kid' do
         expect(described_class.new(OpenSSL::PKey::RSA.new(2048), kid: 'given').kid).to eq('given')
+      end
+    end
+
+    context 'when kid is given as a common JWK parameter' do
+      it 'uses the given kid' do
+        expect(described_class.new(OpenSSL::PKey::RSA.new(2048), common_parameters: { kid: 'given' }).kid).to eq('given')
+      end
+    end
+  end
+
+  describe '.common_parameters' do
+    context 'when a common parameters hash is given' do
+      it 'imports the common parameter' do
+        expect(described_class.new(OpenSSL::PKey::RSA.new(2048), common_parameters: { use: 'sig' }).common_parameters).to include(:use)
+      end
+
+      it 'converts string keys to symbol keys' do
+        expect(described_class.new(OpenSSL::PKey::RSA.new(2048), common_parameters: { 'use' => 'sig' }).common_parameters).to include(:use)
       end
     end
   end

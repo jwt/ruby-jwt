@@ -14,7 +14,7 @@ module JWT
         raise ArgumentError, 'keypair must be of type OpenSSL::PKey::RSA' unless keypair.is_a?(OpenSSL::PKey::RSA)
 
         @keypair = keypair
-
+        
         super(options)
       end
 
@@ -27,7 +27,8 @@ module JWT
       end
 
       def export(options = {})
-        exported_hash = members.merge(kid: kid)
+        kid # Make sure a kid is generated
+        exported_hash = common_parameters.merge(members)
 
         return exported_hash unless private? && options[:include_private] == true
 
@@ -70,7 +71,10 @@ module JWT
           pkey_params = jwk_attributes(jwk_data, *RSA_KEY_ELEMENTS) do |value|
             decode_open_ssl_bn(value)
           end
-          new(rsa_pkey(pkey_params), kid: jwk_attributes(jwk_data, :kid)[:kid])
+          parameters = jwk_data.transform_keys(&:to_sym)
+          parameters.delete(:kty) # Will be re-added upon export
+          RSA_KEY_ELEMENTS.each { |e| parameters.delete e }
+          new(rsa_pkey(pkey_params), common_parameters: parameters)
         end
 
         private

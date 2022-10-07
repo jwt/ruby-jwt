@@ -37,7 +37,8 @@ module JWT
       end
 
       def export(options = {})
-        exported_hash = members.merge(kid: kid)
+        kid # Make sure a kid is generated
+        exported_hash = common_parameters.merge(members)
 
         return exported_hash unless private? && options[:include_private] == true
 
@@ -93,11 +94,16 @@ module JWT
         def import(jwk_data)
           # See https://tools.ietf.org/html/rfc7518#section-6.2.1 for an
           # explanation of the relevant parameters.
+          parameters = jwk_data.transform_keys(&:to_sym)
+          parameters.delete(:kty) # Will be re-added upon export
+          jwk_crv = parameters.delete(:crv)
+          jwk_x   = parameters.delete(:x)
+          jwk_y   = parameters.delete(:y)
+          jwk_d   = parameters.delete(:d)
 
-          jwk_crv, jwk_x, jwk_y, jwk_d, jwk_kid = jwk_attrs(jwk_data, %i[crv x y d kid])
           raise JWT::JWKError, 'Key format is invalid for EC' unless jwk_crv && jwk_x && jwk_y
 
-          new(ec_pkey(jwk_crv, jwk_x, jwk_y, jwk_d), kid: jwk_kid)
+          new(ec_pkey(jwk_crv, jwk_x, jwk_y, jwk_d), common_parameters: parameters)
         end
 
         def to_openssl_curve(crv)
@@ -114,12 +120,6 @@ module JWT
         end
 
         private
-
-        def jwk_attrs(jwk_data, attrs)
-          attrs.map do |attr|
-            jwk_data[attr] || jwk_data[attr.to_s]
-          end
-        end
 
         if ::JWT.openssl_3?
           def ec_pkey(jwk_crv, jwk_x, jwk_y, jwk_d) # rubocop:disable Metrics/MethodLength
