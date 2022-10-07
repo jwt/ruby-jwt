@@ -25,10 +25,10 @@ module JWT
 
       # See https://tools.ietf.org/html/rfc7517#appendix-A.3
       def export(options = {})
-        exported_hash = {
-          kty: KTY,
-          kid: kid
-        }
+        exported_hash = common_parameters.merge({
+                                                  kty: KTY,
+                                                  kid: kid
+                                                })
 
         return exported_hash unless private? && options[:include_private] == true
 
@@ -54,12 +54,13 @@ module JWT
 
       class << self
         def import(jwk_data)
-          jwk_k = jwk_data[:k] || jwk_data['k']
-          jwk_kid = jwk_data[:kid] || jwk_data['kid']
+          parameters = jwk_data.transform_keys(&:to_sym)
+          parameters.delete(:kty) # Will be re-added upon export
+          jwk_k = parameters.delete(:k)
 
           raise JWT::JWKError, 'Key format is invalid for HMAC' unless jwk_k
 
-          new(jwk_k, kid: jwk_kid)
+          new(jwk_k, common_parameters: parameters)
         end
       end
     end

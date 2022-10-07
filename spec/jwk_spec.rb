@@ -38,11 +38,18 @@ RSpec.describe JWT::JWK do
         expect(subject.export).to eq(params)
       end
     end
+
+    context 'when a common JWK parameter is specified' do
+      it 'returns the defined common JWK parameter' do
+        params[:use] = 'sig'
+        expect(subject.export).to eq(params)
+      end
+    end
   end
 
   describe '.new' do
-    let(:kid) { nil }
-    subject { described_class.new(keypair, kid) }
+    let(:options) { nil }
+    subject { described_class.new(keypair, options) }
 
     context 'when RSA key is given' do
       let(:keypair) { rsa_key }
@@ -61,9 +68,17 @@ RSpec.describe JWT::JWK do
 
     context 'when kid is given' do
       let(:keypair) { rsa_key }
-      let(:kid) { 'CUSTOM_KID' }
+      let(:options) { 'CUSTOM_KID' }
       it 'sets the kid' do
-        expect(subject.kid).to eq(kid)
+        expect(subject.kid).to eq(options)
+      end
+    end
+
+    context 'when a common parameter is given' do
+      let(:keypair) { rsa_key }
+      let(:options) { { common_parameters: { 'use' => 'sig' } } }
+      it 'sets the common parameter' do
+        expect(subject.common_parameters).to eq({ use: 'sig' })
       end
     end
   end

@@ -58,6 +58,15 @@ RSpec.describe JWT::JWK::HMAC do
           expect(subject.kid).to eq('custom_key_identifier')
         end
       end
+
+      context 'with a common parameter' do
+        let(:exported_key) {
+          super().merge(use: 'sig')
+        }
+        it 'imports that common parameter' do
+          expect(subject.common_parameters).to include(:use)
+        end
+      end
     end
   end
 end
