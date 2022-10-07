@@ -9,14 +9,16 @@ module JWT
       end
 
       def initialize(options)
-        options = options&.clone || {} # Beware: Only a shallow copy
+        options ||= {}
 
         if options.is_a?(String) # For backwards compatibility when kid was a String
           options = { kid: options }
         end
 
-        @common_parameters = options[:common_parameters]&.transform_keys(&:to_sym) || {}
+        @common_parameters = options[:common_parameters] || {}
+        @common_parameters = @common_parameters.transform_keys(&:to_sym) # Uniform interface
         @common_parameters[:kid] = options[:kid] if options[:kid] # kid can be specified outside common_parameters
+
         @kid_generator = options[:kid_generator] || ::JWT.configuration.jwk.kid_generator
       end
 
