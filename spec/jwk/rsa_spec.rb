@@ -108,7 +108,7 @@ RSpec.describe JWT::JWK::RSA do
     let(:exported_key) { described_class.new(rsa_key).export }
 
     context 'when keypair is imported with symbol keys' do
-      let(:params) { { e: exported_key[:e], n: exported_key[:n] } }
+      let(:params) { { kty: 'RSA', e: exported_key[:e], n: exported_key[:n] } }
       it 'returns a hash with the public parts of the key' do
         expect(subject).to be_a described_class
         expect(subject.private?).to eq false
@@ -117,7 +117,7 @@ RSpec.describe JWT::JWK::RSA do
     end
 
     context 'when keypair is imported with string keys from JSON' do
-      let(:params) { { 'e' => exported_key[:e], 'n' => exported_key[:n] } }
+      let(:params) { { 'kty' => 'RSA', 'e' => exported_key[:e], 'n' => exported_key[:n] } }
       it 'returns a hash with the public parts of the key' do
         expect(subject).to be_a described_class
         expect(subject.private?).to eq false
