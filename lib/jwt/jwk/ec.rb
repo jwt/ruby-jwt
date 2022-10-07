@@ -95,12 +95,13 @@ module JWT
           # See https://tools.ietf.org/html/rfc7518#section-6.2.1 for an
           # explanation of the relevant parameters.
           parameters = jwk_data.transform_keys(&:to_sym)
-          parameters.delete(:kty) # Will be re-added upon export
+          jwk_kty = parameters.delete(:kty) # Will be re-added upon export
           jwk_crv = parameters.delete(:crv)
           jwk_x   = parameters.delete(:x)
           jwk_y   = parameters.delete(:y)
           jwk_d   = parameters.delete(:d)
 
+          raise JWT::JWKError, "Incorrect 'kty' value: #{jwk_kty}, expected #{KTY}" unless jwk_kty == KTY
           raise JWT::JWKError, 'Key format is invalid for EC' unless jwk_crv && jwk_x && jwk_y
 
           new(ec_pkey(jwk_crv, jwk_x, jwk_y, jwk_d), common_parameters: parameters)

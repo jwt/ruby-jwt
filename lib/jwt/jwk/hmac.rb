@@ -55,9 +55,10 @@ module JWT
       class << self
         def import(jwk_data)
           parameters = jwk_data.transform_keys(&:to_sym)
-          parameters.delete(:kty) # Will be re-added upon export
-          jwk_k = parameters.delete(:k)
+          jwk_kty = parameters.delete(:kty) # Will be re-added upon export
+          jwk_k   = parameters.delete(:k)
 
+          raise JWT::JWKError, "Incorrect 'kty' value: #{jwk_kty}, expected #{KTY}" unless jwk_kty == KTY
           raise JWT::JWKError, 'Key format is invalid for HMAC' unless jwk_k
 
           new(jwk_k, common_parameters: parameters)

@@ -14,7 +14,7 @@ module JWT
         raise ArgumentError, 'keypair must be of type OpenSSL::PKey::RSA' unless keypair.is_a?(OpenSSL::PKey::RSA)
 
         @keypair = keypair
-        
+
         super(options)
       end
 
@@ -72,8 +72,12 @@ module JWT
             decode_open_ssl_bn(value)
           end
           parameters = jwk_data.transform_keys(&:to_sym)
-          parameters.delete(:kty) # Will be re-added upon export
+          jwk_kty = parameters.delete(:kty) # Will be re-added upon export
           RSA_KEY_ELEMENTS.each { |e| parameters.delete e }
+
+          raise JWT::JWKError, "Incorrect 'kty' value: #{jwk_kty}, expected #{KTY}" unless jwk_kty == KTY
+          raise JWT::JWKError, 'Key format is invalid for RSA' unless pkey_params[:n] && pkey_params[:e]
+
           new(rsa_pkey(pkey_params), common_parameters: parameters)
         end
 
@@ -87,15 +91,9 @@ module JWT
           end
         end
 
-        def rsa_pkey(rsa_parameters)
-          raise JWT::JWKError, 'Key format is invalid for RSA' unless rsa_parameters[:n] && rsa_parameters[:e]
-
-          create_rsa_key(rsa_parameters)
-        end
-
         if ::JWT.openssl_3?
           ASN1_SEQUENCE = %i[n e d p q dp dq qi].freeze
-          def create_rsa_key(rsa_parameters)
+          def rsa_pkey(rsa_parameters)
             sequence = ASN1_SEQUENCE.each_with_object([]) do |key, arr|
               next if rsa_parameters[key].nil?
 
@@ -109,7 +107,7 @@ module JWT
             OpenSSL::PKey::RSA.new(OpenSSL::ASN1::Sequence(sequence).to_der)
           end
         elsif OpenSSL::PKey::RSA.new.respond_to?(:set_key)
-          def create_rsa_key(rsa_parameters)
+          def rsa_pkey(rsa_parameters)
             OpenSSL::PKey::RSA.new.tap do |rsa_key|
               rsa_key.set_key(rsa_parameters[:n], rsa_parameters[:e], rsa_parameters[:d])
               rsa_key.set_factors(rsa_parameters[:p], rsa_parameters[:q]) if rsa_parameters[:p] && rsa_parameters[:q]
@@ -117,7 +115,7 @@ module JWT
             end
           end
         else
-          def create_rsa_key(rsa_parameters) # rubocop:disable Metrics/AbcSize
+          def rsa_pkey(rsa_parameters) # rubocop:disable Metrics/AbcSize
             OpenSSL::PKey::RSA.new.tap do |rsa_key|
               rsa_key.n = rsa_parameters[:n]
               rsa_key.e = rsa_parameters[:e]
