@@ -36,23 +36,22 @@ module JWT
     end
 
     def create(algorithm)
-      cls, alg = find(algorithm)
-      Algos::AlgoWrapper.new(alg, cls)
+      Algos::AlgoWrapper.new(*find(algorithm))
     end
 
     def implementation?(algorithm)
-      algorithm.respond_to?(:sign) ||
-        algorithm.respond_to?(:verify)
+      algorithm.respond_to?(:valid_alg?) &&
+        (algorithm.respond_to?(:sign) || algorithm.respond_to?(:verify))
     end
 
     private
 
     def indexed
       @indexed ||= begin
-        fallback = [Algos::Unsupported, nil]
+        fallback = [nil, Algos::Unsupported]
         ALGOS.each_with_object(Hash.new(fallback)) do |cls, hash|
           cls.const_get(:SUPPORTED).each do |alg|
-            hash[alg.downcase] = [cls, alg]
+            hash[alg.downcase] = [alg, cls]
           end
         end
       end
