@@ -6,6 +6,7 @@
 - Support custom algorithms by passing algorithm objects[#512](https://github.com/jwt/ruby-jwt/pull/512) ([@anakinj](https://github.com/anakinj)).
 - Support descriptive (not key related) JWK parameters[#520](https://github.com/jwt/ruby-jwt/pull/520) ([@bellebaum](https://github.com/bellebaum)).
 - Support for JSON Web Key Sets[#525](https://github.com/jwt/ruby-jwt/pull/525) ([@bellebaum](https://github.com/bellebaum)).
+- Support HMAC keys over 32 chars when using RbNaCl[#521](https://github.com/jwt/ruby-jwt/pull/521) ([@anakinj](https://github.com/anakinj)).
 - Your contribution here
 
 **Fixes and enhancements:**

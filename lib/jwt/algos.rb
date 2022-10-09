@@ -21,15 +21,22 @@ module JWT
   module Algos
     extend self
 
-    ALGOS = [
-      Algos::Hmac,
-      Algos::Ecdsa,
-      Algos::Rsa,
-      Algos::Eddsa,
-      Algos::Ps,
-      Algos::None,
-      Algos::Unsupported
-    ].freeze
+    ALGOS = [Algos::Ecdsa,
+             Algos::Rsa,
+             Algos::Eddsa,
+             Algos::Ps,
+             Algos::None,
+             Algos::Unsupported].tap do |l|
+      if ::JWT.rbnacl_6_or_greater?
+        require_relative 'algos/hmac_rbnacl'
+        l.unshift(Algos::HmacRbNaCl)
+      elsif ::JWT.rbnacl?
+        require_relative 'algos/hmac_rbnacl_fixed'
+        l.unshift(Algos::HmacRbNaClFixed)
+      else
+        l.unshift(Algos::Hmac)
+      end
+    end.freeze
 
     def find(algorithm)
       indexed[algorithm && algorithm.downcase]
