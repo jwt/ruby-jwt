@@ -3,6 +3,7 @@
 
 **Features:**
 
+- Support custom algorithms by passing algorithm objects[#512](https://github.com/jwt/ruby-jwt/pull/512) ([@anakinj](https://github.com/anakinj)).
 - Your contribution here
 
 **Fixes and enhancements:**
