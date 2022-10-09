@@ -95,9 +95,9 @@ decoded_token = JWT.decode token, hmac_secret, true, { algorithm: 'HS256' }
 puts decoded_token
 ```
 
-Note: If [RbNaCl](https://github.com/cryptosphere/rbnacl) is loadable, ruby-jwt will use it for HMAC-SHA256, HMAC-SHA512-256, and HMAC-SHA512. RbNaCl enforces a maximum key size of 32 bytes for these algorithms.
+Note: If [RbNaCl](https://github.com/RubyCrypto/rbnacl) is loadable, ruby-jwt will use it for HMAC-SHA256, HMAC-SHA512-256, and HMAC-SHA512. RbNaCl prior to 6.0.0 only support a maximum key size of 32 bytes for these algorithms.
 
-[RbNaCl](https://github.com/cryptosphere/rbnacl) requires
+[RbNaCl](https://github.com/RubyCrypto/rbnacl) requires
 [libsodium](https://github.com/jedisct1/libsodium), it can be installed
 on MacOS with `brew install libsodium`.
 
@@ -159,7 +159,7 @@ In order to use this algorithm you need to add the `RbNaCl` gem to you `Gemfile`
 gem 'rbnacl'
 ```
 
-For more detailed installation instruction check the official [repository](https://github.com/cryptosphere/rbnacl) on GitHub.
+For more detailed installation instruction check the official [repository](https://github.com/RubyCrypto/rbnacl) on GitHub.
 
 * ED25519
 

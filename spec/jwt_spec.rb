@@ -36,7 +36,7 @@ RSpec.describe JWT do
       'PS512' => ''
     }
 
-    if defined?(RbNaCl)
+    if ::JWT.rbnacl?
       ed25519_private = RbNaCl::Signatures::Ed25519::SigningKey.new('abcdefghijklmnopqrstuvwxyzABCDEF')
       ed25519_public =  ed25519_private.verify_key
       data.merge!(
@@ -123,7 +123,7 @@ RSpec.describe JWT do
   end
 
   algorithms = %w[HS256 HS384 HS512]
-  algorithms << 'HS512256' if defined?(RbNaCl)
+  algorithms << 'HS512256' if ::JWT.rbnacl?
 
   algorithms.each do |alg|
     context "alg: #{alg}" do

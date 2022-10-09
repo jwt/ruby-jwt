@@ -89,36 +89,16 @@ RSpec.describe JWT do
       context 'when RSA key is pointed to as HMAC secret' do
         let(:signed_token) { described_class.encode({ 'foo' => 'bar' }, 'is not really relevant in the scenario', 'HS256', { kid: rsa_jwk.kid }) }
 
-        it 'fails in some way' do
-          expect { described_class.decode(signed_token, nil, true, algorithms: ['HS256'], jwks: jwks) }.to(
-            raise_error do |e|
-              if defined?(RbNaCl)
-                expect(e).to be_a(NoMethodError)
-                expect(e.message).to match(/undefined method `bytesize'/)
-              else
-                expect(e).to be_a(TypeError)
-                expect(e.message).to eq('no implicit conversion of OpenSSL::PKey::RSA into String')
-              end
-            end
-          )
+        it 'raises JWT::DecodeError' do
+          expect { described_class.decode(signed_token, nil, true, algorithms: ['HS256'], jwks: jwks) }.to raise_error(JWT::DecodeError, 'HMAC key expected to be a String')
         end
       end
 
       context 'when EC key is pointed to as HMAC secret' do
         let(:signed_token) { described_class.encode({ 'foo' => 'bar' }, 'is not really relevant in the scenario', 'HS256', { kid: ec_jwk_secp384r1.kid }) }
 
-        it 'fails in some way' do
-          expect { described_class.decode(signed_token, nil, true, algorithms: ['HS256'], jwks: jwks) }.to(
-            raise_error do |e|
-              if defined?(RbNaCl)
-                expect(e).to be_a(NoMethodError)
-                expect(e.message).to match(/undefined method `bytesize'/)
-              else
-                expect(e).to be_a(TypeError)
-                expect(e.message).to eq('no implicit conversion of OpenSSL::PKey::EC into String')
-              end
-            end
-          )
+        it 'raises JWT::DecodeError' do
+          expect { described_class.decode(signed_token, nil, true, algorithms: ['HS256'], jwks: jwks) }.to raise_error(JWT::DecodeError, 'HMAC key expected to be a String')
         end
       end
 
