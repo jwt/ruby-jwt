@@ -37,7 +37,6 @@ module JWT
       end
 
       def export(options = {})
-        kid # Make sure a kid is generated
         exported_hash = common_parameters.merge(members)
 
         return exported_hash unless private? && options[:include_private] == true

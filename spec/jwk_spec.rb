@@ -78,7 +78,8 @@ RSpec.describe JWT::JWK do
       let(:keypair) { rsa_key }
       let(:options) { { common_parameters: { 'use' => 'sig' } } }
       it 'sets the common parameter' do
-        expect(subject.common_parameters).to eq({ use: 'sig' })
+        expect(subject.common_parameters).to include(:use)
+        expect(subject.common_parameters[:use]).to eq('sig')
       end
     end
   end
