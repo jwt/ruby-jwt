@@ -53,7 +53,7 @@ module JWT
           raise ArgumentError, 'cannot access cryptographic key attributes'
         end
 
-        method(__method__).super_method.call(key)
+        super(key)
       end
 
       def []=(key, value)
@@ -61,7 +61,7 @@ module JWT
           raise ArgumentError, 'cannot access cryptographic key attributes'
         end
 
-        method(__method__).super_method.call(key, value)
+        super(key, value)
       end
 
       private
@@ -93,7 +93,7 @@ module JWT
           raise JWT::JWKError, "Incorrect 'kty' value: #{jwk_kty}, expected #{KTY}" unless jwk_kty == KTY
           raise JWT::JWKError, 'Key format is invalid for RSA' unless pkey_params[:n] && pkey_params[:e]
 
-          new(rsa_pkey(pkey_params), common_parameters: parameters)
+          new(create_rsa_key(pkey_params), common_parameters: parameters)
         end
 
         private
@@ -108,7 +108,7 @@ module JWT
 
         if ::JWT.openssl_3?
           ASN1_SEQUENCE = %i[n e d p q dp dq qi].freeze
-          def rsa_pkey(rsa_parameters)
+          def create_rsa_key(rsa_parameters)
             sequence = ASN1_SEQUENCE.each_with_object([]) do |key, arr|
               next if rsa_parameters[key].nil?
 
@@ -122,7 +122,7 @@ module JWT
             OpenSSL::PKey::RSA.new(OpenSSL::ASN1::Sequence(sequence).to_der)
           end
         elsif OpenSSL::PKey::RSA.new.respond_to?(:set_key)
-          def rsa_pkey(rsa_parameters)
+          def create_rsa_key(rsa_parameters)
             OpenSSL::PKey::RSA.new.tap do |rsa_key|
               rsa_key.set_key(rsa_parameters[:n], rsa_parameters[:e], rsa_parameters[:d])
               rsa_key.set_factors(rsa_parameters[:p], rsa_parameters[:q]) if rsa_parameters[:p] && rsa_parameters[:q]
@@ -130,7 +130,7 @@ module JWT
             end
           end
         else
-          def rsa_pkey(rsa_parameters) # rubocop:disable Metrics/AbcSize
+          def create_rsa_key(rsa_parameters) # rubocop:disable Metrics/AbcSize
             OpenSSL::PKey::RSA.new.tap do |rsa_key|
               rsa_key.n = rsa_parameters[:n]
               rsa_key.e = rsa_parameters[:e]
