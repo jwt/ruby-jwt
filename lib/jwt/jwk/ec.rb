@@ -11,6 +11,7 @@ module JWT
       KTY    = 'EC'
       KTYS   = [KTY, OpenSSL::PKey::EC].freeze
       BINARY = 2
+      EC_KEY_ELEMENTS = %i[crv x y d].freeze
 
       attr_reader :keypair
 
@@ -49,6 +50,22 @@ module JWT
         sequence = OpenSSL::ASN1::Sequence([OpenSSL::ASN1::Integer.new(OpenSSL::BN.new(x_octets, BINARY)),
                                             OpenSSL::ASN1::Integer.new(OpenSSL::BN.new(y_octets, BINARY))])
         OpenSSL::Digest::SHA256.hexdigest(sequence.to_der)
+      end
+
+      def [](key)
+        if EC_KEY_ELEMENTS.include?(key) || key.to_sym == :kty
+          raise ArgumentError, 'cannot access cryptographic key attributes'
+        end
+
+        method(__method__).super_method.call(key)
+      end
+
+      def []=(key, value)
+        if EC_KEY_ELEMENTS.include?(key) || key.to_sym == :kty
+          raise ArgumentError, 'cannot access cryptographic key attributes'
+        end
+
+        method(__method__).super_method.call(key, value)
       end
 
       private
