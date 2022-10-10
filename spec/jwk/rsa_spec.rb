@@ -94,11 +94,11 @@ RSpec.describe JWT::JWK::RSA do
   describe '.common_parameters' do
     context 'when a common parameters hash is given' do
       it 'imports the common parameter' do
-        expect(described_class.new(OpenSSL::PKey::RSA.new(2048), common_parameters: { use: 'sig' }).common_parameters).to include(:use)
+        expect(described_class.new(OpenSSL::PKey::RSA.new(2048), common_parameters: { use: 'sig' })[:use]).to eq('sig')
       end
 
       it 'converts string keys to symbol keys' do
-        expect(described_class.new(OpenSSL::PKey::RSA.new(2048), common_parameters: { 'use' => 'sig' }).common_parameters).to include(:use)
+        expect(described_class.new(OpenSSL::PKey::RSA.new(2048), common_parameters: { 'use' => 'sig' })[:use]).to eq('sig')
       end
     end
   end

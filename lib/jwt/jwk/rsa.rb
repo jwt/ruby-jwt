@@ -2,7 +2,7 @@
 
 module JWT
   module JWK
-    class RSA < KeyBase
+    class RSA < KeyBase # rubocop:disable Metrics/ClassLength
       BINARY = 2
       KTY    = 'RSA'
       KTYS   = [KTY, OpenSSL::PKey::RSA].freeze
@@ -48,6 +48,22 @@ module JWT
         OpenSSL::Digest::SHA256.hexdigest(sequence.to_der)
       end
 
+      def [](key)
+        if RSA_KEY_ELEMENTS.include?(key) || key.to_sym == :kty
+          raise ArgumentError, 'cannot access cryptographic key attributes'
+        end
+
+        method(__method__).super_method.call(key)
+      end
+
+      def []=(key, value)
+        if RSA_KEY_ELEMENTS.include?(key) || key.to_sym == :kty
+          raise ArgumentError, 'cannot access cryptographic key attributes'
+        end
+
+        method(__method__).super_method.call(key, value)
+      end
+
       private
 
       def append_private_parts(the_hash)
@@ -72,7 +88,7 @@ module JWT
           end
           parameters = jwk_data.transform_keys(&:to_sym)
           jwk_kty = parameters.delete(:kty) # Will be re-added upon export
-          RSA_KEY_ELEMENTS.each { |e| parameters.delete e }
+          RSA_KEY_ELEMENTS.each { |e| parameters.delete(e) }
 
           raise JWT::JWKError, "Incorrect 'kty' value: #{jwk_kty}, expected #{KTY}" unless jwk_kty == KTY
           raise JWT::JWKError, 'Key format is invalid for RSA' unless pkey_params[:n] && pkey_params[:e]

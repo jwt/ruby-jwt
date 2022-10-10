@@ -78,9 +78,27 @@ RSpec.describe JWT::JWK do
       let(:keypair) { rsa_key }
       let(:options) { { common_parameters: { 'use' => 'sig' } } }
       it 'sets the common parameter' do
-        expect(subject.common_parameters).to include(:use)
-        expect(subject.common_parameters[:use]).to eq('sig')
+        expect(subject[:use]).to eq('sig')
       end
+    end
+  end
+
+  describe '.[]' do
+    let(:options) { { common_parameters: { use: 'sig' } } }
+    let(:keypair) { rsa_key }
+    subject { described_class.new(keypair, options) }
+
+    it 'allows to read common parameters via the key-accessor' do
+      expect(subject.export[:use]).to eq('sig')
+    end
+
+    it 'allows to set common parameters via the key-accessor' do
+      subject[:use] = 'enc'
+      expect(subject.export[:use]).to eq('enc')
+    end
+
+    it 'rejects key parameters as keys via the key-accessor' do
+      expect { subject[:p] }.to raise_error(ArgumentError)
     end
   end
 end

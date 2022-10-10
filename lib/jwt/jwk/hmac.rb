@@ -49,6 +49,22 @@ module JWT
         OpenSSL::Digest::SHA256.hexdigest(sequence.to_der)
       end
 
+      def [](key)
+        if key.to_sym == :k || key.to_sym == :kty
+          raise ArgumentError, 'cannot access cryptographic key attributes'
+        end
+
+        method(__method__).super_method.call(key)
+      end
+
+      def []=(key, value)
+        if key.to_sym == :k || key.to_sym == :kty
+          raise ArgumentError, 'cannot access cryptographic key attributes'
+        end
+
+        method(__method__).super_method.call(key, value)
+      end
+
       class << self
         def import(jwk_data)
           parameters = jwk_data.transform_keys(&:to_sym)

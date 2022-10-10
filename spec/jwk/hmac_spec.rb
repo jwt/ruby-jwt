@@ -64,7 +64,7 @@ RSpec.describe JWT::JWK::HMAC do
           super().merge(use: 'sig')
         }
         it 'imports that common parameter' do
-          expect(subject.common_parameters).to include(:use)
+          expect(subject[:use]).to eq('sig')
         end
       end
     end
