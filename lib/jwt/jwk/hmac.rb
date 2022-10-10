@@ -25,10 +25,7 @@ module JWT
 
       # See https://tools.ietf.org/html/rfc7517#appendix-A.3
       def export(options = {})
-        exported_hash = common_parameters.merge({
-                                                  kty: KTY,
-                                                  kid: kid
-                                                })
+        exported_hash = common_parameters.merge({ kty: KTY })
 
         return exported_hash unless private? && options[:include_private] == true
 

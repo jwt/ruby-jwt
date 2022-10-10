@@ -17,23 +17,27 @@ module JWT
 
         @common_parameters = options[:common_parameters] || {}
         @common_parameters = @common_parameters.transform_keys(&:to_sym) # Uniform interface
-        @common_parameters[:kid] = options[:kid] if options[:kid] # kid can be specified outside common_parameters
 
-        @kid_generator = options[:kid_generator] || ::JWT.configuration.jwk.kid_generator
+        initialize_kid(options)
       end
 
       def kid
-        @common_parameters[:kid] ||= generate_kid
+        @common_parameters[:kid]
       end
 
       attr_accessor :common_parameters
 
       private
 
-      attr_reader :kid_generator
+      def initialize_kid(options)
+        # kid can be specified outside common_parameters, takes priority
+        @common_parameters[:kid] = options[:kid] if options[:kid]
 
-      def generate_kid
-        kid_generator.new(self).generate
+        return if @common_parameters[:kid]
+
+        # No kid given. Generate one from the public key
+        kid_generator = options[:kid_generator] || ::JWT.configuration.jwk.kid_generator
+        @common_parameters[:kid] = kid_generator.new(self).generate
       end
     end
   end
