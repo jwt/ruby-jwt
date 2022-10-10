@@ -54,7 +54,7 @@ module JWT
           raise ArgumentError, 'cannot access cryptographic key attributes'
         end
 
-        method(__method__).super_method.call(key)
+        super(key)
       end
 
       def []=(key, value)
@@ -62,7 +62,7 @@ module JWT
           raise ArgumentError, 'cannot access cryptographic key attributes'
         end
 
-        method(__method__).super_method.call(key, value)
+        super(key, value)
       end
 
       class << self

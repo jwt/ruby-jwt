@@ -57,7 +57,7 @@ module JWT
           raise ArgumentError, 'cannot access cryptographic key attributes'
         end
 
-        method(__method__).super_method.call(key)
+        super(key)
       end
 
       def []=(key, value)
@@ -65,7 +65,7 @@ module JWT
           raise ArgumentError, 'cannot access cryptographic key attributes'
         end
 
-        method(__method__).super_method.call(key, value)
+        super(key, value)
       end
 
       private
@@ -120,7 +120,7 @@ module JWT
           raise JWT::JWKError, "Incorrect 'kty' value: #{jwk_kty}, expected #{KTY}" unless jwk_kty == KTY
           raise JWT::JWKError, 'Key format is invalid for EC' unless jwk_crv && jwk_x && jwk_y
 
-          new(ec_pkey(jwk_crv, jwk_x, jwk_y, jwk_d), common_parameters: parameters)
+          new(create_ec_key(jwk_crv, jwk_x, jwk_y, jwk_d), common_parameters: parameters)
         end
 
         def to_openssl_curve(crv)
@@ -139,7 +139,7 @@ module JWT
         private
 
         if ::JWT.openssl_3?
-          def ec_pkey(jwk_crv, jwk_x, jwk_y, jwk_d) # rubocop:disable Metrics/MethodLength
+          def create_ec_key(jwk_crv, jwk_x, jwk_y, jwk_d) # rubocop:disable Metrics/MethodLength
             curve = to_openssl_curve(jwk_crv)
 
             x_octets = decode_octets(jwk_x)
@@ -175,7 +175,7 @@ module JWT
             OpenSSL::PKey::EC.new(sequence.to_der)
           end
         else
-          def ec_pkey(jwk_crv, jwk_x, jwk_y, jwk_d)
+          def create_ec_key(jwk_crv, jwk_x, jwk_y, jwk_d)
             curve = to_openssl_curve(jwk_crv)
 
             x_octets = decode_octets(jwk_x)
