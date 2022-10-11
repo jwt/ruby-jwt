@@ -73,7 +73,7 @@ RSpec.describe JWT::JWK::EC do
     context 'when a common parameter is given' do
       let(:parameters) { { use: 'sig' } }
       let(:keypair) { ec_key }
-      subject { described_class.new(keypair, common_parameters: parameters).export }
+      subject { described_class.new(keypair, nil, parameters).export }
       it 'returns a hash including the common parameter' do
         expect(subject).to include(:use)
       end

@@ -8,16 +8,14 @@ module JWT
         ::JWT::JWK.classes << klass
       end
 
-      def initialize(options)
+      def initialize(options, params = {})
         options ||= {}
 
         if options.is_a?(String) # For backwards compatibility when kid was a String
           options = { kid: options }
         end
 
-        @common_parameters = options[:common_parameters] || {}
-        @common_parameters = @common_parameters.transform_keys(&:to_sym) # Uniform interface
-
+        @parameters = params.transform_keys(&:to_sym) # Uniform interface
         initialize_kid(options)
       end
 
@@ -26,16 +24,16 @@ module JWT
       end
 
       def [](key)
-        @common_parameters[key.to_sym]
+        @parameters[key.to_sym]
       end
 
       def []=(key, value)
-        @common_parameters[key.to_sym] = value
+        @parameters[key.to_sym] = value
       end
 
       private
 
-      attr_reader :common_parameters
+      attr_reader :parameters
 
       def initialize_kid(options)
         # kid can be specified outside common_parameters, takes priority
