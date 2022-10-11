@@ -5,14 +5,30 @@ module JWT
     class HMAC < KeyBase
       KTY  = 'oct'
       KTYS = [KTY, String].freeze
+      HMAC_PUBLIC_KEY_ELEMENTS = %i[kty].freeze
+      HMAC_PRIVATE_KEY_ELEMENTS = %i[k].freeze
+      HMAC_KEY_ELEMENTS = (HMAC_PRIVATE_KEY_ELEMENTS + HMAC_PUBLIC_KEY_ELEMENTS).freeze
 
-      attr_reader :signing_key
+      def initialize(keypair, options = nil, params = {})
+        options ||= {}
 
-      def initialize(signing_key, options = {})
-        raise ArgumentError, 'signing_key must be of type String' unless signing_key.is_a?(String)
+        if keypair.is_a?(String)
+          keypair = { kty: KTY, k: keypair }
+        end
 
-        @signing_key = signing_key
-        super(options)
+        raise ArgumentError, 'keypair must be of type String' unless keypair.is_a?(Hash)
+
+        keypair = keypair.transform_keys(&:to_sym)
+        params  = params.transform_keys(&:to_sym)
+        raise ArgumentError, 'cannot overwrite cryptographic key attributes' unless (HMAC_KEY_ELEMENTS & params.keys).empty?
+        raise JWT::JWKError, "Incorrect 'kty' value: #{keypair[:kty]}, expected #{KTY}" unless keypair[:kty] == KTY
+        raise JWT::JWKError, 'Key format is invalid for HMAC' unless keypair[:k]
+
+        super(options, keypair.merge(params))
+      end
+
+      def keypair
+        self[:k]
       end
 
       def private?
@@ -25,23 +41,16 @@ module JWT
 
       # See https://tools.ietf.org/html/rfc7517#appendix-A.3
       def export(options = {})
-        exported_hash = common_parameters.merge({ kty: KTY })
-
-        return exported_hash unless private? && options[:include_private] == true
-
-        exported_hash.merge(
-          k: signing_key
-        )
+        exported = parameters.clone
+        exported = exported.except(*HMAC_PRIVATE_KEY_ELEMENTS) unless private? && options[:include_private] == true
+        exported
       end
 
       def members
-        {
-          kty: KTY,
-          k: signing_key
-        }
+        HMAC_KEY_ELEMENTS.each_with_object({}) { |i, h| h[i] = self[i] }
       end
 
-      alias keypair signing_key # for backwards compatibility
+      alias signing_key keypair # for backwards compatibility
 
       def key_digest
         sequence = OpenSSL::ASN1::Sequence([OpenSSL::ASN1::UTF8String.new(signing_key),
@@ -49,17 +58,9 @@ module JWT
         OpenSSL::Digest::SHA256.hexdigest(sequence.to_der)
       end
 
-      def [](key)
-        if key.to_sym == :k || key.to_sym == :kty
-          raise ArgumentError, 'cannot access cryptographic key attributes'
-        end
-
-        super(key)
-      end
-
       def []=(key, value)
-        if key.to_sym == :k || key.to_sym == :kty
-          raise ArgumentError, 'cannot access cryptographic key attributes'
+        if HMAC_KEY_ELEMENTS.include?(key)
+          raise ArgumentError, 'cannot overwrite cryptographic key attributes'
         end
 
         super(key, value)
@@ -67,14 +68,7 @@ module JWT
 
       class << self
         def import(jwk_data)
-          parameters = jwk_data.transform_keys(&:to_sym)
-          jwk_kty = parameters.delete(:kty) # Will be re-added upon export
-          jwk_k   = parameters.delete(:k)
-
-          raise JWT::JWKError, "Incorrect 'kty' value: #{jwk_kty}, expected #{KTY}" unless jwk_kty == KTY
-          raise JWT::JWKError, 'Key format is invalid for HMAC' unless jwk_k
-
-          new(jwk_k, common_parameters: parameters)
+          new(jwk_data)
         end
       end
     end
