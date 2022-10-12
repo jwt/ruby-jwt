@@ -9,12 +9,14 @@ module JWT
       HMAC_PRIVATE_KEY_ELEMENTS = %i[k].freeze
       HMAC_KEY_ELEMENTS = (HMAC_PRIVATE_KEY_ELEMENTS + HMAC_PUBLIC_KEY_ELEMENTS).freeze
 
-      def initialize(keypair, options = nil, params = {})
-        options ||= {}
+      def initialize(keypair, params = nil, options = {})
+        params ||= {}
 
-        if keypair.is_a?(String)
-          keypair = { kty: KTY, k: keypair }
-        end
+        # For backwards compatibility when kid was a String
+        params = { kid: params } if params.is_a?(String)
+
+        # Accept String key as input
+        keypair = { kty: KTY, k: keypair } if keypair.is_a?(String)
 
         raise ArgumentError, 'keypair must be of type String' unless keypair.is_a?(Hash)
 
@@ -57,7 +59,7 @@ module JWT
       end
 
       def []=(key, value)
-        if HMAC_KEY_ELEMENTS.include?(key)
+        if HMAC_KEY_ELEMENTS.include?(key.to_sym)
           raise ArgumentError, 'cannot overwrite cryptographic key attributes'
         end
 

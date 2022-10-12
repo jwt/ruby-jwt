@@ -10,12 +10,14 @@ module JWT
       RSA_PRIVATE_KEY_ELEMENTS = %i[d p q dp dq qi].freeze
       RSA_KEY_ELEMENTS = (RSA_PRIVATE_KEY_ELEMENTS + RSA_PUBLIC_KEY_ELEMENTS).freeze
 
-      def initialize(keypair, options = nil, params = {})
-        options ||= {}
+      def initialize(keypair, params = nil, options = {})
+        params ||= {}
 
-        if keypair.is_a?(OpenSSL::PKey::RSA)
-          keypair = parse_rsa_key(keypair)
-        end
+        # For backwards compatibility when kid was a String
+        params = { kid: params } if params.is_a?(String)
+
+        # Accept OpenSSL key as input
+        keypair = parse_rsa_key(keypair) if keypair.is_a?(OpenSSL::PKey::RSA)
 
         raise ArgumentError, 'keypair must be of type OpenSSL::PKey::RSA' unless keypair.is_a?(Hash)
 
@@ -55,7 +57,7 @@ module JWT
       end
 
       def []=(key, value)
-        if RSA_KEY_ELEMENTS.include?(key)
+        if RSA_KEY_ELEMENTS.include?(key.to_sym)
           raise ArgumentError, 'cannot overwrite cryptographic key attributes'
         end
 

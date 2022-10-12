@@ -75,7 +75,7 @@ RSpec.describe JWT::JWK do
     end
 
     context 'when a common parameter is given' do
-      subject { described_class.new(keypair, nil, params) }
+      subject { described_class.new(keypair, params) }
       let(:keypair) { rsa_key }
       let(:params) { { 'use' => 'sig' } }
       it 'sets the common parameter' do
@@ -87,7 +87,7 @@ RSpec.describe JWT::JWK do
   describe '.[]' do
     let(:params) { { use: 'sig' } }
     let(:keypair) { rsa_key }
-    subject { described_class.new(keypair, nil, params) }
+    subject { described_class.new(keypair, params) }
 
     it 'allows to read common parameters via the key-accessor' do
       expect(subject[:use]).to eq('sig')
