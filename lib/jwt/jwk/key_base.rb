@@ -11,12 +11,14 @@ module JWT
       def initialize(options, params = {})
         options ||= {}
 
-        if options.is_a?(String) # For backwards compatibility when kid was a String
-          options = { kid: options }
-        end
-
         @parameters = params.transform_keys(&:to_sym) # Uniform interface
-        initialize_kid(options)
+
+        # For backwards compatibility, kid_generator may be specified in the parameters
+        options[:kid_generator] ||= @parameters.delete(:kid_generator)
+
+        # Make sure the key has a kid
+        kid_generator = options[:kid_generator] || ::JWT.configuration.jwk.kid_generator
+        self[:kid] ||= kid_generator.new(self).generate
       end
 
       def kid
@@ -34,17 +36,6 @@ module JWT
       private
 
       attr_reader :parameters
-
-      def initialize_kid(options)
-        # kid can be specified outside common_parameters, takes priority
-        self[:kid] = options[:kid] if options[:kid]
-
-        return if self[:kid]
-
-        # No kid given. Generate one from the public key
-        kid_generator = options[:kid_generator] || ::JWT.configuration.jwk.kid_generator
-        self[:kid] = kid_generator.new(self).generate
-      end
     end
   end
 end
