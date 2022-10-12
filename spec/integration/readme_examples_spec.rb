@@ -277,8 +277,54 @@ RSpec.describe 'README.md code test' do
       let(:logger_output) { StringIO.new }
       let(:logger) { Logger.new(logger_output) }
 
-      it 'works as expected' do
+      it 'works as expected (legacy)' do
         jwk = JWT::JWK.new(OpenSSL::PKey::RSA.new(2048), 'optional-kid')
+        payload = { data: 'data' }
+        headers = { kid: jwk.kid }
+
+        token = JWT.encode(payload, jwk.keypair, 'RS512', headers)
+
+        # The jwk loader would fetch the set of JWKs from a trusted source,
+        # to avoid malicious invalidations some kind of protection needs to be implemented.
+        # This example only allows cache invalidations every 5 minutes.
+        jwk_loader = ->(options) do
+          if options[:kid_not_found] && @cache_last_update < Time.now.to_i - 300
+            logger.info("Invalidating JWK cache. #{options[:kid]} not found from previous cache")
+            @cached_keys = nil
+          end
+          @cached_keys ||= begin
+            @cache_last_update = Time.now.to_i
+            { keys: [jwk.export] }
+          end
+        end
+
+        begin
+          JWT.decode(token, nil, true, { algorithms: ['RS512'], jwks: jwk_loader })
+        rescue JWT::JWKError
+          # Handle problems with the provided JWKs
+        rescue JWT::DecodeError
+          # Handle other decode related issues e.g. no kid in header, no matching public key found etc.
+        end
+
+        ## This is not in the example but verifies that the cache is invalidated after 5 minutes
+        jwk = JWT::JWK.new(OpenSSL::PKey::RSA.new(2048), 'new-kid')
+
+        headers = { kid: jwk.kid }
+
+        token = JWT.encode(payload, jwk.keypair, 'RS512', headers)
+        @cache_last_update = Time.now.to_i - 301
+
+        JWT.decode(token, nil, true, { algorithms: ['RS512'], jwks: jwk_loader })
+        expect(logger_output.string.chomp).to match(/^I, .* : Invalidating JWK cache. new-kid not found from previous cache/)
+
+        jwk = JWT::JWK.new(OpenSSL::PKey::RSA.new(2048), 'yet-another-new-kid')
+        headers = { kid: jwk.kid }
+        token = JWT.encode(payload, jwk.keypair, 'RS512', headers)
+        expect { JWT.decode(token, nil, true, { algorithms: ['RS512'], jwks: jwk_loader }) }.to raise_error(JWT::DecodeError, 'Could not find public key for kid yet-another-new-kid')
+      end
+
+      it 'works as expected' do
+        jwk = JWT::JWK.new(OpenSSL::PKey::RSA.new(2048), kid: 'optional-kid')
         payload = { data: 'data' }
         headers = { kid: jwk.kid }
 
@@ -344,8 +390,16 @@ RSpec.describe 'README.md code test' do
       expect(jwk_hash[:kid].size).to eq(43)
     end
 
-    it 'JWK with thumbprint given in the initializer' do
+    it 'JWK with thumbprint given in the initializer (legacy)' do
       jwk = JWT::JWK.new(OpenSSL::PKey::RSA.new(2048), kid_generator: ::JWT::JWK::Thumbprint)
+
+      jwk_hash = jwk.export
+
+      expect(jwk_hash[:kid].size).to eq(43)
+    end
+
+    it 'JWK with thumbprint given in the initializer' do
+      jwk = JWT::JWK.new(OpenSSL::PKey::RSA.new(2048), nil, kid_generator: ::JWT::JWK::Thumbprint)
 
       jwk_hash = jwk.export
 

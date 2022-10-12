@@ -574,7 +574,7 @@ JWK is a JSON structure representing a cryptographic key. Currently only support
 If the kid is not found from the given set the loader will be called a second time with the `kid_not_found` option set to `true`. The application can choose to implement some kind of JWK cache invalidation or other mechanism to handle such cases.
 
 ```ruby
-  jwk = JWT::JWK.new(OpenSSL::PKey::RSA.new(2048), 'optional-kid')
+  jwk = JWT::JWK.new(OpenSSL::PKey::RSA.new(2048), kid: 'optional-kid')
   payload = { data: 'data' }
   headers = { kid: jwk.kid }
 
@@ -615,7 +615,9 @@ JWT.decode(token, nil, true, { algorithms: ['RS512'], jwks: jwks})
 The ::JWT::JWK class can be used to import and export both the public key (default behaviour) and the private key. To include the private key in the export pass the `include_private` parameter to the export method.
 
 ```ruby
-jwk = JWT::JWK.new(OpenSSL::PKey::RSA.new(2048))
+# You can optionally add descriptive parameters to the JWK
+desc_params = { kid: 'my-kid', use: 'sig' }
+jwk = JWT::JWK.new(OpenSSL::PKey::RSA.new(2048), desc_params)
 
 jwk_hash = jwk.export
 jwk_hash_with_private_key = jwk.export(include_private: true)
@@ -630,7 +632,7 @@ JWT.configuration.jwk.kid_generator_type = :rfc7638_thumbprint
 # OR
 JWT.configuration.jwk.kid_generator = ::JWT::JWK::Thumbprint
 # OR
-jwk = JWT::JWK.new(OpenSSL::PKey::RSA.new(2048), kid_generator: ::JWT::JWK::Thumbprint)
+jwk = JWT::JWK.new(OpenSSL::PKey::RSA.new(2048), nil, kid_generator: ::JWT::JWK::Thumbprint)
 
 jwk_hash = jwk.export
 
