@@ -2,7 +2,7 @@
 
 module JWT
   module JWK
-    class RSA < KeyBase
+    class RSA < KeyBase # rubocop:disable Metrics/ClassLength
       BINARY = 2
       KTY    = 'RSA'
       KTYS   = [KTY, OpenSSL::PKey::RSA].freeze
@@ -21,15 +21,13 @@ module JWT
 
         keypair = keypair.transform_keys(&:to_sym)
         params  = params.transform_keys(&:to_sym)
-        raise ArgumentError, 'cannot overwrite cryptographic key attributes' unless (RSA_KEY_ELEMENTS & params.keys).empty?
-        raise JWT::JWKError, "Incorrect 'kty' value: #{keypair[:kty]}, expected #{KTY}" unless keypair[:kty] == KTY
-        raise JWT::JWKError, 'Key format is invalid for RSA' unless keypair[:n] && keypair[:e]
+        check_jwk(keypair, params)
 
         super(options, keypair.merge(params))
       end
 
       def keypair
-        create_rsa_key(jwk_attributes(*(RSA_KEY_ELEMENTS - [:kty])))
+        @keypair ||= create_rsa_key(jwk_attributes(*(RSA_KEY_ELEMENTS - [:kty])))
       end
 
       def private?
@@ -65,6 +63,12 @@ module JWT
       end
 
       private
+
+      def check_jwk(keypair, params)
+        raise ArgumentError, 'cannot overwrite cryptographic key attributes' unless (RSA_KEY_ELEMENTS & params.keys).empty?
+        raise JWT::JWKError, "Incorrect 'kty' value: #{keypair[:kty]}, expected #{KTY}" unless keypair[:kty] == KTY
+        raise JWT::JWKError, 'Key format is invalid for RSA' unless keypair[:n] && keypair[:e]
+      end
 
       def parse_rsa_key(key)
         {

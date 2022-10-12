@@ -26,15 +26,13 @@ module JWT
 
         keypair = keypair.transform_keys(&:to_sym)
         params  = params.transform_keys(&:to_sym)
-        raise ArgumentError, 'cannot overwrite cryptographic key attributes' unless (EC_KEY_ELEMENTS & params.keys).empty?
-        raise JWT::JWKError, "Incorrect 'kty' value: #{keypair[:kty]}, expected #{KTY}" unless keypair[:kty] == KTY
-        raise JWT::JWKError, 'Key format is invalid for EC' unless keypair[:crv] && keypair[:x] && keypair[:y]
+        check_jwk(keypair, params)
 
         super(options, keypair.merge(params))
       end
 
       def keypair
-        create_ec_key(self[:crv], self[:x], self[:y], self[:d])
+        @keypair ||= create_ec_key(self[:crv], self[:x], self[:y], self[:d])
       end
 
       def private?
@@ -67,6 +65,12 @@ module JWT
       end
 
       private
+
+      def check_jwk(keypair, params)
+        raise ArgumentError, 'cannot overwrite cryptographic key attributes' unless (EC_KEY_ELEMENTS & params.keys).empty?
+        raise JWT::JWKError, "Incorrect 'kty' value: #{keypair[:kty]}, expected #{KTY}" unless keypair[:kty] == KTY
+        raise JWT::JWKError, 'Key format is invalid for EC' unless keypair[:crv] && keypair[:x] && keypair[:y]
+      end
 
       def keypair_components(ec_keypair)
         encoded_point = ec_keypair.public_key.to_bn.to_s(BINARY)
