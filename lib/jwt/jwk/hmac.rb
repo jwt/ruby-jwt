@@ -42,7 +42,7 @@ module JWT
       # See https://tools.ietf.org/html/rfc7517#appendix-A.3
       def export(options = {})
         exported = parameters.clone
-        exported = exported.except(*HMAC_PRIVATE_KEY_ELEMENTS) unless private? && options[:include_private] == true
+        exported.reject! { |k, _| HMAC_PRIVATE_KEY_ELEMENTS.include? k } unless private? && options[:include_private] == true
         exported
       end
 
