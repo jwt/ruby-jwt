@@ -370,6 +370,24 @@ RSpec.describe 'README.md code test' do
       end
     end
 
+    it 'JWK import and export' do
+      # Import a JWK Hash (showing an HMAC example)
+      _jwk = JWT::JWK.new({ kty: 'oct', k: 'my-secret', kid: 'my-kid' })
+
+      # Import an OpenSSL key
+      # You can optionally add descriptive parameters to the JWK
+      desc_params = { kid: 'my-kid', use: 'sig' }
+      jwk = JWT::JWK.new(OpenSSL::PKey::RSA.new(2048), desc_params)
+
+      # Export as JWK Hash (public key only by default)
+      _jwk_hash = jwk.export
+      _jwk_hash_with_private_key = jwk.export(include_private: true)
+
+      # Export as OpenSSL key
+      _public_key = jwk.public_key
+      _private_key = jwk.keypair if jwk.private?
+    end
+
     it 'JWK with thumbprint as kid via symbol' do
       JWT.configuration.jwk.kid_generator_type = :rfc7638_thumbprint
 

@@ -5,17 +5,17 @@ require_relative 'jwk/key_finder'
 module JWT
   module JWK
     class << self
-      def import(jwk_data)
-        jwk_kty = jwk_data[:kty] || jwk_data['kty']
-        raise JWT::JWKError, 'Key type (kty) not provided' unless jwk_kty
-
-        mappings.fetch(jwk_kty.to_s) do |kty|
-          raise JWT::JWKError, "Key type #{kty} not supported"
-        end.import(jwk_data)
-      end
-
       def create_from(key, params = nil, options = {})
-        mappings.fetch(keypair.class) do |klass|
+        if key.is_a?(Hash)
+          jwk_kty = key[:kty] || key['kty']
+          raise JWT::JWKError, 'Key type (kty) not provided' unless jwk_kty
+
+          return mappings.fetch(jwk_kty.to_s) do |kty|
+            raise JWT::JWKError, "Key type #{kty} not supported"
+          end.new(key, params, options)
+        end
+
+        mappings.fetch(key.class) do |klass|
           raise JWT::JWKError, "Cannot create JWK from a #{klass.name}"
         end.new(key, params, options)
       end
@@ -26,6 +26,7 @@ module JWT
       end
 
       alias new create_from
+      alias import create_from
 
       private
 

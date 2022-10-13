@@ -612,15 +612,27 @@ JWT.decode(token, nil, true, { algorithms: ['RS512'], jwks: jwks})
 
 ### Importing and exporting JSON Web Keys
 
-The ::JWT::JWK class can be used to import and export both the public key (default behaviour) and the private key. To include the private key in the export pass the `include_private` parameter to the export method.
+The ::JWT::JWK class can be used to import both JSON Web Keys and OpenSSL keys
+and export to either format with and without the private key included.
+
+To include the private key in the export pass the `include_private` parameter to the export method.
 
 ```ruby
+# Import a JWK Hash (showing an HMAC example)
+jwk = JWT::JWK.new({ kty: 'oct', k: 'my-secret', kid: 'my-kid' })
+
+# Import an OpenSSL key
 # You can optionally add descriptive parameters to the JWK
 desc_params = { kid: 'my-kid', use: 'sig' }
 jwk = JWT::JWK.new(OpenSSL::PKey::RSA.new(2048), desc_params)
 
+# Export as JWK Hash (public key only by default)
 jwk_hash = jwk.export
 jwk_hash_with_private_key = jwk.export(include_private: true)
+
+# Export as OpenSSL key
+public_key = jwk.public_key
+private_key = jwk.keypair if jwk.private?
 ```
 
 ### Key ID (kid) and JWKs
