@@ -47,7 +47,7 @@ RSpec.describe JWT::JWK::RSA do
     context 'when unsupported keypair is given' do
       let(:keypair) { 'key' }
       it 'raises an error' do
-        expect { subject }.to raise_error(ArgumentError, 'keypair must be of type OpenSSL::PKey::RSA')
+        expect { subject }.to raise_error(ArgumentError)
       end
     end
 
