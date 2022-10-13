@@ -47,7 +47,7 @@ module JWT
 
       def export(options = {})
         exported = parameters.clone
-        exported = exported.except(*EC_PRIVATE_KEY_ELEMENTS) unless private? && options[:include_private] == true
+        exported.reject! { |k, _| EC_PRIVATE_KEY_ELEMENTS.include? k } unless private? && options[:include_private] == true
         exported
       end
 
