@@ -10,22 +10,26 @@ module JWT
       RSA_PRIVATE_KEY_ELEMENTS = %i[d p q dp dq qi].freeze
       RSA_KEY_ELEMENTS = (RSA_PRIVATE_KEY_ELEMENTS + RSA_PUBLIC_KEY_ELEMENTS).freeze
 
-      def initialize(keypair, params = nil, options = {})
+      def initialize(key, params = nil, options = {})
         params ||= {}
 
         # For backwards compatibility when kid was a String
         params = { kid: params } if params.is_a?(String)
 
-        # Accept OpenSSL key as input
-        keypair = parse_rsa_key(keypair) if keypair.is_a?(OpenSSL::PKey::RSA)
+        key_params = case key
+                     when OpenSSL::PKey::RSA # Accept OpenSSL key as input
+                       @keypair = key # Preserve the object to avoid recreation
+                       parse_rsa_key(key)
+                     when Hash
+                       key.transform_keys(&:to_sym)
+                     else
+                       raise ArgumentError, 'key must be of type OpenSSL::PKey::RSA or Hash with key parameters'
+        end
 
-        raise ArgumentError, 'keypair must be of type OpenSSL::PKey::RSA' unless keypair.is_a?(Hash)
+        params = params.transform_keys(&:to_sym)
+        check_jwk(key_params, params)
 
-        keypair = keypair.transform_keys(&:to_sym)
-        params  = params.transform_keys(&:to_sym)
-        check_jwk(keypair, params)
-
-        super(options, keypair.merge(params))
+        super(options, key_params.merge(params))
       end
 
       def keypair

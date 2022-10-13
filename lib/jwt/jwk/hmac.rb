@@ -9,22 +9,25 @@ module JWT
       HMAC_PRIVATE_KEY_ELEMENTS = %i[k].freeze
       HMAC_KEY_ELEMENTS = (HMAC_PRIVATE_KEY_ELEMENTS + HMAC_PUBLIC_KEY_ELEMENTS).freeze
 
-      def initialize(keypair, params = nil, options = {})
+      def initialize(key, params = nil, options = {})
         params ||= {}
 
         # For backwards compatibility when kid was a String
         params = { kid: params } if params.is_a?(String)
 
-        # Accept String key as input
-        keypair = { kty: KTY, k: keypair } if keypair.is_a?(String)
+        key_params = case key
+                     when String # Accept String key as input
+                       { kty: KTY, k: key }
+                     when Hash
+                       key.transform_keys(&:to_sym)
+                     else
+                       raise ArgumentError, 'key must be of type String or Hash with key parameters'
+        end
 
-        raise ArgumentError, 'keypair must be of type String' unless keypair.is_a?(Hash)
+        params = params.transform_keys(&:to_sym)
+        check_jwk(key_params, params)
 
-        keypair = keypair.transform_keys(&:to_sym)
-        params  = params.transform_keys(&:to_sym)
-        check_jwk(keypair, params)
-
-        super(options, keypair.merge(params))
+        super(options, key_params.merge(params))
       end
 
       def keypair
