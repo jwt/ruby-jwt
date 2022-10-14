@@ -9,10 +9,8 @@ module JWT
 
       SUPPORTED = %w[PS256 PS384 PS512].freeze
 
-      def sign(to_sign)
+      def sign(algorithm, msg, key)
         require_openssl!
-
-        algorithm, msg, key = to_sign.values
 
         key_class = key.class
 
@@ -23,10 +21,10 @@ module JWT
         key.sign_pss(translated_algorithm, msg, salt_length: :digest, mgf1_hash: translated_algorithm)
       end
 
-      def verify(to_verify)
+      def verify(algorithm, public_key, signing_input, signature)
         require_openssl!
 
-        SecurityUtils.verify_ps(to_verify.algorithm, to_verify.public_key, to_verify.signing_input, to_verify.signature)
+        SecurityUtils.verify_ps(algorithm, public_key, signing_input, signature)
       end
 
       def require_openssl!

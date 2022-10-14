@@ -211,6 +211,33 @@ decoded_token = JWT.decode token, rsa_public, true, { algorithm: 'PS256' }
 puts decoded_token
 ```
 
+### **Custom algorithms**
+
+An object implementing custom signing or verification behaviour can be passed in the `algorithm` option when encoding and decoding. The given object needs to implement the method `valid_alg?` and `verify` and/or `alg` and `sign`, depending if object is used for encoding or decoding.
+
+```ruby
+module CustomHS512Algorithm
+  def self.alg
+    'HS512'
+  end
+
+  def self.valid_alg?(alg_to_validate)
+    alg_to_validate == alg
+  end
+
+  def self.sign(data:, signing_key:)
+    OpenSSL::HMAC.digest(OpenSSL::Digest.new('sha512'), data, signing_key)
+  end
+
+  def self.verify(data:, signature:, verification_key:)
+    ::OpenSSL.secure_compare(sign(data: data, signing_key: verification_key), signature)
+  end
+end
+
+token = ::JWT.encode({'pay' => 'load'}, 'secret', CustomHS512Algorithm)
+payload, header = ::JWT.decode(token, 'secret', true, algorithm: CustomHS512Algorithm)
+```
+
 ## Support for reserved claim names
 JSON Web Token defines some reserved claim names and defines how they should be
 used. JWT supports these reserved claim names:

@@ -729,7 +729,7 @@ RSpec.describe JWT do
     let(:token) { JWT.encode(payload, 'HS256', 'HS256') }
     it 'decodes the token but does not pass the payload' do
       expect(JWT.decode(token, nil, true, algorithm: 'HS256') do |header, token_payload, nothing|
-        expect(token_payload).to eq(nil)  # This behaviour is not correct, the payload should be available in the keyfinder
+        expect(token_payload).to eq(nil) # This behaviour is not correct, the payload should be available in the keyfinder
         expect(nothing).to eq(nil)
         header['alg']
       end).to include(payload)
@@ -769,6 +769,103 @@ RSpec.describe JWT do
     let(:token) { "#{JWT.encode(payload, 'secret', 'HS256')}\n" }
     it 'ignores the newline and decodes the token' do
       expect(JWT.decode(token, 'secret', true, algorithm: 'HS256')).to include(payload)
+    end
+  end
+
+  context 'when multiple algorithms given' do
+    let(:token) { JWT.encode(payload, 'secret', 'HS256') }
+
+    it 'starts trying with the algorithm referred in the header' do
+      expect(::JWT::Algos::Rsa).not_to receive(:verify)
+      JWT.decode(token, 'secret', true, algorithm: ['RS512', 'HS256'])
+    end
+  end
+
+  context 'when algorithm is a custom class' do
+    let(:custom_algorithm) do
+      Class.new do
+        attr_reader :alg
+
+        def initialize(signature: 'custom_signature', alg: 'custom')
+          @signature = signature
+          @alg = alg
+        end
+
+        def sign(*)
+          @signature
+        end
+
+        def verify(data:, signature:, verification_key:) # rubocop:disable Lint/UnusedMethodArgument
+          signature == @signature
+        end
+
+        def valid_alg?(alg)
+          alg == self.alg
+        end
+      end
+    end
+
+    let(:token) { JWT.encode(payload, 'secret', custom_algorithm.new) }
+    let(:expected_token) { 'eyJhbGciOiJjdXN0b20ifQ.eyJ1c2VyX2lkIjoic29tZUB1c2VyLnRsZCJ9.Y3VzdG9tX3NpZ25hdHVyZQ' }
+
+    it 'can be used for encoding' do
+      expect(token).to eq(expected_token)
+    end
+
+    it 'can be used for decoding' do
+      expect(JWT.decode(token, 'secret', true, algorithm: custom_algorithm.new)).to eq([payload, { 'alg' => 'custom' }])
+    end
+
+    context 'when multiple custom algorithms are given for decoding' do
+      it 'tries until the first match' do
+        expect(JWT.decode(token, 'secret', true, algorithms: [custom_algorithm.new(signature: 'not_this'), custom_algorithm.new])).to eq([payload, { 'alg' => 'custom' }])
+      end
+    end
+
+    context 'when alg is not matching' do
+      it 'fails the validation process' do
+        expect { JWT.decode(token, 'secret', true, algorithms: custom_algorithm.new(alg: 'not_a_match')) }.to raise_error(JWT::IncorrectAlgorithm, 'Expected a different algorithm')
+      end
+    end
+
+    context 'when signature is not matching' do
+      it 'fails the validation process' do
+        expect { JWT.decode(token, 'secret', true, algorithms: custom_algorithm.new(signature: 'not_a_match')) }.to raise_error(JWT::VerificationError, 'Signature verification failed')
+      end
+    end
+
+    context 'when #sign method is missing' do
+      before do
+        custom_algorithm.instance_eval do
+          remove_method :sign
+        end
+      end
+
+      # This behaviour should be somehow nicer
+      it 'raises an error on encoding' do
+        expect { token }.to raise_error(NoMethodError)
+      end
+
+      it 'allows decoding' do
+        expect(JWT.decode(expected_token, 'secret', true, algorithm: custom_algorithm.new)).to eq([payload, { 'alg' => 'custom' }])
+      end
+    end
+
+    context 'when #verify method is missing' do
+      before do
+        custom_algorithm.instance_eval do
+          remove_method :verify
+        end
+      end
+
+      it 'can be used for encoding' do
+        expect(token).to eq(expected_token)
+      end
+
+      # This behaviour should be somehow nicer
+      it 'raises error on decoding' do
+        expect { JWT.decode(expected_token, 'secret', true, algorithm: custom_algorithm.new) }.to raise_error(NoMethodError)
+      end
     end
   end
 end

@@ -424,4 +424,29 @@ RSpec.describe 'README.md code test' do
       expect(jwk_hash[:kid].size).to eq(43)
     end
   end
+
+  context 'custom algorithm example' do
+    it 'allows a module to be used as algorithm on encode and decode' do
+      custom_hs512_alg = Module.new do
+        def self.alg
+          'HS512'
+        end
+
+        def self.valid_alg?(alg_to_validate)
+          alg_to_validate == alg
+        end
+
+        def self.sign(data:, signing_key:)
+          OpenSSL::HMAC.digest(OpenSSL::Digest.new('sha512'), data, signing_key)
+        end
+
+        def self.verify(data:, signature:, verification_key:)
+          sign(data: data, signing_key: verification_key) == signature
+        end
+      end
+
+      token = ::JWT.encode({ 'pay' => 'load' }, 'secret', custom_hs512_alg)
+      _payload, _header = ::JWT.decode(token, 'secret', true, algorithm: custom_hs512_alg)
+    end
+  end
 end

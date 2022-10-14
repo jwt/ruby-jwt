@@ -7,8 +7,7 @@ module JWT
 
       SUPPORTED = %w[HS256 HS512256 HS384 HS512].freeze
 
-      def sign(to_sign)
-        algorithm, msg, key = to_sign.values
+      def sign(algorithm, msg, key)
         key ||= ''
         authenticator, padded_key = SecurityUtils.rbnacl_fixup(algorithm, key)
         if authenticator && padded_key
@@ -18,8 +17,7 @@ module JWT
         end
       end
 
-      def verify(to_verify)
-        algorithm, public_key, signing_input, signature = to_verify.values
+      def verify(algorithm, public_key, signing_input, signature)
         authenticator, padded_key = SecurityUtils.rbnacl_fixup(algorithm, public_key)
         if authenticator && padded_key
           begin
@@ -28,7 +26,7 @@ module JWT
             false
           end
         else
-          SecurityUtils.secure_compare(signature, sign(JWT::Signature::ToSign.new(algorithm, signing_input, public_key)))
+          SecurityUtils.secure_compare(signature, sign(algorithm, signing_input, public_key))
         end
       end
     end

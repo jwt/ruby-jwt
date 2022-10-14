@@ -1,27 +1,34 @@
 # frozen_string_literal: true
 
-require_relative './algos'
-require_relative './claims_validator'
+require_relative 'algos'
+require_relative 'claims_validator'
 
 # JWT::Encode module
 module JWT
   # Encoding logic for JWT
   class Encode
-    ALG_NONE = 'none'
-    ALG_KEY  = 'alg'
+    ALG_KEY = 'alg'
 
     def initialize(options)
-      @payload = options[:payload]
-      @key = options[:key]
-      _, @algorithm = Algos.find(options[:algorithm])
-      @headers = options[:headers].transform_keys(&:to_s)
+      @payload          = options[:payload]
+      @key              = options[:key]
+      @algorithm        = resolve_algorithm(options[:algorithm])
+      @headers          = options[:headers].transform_keys(&:to_s)
+      @headers[ALG_KEY] = @algorithm.alg
     end
 
     def segments
-      @segments ||= combine(encoded_header_and_payload, encoded_signature)
+      validate_claims!
+      combine(encoded_header_and_payload, encoded_signature)
     end
 
     private
+
+    def resolve_algorithm(algorithm)
+      return algorithm if Algos.implementation?(algorithm)
+
+      Algos.create(algorithm)
+    end
 
     def encoded_header
       @encoded_header ||= encode_header
@@ -40,25 +47,28 @@ module JWT
     end
 
     def encode_header
-      @headers[ALG_KEY] = @algorithm
-      encode(@headers)
+      encode_data(@headers)
     end
 
     def encode_payload
-      if @payload.is_a?(Hash)
-        ClaimsValidator.new(@payload).validate!
-      end
+      encode_data(@payload)
+    end
 
-      encode(@payload)
+    def signature
+      @algorithm.sign(data: encoded_header_and_payload, signing_key: @key)
+    end
+
+    def validate_claims!
+      return unless @payload.is_a?(Hash)
+
+      ClaimsValidator.new(@payload).validate!
     end
 
     def encode_signature
-      return '' if @algorithm == ALG_NONE
-
-      ::JWT::Base64.url_encode(JWT::Signature.sign(@algorithm, encoded_header_and_payload, @key))
+      ::JWT::Base64.url_encode(signature)
     end
 
-    def encode(data)
+    def encode_data(data)
       ::JWT::Base64.url_encode(JWT::JSON.generate(data))
     end
 
