@@ -2,7 +2,7 @@
 
 module JWT
   module JWK
-    class RSA < KeyBase # rubocop:disable Metrics/ClassLength
+    class RSA < KeyBase
       BINARY = 2
       KTY    = 'RSA'
       KTYS   = [KTY, OpenSSL::PKey::RSA].freeze
