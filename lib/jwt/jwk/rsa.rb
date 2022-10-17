@@ -17,6 +17,8 @@ module JWT
         params = { kid: params } if params.is_a?(String)
 
         key_params = case key
+                     when JWT::JWK::RSA
+                       key.export(include_private: true)
                      when OpenSSL::PKey::RSA # Accept OpenSSL key as input
                        @keypair = key # Preserve the object to avoid recreation
                        parse_rsa_key(key)
