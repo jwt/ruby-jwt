@@ -4,7 +4,7 @@ RSpec.describe JWT do
   describe '.decode for JWK usecase' do
     let(:keypair)       { OpenSSL::PKey::RSA.new(2048) }
     let(:jwk)           { JWT::JWK.new(keypair) }
-    let(:public_jwks) { { keys: [jwk.export, { kid: 'not_the_correct_one' }] } }
+    let(:public_jwks) { { keys: [jwk.export, { kid: 'not_the_correct_one', kty: 'oct', k: 'secret' }] } }
     let(:token_payload) { { 'data' => 'something' } }
     let(:token_headers) { { kid: jwk.kid } }
     let(:signed_token)  { described_class.encode(token_payload, jwk.keypair, 'RS512', token_headers) }

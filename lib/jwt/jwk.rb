@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require_relative 'jwk/key_finder'
+require_relative 'jwk/set'
 
 module JWT
   module JWK

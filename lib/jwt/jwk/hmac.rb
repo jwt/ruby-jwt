@@ -16,6 +16,8 @@ module JWT
         params = { kid: params } if params.is_a?(String)
 
         key_params = case key
+                     when JWT::JWK::HMAC
+                       key.export(include_private: true)
                      when String # Accept String key as input
                        { kty: KTY, k: key }
                      when Hash

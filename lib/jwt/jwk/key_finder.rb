@@ -5,8 +5,12 @@ module JWT
     class KeyFinder
       def initialize(options)
         jwks_or_loader = options[:jwks]
-        @jwks          = jwks_or_loader if jwks_or_loader.is_a?(Hash)
-        @jwk_loader    = jwks_or_loader if jwks_or_loader.respond_to?(:call)
+
+        @jwks_loader = if jwks_or_loader.respond_to?(:call)
+          jwks_or_loader
+        else
+          ->(_options) { jwks_or_loader }
+        end
       end
 
       def key_for(kid)
@@ -14,48 +18,24 @@ module JWT
 
         jwk = resolve_key(kid)
 
-        raise ::JWT::DecodeError, 'No keys found in jwks' if jwks_keys.empty?
+        raise ::JWT::DecodeError, 'No keys found in jwks' unless @jwks.any?
         raise ::JWT::DecodeError, "Could not find public key for kid #{kid}" unless jwk
 
-        ::JWT::JWK.import(jwk).keypair
+        jwk.keypair
       end
 
       private
 
       def resolve_key(kid)
-        jwk = find_key(kid)
+        # First try without invalidation to facilitate application caching
+        @jwks ||= JWT::JWK::Set.new(@jwks_loader.call(kid: kid))
+        jwk = @jwks.find { |key| key[:kid] == kid }
 
         return jwk if jwk
 
-        if reloadable?
-          load_keys(invalidate: true, kid_not_found: true, kid: kid) # invalidate for backwards compatibility
-          return find_key(kid)
-        end
-
-        nil
-      end
-
-      def jwks
-        return @jwks if @jwks
-
-        load_keys
-        @jwks
-      end
-
-      def load_keys(opts = {})
-        @jwks = @jwk_loader.call(opts)
-      end
-
-      def jwks_keys
-        Array(jwks[:keys] || jwks['keys'])
-      end
-
-      def find_key(kid)
-        jwks_keys.find { |key| (key[:kid] || key['kid']) == kid }
-      end
-
-      def reloadable?
-        @jwk_loader
+        # Second try, invalidate for backwards compatibility
+        @jwks = JWT::JWK::Set.new(@jwks_loader.call(invalidate: true, kid_not_found: true, kid: kid))
+        @jwks.find { |key| key[:kid] == kid }
       end
     end
   end

@@ -33,6 +33,14 @@ module JWT
         @parameters[key.to_sym] = value
       end
 
+      def ==(other)
+        self[:kid] == other[:kid]
+      end
+
+      def <=>(other)
+        self[:kid] <=> other[:kid]
+      end
+
       private
 
       attr_reader :parameters
