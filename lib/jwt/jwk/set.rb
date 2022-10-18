@@ -1,9 +1,11 @@
 # frozen_string_literal: true
+require 'forwardable'
 
 module JWT
   module JWK
     class Set
       include Enumerable
+      extend Forwardable
 
       attr_reader :keys
 
@@ -29,9 +31,7 @@ module JWT
         { keys: @keys.map { |k| k.export(options) } }
       end
 
-      def each(&block)
-        @keys.each(&block)
-      end
+      def_delegators :@keys, :each, :size, :delete, :dig
 
       def select!(&block)
         return @keys.select! unless block
@@ -45,13 +45,11 @@ module JWT
         self if @keys.reject!(&block)
       end
 
-      alias filter! select!
+      def uniq!(&block)
+        return @keys.uniq! unless block
 
-      def size
-        @keys.size
+        self if @keys.uniq!(&block)
       end
-
-      alias length size
 
       def merge(enum)
         @keys += JWT::JWK::Set.new(enum.collect)
@@ -71,6 +69,8 @@ module JWT
         other.is_a?(JWT::JWK::Set) && keys.sort == other.keys.sort
       end
 
+      alias filter! select!
+      alias length size
       # For symbolic manipulation
       alias | union
       alias + union
