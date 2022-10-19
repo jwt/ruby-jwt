@@ -569,45 +569,64 @@ end
 
 ### JSON Web Key (JWK)
 
-JWK is a JSON structure representing a cryptographic key. Currently only supports RSA, EC and HMAC keys. The `jwks` option can be given as a lambda that evaluates every time a kid is resolved.
+JWK is a JSON structure representing a cryptographic key. This gem currently supports RSA, EC and HMAC keys.
 
-If the kid is not found from the given set the loader will be called a second time with the `kid_not_found` option set to `true`. The application can choose to implement some kind of JWK cache invalidation or other mechanism to handle such cases.
+To encode a JWT using your JWK:
 
 ```ruby
-  jwk = JWT::JWK.new(OpenSSL::PKey::RSA.new(2048), kid: 'optional-kid')
-  payload = { data: 'data' }
-  headers = { kid: jwk.kid }
+optional_parameters = { kid: 'my-kid', use: 'sig', alg: 'RS512' }
+jwk = JWT::JWK.new(OpenSSL::PKey::RSA.new(2048), optional_parameters)
 
-  token = JWT.encode(payload, jwk.keypair, 'RS512', headers)
+# Encoding
+payload = { data: 'data' }
+token = JWT.encode(payload, jwk.keypair, jwk[:alg], kid: jwk[:kid])
 
-  # The jwk loader would fetch the set of JWKs from a trusted source,
-  # to avoid malicious requests triggering cache invalidations there needs to be some kind of grace time or other logic for determining the validity of the invalidation.
+# JSON Web Key Set for advertising your signing keys
+jwks_hash = JWT::JWK::Set.new(jwk).export
+```
+
+To decode a JWT using a trusted entity's JSON Web Key Set (JWKS):
+
+```ruby
+jwks = JWT::JWK::Set.new(jwks_hash)
+jwks.filter! {|key| key[:use] == 'sig' } # Signing keys only!
+algorithms = jwks.map { |key| key[:alg] }.compact.uniq
+JWT.decode(token, nil, true, algorithms: algorithms, jwks: jwks)
+```
+
+
+The `jwks` option can also be given as a lambda that evaluates every time a kid is resolved.
+This can be used to implement caching of remotely fetched JWK Sets.
+
+If the requested `kid` is not found from the given set the loader will be called a second time with the `kid_not_found` option set to `true`.
+The application can choose to implement some kind of JWK cache invalidation or other mechanism to handle such cases.
+
+```ruby
+jwks_loader = ->(options) do
+  # The jwk loader would fetch the set of JWKs from a trusted source.
+  # To avoid malicious requests triggering cache invalidations there needs to be
+  # some kind of grace time or other logic for determining the validity of the invalidation.
   # This example only allows cache invalidations every 5 minutes.
-  jwk_loader = ->(options) do
-    if options[:kid_not_found] && @cache_last_update < Time.now.to_i - 300
-      logger.info("Invalidating JWK cache. #{options[:kid]} not found from previous cache")
-      @cached_keys = nil
-    end
-    @cached_keys ||= begin
-      @cache_last_update = Time.now.to_i
-      { keys: [jwk.export] }
-    end
+  if options[:kid_not_found] && @cache_last_update < Time.now.to_i - 300
+    logger.info("Invalidating JWK cache. #{options[:kid]} not found from previous cache")
+    @cached_keys = nil
   end
-
-  begin
-    JWT.decode(token, nil, true, { algorithms: ['RS512'], jwks: jwk_loader })
-  rescue JWT::JWKError
-    # Handle problems with the provided JWKs
-  rescue JWT::DecodeError
-    # Handle other decode related issues e.g. no kid in header, no matching public key found etc.
+  @cached_keys ||= begin
+    @cache_last_update = Time.now.to_i
+    # Replace with your own JWKS fetching routine
+    jwks = JWT::JWK::Set.new(jwks_hash)
+    jwks.select! { |key| key[:use] == 'sig' } # Signing Keys only
+    jwks
   end
-```
+end
 
-or by passing the JWKs as a simple Hash
-
-```
-jwks = { keys: [{ ... }] } # keys accepts both of string and symbol
-JWT.decode(token, nil, true, { algorithms: ['RS512'], jwks: jwks})
+begin
+  JWT.decode(token, nil, true, { algorithms: ['RS512'], jwks: jwks_loader })
+rescue JWT::JWKError
+  # Handle problems with the provided JWKs
+rescue JWT::DecodeError
+  # Handle other decode related issues e.g. no kid in header, no matching public key found etc.
+end
 ```
 
 ### Importing and exporting JSON Web Keys
@@ -633,11 +652,18 @@ jwk_hash_with_private_key = jwk.export(include_private: true)
 # Export as OpenSSL key
 public_key = jwk.public_key
 private_key = jwk.keypair if jwk.private?
+
+# You can also import and export entire JSON Web Key Sets
+jwks_hash = { keys: [{ kty: 'oct', k: 'my-secret', kid: 'my-kid' }] }
+jwks = JWT::JWK::Set.new(jwks_hash)
+jwks_hash = jwks.export
 ```
 
 ### Key ID (kid) and JWKs
 
-The key id (kid) generation in the gem is a custom algorithm and not based on any standards. To use a standardized JWK thumbprint (RFC 7638) as the kid for JWKs a generator type can be specified in the global configuration or can be given to the JWK instance on initialization.
+The key id (kid) generation in the gem is a custom algorithm and not based on any standards.
+To use a standardized JWK thumbprint (RFC 7638) as the kid for JWKs a generator type can be specified in the global configuration
+or can be given to the JWK instance on initialization.
 
 ```ruby
 JWT.configuration.jwk.kid_generator_type = :rfc7638_thumbprint
@@ -649,7 +675,6 @@ jwk = JWT::JWK.new(OpenSSL::PKey::RSA.new(2048), nil, kid_generator: ::JWT::JWK:
 jwk_hash = jwk.export
 
 thumbprint_as_the_kid = jwk_hash[:kid]
-
 ```
 
 # Development and Tests

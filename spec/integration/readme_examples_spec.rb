@@ -273,7 +273,28 @@ RSpec.describe 'README.md code test' do
       end.not_to raise_error
     end
 
-    context 'The JWK loader example' do
+    context 'The JWK based encode/decode routine' do
+      it 'works as expected' do
+        # ---------- ENCODE ----------
+        optional_parameters = { kid: 'my-kid', use: 'sig', alg: 'RS512' }
+        jwk = JWT::JWK.new(OpenSSL::PKey::RSA.new(2048), optional_parameters)
+        
+        # Encoding
+        payload = { data: 'data' }
+        token = JWT.encode(payload, jwk.keypair, jwk[:alg], kid: jwk[:kid])
+        
+        # JSON Web Key Set for advertising your signing keys
+        jwks_hash = JWT::JWK::Set.new(jwk).export
+
+        # ---------- DECODE ----------
+        jwks = JWT::JWK::Set.new(jwks_hash)
+        jwks.filter! {|key| key[:use] == 'sig' } # Signing keys only!
+        algorithms = jwks.map { |key| key[:alg] }.compact.uniq
+        JWT.decode(token, nil, true, algorithms: algorithms, jwks: jwks)
+      end
+    end
+
+    context 'The JWKS loader example' do
       let(:logger_output) { StringIO.new }
       let(:logger) { Logger.new(logger_output) }
 
@@ -324,49 +345,38 @@ RSpec.describe 'README.md code test' do
       end
 
       it 'works as expected' do
-        jwk = JWT::JWK.new(OpenSSL::PKey::RSA.new(2048), kid: 'optional-kid')
+        jwk = JWT::JWK.new(OpenSSL::PKey::RSA.new(2048), use: 'sig')
+        jwks_hash = JWT::JWK::Set.new(jwk)
         payload = { data: 'data' }
         headers = { kid: jwk.kid }
 
         token = JWT.encode(payload, jwk.keypair, 'RS512', headers)
 
-        # The jwk loader would fetch the set of JWKs from a trusted source,
-        # to avoid malicious invalidations some kind of protection needs to be implemented.
-        # This example only allows cache invalidations every 5 minutes.
-        jwk_loader = ->(options) do
+        jwks_loader = ->(options) do
+          # The jwk loader would fetch the set of JWKs from a trusted source.
+          # To avoid malicious requests triggering cache invalidations there needs to be
+          # some kind of grace time or other logic for determining the validity of the invalidation.
+          # This example only allows cache invalidations every 5 minutes.
           if options[:kid_not_found] && @cache_last_update < Time.now.to_i - 300
             logger.info("Invalidating JWK cache. #{options[:kid]} not found from previous cache")
             @cached_keys = nil
           end
           @cached_keys ||= begin
             @cache_last_update = Time.now.to_i
-            { keys: [jwk.export] }
+            # Replace with your own JWKS fetching routine
+            jwks = JWT::JWK::Set.new(jwks_hash)
+            jwks.select! { |key| key[:use] == 'sig' } # Signing Keys only
+            jwks
           end
         end
-
+        
         begin
-          JWT.decode(token, nil, true, { algorithms: ['RS512'], jwks: jwk_loader })
+          JWT.decode(token, nil, true, { algorithms: ['RS512'], jwks: jwks_loader })
         rescue JWT::JWKError
           # Handle problems with the provided JWKs
         rescue JWT::DecodeError
           # Handle other decode related issues e.g. no kid in header, no matching public key found etc.
         end
-
-        ## This is not in the example but verifies that the cache is invalidated after 5 minutes
-        jwk = JWT::JWK.new(OpenSSL::PKey::RSA.new(2048), 'new-kid')
-
-        headers = { kid: jwk.kid }
-
-        token = JWT.encode(payload, jwk.keypair, 'RS512', headers)
-        @cache_last_update = Time.now.to_i - 301
-
-        JWT.decode(token, nil, true, { algorithms: ['RS512'], jwks: jwk_loader })
-        expect(logger_output.string.chomp).to match(/^I, .* : Invalidating JWK cache. new-kid not found from previous cache/)
-
-        jwk = JWT::JWK.new(OpenSSL::PKey::RSA.new(2048), 'yet-another-new-kid')
-        headers = { kid: jwk.kid }
-        token = JWT.encode(payload, jwk.keypair, 'RS512', headers)
-        expect { JWT.decode(token, nil, true, { algorithms: ['RS512'], jwks: jwk_loader }) }.to raise_error(JWT::DecodeError, 'Could not find public key for kid yet-another-new-kid')
       end
     end
 
@@ -386,6 +396,11 @@ RSpec.describe 'README.md code test' do
       # Export as OpenSSL key
       _public_key = jwk.public_key
       _private_key = jwk.keypair if jwk.private?
+
+      # You can also import and export entire JSON Web Key Sets
+      jwks_hash = { keys: [{ kty: 'oct', k: 'my-secret', kid: 'my-kid' }] }
+      jwks = JWT::JWK::Set.new(jwks_hash)
+      _jwks_hash = jwks.export
     end
 
     it 'JWK with thumbprint as kid via symbol' do
