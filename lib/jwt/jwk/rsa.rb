@@ -5,7 +5,7 @@ module JWT
     class RSA < KeyBase
       BINARY = 2
       KTY    = 'RSA'
-      KTYS   = [KTY, OpenSSL::PKey::RSA].freeze
+      KTYS   = [KTY, OpenSSL::PKey::RSA, JWT::JWK::RSA].freeze
       RSA_PUBLIC_KEY_ELEMENTS  = %i[kty n e].freeze
       RSA_PRIVATE_KEY_ELEMENTS = %i[d p q dp dq qi].freeze
       RSA_KEY_ELEMENTS = (RSA_PRIVATE_KEY_ELEMENTS + RSA_PUBLIC_KEY_ELEMENTS).freeze

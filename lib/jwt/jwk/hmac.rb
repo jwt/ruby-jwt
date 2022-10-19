@@ -4,7 +4,7 @@ module JWT
   module JWK
     class HMAC < KeyBase
       KTY  = 'oct'
-      KTYS = [KTY, String].freeze
+      KTYS = [KTY, String, JWT::JWK::HMAC].freeze
       HMAC_PUBLIC_KEY_ELEMENTS = %i[kty].freeze
       HMAC_PRIVATE_KEY_ELEMENTS = %i[k].freeze
       HMAC_KEY_ELEMENTS = (HMAC_PRIVATE_KEY_ELEMENTS + HMAC_PUBLIC_KEY_ELEMENTS).freeze

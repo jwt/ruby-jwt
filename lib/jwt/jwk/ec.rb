@@ -9,7 +9,7 @@ module JWT
       def_delegators :keypair, :public_key
 
       KTY    = 'EC'
-      KTYS   = [KTY, OpenSSL::PKey::EC].freeze
+      KTYS   = [KTY, OpenSSL::PKey::EC, JWT::JWK::EC].freeze
       BINARY = 2
       EC_PUBLIC_KEY_ELEMENTS = %i[kty crv x y].freeze
       EC_PRIVATE_KEY_ELEMENTS = %i[d].freeze

@@ -37,6 +37,8 @@ module JWT
         self[:kid] == other[:kid]
       end
 
+      alias eql? ==
+
       def <=>(other)
         self[:kid] <=> other[:kid]
       end

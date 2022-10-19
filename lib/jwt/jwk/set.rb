@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require 'forwardable'
 
 module JWT
@@ -9,7 +10,7 @@ module JWT
 
       attr_reader :keys
 
-      def initialize(jwks)
+      def initialize(jwks = nil, options = {})
         jwks ||= {}
 
         @keys = case jwks
@@ -19,9 +20,9 @@ module JWT
                   [jwks]
                 when Hash
                   jwks = jwks.transform_keys(&:to_sym)
-                  [*jwks[:keys]].map { |k| JWT::JWK.new k }
+                  [*jwks[:keys]].map { |k| JWT::JWK.new(k, nil, options) }
                 when Array
-                  jwks.map { |k| JWT::JWK.new k }
+                  jwks.map { |k| JWT::JWK.new(k, nil, options) }
                 else
                   raise ArgumentError, 'Can only create new JWKS from Hash, Array and JWK'
         end
@@ -46,13 +47,11 @@ module JWT
       end
 
       def uniq!(&block)
-        return @keys.uniq! unless block
-
         self if @keys.uniq!(&block)
       end
 
       def merge(enum)
-        @keys += JWT::JWK::Set.new(enum.collect)
+        @keys += JWT::JWK::Set.new(enum.to_a).keys
         self
       end
 
@@ -69,6 +68,7 @@ module JWT
         other.is_a?(JWT::JWK::Set) && keys.sort == other.keys.sort
       end
 
+      alias eql? ==
       alias filter! select!
       alias length size
       # For symbolic manipulation
