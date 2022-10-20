@@ -278,17 +278,17 @@ RSpec.describe 'README.md code test' do
         # ---------- ENCODE ----------
         optional_parameters = { kid: 'my-kid', use: 'sig', alg: 'RS512' }
         jwk = JWT::JWK.new(OpenSSL::PKey::RSA.new(2048), optional_parameters)
-        
+
         # Encoding
         payload = { data: 'data' }
         token = JWT.encode(payload, jwk.keypair, jwk[:alg], kid: jwk[:kid])
-        
+
         # JSON Web Key Set for advertising your signing keys
         jwks_hash = JWT::JWK::Set.new(jwk).export
 
         # ---------- DECODE ----------
         jwks = JWT::JWK::Set.new(jwks_hash)
-        jwks.filter! {|key| key[:use] == 'sig' } # Signing keys only!
+        jwks.filter! { |key| key[:use] == 'sig' } # Signing keys only!
         algorithms = jwks.map { |key| key[:alg] }.compact.uniq
         JWT.decode(token, nil, true, algorithms: algorithms, jwks: jwks)
       end
@@ -369,7 +369,7 @@ RSpec.describe 'README.md code test' do
             jwks
           end
         end
-        
+
         begin
           JWT.decode(token, nil, true, { algorithms: ['RS512'], jwks: jwks_loader })
         rescue JWT::JWKError

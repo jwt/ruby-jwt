@@ -25,6 +25,10 @@ module JWT
         self[:kid]
       end
 
+      def hash
+        self[:kid].hash
+      end
+
       def [](key)
         @parameters[key.to_sym]
       end

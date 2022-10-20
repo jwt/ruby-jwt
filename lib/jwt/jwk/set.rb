@@ -10,7 +10,7 @@ module JWT
 
       attr_reader :keys
 
-      def initialize(jwks = nil, options = {})
+      def initialize(jwks = nil, options = {}) # rubocop:disable Metrics/CyclomaticComplexity
         jwks ||= {}
 
         @keys = case jwks
