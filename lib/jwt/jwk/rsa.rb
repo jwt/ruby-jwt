@@ -2,7 +2,7 @@
 
 module JWT
   module JWK
-    class RSA < KeyBase
+    class RSA < KeyBase # rubocop:disable Metrics/ClassLength
       BINARY = 2
       KTY    = 'RSA'
       KTYS   = [KTY, OpenSSL::PKey::RSA, JWT::JWK::RSA].freeze
@@ -16,17 +16,7 @@ module JWT
         # For backwards compatibility when kid was a String
         params = { kid: params } if params.is_a?(String)
 
-        key_params = case key
-                     when JWT::JWK::RSA
-                       key.export(include_private: true)
-                     when OpenSSL::PKey::RSA # Accept OpenSSL key as input
-                       @keypair = key # Preserve the object to avoid recreation
-                       parse_rsa_key(key)
-                     when Hash
-                       key.transform_keys(&:to_sym)
-                     else
-                       raise ArgumentError, 'key must be of type OpenSSL::PKey::RSA or Hash with key parameters'
-        end
+        key_params = extract_key_params(key)
 
         params = params.transform_keys(&:to_sym)
         check_jwk(key_params, params)
@@ -71,6 +61,20 @@ module JWT
       end
 
       private
+
+      def extract_key_params(key)
+        case key
+        when JWT::JWK::RSA
+          key.export(include_private: true)
+        when OpenSSL::PKey::RSA # Accept OpenSSL key as input
+          @keypair = key # Preserve the object to avoid recreation
+          parse_rsa_key(key)
+        when Hash
+          key.transform_keys(&:to_sym)
+        else
+          raise ArgumentError, 'key must be of type OpenSSL::PKey::RSA or Hash with key parameters'
+        end
+      end
 
       def check_jwk(keypair, params)
         raise ArgumentError, 'cannot overwrite cryptographic key attributes' unless (RSA_KEY_ELEMENTS & params.keys).empty?
