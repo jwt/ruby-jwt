@@ -24,8 +24,8 @@ RSpec.describe ::JWT::Algos::Ecdsa do
       it { is_expected.to eq(algorithm: 'ES256K', digest: 'sha256') }
     end
 
-    context 'when unkown is given' do
-      let(:curve_name) { 'unkown' }
+    context 'when unknown is given' do
+      let(:curve_name) { 'unknown' }
       it 'raises an error' do
         expect { subject }.to raise_error(JWT::UnsupportedEcdsaCurve)
       end
