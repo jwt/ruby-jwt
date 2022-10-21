@@ -13,7 +13,15 @@ module JWT
         if authenticator && padded_key
           authenticator.auth(padded_key, msg.encode('binary'))
         else
-          OpenSSL::HMAC.digest(OpenSSL::Digest.new(algorithm.sub('HS', 'sha')), key, msg)
+          begin
+            OpenSSL::HMAC.digest(OpenSSL::Digest.new(algorithm.sub('HS', 'sha')), key, msg)
+          rescue OpenSSL::HMACError => e
+            if key == '' && e.message == 'EVP_PKEY_new_mac_key: malloc failure'
+              raise JWT::DecodeError.new('OpenSSL 3.0 does not support nil or empty hmac_secret')
+            end
+
+            raise e
+          end
         end
       end
 
