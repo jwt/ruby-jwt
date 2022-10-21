@@ -29,7 +29,7 @@ RSpec.describe 'README.md code test' do
     end
 
     it 'decodes with HMAC algorithm without secret key' do
-      pending 'Different behaviour on OpenSSL 3.0 (https://github.com/openssl/openssl/issues/13089)' if ::JWT.openssl_3?
+      pending 'Different behaviour on OpenSSL 3.0 (https://github.com/openssl/openssl/issues/13089)' if ::JWT.openssl_3_hmac_empty_key_regression?
       token = JWT.encode payload, nil, 'HS256'
       decoded_token = JWT.decode token, nil, false
 
