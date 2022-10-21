@@ -11,6 +11,10 @@ end
 
 require 'jwt'
 
+puts "OpenSSL::VERSION: #{OpenSSL::VERSION}"
+puts "OpenSSL::OPENSSL_VERSION: #{OpenSSL::OPENSSL_VERSION}"
+puts "OpenSSL::OPENSSL_LIBRARY_VERSION: #{OpenSSL::OPENSSL_LIBRARY_VERSION}\n\n"
+
 CERT_PATH = File.join(File.dirname(__FILE__), 'fixtures', 'certs')
 
 RSpec.configure do |config|
