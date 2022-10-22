@@ -3,6 +3,9 @@
 RSpec.describe ::JWT::Algos::Hmac do
   describe '.sign' do
     subject { described_class.sign('HS256', 'test', hmac_secret) }
+    before do
+      skip 'test only applicable for OpenSSL' if defined?(RbNaCl)
+    end
 
     # Address OpenSSL 3.0 errors with empty hmac_secret - https://github.com/jwt/ruby-jwt/issues/526
     context 'when nil hmac_secret is passed' do
