@@ -25,7 +25,7 @@ module JWT
       end
 
       def keypair
-        @keypair ||= create_rsa_key(jwk_attributes(*(RSA_KEY_ELEMENTS - [:kty])))
+        @keypair ||= self.class.create_rsa_key(jwk_attributes(*(RSA_KEY_ELEMENTS - [:kty])))
       end
 
       def private?
@@ -108,31 +108,53 @@ module JWT
         ::JWT::Base64.url_encode(key_part.to_s(BINARY))
       end
 
-      if ::JWT.openssl_3?
-        ASN1_SEQUENCE = %i[n e d p q dp dq qi].freeze
-        def create_rsa_key(rsa_parameters)
-          sequence = ASN1_SEQUENCE.each_with_object([]) do |key, arr|
+      def decode_open_ssl_bn(jwk_data)
+        self.class.decode_open_ssl_bn(jwk_data)
+      end
+
+      class << self
+        def import(jwk_data)
+          new(jwk_data)
+        end
+
+        def decode_open_ssl_bn(jwk_data)
+          return nil unless jwk_data
+
+          OpenSSL::BN.new(::JWT::Base64.url_decode(jwk_data), BINARY)
+        end
+
+        RSA_OPT_PARAMS    = %i[p q dp dq qi].freeze
+        RSA_ASN1_SEQUENCE = (%i[n e d] + RSA_OPT_PARAMS).freeze # https://www.rfc-editor.org/rfc/rfc3447#appendix-A.1.2
+
+        def create_rsa_key_using_der(rsa_parameters)
+          validate_rsa_parameters!(rsa_parameters)
+
+          sequence = RSA_ASN1_SEQUENCE.each_with_object([]) do |key, arr|
             next if rsa_parameters[key].nil?
 
             arr << OpenSSL::ASN1::Integer.new(rsa_parameters[key])
           end
 
-          if sequence.size > 2 # For a private key
+          if sequence.size > 2 # Append "two-prime" version for private key
             sequence.unshift(OpenSSL::ASN1::Integer.new(0))
           end
 
           OpenSSL::PKey::RSA.new(OpenSSL::ASN1::Sequence(sequence).to_der)
         end
-      elsif OpenSSL::PKey::RSA.new.respond_to?(:set_key)
-        def create_rsa_key(rsa_parameters)
+
+        def create_rsa_key_using_sets(rsa_parameters)
+          validate_rsa_parameters!(rsa_parameters)
+
           OpenSSL::PKey::RSA.new.tap do |rsa_key|
             rsa_key.set_key(rsa_parameters[:n], rsa_parameters[:e], rsa_parameters[:d])
             rsa_key.set_factors(rsa_parameters[:p], rsa_parameters[:q]) if rsa_parameters[:p] && rsa_parameters[:q]
             rsa_key.set_crt_params(rsa_parameters[:dp], rsa_parameters[:dq], rsa_parameters[:qi]) if rsa_parameters[:dp] && rsa_parameters[:dq] && rsa_parameters[:qi]
           end
         end
-      else
-        def create_rsa_key(rsa_parameters) # rubocop:disable Metrics/AbcSize
+
+        def create_rsa_key_using_accessors(rsa_parameters) # rubocop:disable Metrics/AbcSize
+          validate_rsa_parameters!(rsa_parameters)
+
           OpenSSL::PKey::RSA.new.tap do |rsa_key|
             rsa_key.n = rsa_parameters[:n]
             rsa_key.e = rsa_parameters[:e]
@@ -144,17 +166,22 @@ module JWT
             rsa_key.iqmp = rsa_parameters[:qi] if rsa_parameters[:qi]
           end
         end
-      end
 
-      def decode_open_ssl_bn(jwk_data)
-        return nil unless jwk_data
+        def validate_rsa_parameters!(rsa_parameters)
+          return unless rsa_parameters[:d]
 
-        OpenSSL::BN.new(::JWT::Base64.url_decode(jwk_data), BINARY)
-      end
+          return if RSA_OPT_PARAMS.all? { |k| rsa_parameters.keys.include?(k) }
+          return if RSA_OPT_PARAMS.none? { |k| rsa_parameters.keys.include?(k) }
 
-      class << self
-        def import(jwk_data)
-          new(jwk_data)
+          raise JWT::JWKError, 'When one of p, q, dp, dq or qi is given all the other optimization parameters also needs to be defined' # https://www.rfc-editor.org/rfc/rfc7518.html#section-6.3.2
+        end
+
+        if ::JWT.openssl_3?
+          alias create_rsa_key create_rsa_key_using_der
+        elsif OpenSSL::PKey::RSA.new.respond_to?(:set_key)
+          alias create_rsa_key create_rsa_key_using_sets
+        else
+          alias create_rsa_key create_rsa_key_using_accessors
         end
       end
     end
