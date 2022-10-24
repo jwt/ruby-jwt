@@ -135,4 +135,78 @@ RSpec.describe JWT::JWK::RSA do
       end
     end
   end
+
+  shared_examples 'creating an RSA object from complete JWK parameters' do
+    let(:rsa_parameters) { jwk_parameters.transform_values { |value| described_class.decode_open_ssl_bn(value) } }
+    let(:all_jwk_parameters) { described_class.new(rsa_key).export(include_private: true) }
+
+    context 'when public parameters (e, n) are given' do
+      let(:jwk_parameters) { all_jwk_parameters.slice(:e, :n) }
+
+      it 'creates a valid RSA object representing a public key' do
+        expect(subject).to be_a(::OpenSSL::PKey::RSA)
+        expect(subject.private?).to eq(false)
+      end
+    end
+
+    context 'when only e, n, d, p and q are given' do
+      let(:jwk_parameters) { all_jwk_parameters.slice(:e, :n, :d, :p, :q) }
+
+      it 'raises an error telling all the exponents are required' do
+        expect { subject }.to raise_error(JWT::JWKError, 'When one of p, q, dp, dq or qi is given all the other optimization parameters also needs to be defined')
+      end
+    end
+
+    context 'when all key components n, e, d, p, q, dp, dq, qi are given' do
+      let(:jwk_parameters) { all_jwk_parameters.slice(:n, :e, :d, :p, :q, :dp, :dq, :qi) }
+
+      it 'creates a valid RSA object representing a public key' do
+        expect(subject).to be_a(::OpenSSL::PKey::RSA)
+        expect(subject.private?).to eq(true)
+      end
+    end
+  end
+
+  shared_examples 'creating RSA object from partial JWK parameters' do
+    context 'when e, n, d is given' do
+      let(:jwk_parameters) { all_jwk_parameters.slice(:e, :n, :d) }
+
+      it 'creates a valid RSA object representing a private key' do
+        expect(subject).to be_a(::OpenSSL::PKey::RSA)
+        expect(subject.private?).to eq(true)
+      end
+
+      it 'can be used for encryption and decryption' do
+        expect(subject.private_decrypt(subject.public_encrypt('secret'))).to eq('secret')
+      end
+
+      it 'can be used for signing and verification' do
+        data = 'data_to_sign'
+        signature = subject.sign(OpenSSL::Digest.new('SHA512'), data)
+        expect(subject.verify(OpenSSL::Digest.new('SHA512'), signature, data)).to eq(true)
+      end
+    end
+  end
+
+  describe '.create_rsa_key_using_der' do
+    subject(:rsa) { described_class.create_rsa_key_using_der(rsa_parameters) }
+
+    include_examples 'creating an RSA object from complete JWK parameters'
+  end
+
+  if OpenSSL::PKey::RSA.new.respond_to?(:set_key) # Very old OpenSSL versions (pre 1.1.0)
+    describe '.create_rsa_key_using_sets' do
+      subject(:rsa) { described_class.create_rsa_key_using_sets(rsa_parameters) }
+
+      include_examples 'creating an RSA object from complete JWK parameters'
+      include_examples 'creating RSA object from partial JWK parameters'
+    end
+  elsif !::JWK.openssl_3?
+    describe '.create_rsa_key_using_accessors' do
+      subject(:rsa) { described_class.create_rsa_key_using_accessors(rsa_parameters) }
+
+      include_examples 'creating an RSA object from complete JWK parameters'
+      include_examples 'creating RSA object from partial JWK parameters'
+    end
+  end
 end
