@@ -10,6 +10,7 @@
 
 **Fixes and enhancements:**
 
+- Raise descriptive error on empty hmac_secret and OpenSSL 3.0/openssl gem <3.0.1[#530](https://github.com/jwt/ruby-jwt/pull/530) ([@jonmchan](https://github.com/jonmchan)).
 - Your contribution here
 
 ## [v2.5.0](https://github.com/jwt/ruby-jwt/tree/v2.5.0) (2022-08-25)
