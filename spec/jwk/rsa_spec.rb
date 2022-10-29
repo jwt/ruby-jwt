@@ -167,7 +167,7 @@ RSpec.describe JWT::JWK::RSA do
     end
   end
 
-  shared_examples 'creating RSA object from partial JWK parameters' do
+  shared_examples 'creating an RSA object from partial JWK parameters' do
     context 'when e, n, d is given' do
       let(:jwk_parameters) { all_jwk_parameters.slice(:e, :n, :d) }
 
@@ -194,19 +194,26 @@ RSpec.describe JWT::JWK::RSA do
     include_examples 'creating an RSA object from complete JWK parameters'
   end
 
-  if OpenSSL::PKey::RSA.new.respond_to?(:set_key) # Very old OpenSSL versions (pre 1.1.0)
-    describe '.create_rsa_key_using_sets' do
-      subject(:rsa) { described_class.create_rsa_key_using_sets(rsa_parameters) }
-
-      include_examples 'creating an RSA object from complete JWK parameters'
-      include_examples 'creating RSA object from partial JWK parameters'
+  describe '.create_rsa_key_using_sets' do
+    before do
+      skip unless OpenSSL::PKey::RSA.new.respond_to?(:set_key)
+      skip if ::JWT.openssl_3?
     end
-  elsif !::JWK.openssl_3?
-    describe '.create_rsa_key_using_accessors' do
-      subject(:rsa) { described_class.create_rsa_key_using_accessors(rsa_parameters) }
 
-      include_examples 'creating an RSA object from complete JWK parameters'
-      include_examples 'creating RSA object from partial JWK parameters'
+    subject(:rsa) { described_class.create_rsa_key_using_sets(rsa_parameters) }
+
+    include_examples 'creating an RSA object from complete JWK parameters'
+    include_examples 'creating an RSA object from partial JWK parameters'
+  end
+
+  describe '.create_rsa_key_using_accessors' do
+    before do
+      skip if OpenSSL::PKey::RSA.new.respond_to?(:set_key)
     end
+
+    subject(:rsa) { described_class.create_rsa_key_using_accessors(rsa_parameters) }
+
+    include_examples 'creating an RSA object from complete JWK parameters'
+    include_examples 'creating an RSA object from partial JWK parameters'
   end
 end
