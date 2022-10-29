@@ -27,6 +27,10 @@ module JWT
   end
 
   def self.openssl_3_hmac_empty_key_regression?
-    openssl_3? && ::Gem::Version.new(OpenSSL::VERSION) <= ::Gem::Version.new('3.0.0')
+    openssl_3? && openssl_version <= ::Gem::Version.new('3.0.0')
+  end
+
+  def self.openssl_version
+    @openssl_version ||= ::Gem::Version.new(OpenSSL::VERSION)
   end
 end
