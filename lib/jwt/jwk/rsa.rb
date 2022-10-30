@@ -137,6 +137,8 @@ module JWT
 
           if sequence.size > 2 # Append "two-prime" version for private key
             sequence.unshift(OpenSSL::ASN1::Integer.new(0))
+
+            raise JWT::JWKError, 'Creating a RSA key with a private key requires the CRT parameters to be defined' if sequence.size < RSA_ASN1_SEQUENCE.size
           end
 
           OpenSSL::PKey::RSA.new(OpenSSL::ASN1::Sequence(sequence).to_der)
