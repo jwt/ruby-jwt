@@ -196,6 +196,14 @@ RSpec.describe JWT::JWK::RSA do
     subject(:rsa) { described_class.create_rsa_key_using_der(rsa_parameters) }
 
     include_examples 'creating an RSA object from complete JWK parameters'
+
+    context 'when e, n, d is given' do
+      let(:jwk_parameters) { all_jwk_parameters.slice(:e, :n, :d) }
+
+      it 'expects all CRT parameters given and raises error' do
+        expect { subject }.to raise_error(JWT::JWKError, 'Creating a RSA key with a private key requires the CRT parameters to be defined')
+      end
+    end
   end
 
   describe '.create_rsa_key_using_sets' do
