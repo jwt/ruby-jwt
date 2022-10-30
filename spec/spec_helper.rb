@@ -2,20 +2,13 @@
 
 require 'rspec'
 require 'simplecov'
-
-SimpleCov.start do
-  root File.join(File.dirname(__FILE__), '..')
-  project_name 'Ruby JWT - Ruby JSON Web Token implementation'
-  add_filter 'spec'
-end
-
 require 'jwt'
 
 puts "OpenSSL::VERSION: #{OpenSSL::VERSION}"
 puts "OpenSSL::OPENSSL_VERSION: #{OpenSSL::OPENSSL_VERSION}"
 puts "OpenSSL::OPENSSL_LIBRARY_VERSION: #{OpenSSL::OPENSSL_LIBRARY_VERSION}\n\n"
 
-CERT_PATH = File.join(File.dirname(__FILE__), 'fixtures', 'certs')
+CERT_PATH = File.join(__dir__, 'fixtures', 'certs')
 
 RSpec.configure do |config|
   config.expect_with :rspec do |c|
