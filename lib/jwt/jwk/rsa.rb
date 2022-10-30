@@ -10,6 +10,9 @@ module JWT
       RSA_PRIVATE_KEY_ELEMENTS = %i[d p q dp dq qi].freeze
       RSA_KEY_ELEMENTS = (RSA_PRIVATE_KEY_ELEMENTS + RSA_PUBLIC_KEY_ELEMENTS).freeze
 
+      RSA_OPT_PARAMS    = %i[p q dp dq qi].freeze
+      RSA_ASN1_SEQUENCE = (%i[n e d] + RSA_OPT_PARAMS).freeze # https://www.rfc-editor.org/rfc/rfc3447#appendix-A.1.2
+
       def initialize(key, params = nil, options = {})
         params ||= {}
 
@@ -122,9 +125,6 @@ module JWT
 
           OpenSSL::BN.new(::JWT::Base64.url_decode(jwk_data), BINARY)
         end
-
-        RSA_OPT_PARAMS    = %i[p q dp dq qi].freeze
-        RSA_ASN1_SEQUENCE = (%i[n e d] + RSA_OPT_PARAMS).freeze # https://www.rfc-editor.org/rfc/rfc3447#appendix-A.1.2
 
         def create_rsa_key_using_der(rsa_parameters)
           validate_rsa_parameters!(rsa_parameters)
