@@ -168,10 +168,10 @@ module JWT
         end
 
         def validate_rsa_parameters!(rsa_parameters)
-          return unless rsa_parameters[:d]
+          return unless rsa_parameters.key?(:d)
 
-          return if RSA_OPT_PARAMS.all? { |k| rsa_parameters.keys.include?(k) }
-          return if RSA_OPT_PARAMS.none? { |k| rsa_parameters.keys.include?(k) }
+          parameters = RSA_OPT_PARAMS - rsa_parameters.keys
+          return if parameters.empty? || parameters.size == RSA_OPT_PARAMS.size
 
           raise JWT::JWKError, 'When one of p, q, dp, dq or qi is given all the other optimization parameters also needs to be defined' # https://www.rfc-editor.org/rfc/rfc7518.html#section-6.3.2
         end
