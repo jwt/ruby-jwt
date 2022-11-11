@@ -781,6 +781,21 @@ RSpec.describe JWT do
     end
   end
 
+  context 'when token is missing the alg header' do
+    let(:token) { 'e30.eyJ1c2VyX2lkIjoic29tZUB1c2VyLnRsZCJ9.DIKUOt1lwwzWSPBf508IYqk0KzC2PL97OZc6pECzE1I' }
+
+    it 'raises JWT::IncorrectAlgorithm error' do
+      expect { JWT.decode(token, 'secret', true, algorithm: 'HS256') }.to raise_error(JWT::IncorrectAlgorithm, 'Token is missing alg header')
+    end
+  end
+
+  context 'when token has null as the alg header' do
+    let(:token) { 'eyJhbGciOm51bGx9.eyJwYXkiOiJsb2FkIn0.pizVPWJMK-GUuXXEcQD_faZGnZqz_6wKZpoGO4RdqbY' }
+    it 'raises JWT::IncorrectAlgorithm error' do
+      expect { JWT.decode(token, 'secret', true, algorithm: 'HS256') }.to raise_error(JWT::IncorrectAlgorithm, 'Token is missing alg header')
+    end
+  end
+
   context 'when algorithm is a custom class' do
     let(:custom_algorithm) do
       Class.new do
