@@ -99,3 +99,20 @@ jobs:
       - uses: paambaati/codeclimate-action@v3.2.0
         with:
           coverageLocations: "coverage-*/coverage.json:simplecov"
+
+  smoke:
+    name: Built GEM smoke test
+    timeout-minutes: 30
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: "3.1"
+      - name: Build GEM
+        run: gem build
+      - name: Install built GEM
+        run: gem install jwt-*.gem
+      - name: Run test
+        run: bin/smoke.rb
