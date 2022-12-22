@@ -1,5 +1,17 @@
 # Changelog
 
+## [v2.7.0](https://github.com/jwt/ruby-jwt/tree/v2.7.0) (NEXT)
+
+[Full Changelog](https://github.com/jwt/ruby-jwt/compare/v2.6.0...v2.7.0)
+
+**Features:**
+
+- Your contribution here
+
+**Fixes and enhancements:**
+
+- Your contribution here
+
 ## [v2.6.0](https://github.com/jwt/ruby-jwt/tree/v2.6.0) (2022-12-22)
 
 [Full Changelog](https://github.com/jwt/ruby-jwt/compare/v2.5.0...v2.6.0)
@@ -13,7 +25,7 @@
 
 **Fixes and enhancements:**
 
-- Raise descriptive error on empty hmac_secret and OpenSSL 3.0/openssl gem <3.0.1[#530](https://github.com/jwt/ruby-jwt/pull/530) ([@jonmchan](https://github.com/jonmchan)).
+- Raise descriptive error on empty hmac_secret and OpenSSL 3.0/openssl gem <3.0.1 [#530](https://github.com/jwt/ruby-jwt/pull/530) ([@jonmchan](https://github.com/jonmchan)).
 
 ## [v2.5.0](https://github.com/jwt/ruby-jwt/tree/v2.5.0) (2022-08-25)
 
