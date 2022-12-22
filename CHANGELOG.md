@@ -1,5 +1,8 @@
 # Changelog
-## [v2.6.0](https://github.com/jwt/ruby-jwt/tree/v2.6.0) (NEXT)
+
+## [v2.6.0](https://github.com/jwt/ruby-jwt/tree/v2.6.0) (2022-12-22)
+
+[Full Changelog](https://github.com/jwt/ruby-jwt/compare/v2.5.0...v2.6.0)
 
 **Features:**
 
@@ -7,12 +10,10 @@
 - Support descriptive (not key related) JWK parameters[#520](https://github.com/jwt/ruby-jwt/pull/520) ([@bellebaum](https://github.com/bellebaum)).
 - Support for JSON Web Key Sets[#525](https://github.com/jwt/ruby-jwt/pull/525) ([@bellebaum](https://github.com/bellebaum)).
 - Support HMAC keys over 32 chars when using RbNaCl[#521](https://github.com/jwt/ruby-jwt/pull/521) ([@anakinj](https://github.com/anakinj)).
-- Your contribution here
 
 **Fixes and enhancements:**
 
 - Raise descriptive error on empty hmac_secret and OpenSSL 3.0/openssl gem <3.0.1[#530](https://github.com/jwt/ruby-jwt/pull/530) ([@jonmchan](https://github.com/jonmchan)).
-- Your contribution here
 
 ## [v2.5.0](https://github.com/jwt/ruby-jwt/tree/v2.5.0) (2022-08-25)
 
