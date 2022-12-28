@@ -23,6 +23,14 @@ RSpec.describe JWT::JWK::RSA do
     end
   end
 
+  describe '#keypair' do
+    subject(:jwk) { described_class.new(rsa_key) }
+
+    it 'warns to stderr' do
+      expect(jwk.keypair).to eq(rsa_key)
+    end
+  end
+
   describe '#export' do
     subject { described_class.new(keypair).export }
 

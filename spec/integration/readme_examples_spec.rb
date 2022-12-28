@@ -281,7 +281,7 @@ RSpec.describe 'README.md code test' do
 
         # Encoding
         payload = { data: 'data' }
-        token = JWT.encode(payload, jwk.keypair, jwk[:alg], kid: jwk[:kid])
+        token = JWT.encode(payload, jwk.signing_key, jwk[:alg], kid: jwk[:kid])
 
         # JSON Web Key Set for advertising your signing keys
         jwks_hash = JWT::JWK::Set.new(jwk).export
@@ -303,7 +303,7 @@ RSpec.describe 'README.md code test' do
         payload = { data: 'data' }
         headers = { kid: jwk.kid }
 
-        token = JWT.encode(payload, jwk.keypair, 'RS512', headers)
+        token = JWT.encode(payload, jwk.signing_key, 'RS512', headers)
 
         # The jwk loader would fetch the set of JWKs from a trusted source,
         # to avoid malicious invalidations some kind of protection needs to be implemented.
@@ -332,7 +332,7 @@ RSpec.describe 'README.md code test' do
 
         headers = { kid: jwk.kid }
 
-        token = JWT.encode(payload, jwk.keypair, 'RS512', headers)
+        token = JWT.encode(payload, jwk.signing_key, 'RS512', headers)
         @cache_last_update = Time.now.to_i - 301
 
         JWT.decode(token, nil, true, { algorithms: ['RS512'], jwks: jwk_loader })
@@ -340,7 +340,7 @@ RSpec.describe 'README.md code test' do
 
         jwk = JWT::JWK.new(OpenSSL::PKey::RSA.new(2048), 'yet-another-new-kid')
         headers = { kid: jwk.kid }
-        token = JWT.encode(payload, jwk.keypair, 'RS512', headers)
+        token = JWT.encode(payload, jwk.signing_key, 'RS512', headers)
         expect { JWT.decode(token, nil, true, { algorithms: ['RS512'], jwks: jwk_loader }) }.to raise_error(JWT::DecodeError, 'Could not find public key for kid yet-another-new-kid')
       end
 
@@ -350,7 +350,7 @@ RSpec.describe 'README.md code test' do
         payload = { data: 'data' }
         headers = { kid: jwk.kid }
 
-        token = JWT.encode(payload, jwk.keypair, 'RS512', headers)
+        token = JWT.encode(payload, jwk.signing_key, 'RS512', headers)
 
         jwks_loader = ->(options) do
           # The jwk loader would fetch the set of JWKs from a trusted source.
@@ -394,8 +394,8 @@ RSpec.describe 'README.md code test' do
       _jwk_hash_with_private_key = jwk.export(include_private: true)
 
       # Export as OpenSSL key
-      _public_key = jwk.public_key
-      _private_key = jwk.keypair if jwk.private?
+      _public_key = jwk.verify_key
+      _private_key = jwk.signing_key if jwk.private?
 
       # You can also import and export entire JSON Web Key Sets
       jwks_hash = { keys: [{ kty: 'oct', k: 'my-secret', kid: 'my-kid' }] }

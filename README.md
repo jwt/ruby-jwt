@@ -569,7 +569,7 @@ end
 
 ### JSON Web Key (JWK)
 
-JWK is a JSON structure representing a cryptographic key. This gem currently supports RSA, EC and HMAC keys.
+JWK is a JSON structure representing a cryptographic key. This gem currently supports RSA, EC, OKP and HMAC keys. OKP support requires [RbNaCl](https://github.com/RubyCrypto/rbnacl) and currently only supports the Ed25519 curve.
 
 To encode a JWT using your JWK:
 
@@ -579,7 +579,7 @@ jwk = JWT::JWK.new(OpenSSL::PKey::RSA.new(2048), optional_parameters)
 
 # Encoding
 payload = { data: 'data' }
-token = JWT.encode(payload, jwk.keypair, jwk[:alg], kid: jwk[:kid])
+token = JWT.encode(payload, jwk.signing_key, jwk[:alg], kid: jwk[:kid])
 
 # JSON Web Key Set for advertising your signing keys
 jwks_hash = JWT::JWK::Set.new(jwk).export
@@ -653,8 +653,8 @@ jwk_hash = jwk.export
 jwk_hash_with_private_key = jwk.export(include_private: true)
 
 # Export as OpenSSL key
-public_key = jwk.public_key
-private_key = jwk.keypair if jwk.private?
+public_key = jwk.verify_key
+private_key = jwk.signing_key if jwk.private?
 
 # You can also import and export entire JSON Web Key Sets
 jwks_hash = { keys: [{ kty: 'oct', k: 'my-secret', kid: 'my-kid' }] }

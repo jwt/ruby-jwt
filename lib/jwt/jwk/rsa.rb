@@ -22,21 +22,29 @@ module JWT
         key_params = extract_key_params(key)
 
         params = params.transform_keys(&:to_sym)
-        check_jwk(key_params, params)
+        check_jwk_params!(key_params, params)
 
         super(options, key_params.merge(params))
       end
 
       def keypair
-        @keypair ||= self.class.create_rsa_key(jwk_attributes(*(RSA_KEY_ELEMENTS - [:kty])))
+        rsa_key
       end
 
       def private?
-        keypair.private?
+        rsa_key.private?
       end
 
       def public_key
-        keypair.public_key
+        rsa_key.public_key
+      end
+
+      def signing_key
+        rsa_key if private?
+      end
+
+      def verify_key
+        rsa_key.public_key
       end
 
       def export(options = {})
@@ -65,12 +73,16 @@ module JWT
 
       private
 
+      def rsa_key
+        @rsa_key ||= self.class.create_rsa_key(jwk_attributes(*(RSA_KEY_ELEMENTS - [:kty])))
+      end
+
       def extract_key_params(key)
         case key
         when JWT::JWK::RSA
           key.export(include_private: true)
         when OpenSSL::PKey::RSA # Accept OpenSSL key as input
-          @keypair = key # Preserve the object to avoid recreation
+          @rsa_key = key # Preserve the object to avoid recreation
           parse_rsa_key(key)
         when Hash
           key.transform_keys(&:to_sym)
@@ -79,10 +91,10 @@ module JWT
         end
       end
 
-      def check_jwk(keypair, params)
+      def check_jwk_params!(key_params, params)
         raise ArgumentError, 'cannot overwrite cryptographic key attributes' unless (RSA_KEY_ELEMENTS & params.keys).empty?
-        raise JWT::JWKError, "Incorrect 'kty' value: #{keypair[:kty]}, expected #{KTY}" unless keypair[:kty] == KTY
-        raise JWT::JWKError, 'Key format is invalid for RSA' unless keypair[:n] && keypair[:e]
+        raise JWT::JWKError, "Incorrect 'kty' value: #{key_params[:kty]}, expected #{KTY}" unless key_params[:kty] == KTY
+        raise JWT::JWKError, 'Key format is invalid for RSA' unless key_params[:n] && key_params[:e]
       end
 
       def parse_rsa_key(key)
