@@ -23,6 +23,14 @@ RSpec.describe JWT::JWK::EC do
     end
   end
 
+  describe '#keypair' do
+    subject(:jwk) { described_class.new(ec_key) }
+
+    it 'warns to stderr' do
+      expect(jwk.keypair).to eq(ec_key)
+    end
+  end
+
   describe '#export' do
     let(:kid) { nil }
     subject { described_class.new(keypair, kid).export }

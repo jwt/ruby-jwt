@@ -21,7 +21,7 @@ module JWT
         raise ::JWT::DecodeError, 'No keys found in jwks' unless @jwks.any?
         raise ::JWT::DecodeError, "Could not find public key for kid #{kid}" unless jwk
 
-        jwk.keypair
+        jwk.verify_key
       end
 
       private

@@ -2,16 +2,21 @@
 
 RSpec.describe JWT::JWK::HMAC do
   let(:hmac_key) { 'secret-key' }
+  let(:key) { hmac_key }
+  subject(:jwk) { described_class.new(key) }
 
   describe '.new' do
-    subject { described_class.new(key) }
-
     context 'when a secret key given' do
-      let(:key) { hmac_key }
       it 'creates an instance of the class' do
-        expect(subject).to be_a described_class
-        expect(subject.private?).to eq true
+        expect(jwk).to be_a described_class
+        expect(jwk.private?).to eq true
       end
+    end
+  end
+
+  describe '#keypair' do
+    it 'returns a string' do
+      expect(jwk.keypair).to eq(key)
     end
   end
 
@@ -66,6 +71,14 @@ RSpec.describe JWT::JWK::HMAC do
         it 'imports that common parameter' do
           expect(subject[:use]).to eq('sig')
         end
+      end
+    end
+  end
+
+  describe '#[]=' do
+    context 'when k is given' do
+      it 'raises an error' do
+        expect { jwk[:k] = 'new_secret' }.to raise_error(ArgumentError, 'cannot overwrite cryptographic key attributes')
       end
     end
   end

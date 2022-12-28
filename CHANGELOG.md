@@ -6,6 +6,7 @@
 
 **Features:**
 
+- Support OKP (Ed25519) keys for JWKs [#540](https://github.com/jwt/ruby-jwt/pull/540) ([@anakinj](https://github.com/anakinj)).
 - Your contribution here
 
 **Fixes and enhancements:**

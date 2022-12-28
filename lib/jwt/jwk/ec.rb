@@ -5,9 +5,6 @@ require 'forwardable'
 module JWT
   module JWK
     class EC < KeyBase # rubocop:disable Metrics/ClassLength
-      extend Forwardable
-      def_delegators :keypair, :public_key
-
       KTY    = 'EC'
       KTYS   = [KTY, OpenSSL::PKey::EC, JWT::JWK::EC].freeze
       BINARY = 2
@@ -24,17 +21,29 @@ module JWT
         key_params = extract_key_params(key)
 
         params = params.transform_keys(&:to_sym)
-        check_jwk(key_params, params)
+        check_jwk_params!(key_params, params)
 
         super(options, key_params.merge(params))
       end
 
       def keypair
-        @keypair ||= create_ec_key(self[:crv], self[:x], self[:y], self[:d])
+        ec_key
       end
 
       def private?
-        keypair.private_key?
+        ec_key.private_key?
+      end
+
+      def signing_key
+        ec_key
+      end
+
+      def verify_key
+        ec_key
+      end
+
+      def public_key
+        ec_key
       end
 
       def members
@@ -48,7 +57,7 @@ module JWT
       end
 
       def key_digest
-        _crv, x_octets, y_octets = keypair_components(keypair)
+        _crv, x_octets, y_octets = keypair_components(ec_key)
         sequence = OpenSSL::ASN1::Sequence([OpenSSL::ASN1::Integer.new(OpenSSL::BN.new(x_octets, BINARY)),
                                             OpenSSL::ASN1::Integer.new(OpenSSL::BN.new(y_octets, BINARY))])
         OpenSSL::Digest::SHA256.hexdigest(sequence.to_der)
@@ -64,12 +73,16 @@ module JWT
 
       private
 
+      def ec_key
+        @ec_key ||= create_ec_key(self[:crv], self[:x], self[:y], self[:d])
+      end
+
       def extract_key_params(key)
         case key
         when JWT::JWK::EC
           key.export(include_private: true)
         when OpenSSL::PKey::EC # Accept OpenSSL key as input
-          @keypair = key # Preserve the object to avoid recreation
+          @ec_key = key # Preserve the object to avoid recreation
           parse_ec_key(key)
         when Hash
           key.transform_keys(&:to_sym)
@@ -78,10 +91,10 @@ module JWT
         end
       end
 
-      def check_jwk(keypair, params)
+      def check_jwk_params!(key_params, params)
         raise ArgumentError, 'cannot overwrite cryptographic key attributes' unless (EC_KEY_ELEMENTS & params.keys).empty?
-        raise JWT::JWKError, "Incorrect 'kty' value: #{keypair[:kty]}, expected #{KTY}" unless keypair[:kty] == KTY
-        raise JWT::JWKError, 'Key format is invalid for EC' unless keypair[:crv] && keypair[:x] && keypair[:y]
+        raise JWT::JWKError, "Incorrect 'kty' value: #{key_params[:kty]}, expected #{KTY}" unless key_params[:kty] == KTY
+        raise JWT::JWKError, 'Key format is invalid for EC' unless key_params[:crv] && key_params[:x] && key_params[:y]
       end
 
       def keypair_components(ec_keypair)

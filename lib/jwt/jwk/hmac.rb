@@ -24,7 +24,7 @@ module JWT
       end
 
       def keypair
-        self[:k]
+        secret
       end
 
       def private?
@@ -33,6 +33,14 @@ module JWT
 
       def public_key
         nil
+      end
+
+      def verify_key
+        secret
+      end
+
+      def signing_key
+        secret
       end
 
       # See https://tools.ietf.org/html/rfc7517#appendix-A.3
@@ -45,8 +53,6 @@ module JWT
       def members
         HMAC_KEY_ELEMENTS.each_with_object({}) { |i, h| h[i] = self[i] }
       end
-
-      alias signing_key keypair # for backwards compatibility
 
       def key_digest
         sequence = OpenSSL::ASN1::Sequence([OpenSSL::ASN1::UTF8String.new(signing_key),
@@ -63,6 +69,10 @@ module JWT
       end
 
       private
+
+      def secret
+        self[:k]
+      end
 
       def extract_key_params(key)
         case key
