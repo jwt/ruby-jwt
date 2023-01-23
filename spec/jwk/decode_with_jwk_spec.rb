@@ -79,6 +79,17 @@ RSpec.describe JWT do
       end
     end
 
+    context 'when the token kid is nil' do
+      let(:token_headers) { {} }
+      context 'and allow_nil_kid is specified' do
+        it 'decodes the token' do
+          key_loader = ->(_options) { JSON.parse(JSON.generate(public_jwks)) }
+          payload, _header = described_class.decode(signed_token, nil, true, { algorithms: ['RS512'], jwks: key_loader, allow_nil_kid: true })
+          expect(payload).to eq(token_payload)
+        end
+      end
+    end
+
     context 'mixing algorithms using kid header' do
       let(:hmac_jwk)           { JWT::JWK.new('secret') }
       let(:rsa_jwk)            { JWT::JWK.new(OpenSSL::PKey::RSA.new(2048)) }
