@@ -50,6 +50,19 @@ RSpec.describe JWT::JWK do
   describe '.new' do
     let(:options) { nil }
     subject { described_class.new(keypair, options) }
+    let(:certificate) { certificate_unsigned.sign(keypair, OpenSSL::Digest.new('SHA256')) }
+    let(:certificate_unsigned) { certificate_base }
+    let(:certificate_base) {
+      cert = OpenSSL::X509::Certificate.new
+      cert.version = 2
+      cert.serial = 1
+      cert.subject = OpenSSL::X509::Name.parse '/CN=Test'
+      cert.issuer = cert.subject # Self-signed
+      cert.public_key = keypair.public_key
+      cert.not_before = Time.now
+      cert.not_after = cert.not_before + 3600 # 1h
+      cert
+    }
 
     context 'when RSA key is given' do
       let(:keypair) { rsa_key }
@@ -74,6 +87,28 @@ RSpec.describe JWT::JWK do
       end
     end
 
+    context 'when certificate is given' do
+      let(:keypair) { rsa_key }
+      let(:certificate_unsigned) {
+        ef = OpenSSL::X509::ExtensionFactory.new
+        certificate_base.add_extension(ef.create_extension('keyUsage', 'digitalSignature', true))
+        certificate_base
+      }
+      subject { described_class.new(certificate) }
+
+      it 'derives the correct key type' do
+        is_expected.to be_a ::JWT::JWK::RSA
+      end
+
+      it 'derives common parameters' do
+        expect(subject[:x5c]).not_to eq(nil)
+        expect(subject[:x5t]).not_to eq(nil)
+        expect(subject[:'x5t#S256']).not_to eq(nil)
+        expect(subject[:key_ops]).to eq(['verify'])
+        expect(subject[:use]).to eq('sig')
+      end
+    end
+
     context 'when a common parameter is given' do
       subject { described_class.new(keypair, params) }
       let(:keypair) { rsa_key }
@@ -92,19 +127,6 @@ RSpec.describe JWT::JWK do
       end
 
       context 'when given an X.509 certificate chain' do
-        let(:certificate_base) {
-          cert = OpenSSL::X509::Certificate.new
-          cert.version = 2
-          cert.serial = 1
-          cert.subject = OpenSSL::X509::Name.parse '/CN=Test'
-          cert.issuer = cert.subject # Self-signed
-          cert.public_key = keypair.public_key
-          cert.not_before = Time.now
-          cert.not_after = cert.not_before + 3600 # 1h
-          cert
-        }
-        let(:certificate_unsigned) { certificate_base }
-        let(:certificate) { certificate_unsigned.sign(keypair, OpenSSL::Digest.new('SHA256')) }
         let(:x5c) { [::Base64.strict_encode64(certificate.to_der)] }
 
         context 'in the x5c header' do
