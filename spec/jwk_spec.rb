@@ -82,6 +82,66 @@ RSpec.describe JWT::JWK do
         expect(subject[:use]).to eq('sig')
       end
     end
+
+    context 'when enrich_key is specified' do
+      subject { described_class.new(keypair, params, enrich_key: true) }
+      let(:keypair) { rsa_key }
+      let(:params) { { 'use' => 'sig' } }
+      it 'sets a suitable default alg header' do
+        expect(subject[:use]).not_to eq(nil)
+      end
+
+      context 'when given an X.509 certificate chain' do
+        let(:certificate_base) {
+          cert = OpenSSL::X509::Certificate.new
+          cert.version = 2
+          cert.serial = 1
+          cert.subject = OpenSSL::X509::Name.parse '/CN=Test'
+          cert.issuer = cert.subject # Self-signed
+          cert.public_key = keypair.public_key
+          cert.not_before = Time.now
+          cert.not_after = cert.not_before + 3600 # 1h
+          cert
+        }
+        let(:certificate_unsigned) { certificate_base }
+        let(:certificate) { certificate_unsigned.sign(keypair, OpenSSL::Digest.new('SHA256')) }
+        let(:x5c) { [::Base64.strict_encode64(certificate.to_der)] }
+
+        context 'in the x5c header' do
+          subject { described_class.new(keypair, { x5c: x5c }, enrich_key: true) }
+          it 'adds the thumbprints' do
+            expect(subject[:x5t]).not_to eq(nil)
+            expect(subject[:'x5t#S256']).not_to eq(nil)
+          end
+        end
+
+        context 'in the x5u header' do
+          let(:cert_fetcher) { ->(url) { x5c.map { |c| OpenSSL::X509::Certificate.new(::Base64.strict_decode64(c)) } if url == 'https://example.org/certs' } }
+          subject { described_class.new(keypair, { x5u: 'https://example.org/certs' }, enrich_key: true, x5u_handler: cert_fetcher) }
+          it 'adds the thumbprints' do
+            expect(subject[:x5t]).not_to eq(nil)
+            expect(subject[:'x5t#S256']).not_to eq(nil)
+          end
+        end
+
+        context 'with keyUsage extension' do
+          let(:certificate_unsigned) {
+            ef = OpenSSL::X509::ExtensionFactory.new
+            certificate_base.add_extension(ef.create_extension('keyUsage', 'digitalSignature', true))
+            certificate_base
+          }
+          subject { described_class.new(keypair, { x5c: x5c }, enrich_key: true) }
+          it 'derives the correct key operations and usages' do
+            expect(subject[:key_ops]).to eq(['verify', 'sign'])
+            expect(subject[:use]).to eq('sig')
+          end
+
+          it 'sets a suitable default alg header' do
+            expect(subject[:use]).not_to eq(nil)
+          end
+        end
+      end
+    end
   end
 
   describe '.[]' do
