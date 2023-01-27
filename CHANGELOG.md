@@ -7,11 +7,13 @@
 **Features:**
 
 - Your contribution here
+- JWK Sets can now be used for tokens with nil kid[#543](https://github.com/jwt/ruby-jwt/pull/543) ([@bellebaum](https://github.com/bellebaum))
 
 **Fixes and enhancements:**
 
 - Fix issue with multiple keys returned by keyfinder and multiple allowed algorithms[#545](https://github.com/jwt/ruby-jwt/pull/545) ([@mpospelov](https://github.com/mpospelov))
 - Your contribution here
+- Non-string `kid` header values are now rejected[#543](https://github.com/jwt/ruby-jwt/pull/543) ([@bellebaum](https://github.com/bellebaum))
 
 ## [v2.6.0](https://github.com/jwt/ruby-jwt/tree/v2.6.0) (2022-12-22)
 
