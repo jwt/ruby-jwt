@@ -90,6 +90,15 @@ RSpec.describe JWT do
       end
     end
 
+    context 'when the token kid is not a string' do
+      let(:token_headers) { { kid: 5 } }
+      it 'raises an exception' do
+        expect { described_class.decode(signed_token, nil, true, { algorithms: ['RS512'], jwks: public_jwks }) }.to raise_error(
+          JWT::DecodeError, 'Invalid type for kid header parameter'
+        )
+      end
+    end
+
     context 'mixing algorithms using kid header' do
       let(:hmac_jwk)           { JWT::JWK.new('secret') }
       let(:rsa_jwk)            { JWT::JWK.new(OpenSSL::PKey::RSA.new(2048)) }

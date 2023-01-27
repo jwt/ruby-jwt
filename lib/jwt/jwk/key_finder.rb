@@ -16,6 +16,7 @@ module JWT
 
       def key_for(kid)
         raise ::JWT::DecodeError, 'No key id (kid) found from token headers' unless kid || @allow_nil_kid
+        raise ::JWT::DecodeError, 'Invalid type for kid header parameter' unless kid.nil? || kid.is_a?(String)
 
         jwk = resolve_key(kid)
 
