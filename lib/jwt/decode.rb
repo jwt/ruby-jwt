@@ -25,7 +25,7 @@ module JWT
       validate_segment_count!
       if @verify
         decode_signature
-        verify_algo
+        verify_and_set_algos
         set_key
         verify_signature
         verify_claims
@@ -49,10 +49,12 @@ module JWT
       raise(JWT::VerificationError, 'Signature verification failed')
     end
 
-    def verify_algo
+    def verify_and_set_algos
       raise(JWT::IncorrectAlgorithm, 'An algorithm must be specified') if allowed_algorithms.empty?
       raise(JWT::IncorrectAlgorithm, 'Token is missing alg header') unless alg_in_header
-      raise(JWT::IncorrectAlgorithm, 'Expected a different algorithm') unless valid_alg_in_header?
+
+      @algos = find_valid_algos_in_header
+      raise(JWT::IncorrectAlgorithm, 'Expected a different algorithm') if @algos.empty?
     end
 
     def set_key
@@ -64,13 +66,13 @@ module JWT
     end
 
     def verify_signature_for?(key)
-      allowed_algorithms.any? do |alg|
+      @algos.any? do |alg|
         alg.verify(data: signing_input, signature: @signature, verification_key: key)
       end
     end
 
-    def valid_alg_in_header?
-      allowed_algorithms.any? { |alg| alg.valid_alg?(alg_in_header) }
+    def find_valid_algos_in_header
+      allowed_algorithms.select { |alg| alg.valid_alg?(alg_in_header) }
     end
 
     # Order is very important - first check for string keys, next for symbols
