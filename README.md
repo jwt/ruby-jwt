@@ -601,6 +601,9 @@ This can be used to implement caching of remotely fetched JWK Sets.
 If the requested `kid` is not found from the given set the loader will be called a second time with the `kid_not_found` option set to `true`.
 The application can choose to implement some kind of JWK cache invalidation or other mechanism to handle such cases.
 
+Tokens without a specified `kid` are rejected by default.
+This behaviour may be overwritten by setting the `allow_nil_jwks` option for `decode` to `true`.
+
 ```ruby
 jwks_loader = ->(options) do
   # The jwk loader would fetch the set of JWKs from a trusted source.
