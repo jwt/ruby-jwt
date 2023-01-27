@@ -14,6 +14,8 @@ RSpec.describe JWT do
       :wrong_rsa_public => OpenSSL::PKey.read(File.read(File.join(CERT_PATH, 'rsa-2048-wrong-public.pem'))),
       'ES256_private' => OpenSSL::PKey.read(File.read(File.join(CERT_PATH, 'ec256-private.pem'))),
       'ES256_public' => OpenSSL::PKey.read(File.read(File.join(CERT_PATH, 'ec256-public.pem'))),
+      'ES256_private_v2' => OpenSSL::PKey.read(File.read(File.join(CERT_PATH, 'ec256-private-v2.pem'))),
+      'ES256_public_v2' => OpenSSL::PKey.read(File.read(File.join(CERT_PATH, 'ec256-public-v2.pem'))),
       'ES384_private' => OpenSSL::PKey.read(File.read(File.join(CERT_PATH, 'ec384-private.pem'))),
       'ES384_public' => OpenSSL::PKey.read(File.read(File.join(CERT_PATH, 'ec384-public.pem'))),
       'ES512_private' => OpenSSL::PKey.read(File.read(File.join(CERT_PATH, 'ec512-private.pem'))),
@@ -778,6 +780,16 @@ RSpec.describe JWT do
     it 'starts trying with the algorithm referred in the header' do
       expect(::JWT::Algos::Rsa).not_to receive(:verify)
       JWT.decode(token, 'secret', true, algorithm: ['RS512', 'HS256'])
+    end
+  end
+
+  context 'when keyfinder resolves to multiple keys and multiple algorithms given' do
+    let(:token) { JWT.encode(payload, data['ES256_private'], 'ES256') }
+
+    it 'tries until the first match' do
+      JWT.decode(token, nil, true, algorithm: ['ES256', 'HS256']) do
+        [data['ES256_public_v2'], data['ES256_public']]
+      end
     end
   end
 
