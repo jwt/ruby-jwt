@@ -784,11 +784,41 @@ RSpec.describe JWT do
   end
 
   context 'when keyfinder resolves to multiple keys and multiple algorithms given' do
-    let(:token) { JWT.encode(payload, data['ES256_private'], 'ES256') }
+    let(:iss_key_mappings) do
+      {
+        'ES256' => [data['ES256_public_v2'], data['ES256_public']],
+        'HS256' => data['HS256']
+      }
+    end
 
-    it 'tries until the first match' do
-      JWT.decode(token, nil, true, algorithm: ['ES256', 'HS256']) do
-        [data['ES256_public_v2'], data['ES256_public']]
+    context 'with issue with ES256 keys' do
+      it 'tries until the first match' do
+        token = JWT.encode(payload, data['ES256_private'], 'ES256', 'iss' => 'ES256')
+        result = JWT.decode(token, nil, true, algorithm: ['ES256', 'HS256']) do |header, _|
+          iss_key_mappings[header['iss']]
+        end
+
+        expect(result) .to include(payload)
+      end
+
+      it 'tries until the first match' do
+        token = JWT.encode(payload, data['ES256_private_v2'], 'ES256', 'iss' => 'ES256')
+        result = JWT.decode(token, nil, true, algorithm: ['ES256', 'HS256']) do |header, _|
+          iss_key_mappings[header['iss']]
+        end
+
+        expect(result) .to include(payload)
+      end
+    end
+
+    context 'with issue with HS256 keys' do
+      it 'tries until the first match' do
+        token = JWT.encode(payload, data['HS256'], 'HS256', 'iss' => 'HS256')
+        result = JWT.decode(token, nil, true, algorithm: ['ES256', 'HS256']) do |header, _|
+          iss_key_mappings[header['iss']]
+        end
+
+        expect(result) .to include(payload)
       end
     end
   end
