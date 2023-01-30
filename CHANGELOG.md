@@ -10,7 +10,7 @@
 
 **Fixes and enhancements:**
 
-- Your contribution here
+- Fix issue with multiple keys returned by keyfinder and multiple allowed algorithms[#545](https://github.com/jwt/ruby-jwt/pull/545) ([@mpospelov](https://github.com/mpospelov))
 
 ## [v2.6.0](https://github.com/jwt/ruby-jwt/tree/v2.6.0) (2022-12-22)
 
