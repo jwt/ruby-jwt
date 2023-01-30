@@ -798,7 +798,7 @@ RSpec.describe JWT do
           iss_key_mappings[header['iss']]
         end
 
-        expect(result) .to include(payload)
+        expect(result).to include(payload)
       end
 
       it 'tries until the first match' do
@@ -807,7 +807,7 @@ RSpec.describe JWT do
           iss_key_mappings[header['iss']]
         end
 
-        expect(result) .to include(payload)
+        expect(result).to include(payload)
       end
     end
 
@@ -818,7 +818,7 @@ RSpec.describe JWT do
           iss_key_mappings[header['iss']]
         end
 
-        expect(result) .to include(payload)
+        expect(result).to include(payload)
       end
     end
   end
