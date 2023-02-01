@@ -11,7 +11,7 @@ module JWT
     # major version
     MAJOR = 2
     # minor version
-    MINOR = 6
+    MINOR = 7
     # tiny version
     TINY  = 0
     # alpha, beta, etc. tag

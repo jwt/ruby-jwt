@@ -1,20 +1,18 @@
 # Changelog
 
-## [v2.7.0](https://github.com/jwt/ruby-jwt/tree/v2.7.0) (NEXT)
+## [v2.7.0](https://github.com/jwt/ruby-jwt/tree/v2.7.0) (2023-02-01)
 
 [Full Changelog](https://github.com/jwt/ruby-jwt/compare/v2.6.0...v2.7.0)
 
 **Features:**
 
-- Support OKP (Ed25519) keys for JWKs [#540](https://github.com/jwt/ruby-jwt/pull/540) ([@anakinj](https://github.com/anakinj)).
-- Your contribution here
-- JWK Sets can now be used for tokens with nil kid[#543](https://github.com/jwt/ruby-jwt/pull/543) ([@bellebaum](https://github.com/bellebaum))
+- Support OKP (Ed25519) keys for JWKs [#540](https://github.com/jwt/ruby-jwt/pull/540) ([@anakinj](https://github.com/anakinj))
+- JWK Sets can now be used for tokens with nil kid [#543](https://github.com/jwt/ruby-jwt/pull/543) ([@bellebaum](https://github.com/bellebaum))
 
 **Fixes and enhancements:**
 
-- Fix issue with multiple keys returned by keyfinder and multiple allowed algorithms[#545](https://github.com/jwt/ruby-jwt/pull/545) ([@mpospelov](https://github.com/mpospelov))
-- Your contribution here
-- Non-string `kid` header values are now rejected[#543](https://github.com/jwt/ruby-jwt/pull/543) ([@bellebaum](https://github.com/bellebaum))
+- Fix issue with multiple keys returned by keyfinder and multiple allowed algorithms [#545](https://github.com/jwt/ruby-jwt/pull/545) ([@mpospelov](https://github.com/mpospelov))
+- Non-string `kid` header values are now rejected [#543](https://github.com/jwt/ruby-jwt/pull/543) ([@bellebaum](https://github.com/bellebaum))
 
 ## [v2.6.0](https://github.com/jwt/ruby-jwt/tree/v2.6.0) (2022-12-22)
 
