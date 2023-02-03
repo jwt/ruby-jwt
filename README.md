@@ -602,7 +602,7 @@ If the requested `kid` is not found from the given set the loader will be called
 The application can choose to implement some kind of JWK cache invalidation or other mechanism to handle such cases.
 
 Tokens without a specified `kid` are rejected by default.
-This behaviour may be overwritten by setting the `allow_nil_jwks` option for `decode` to `true`.
+This behaviour may be overwritten by setting the `allow_nil_kid` option for `decode` to `true`.
 
 ```ruby
 jwks_loader = ->(options) do
