@@ -14,7 +14,7 @@ module JWT
       end
 
       def verify(algorithm, public_key, signing_input, signature)
-        SecurityUtils.verify_rsa(algorithm, public_key, signing_input, signature)
+        public_key.verify(OpenSSL::Digest.new(algorithm.sub('RS', 'sha')), signature, signing_input)
       end
     end
   end
