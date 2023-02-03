@@ -15,6 +15,8 @@ module JWT
 
       def verify(algorithm, public_key, signing_input, signature)
         public_key.verify(OpenSSL::Digest.new(algorithm.sub('RS', 'sha')), signature, signing_input)
+      rescue OpenSSL::PKey::PKeyError
+        raise JWT::VerificationError, 'Signature verification raised'
       end
     end
   end
