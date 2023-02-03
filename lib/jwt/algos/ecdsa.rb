@@ -50,6 +50,8 @@ module JWT
 
         digest = OpenSSL::Digest.new(curve_definition[:digest])
         public_key.dsa_verify_asn1(digest.digest(signing_input), raw_to_asn1(signature, public_key))
+      rescue OpenSSL::PKey::PKeyError
+        raise JWT::VerificationError, 'Signature verification raised'
       end
 
       def curve_by_name(name)

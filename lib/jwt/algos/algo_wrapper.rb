@@ -20,10 +20,6 @@ module JWT
 
       def verify(data:, signature:, verification_key:)
         cls.verify(alg, verification_key, data, signature)
-      rescue OpenSSL::PKey::PKeyError # These should be moved to the algorithms that actually need this, but left here to ensure nothing will break.
-        raise JWT::VerificationError, 'Signature verification raised'
-      ensure
-        OpenSSL.errors.clear
       end
     end
   end

@@ -23,6 +23,8 @@ module JWT
         require_openssl!
         translated_algorithm = algorithm.sub('PS', 'sha')
         public_key.verify_pss(translated_algorithm, signature, signing_input, salt_length: :auto, mgf1_hash: translated_algorithm)
+      rescue OpenSSL::PKey::PKeyError
+        raise JWT::VerificationError, 'Signature verification raised'
       end
 
       def require_openssl!
