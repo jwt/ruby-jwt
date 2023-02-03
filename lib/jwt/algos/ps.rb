@@ -12,9 +12,7 @@ module JWT
       def sign(algorithm, msg, key)
         require_openssl!
 
-        key_class = key.class
-
-        raise EncodeError, "The given key is a #{key_class}. It has to be an OpenSSL::PKey::RSA instance." if key_class == String
+        raise EncodeError, "The given key is a #{key_class}. It has to be an OpenSSL::PKey::RSA instance." if key.is_a?(String)
 
         translated_algorithm = algorithm.sub('PS', 'sha')
 
@@ -23,8 +21,8 @@ module JWT
 
       def verify(algorithm, public_key, signing_input, signature)
         require_openssl!
-
-        SecurityUtils.verify_ps(algorithm, public_key, signing_input, signature)
+        translated_algorithm = algorithm.sub('PS', 'sha')
+        public_key.verify_pss(translated_algorithm, signature, signing_input, salt_length: :auto, mgf1_hash: translated_algorithm)
       end
 
       def require_openssl!

@@ -7,7 +7,6 @@ rescue LoadError
 end
 require 'openssl'
 
-require 'jwt/security_utils'
 require 'jwt/algos/hmac'
 require 'jwt/algos/eddsa'
 require 'jwt/algos/ecdsa'
