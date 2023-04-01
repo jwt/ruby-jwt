@@ -38,12 +38,12 @@ module JWT
     end
 
     def verify_expiration
-      return unless @payload.has_key?('exp')
+      return unless @payload.key?('exp')
       raise(JWT::ExpiredSignature, 'Signature has expired') if @payload['exp'].to_i <= (Time.now.to_i - exp_leeway)
     end
 
     def verify_iat
-      return unless @payload.has_key?('iat')
+      return unless @payload.key?('iat')
 
       iat = @payload['iat']
       raise(JWT::InvalidIatError, 'Invalid iat') if !iat.is_a?(Numeric) || iat.to_f > Time.now.to_f
@@ -77,7 +77,7 @@ module JWT
     end
 
     def verify_not_before
-      return unless @payload.has_key?('nbf')
+      return unless @payload.key?('nbf')
       raise(JWT::ImmatureSignature, 'Signature nbf has not been reached') if @payload['nbf'].to_i > (Time.now.to_i + nbf_leeway)
     end
 
@@ -92,7 +92,7 @@ module JWT
       return unless (options_required_claims = @options[:required_claims])
 
       options_required_claims.each do |required_claim|
-        raise(JWT::MissingRequiredClaim, "Missing required claim #{required_claim}") unless @payload.has_key?(required_claim)
+        raise(JWT::MissingRequiredClaim, "Missing required claim #{required_claim}") unless @payload.key?(required_claim)
       end
     end
 
