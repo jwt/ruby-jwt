@@ -838,6 +838,14 @@ RSpec.describe JWT do
     end
   end
 
+  context 'when the alg is invalid' do
+    let(:token) { 'eyJhbGciOiJIUzI1NiJ9.eyJwYXkiOiJsb2FkIn0.ZpAhTTtuo-CmbgT6-95NaM_wFckKeyI157baZ29H41o' }
+
+    it 'raises JWT::IncorrectAlgorithm error' do
+      expect { JWT.decode(token, 'secret', true, algorithm: 'invalid-HS256') }.to raise_error(JWT::IncorrectAlgorithm, 'Expected a different algorithm')
+    end
+  end
+
   context 'when algorithm is a custom class' do
     let(:custom_algorithm) do
       Class.new do

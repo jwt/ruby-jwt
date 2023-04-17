@@ -12,6 +12,7 @@
 
 **Fixes and enhancements:**
 
+- Handle invalid algorithm when decoding JWT [#559](https://github.com/jwt/ruby-jwt/pull/559) - [@nataliastanko](https://github.com/nataliastanko)
 - Your contribution here
 
 ## [v2.7.0](https://github.com/jwt/ruby-jwt/tree/v2.7.0) (2023-02-01)
