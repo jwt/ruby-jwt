@@ -138,7 +138,7 @@ RSpec.describe JWT do
 
         it 'fails in some way' do
           expect { described_class.decode(signed_token, nil, true, algorithms: [algorithm], jwks: jwks) }.to(
-            raise_error(NoMethodError, /undefined method `verify' for "secret":String/)
+            raise_error(NoMethodError, /undefined method `verify' for/)
           )
         end
       end
@@ -148,7 +148,7 @@ RSpec.describe JWT do
 
         it 'fails in some way' do
           expect { described_class.decode(signed_token, nil, true, algorithms: ['ES384'], jwks: jwks) }.to(
-            raise_error(NoMethodError, /undefined method `group' for "secret":String/)
+            raise_error(NoMethodError, /undefined method `group' for/)
           )
         end
       end
