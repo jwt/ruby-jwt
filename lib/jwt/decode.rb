@@ -157,8 +157,14 @@ module JWT
     end
 
     def encoded_payload
-      payload = @detached_payload.to_json if !@detached_payload.nil? && @segments[1].empty?
+      payload = encoded_detached_payload if !@detached_payload.nil? && @segments[1].empty?
       payload ||= @segments[1]
+      payload
+    end
+
+    def encoded_detached_payload
+      payload ||= ::JWT::Base64.url_encode(JWT::JSON.generate(@detached_payload)) if decode_payload?
+      payload ||= @detached_payload.to_json
       payload
     end
 
