@@ -2,6 +2,8 @@
 
 RSpec.describe JWT do
   let(:payload) { { 'user_id' => 'some@user.tld' } }
+  let(:non_encoded_payload) { { 'user_id' => 'safe_value' } }
+  let(:non_encoded_payload_unsafe) { { 'user_id' => 'unsafe.value' } }
 
   let :data do
     data = {
@@ -24,6 +26,8 @@ RSpec.describe JWT do
       'ES256K_public' => OpenSSL::PKey.read(File.read(File.join(CERT_PATH, 'ec256k-public.pem'))),
       'NONE' => 'eyJhbGciOiJub25lIn0.eyJ1c2VyX2lkIjoic29tZUB1c2VyLnRsZCJ9.',
       'HS256' => 'eyJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoic29tZUB1c2VyLnRsZCJ9.kWOVtIOpWcG7JnyJG0qOkTDbOy636XrrQhMm_8JrRQ8',
+      'HS256_non_encoded_payload' => 'eyJiNjQiOmZhbHNlLCJhbGciOiJIUzI1NiIsImNyaXQiOlsiYjY0Il19.{"user_id":"safe_value"}.eW4NSHANyJpL6ivfFut7a5CM5lpaif8vEQYr-CRzrUc',
+      'HS256_non_encoded_payload_detached' => 'eyJiNjQiOmZhbHNlLCJhbGciOiJIUzI1NiIsImNyaXQiOlsiYjY0Il19..eW4NSHANyJpL6ivfFut7a5CM5lpaif8vEQYr-CRzrUc',
       'HS512256' => 'eyJhbGciOiJIUzUxMjI1NiJ9.eyJ1c2VyX2lkIjoic29tZUB1c2VyLnRsZCJ9.Ds_4ibvf7z4QOBoKntEjDfthy3WJ-3rKMspTEcHE2bA',
       'HS384' => 'eyJhbGciOiJIUzM4NCJ9.eyJ1c2VyX2lkIjoic29tZUB1c2VyLnRsZCJ9.VuV4j4A1HKhWxCNzEcwc9qVF3frrEu-BRLzvYPkbWO0LENRGy5dOiBQ34remM3XH',
       'HS512' => 'eyJhbGciOiJIUzUxMiJ9.eyJ1c2VyX2lkIjoic29tZUB1c2VyLnRsZCJ9.8zNtCBTJIZTHpZ-BkhR-6sZY1K85Nm5YCKqV3AxRdsBJDt_RR-REH2db4T3Y0uQwNknhrCnZGvhNHrvhDwV1kA',
@@ -931,6 +935,42 @@ RSpec.describe JWT do
       it 'raises error on decoding' do
         expect { JWT.decode(expected_token, 'secret', true, algorithm: custom_algorithm.new) }.to raise_error(NoMethodError)
       end
+    end
+  end
+
+  context 'when payload is not encoded' do
+    it 'should generate a valid token' do
+      token = JWT.encode non_encoded_payload, data[:secret], 'HS256', { b64: false }
+
+      expect(token).to eq data['HS256_non_encoded_payload']
+    end
+
+    it 'should decode a valid token' do
+      jwt_payload, header = JWT.decode data['HS256_non_encoded_payload'], data[:secret], true, algorithm: 'HS256'
+
+      expect(header['alg']).to eq 'HS256'
+      expect(jwt_payload).to eq non_encoded_payload
+    end
+
+    it 'should raise error when payload is unsafe for decoding' do
+      expect do
+        JWT.encode non_encoded_payload_unsafe, 'secret', 'HS256', { b64: false }
+      end.to raise_error JWT::InvalidUnencodedPayload
+    end
+  end
+
+  context 'when payload is detached' do
+    it 'should generate a valid token' do
+      token = JWT.encode_detached non_encoded_payload, data[:secret], 'HS256', { b64: false }
+
+      expect(token).to eq data['HS256_non_encoded_payload_detached']
+    end
+
+    it 'should decode a valid token' do
+      jwt_payload, header = JWT.decode data['HS256_non_encoded_payload_detached'], data[:secret], true, algorithm: 'HS256', payload: non_encoded_payload
+
+      expect(header['alg']).to eq 'HS256'
+      expect(jwt_payload).to eq non_encoded_payload
     end
   end
 end
