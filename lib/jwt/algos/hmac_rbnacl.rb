@@ -28,7 +28,7 @@ module JWT
         else
           Hmac.verify(algorithm, key, signing_input, signature)
         end
-      rescue ::RbNaCl::BadAuthenticatorError
+      rescue ::RbNaCl::BadAuthenticatorError, ::RbNaCl::LengthError
         false
       end
 

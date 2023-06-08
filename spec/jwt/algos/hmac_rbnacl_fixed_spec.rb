@@ -30,6 +30,17 @@ RSpec.describe '::JWT::Algos::HmacRbNaClFixed' do
         expect(OpenSSL::HMAC).to have_received(:digest).once
       end
     end
+
+    context 'when signature is invalid' do
+      let(:key) { 'a' * 100 }
+      let(:signature) { JWT::Base64.url_decode('some_random_signature') }
+
+      it 'can verify without error' do
+        allow(OpenSSL::HMAC).to receive(:digest).and_call_original
+        expect(described_class.verify('HS256', key, data, signature)).to eq(false)
+        expect(OpenSSL::HMAC).not_to have_received(:digest)
+      end
+    end
   end
 
   describe '.sign' do
