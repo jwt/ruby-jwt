@@ -2,6 +2,7 @@
 
 RSpec.describe ::JWT::Verify do
   let(:base_payload) { { 'user_id' => 'some@user.tld' } }
+  let(:string_payload) { 'beautyexperts_nbf_iat' }
   let(:options) { { leeway: 0 } }
 
   context '.verify_aud(payload, options)' do
@@ -64,6 +65,10 @@ RSpec.describe ::JWT::Verify do
       end.to raise_error JWT::ExpiredSignature
     end
 
+    it 'must not consider string containing exp as expired' do
+      expect(described_class.verify_expiration(string_payload, options)).to eq(nil)
+    end
+
     context 'when leeway is not specified' do
       let(:options) { {} }
 
@@ -102,6 +107,10 @@ RSpec.describe ::JWT::Verify do
       expect do
         described_class.verify_iat(payload.merge('iat' => (iat + 120)), options)
       end.to raise_error JWT::InvalidIatError
+    end
+
+    it 'must not validate if the payload is a string containing iat' do
+      expect(described_class.verify_iat(string_payload, options)).to eq(nil)
     end
   end
 
@@ -264,6 +273,10 @@ RSpec.describe ::JWT::Verify do
 
     it 'must allow some leeway in the token age when nbf_leeway is configured' do
       described_class.verify_not_before(payload, options.merge(nbf_leeway: 10))
+    end
+
+    it 'must not validate if the payload is a string containing iat' do
+      expect(described_class.verify_not_before(string_payload, options)).to eq(nil)
     end
   end
 
