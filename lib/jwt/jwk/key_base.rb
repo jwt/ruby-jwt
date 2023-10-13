@@ -44,6 +44,8 @@ module JWT
       alias eql? ==
 
       def <=>(other)
+        return nil unless other.is_a?(::JWT::JWK::KeyBase)
+
         self[:kid] <=> other[:kid]
       end
 

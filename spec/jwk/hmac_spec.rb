@@ -114,4 +114,36 @@ RSpec.describe JWT::JWK::HMAC do
       expect(jwk == other).to eq false
     end
   end
+
+  describe '#<=>' do
+    it 'is equal to itself' do
+      other = jwk
+      expect(jwk <=> other).to eq 0
+    end
+
+    it 'is equal to a clone of itself' do
+      other = jwk.clone
+      expect(jwk <=> other).to eq 0
+    end
+
+    it 'is not comparable to nil' do
+      other = nil
+      expect(jwk <=> other).to eq nil
+    end
+
+    it 'is not comparable to boolean true' do
+      other = true
+      expect(jwk <=> other).to eq nil
+    end
+
+    it 'is not comparable to a non-key' do
+      other = Object.new
+      expect(jwk <=> other).to eq nil
+    end
+
+    it 'is not equal to a different key' do
+      other = described_class.new('other-key')
+      expect(jwk <=> other).not_to eq 0
+    end
+  end
 end
