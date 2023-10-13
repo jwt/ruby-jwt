@@ -38,7 +38,7 @@ module JWT
       end
 
       def ==(other)
-        self[:kid] == other[:kid]
+        other.is_a?(::JWT::JWK::KeyBase) && self[:kid] == other[:kid]
       end
 
       alias eql? ==
