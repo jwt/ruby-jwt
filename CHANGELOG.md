@@ -1,7 +1,5 @@
 # Changelog
 
-# Changelog
-
 ## [v2.7.2](https://github.com/jwt/ruby-jwt/tree/v2.7.2) (NEXT)
 
 [Full Changelog](https://github.com/jwt/ruby-jwt/compare/v2.7.1...v2.7.2)
