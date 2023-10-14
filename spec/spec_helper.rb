@@ -14,7 +14,7 @@ RSpec.configure do |config|
   config.expect_with :rspec do |c|
     c.syntax = :expect
   end
-  config.before(:example) { ::JWT.configuration.reset! }
+  config.before(:example) { JWT.configuration.reset! }
   config.run_all_when_everything_filtered = true
   config.filter_run :focus
   config.order = 'random'

@@ -152,7 +152,7 @@ RSpec.describe JWT::JWK::RSA do
       let(:jwk_parameters) { all_jwk_parameters.slice(:e, :n) }
 
       it 'creates a valid RSA object representing a public key' do
-        expect(subject).to be_a(::OpenSSL::PKey::RSA)
+        expect(subject).to be_a(OpenSSL::PKey::RSA)
         expect(subject.private?).to eq(false)
       end
     end
@@ -169,7 +169,7 @@ RSpec.describe JWT::JWK::RSA do
       let(:jwk_parameters) { all_jwk_parameters.slice(:n, :e, :d, :p, :q, :dp, :dq, :qi) }
 
       it 'creates a valid RSA object representing a public key' do
-        expect(subject).to be_a(::OpenSSL::PKey::RSA)
+        expect(subject).to be_a(OpenSSL::PKey::RSA)
         expect(subject.private?).to eq(true)
       end
     end
@@ -180,11 +180,11 @@ RSpec.describe JWT::JWK::RSA do
       let(:jwk_parameters) { all_jwk_parameters.slice(:e, :n, :d) }
 
       before do
-        skip 'OpenSSL prior to 2.2 does not seem to support partial parameters' if ::JWT.openssl_version < ::Gem::Version.new('2.2')
+        skip 'OpenSSL prior to 2.2 does not seem to support partial parameters' if JWT.openssl_version < Gem::Version.new('2.2')
       end
 
       it 'creates a valid RSA object representing a private key' do
-        expect(subject).to be_a(::OpenSSL::PKey::RSA)
+        expect(subject).to be_a(OpenSSL::PKey::RSA)
         expect(subject.private?).to eq(true)
       end
 
@@ -217,7 +217,7 @@ RSpec.describe JWT::JWK::RSA do
   describe '.create_rsa_key_using_sets' do
     before do
       skip 'OpenSSL without the RSA#set_key method not supported' unless OpenSSL::PKey::RSA.new.respond_to?(:set_key)
-      skip 'OpenSSL 3.0 does not allow mutating objects anymore' if ::JWT.openssl_3?
+      skip 'OpenSSL 3.0 does not allow mutating objects anymore' if JWT.openssl_3?
     end
 
     subject(:rsa) { described_class.create_rsa_key_using_sets(rsa_parameters) }

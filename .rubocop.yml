@@ -63,3 +63,6 @@ Layout/MultilineOperationIndentation:
 
 Style/WordArray:
   Enabled: false
+
+Gemspec/DevelopmentDependencies:
+  EnforcedStyle: gemspec

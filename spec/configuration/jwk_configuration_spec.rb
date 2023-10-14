@@ -11,7 +11,7 @@ RSpec.describe JWT::Configuration::JwkConfiguration do
     context 'when valid value is passed' do
       it 'sets the generator matching the value' do
         subject.kid_generator_type = :rfc7638_thumbprint
-        expect(subject.kid_generator).to eq(::JWT::JWK::Thumbprint)
+        expect(subject.kid_generator).to eq(JWT::JWK::Thumbprint)
       end
     end
   end

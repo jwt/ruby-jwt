@@ -166,7 +166,7 @@ RSpec.describe JWT do
       if defined?(RbNaCl)
         context 'when OKP keys are used' do
           before do
-            skip('Requires the rbnacl gem') unless ::JWT.rbnacl?
+            skip('Requires the rbnacl gem') unless JWT.rbnacl?
           end
 
           let(:keypair) { RbNaCl::Signatures::Ed25519::SigningKey.new(SecureRandom.hex) }
