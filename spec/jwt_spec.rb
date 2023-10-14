@@ -38,7 +38,7 @@ RSpec.describe JWT do
       'PS512' => ''
     }
 
-    if ::JWT.rbnacl?
+    if JWT.rbnacl?
       ed25519_private = RbNaCl::Signatures::Ed25519::SigningKey.new('abcdefghijklmnopqrstuvwxyzABCDEF')
       ed25519_public =  ed25519_private.verify_key
       data.merge!(
@@ -125,7 +125,7 @@ RSpec.describe JWT do
   end
 
   algorithms = %w[HS256 HS384 HS512]
-  algorithms << 'HS512256' if ::JWT.rbnacl?
+  algorithms << 'HS512256' if JWT.rbnacl?
 
   algorithms.each do |alg|
     context "alg: #{alg}" do
@@ -270,7 +270,7 @@ RSpec.describe JWT do
     end
   end
 
-  if ::Gem::Version.new(OpenSSL::VERSION) >= ::Gem::Version.new('2.1')
+  if Gem::Version.new(OpenSSL::VERSION) >= Gem::Version.new('2.1')
     %w[PS256 PS384 PS512].each do |alg|
       context "alg: #{alg}" do
         before(:each) do
@@ -291,7 +291,7 @@ RSpec.describe JWT do
           translated_alg  = alg.gsub('PS', 'sha')
           valid_signature = data[:rsa_public].verify_pss(
             translated_alg,
-            ::JWT::Base64.url_decode(signature),
+            JWT::Base64.url_decode(signature),
             [header, body].join('.'),
             salt_length: :auto,
             mgf1_hash: translated_alg
@@ -620,7 +620,7 @@ RSpec.describe JWT do
 
   context 'when the alg value is given as a header parameter' do
     it 'does not override the actual algorithm used' do
-      headers = JSON.parse(::JWT::Base64.url_decode(JWT.encode('Hello World', 'secret', 'HS256', { alg: 'HS123' }).split('.').first))
+      headers = JSON.parse(JWT::Base64.url_decode(JWT.encode('Hello World', 'secret', 'HS256', { alg: 'HS123' }).split('.').first))
       expect(headers['alg']).to eq('HS256')
     end
 
@@ -631,7 +631,7 @@ RSpec.describe JWT do
 
   context 'when hmac algorithm is used without secret key' do
     it 'encodes payload' do
-      pending 'Different behaviour on OpenSSL 3.0 (https://github.com/openssl/openssl/issues/13089)' if ::JWT.openssl_3_hmac_empty_key_regression?
+      pending 'Different behaviour on OpenSSL 3.0 (https://github.com/openssl/openssl/issues/13089)' if JWT.openssl_3_hmac_empty_key_regression?
       payload = { a: 1, b: 'b' }
 
       token = JWT.encode(payload, '', 'HS256')
@@ -666,9 +666,9 @@ RSpec.describe JWT do
 
   describe '::JWT.decode with verify_iat parameter' do
     let!(:time_now) { Time.now }
-    let(:token)     { ::JWT.encode({ pay: 'load', iat: iat }, 'secret', 'HS256') }
+    let(:token)     { JWT.encode({ pay: 'load', iat: iat }, 'secret', 'HS256') }
 
-    subject(:decoded_token) { ::JWT.decode(token, 'secret', true, verify_iat: true) }
+    subject(:decoded_token) { JWT.decode(token, 'secret', true, verify_iat: true) }
 
     before { allow(Time).to receive(:now) { time_now } }
 
@@ -689,7 +689,7 @@ RSpec.describe JWT do
     context 'when iat is 1 second before Time.now' do
       let(:iat) { time_now.to_i + 1 }
       it 'raises an error' do
-        expect { decoded_token }.to raise_error(::JWT::InvalidIatError, 'Invalid iat')
+        expect { decoded_token }.to raise_error(JWT::InvalidIatError, 'Invalid iat')
       end
     end
   end
@@ -700,10 +700,10 @@ RSpec.describe JWT do
     let(:key_finder) { instance_double('::JWT::X5cKeyFinder') }
 
     before do
-      expect(::JWT::X5cKeyFinder).to receive(:new).with(root_certificates, nil).and_return(key_finder)
+      expect(JWT::X5cKeyFinder).to receive(:new).with(root_certificates, nil).and_return(key_finder)
       expect(key_finder).to receive(:from).and_return(data[:rsa_public])
     end
-    subject(:decoded_token) { ::JWT.decode(data[alg], nil, true, algorithm: alg, x5c: { root_certificates: root_certificates }) }
+    subject(:decoded_token) { JWT.decode(data[alg], nil, true, algorithm: alg, x5c: { root_certificates: root_certificates }) }
 
     it 'calls X5cKeyFinder#from to verify the signature and return the payload' do
       jwt_payload, header = decoded_token
@@ -739,31 +739,31 @@ RSpec.describe JWT do
   end
 
   describe 'when none token is and decoding without key and with verification' do
-    let(:none_token) { ::JWT.encode(payload, nil, 'none') }
+    let(:none_token) { JWT.encode(payload, nil, 'none') }
     it 'decodes the token' do
-      expect(::JWT.decode(none_token, nil, true, algorithms: 'none')).to eq([payload, { 'alg' => 'none' }])
+      expect(JWT.decode(none_token, nil, true, algorithms: 'none')).to eq([payload, { 'alg' => 'none' }])
     end
   end
 
   describe 'when none token is decoded with a key given' do
-    let(:none_token) { ::JWT.encode(payload, nil, 'none') }
+    let(:none_token) { JWT.encode(payload, nil, 'none') }
     it 'decodes the token' do
-      expect(::JWT.decode(none_token, 'key', true, algorithms: 'none')).to eq([payload, { 'alg' => 'none' }])
+      expect(JWT.decode(none_token, 'key', true, algorithms: 'none')).to eq([payload, { 'alg' => 'none' }])
     end
   end
 
   describe 'when none token is decoded without verify' do
-    let(:none_token) { ::JWT.encode(payload, nil, 'none') }
+    let(:none_token) { JWT.encode(payload, nil, 'none') }
     it 'decodes the token' do
-      expect(::JWT.decode(none_token, 'key', false)).to eq([payload, { 'alg' => 'none' }])
+      expect(JWT.decode(none_token, 'key', false)).to eq([payload, { 'alg' => 'none' }])
     end
   end
 
   describe 'when token signed with nil and decoded with nil' do
-    let(:no_key_token) { ::JWT.encode(payload, nil, 'HS512') }
+    let(:no_key_token) { JWT.encode(payload, nil, 'HS512') }
     it 'raises JWT::DecodeError' do
-      pending 'Different behaviour on OpenSSL 3.0 (https://github.com/openssl/openssl/issues/13089)' if ::JWT.openssl_3_hmac_empty_key_regression?
-      expect { ::JWT.decode(no_key_token, nil, true, algorithms: 'HS512') }.to raise_error(JWT::DecodeError, 'No verification key available')
+      pending 'Different behaviour on OpenSSL 3.0 (https://github.com/openssl/openssl/issues/13089)' if JWT.openssl_3_hmac_empty_key_regression?
+      expect { JWT.decode(no_key_token, nil, true, algorithms: 'HS512') }.to raise_error(JWT::DecodeError, 'No verification key available')
     end
   end
 
@@ -778,7 +778,7 @@ RSpec.describe JWT do
     let(:token) { JWT.encode(payload, 'secret', 'HS256') }
 
     it 'starts trying with the algorithm referred in the header' do
-      expect(::JWT::Algos::Rsa).not_to receive(:verify)
+      expect(JWT::Algos::Rsa).not_to receive(:verify)
       JWT.decode(token, 'secret', true, algorithm: ['RS512', 'HS256'])
     end
   end

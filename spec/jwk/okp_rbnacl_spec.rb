@@ -11,7 +11,7 @@ describe 'JWT::JWK::OKPRbNaCl' do
   subject(:instance) { described_class.new(key) }
 
   before do
-    skip('Requires the rbnacl gem') unless ::JWT.rbnacl?
+    skip('Requires the rbnacl gem') unless JWT.rbnacl?
   end
 
   describe '.new' do

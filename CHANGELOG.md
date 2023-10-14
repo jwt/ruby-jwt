@@ -6,11 +6,12 @@
 
 **Features:**
 
+- Updated rubocop to 1.56 [#573](https://github.com/jwt/ruby-jwt/pull/573) - [@anakinj](https://github.com/anakinj).
 - Your contribution here
 
 **Fixes and enhancements:**
 
-- Fix signature has expired error if payload is a string [#555](https://github.com/jwt/ruby-jwt/pull/555) - [@GobinathAL](https://github.com/GobinathAL)
+- Fix signature has expired error if payload is a string [#555](https://github.com/jwt/ruby-jwt/pull/555) - [@GobinathAL](https://github.com/GobinathAL).
 - Your contribution here
 
 ## [v2.7.1](https://github.com/jwt/ruby-jwt/tree/v2.8.0) (2023-06-09)

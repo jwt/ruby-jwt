@@ -12,14 +12,14 @@ RSpec.describe JWT::JWK do
     subject { described_class.import(params) }
 
     it 'creates a ::JWT::JWK::RSA instance' do
-      expect(subject).to be_a ::JWT::JWK::RSA
+      expect(subject).to be_a JWT::JWK::RSA
       expect(subject.export).to eq(exported_key)
     end
 
     context 'parsed from JSON' do
       let(:params)  { exported_key }
       it 'creates a ::JWT::JWK::RSA instance from JSON parsed JWK' do
-        expect(subject).to be_a ::JWT::JWK::RSA
+        expect(subject).to be_a JWT::JWK::RSA
         expect(subject.export).to eq(exported_key)
       end
     end
@@ -53,17 +53,17 @@ RSpec.describe JWT::JWK do
 
     context 'when RSA key is given' do
       let(:keypair) { rsa_key }
-      it { is_expected.to be_a ::JWT::JWK::RSA }
+      it { is_expected.to be_a JWT::JWK::RSA }
     end
 
     context 'when secret key is given' do
       let(:keypair) { 'secret-key' }
-      it { is_expected.to be_a ::JWT::JWK::HMAC }
+      it { is_expected.to be_a JWT::JWK::HMAC }
     end
 
     context 'when EC key is given' do
       let(:keypair) { ec_key }
-      it { is_expected.to be_a ::JWT::JWK::EC }
+      it { is_expected.to be_a JWT::JWK::EC }
     end
 
     context 'when kid is given' do

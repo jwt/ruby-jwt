@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe ::JWT::Verify do
+RSpec.describe JWT::Verify do
   let(:base_payload) { { 'user_id' => 'some@user.tld' } }
   let(:string_payload) { 'beautyexperts_nbf_iat' }
   let(:options) { { leeway: 0 } }

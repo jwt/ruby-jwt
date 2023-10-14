@@ -29,7 +29,7 @@ RSpec.describe 'README.md code test' do
     end
 
     it 'decodes with HMAC algorithm without secret key' do
-      pending 'Different behaviour on OpenSSL 3.0 (https://github.com/openssl/openssl/issues/13089)' if ::JWT.openssl_3_hmac_empty_key_regression?
+      pending 'Different behaviour on OpenSSL 3.0 (https://github.com/openssl/openssl/issues/13089)' if JWT.openssl_3_hmac_empty_key_regression?
       token = JWT.encode payload, nil, 'HS256'
       decoded_token = JWT.decode token, nil, false
 
@@ -80,7 +80,7 @@ RSpec.describe 'README.md code test' do
       end
     end
 
-    if ::Gem::Version.new(OpenSSL::VERSION) >= ::Gem::Version.new('2.1')
+    if Gem::Version.new(OpenSSL::VERSION) >= Gem::Version.new('2.1')
       it 'RSASSA-PSS' do
         rsa_private = OpenSSL::PKey::RSA.generate 2048
         rsa_public = rsa_private.public_key
@@ -414,7 +414,7 @@ RSpec.describe 'README.md code test' do
     end
 
     it 'JWK with thumbprint as kid via type' do
-      JWT.configuration.jwk.kid_generator = ::JWT::JWK::Thumbprint
+      JWT.configuration.jwk.kid_generator = JWT::JWK::Thumbprint
 
       jwk = JWT::JWK.new(OpenSSL::PKey::RSA.new(2048))
 
@@ -424,7 +424,7 @@ RSpec.describe 'README.md code test' do
     end
 
     it 'JWK with thumbprint given in the initializer (legacy)' do
-      jwk = JWT::JWK.new(OpenSSL::PKey::RSA.new(2048), kid_generator: ::JWT::JWK::Thumbprint)
+      jwk = JWT::JWK.new(OpenSSL::PKey::RSA.new(2048), kid_generator: JWT::JWK::Thumbprint)
 
       jwk_hash = jwk.export
 
@@ -432,7 +432,7 @@ RSpec.describe 'README.md code test' do
     end
 
     it 'JWK with thumbprint given in the initializer' do
-      jwk = JWT::JWK.new(OpenSSL::PKey::RSA.new(2048), nil, kid_generator: ::JWT::JWK::Thumbprint)
+      jwk = JWT::JWK.new(OpenSSL::PKey::RSA.new(2048), nil, kid_generator: JWT::JWK::Thumbprint)
 
       jwk_hash = jwk.export
 
@@ -460,8 +460,8 @@ RSpec.describe 'README.md code test' do
         end
       end
 
-      token = ::JWT.encode({ 'pay' => 'load' }, 'secret', custom_hs512_alg)
-      _payload, _header = ::JWT.decode(token, 'secret', true, algorithm: custom_hs512_alg)
+      token = JWT.encode({ 'pay' => 'load' }, 'secret', custom_hs512_alg)
+      _payload, _header = JWT.decode(token, 'secret', true, algorithm: custom_hs512_alg)
     end
   end
 end

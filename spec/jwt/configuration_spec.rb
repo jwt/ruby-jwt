@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe ::JWT do
+RSpec.describe JWT do
   describe 'JWT.configure' do
     it 'yields the configuration' do
       expect { |b| described_class.configure(&b) }.to yield_with_args(described_class.configuration)

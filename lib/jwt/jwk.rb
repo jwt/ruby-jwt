@@ -52,4 +52,4 @@ require_relative 'jwk/key_base'
 require_relative 'jwk/ec'
 require_relative 'jwk/rsa'
 require_relative 'jwk/hmac'
-require_relative 'jwk/okp_rbnacl' if ::JWT.rbnacl?
+require_relative 'jwk/okp_rbnacl' if JWT.rbnacl?
