@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module JWT
-  module Algos
+  module JWA
     module Hmac
       module_function
 
@@ -44,6 +44,7 @@ module JWT
             OpenSSL.fixed_length_secure_compare(a, b)
           end
         else
+          # :nocov:
           def fixed_length_secure_compare(a, b)
             raise ArgumentError, "string length mismatch." unless a.bytesize == b.bytesize
 
@@ -53,6 +54,7 @@ module JWT
             b.each_byte { |byte| res |= byte ^ l.shift }
             res == 0
           end
+          # :nocov:
         end
         module_function :fixed_length_secure_compare
 

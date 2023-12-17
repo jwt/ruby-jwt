@@ -92,13 +92,7 @@ module JWT
     end
 
     def resolve_allowed_algorithms
-      algs = given_algorithms.map do |alg|
-        if Algos.implementation?(alg)
-          alg
-        else
-          Algos.create(alg)
-        end
-      end
+      algs = given_algorithms.map { |alg| JWA.create(alg) }
 
       sort_by_alg_header(algs)
     end
