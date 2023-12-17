@@ -8,6 +8,8 @@
 
 - Updated rubocop to 1.56 [#573](https://github.com/jwt/ruby-jwt/pull/573) - [@anakinj](https://github.com/anakinj).
 - Run CI on Ruby 3.3 [#577](https://github.com/jwt/ruby-jwt/pull/577) - [@anakinj](https://github.com/anakinj).
+- Deprecation warning added for the HMAC algorithm HS512256 (HMAC-SHA-512 truncated to 256-bits) [#575](https://github.com/jwt/ruby-jwt/pull/575) ([@anakinj](https://github.com/anakinj)).
+- Stop using RbNaCl for standard HMAC algorithms [#575](https://github.com/jwt/ruby-jwt/pull/575) ([@anakinj](https://github.com/anakinj)).
 - Your contribution here
 
 **Fixes and enhancements:**
@@ -19,6 +21,7 @@
 - Repair EC x/y coordinates when importing JWK [#585](https://github.com/jwt/ruby-jwt/pull/585) - [@julik](https://github.com/julik).
 - Explicit dependency to the base64 gem [#582](https://github.com/jwt/ruby-jwt/pull/582) - [@anakinj](https://github.com/anakinj).
 - Deprecation warning for decoding content not compliant with RFC 4648 [#582](https://github.com/jwt/ruby-jwt/pull/582) - [@anakinj](https://github.com/anakinj).
+- Algorithms moved under the `::JWT::JWA` module ([@anakinj](https://github.com/anakinj)).
 - Your contribution here
 
 ## [v2.7.1](https://github.com/jwt/ruby-jwt/tree/v2.8.0) (2023-06-09)

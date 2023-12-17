@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require_relative 'algos'
+require_relative 'jwa'
 require_relative 'claims_validator'
 
 # JWT::Encode module
@@ -12,7 +12,7 @@ module JWT
     def initialize(options)
       @payload          = options[:payload]
       @key              = options[:key]
-      @algorithm        = resolve_algorithm(options[:algorithm])
+      @algorithm        = JWA.create(options[:algorithm])
       @headers          = options[:headers].transform_keys(&:to_s)
       @headers[ALG_KEY] = @algorithm.alg
     end
@@ -23,12 +23,6 @@ module JWT
     end
 
     private
-
-    def resolve_algorithm(algorithm)
-      return algorithm if Algos.implementation?(algorithm)
-
-      Algos.create(algorithm)
-    end
 
     def encoded_header
       @encoded_header ||= encode_header

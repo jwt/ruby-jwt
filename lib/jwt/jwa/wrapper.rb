@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 module JWT
-  module Algos
-    class AlgoWrapper
+  module JWA
+    class Wrapper
       attr_reader :alg, :cls
 
       def initialize(alg, cls)

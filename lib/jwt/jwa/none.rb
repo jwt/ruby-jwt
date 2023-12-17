@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module JWT
-  module Algos
+  module JWA
     module None
       module_function
 
