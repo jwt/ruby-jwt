@@ -561,7 +561,7 @@ crls = crl_uris.map do |uri|
 end
 
 begin
-  JWT.decode(token, nil, true, { x5c: { root_certificates: root_certificates, crls: crls })
+  JWT.decode(token, nil, true, { x5c: { root_certificates: root_certificates, crls: crls } })
 rescue JWT::DecodeError
   # Handle error, e.g. x5c header certificate revoked or expired
 end
