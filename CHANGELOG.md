@@ -7,6 +7,7 @@
 **Features:**
 
 - Updated rubocop to 1.56 [#573](https://github.com/jwt/ruby-jwt/pull/573) - [@anakinj](https://github.com/anakinj).
+- Run CI on Ruby 3.3 [#577](https://github.com/jwt/ruby-jwt/pull/577) - [@anakinj](https://github.com/anakinj).
 - Your contribution here
 
 **Fixes and enhancements:**
