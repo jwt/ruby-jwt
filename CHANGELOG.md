@@ -16,6 +16,8 @@
 - Fix key base equality and spaceship operators [#569](https://github.com/jwt/ruby-jwt/pull/569) - [@magneland](https://github.com/magneland).
 - Remove explicit base64 require from x5c_key_finder [#580](https://github.com/jwt/ruby-jwt/pull/580) - [@anakinj](https://github.com/anakinj).
 - Performance improvements and cleanup of tests [#581](https://github.com/jwt/ruby-jwt/pull/581) - [@anakinj](https://github.com/anakinj).
+- Drop dependency to base64 gem [#578](https://github.com/jwt/ruby-jwt/pull/578) - [@anakinj](https://github.com/anakinj).
+- Deprecation warning for decoding content not compliant with RFC 4648 [#578](https://github.com/jwt/ruby-jwt/pull/578) - [@anakinj](https://github.com/anakinj).
 - Your contribution here
 
 ## [v2.7.1](https://github.com/jwt/ruby-jwt/tree/v2.8.0) (2023-06-09)

@@ -31,7 +31,7 @@ RSpec.describe JWT::X5cKeyFinder do
 
   let(:crl) { issue_crl([], issuer: root_certificate, issuer_key: root_key) }
 
-  let(:x5c_header) { [Base64.strict_encode64(leaf_certificate.to_der)] }
+  let(:x5c_header) { [JWT::Base64.encode64(leaf_certificate.to_der)] }
   subject(:keyfinder) { described_class.new([root_certificate], [crl]).from(x5c_header) }
 
   it 'returns the public key from a certificate that is signed by trusted roots and not revoked' do
