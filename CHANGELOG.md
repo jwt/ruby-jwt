@@ -17,6 +17,8 @@
 - Remove explicit base64 require from x5c_key_finder [#580](https://github.com/jwt/ruby-jwt/pull/580) - [@anakinj](https://github.com/anakinj).
 - Performance improvements and cleanup of tests [#581](https://github.com/jwt/ruby-jwt/pull/581) - [@anakinj](https://github.com/anakinj).
 - Repair EC x/y coordinates when importing JWK [#585](https://github.com/jwt/ruby-jwt/pull/585) - [@julik](https://github.com/julik).
+- Explicit dependency to the base64 gem [#582](https://github.com/jwt/ruby-jwt/pull/582) - [@anakinj](https://github.com/anakinj).
+- Deprecation warning for decoding content not compliant with RFC 4648 [#582](https://github.com/jwt/ruby-jwt/pull/582) - [@anakinj](https://github.com/anakinj).
 - Your contribution here
 
 ## [v2.7.1](https://github.com/jwt/ruby-jwt/tree/v2.8.0) (2023-06-09)
