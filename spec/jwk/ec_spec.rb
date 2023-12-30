@@ -15,7 +15,7 @@ RSpec.describe JWT::JWK::EC do
     end
 
     context 'when a keypair with only public key is given' do
-      let(:keypair) { OpenSSL::PKey.read(File.read(File.join(CERT_PATH, 'ec256-public.pem'))) }
+      let(:keypair) { test_pkey('ec256-public.pem') }
       it 'creates an instance of the class' do
         expect(subject).to be_a described_class
         expect(subject.private?).to eq false
@@ -49,7 +49,7 @@ RSpec.describe JWT::JWK::EC do
     end
 
     context 'when keypair with public key is exported' do
-      let(:keypair) { OpenSSL::PKey.read(File.read(File.join(CERT_PATH, 'ec256-public.pem'))) }
+      let(:keypair) { test_pkey('ec256-public.pem') }
       it 'returns a hash with the public parts of the key' do
         expect(subject).to be_a Hash
         expect(subject).to include(:kty, :kid, :x, :y)
@@ -127,7 +127,7 @@ RSpec.describe JWT::JWK::EC do
 
         context 'when keypair is public' do
           context 'returns a public key' do
-            let(:keypair) { OpenSSL::PKey.read(File.read(File.join(CERT_PATH, 'ec256-public.pem'))) }
+            let(:keypair) { test_pkey('ec256-public.pem') }
             let(:params) { exported_key }
 
             it 'returns a hash with the public parts of the key' do
