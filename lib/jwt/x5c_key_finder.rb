@@ -1,8 +1,5 @@
 # frozen_string_literal: true
 
-require 'base64'
-require 'jwt/error'
-
 module JWT
   # If the x5c header certificate chain can be validated by trusted root
   # certificates, and none of the certificates are revoked, returns the public

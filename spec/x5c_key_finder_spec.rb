@@ -1,8 +1,5 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
-require 'jwt/x5c_key_finder'
-
 describe JWT::X5cKeyFinder do
   let(:root_key) { OpenSSL::PKey.read(File.read(File.join(CERT_PATH, 'rsa-2048-private.pem'))) }
   let(:root_dn) { OpenSSL::X509::Name.parse('/DC=org/DC=fake-ca/CN=Fake CA') }
