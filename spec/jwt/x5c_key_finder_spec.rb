@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe JWT::X5cKeyFinder do
+RSpec.describe JWT::X5cKeyFinder do
   let(:root_key) { test_pkey('rsa-2048-private.pem') }
   let(:root_dn) { OpenSSL::X509::Name.parse('/DC=org/DC=fake-ca/CN=Fake CA') }
   let(:root_certificate) { generate_root_cert(root_dn, root_key) }

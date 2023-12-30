@@ -2,7 +2,7 @@
 
 require 'securerandom'
 
-describe 'JWT::JWK::OKPRbNaCl' do
+RSpec.describe 'JWT::JWK::OKPRbNaCl' do
   let(:described_class) { JWT::JWK::OKPRbNaCl }
   let(:private_key) { RbNaCl::Signatures::Ed25519::SigningKey.new(SecureRandom.hex) }
   let(:public_key)  { private_key.verify_key }
