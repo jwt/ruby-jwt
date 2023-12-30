@@ -8,20 +8,20 @@ RSpec.describe JWT do
       :empty_token => 'e30K.e30K.e30K',
       :empty_token_2_segment => 'e30K.e30K.',
       :secret => 'My$ecretK3y',
-      :rsa_private => OpenSSL::PKey.read(File.read(File.join(CERT_PATH, 'rsa-2048-private.pem'))),
-      :rsa_public => OpenSSL::PKey.read(File.read(File.join(CERT_PATH, 'rsa-2048-public.pem'))),
-      :wrong_rsa_private => OpenSSL::PKey.read(File.read(File.join(CERT_PATH, 'rsa-2048-wrong-public.pem'))),
-      :wrong_rsa_public => OpenSSL::PKey.read(File.read(File.join(CERT_PATH, 'rsa-2048-wrong-public.pem'))),
-      'ES256_private' => OpenSSL::PKey.read(File.read(File.join(CERT_PATH, 'ec256-private.pem'))),
-      'ES256_public' => OpenSSL::PKey.read(File.read(File.join(CERT_PATH, 'ec256-public.pem'))),
-      'ES256_private_v2' => OpenSSL::PKey.read(File.read(File.join(CERT_PATH, 'ec256-private-v2.pem'))),
-      'ES256_public_v2' => OpenSSL::PKey.read(File.read(File.join(CERT_PATH, 'ec256-public-v2.pem'))),
-      'ES384_private' => OpenSSL::PKey.read(File.read(File.join(CERT_PATH, 'ec384-private.pem'))),
-      'ES384_public' => OpenSSL::PKey.read(File.read(File.join(CERT_PATH, 'ec384-public.pem'))),
-      'ES512_private' => OpenSSL::PKey.read(File.read(File.join(CERT_PATH, 'ec512-private.pem'))),
-      'ES512_public' => OpenSSL::PKey.read(File.read(File.join(CERT_PATH, 'ec512-public.pem'))),
-      'ES256K_private' => OpenSSL::PKey.read(File.read(File.join(CERT_PATH, 'ec256k-private.pem'))),
-      'ES256K_public' => OpenSSL::PKey.read(File.read(File.join(CERT_PATH, 'ec256k-public.pem'))),
+      :rsa_private => test_pkey('rsa-2048-private.pem'),
+      :rsa_public => test_pkey('rsa-2048-public.pem'),
+      :wrong_rsa_private => test_pkey('rsa-2048-wrong-public.pem'),
+      :wrong_rsa_public => test_pkey('rsa-2048-wrong-public.pem'),
+      'ES256_private' => test_pkey('ec256-private.pem'),
+      'ES256_public' => test_pkey('ec256-public.pem'),
+      'ES256_private_v2' => test_pkey('ec256-private-v2.pem'),
+      'ES256_public_v2' => test_pkey('ec256-public-v2.pem'),
+      'ES384_private' => test_pkey('ec384-private.pem'),
+      'ES384_public' => test_pkey('ec384-public.pem'),
+      'ES512_private' => test_pkey('ec512-private.pem'),
+      'ES512_public' => test_pkey('ec512-public.pem'),
+      'ES256K_private' => test_pkey('ec256k-private.pem'),
+      'ES256K_public' => test_pkey('ec256k-public.pem'),
       'NONE' => 'eyJhbGciOiJub25lIn0.eyJ1c2VyX2lkIjoic29tZUB1c2VyLnRsZCJ9.',
       'HS256' => 'eyJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoic29tZUB1c2VyLnRsZCJ9.kWOVtIOpWcG7JnyJG0qOkTDbOy636XrrQhMm_8JrRQ8',
       'HS512256' => 'eyJhbGciOiJIUzUxMjI1NiJ9.eyJ1c2VyX2lkIjoic29tZUB1c2VyLnRsZCJ9.Ds_4ibvf7z4QOBoKntEjDfthy3WJ-3rKMspTEcHE2bA',
@@ -179,7 +179,7 @@ RSpec.describe JWT do
       end
 
       it 'wrong key should raise JWT::DecodeError' do
-        key = OpenSSL::PKey.read File.read(File.join(CERT_PATH, 'rsa-2048-wrong-public.pem'))
+        key = test_pkey('rsa-2048-wrong-public.pem')
 
         expect do
           JWT.decode data[alg], key, true, algorithm: alg
@@ -187,7 +187,7 @@ RSpec.describe JWT do
       end
 
       it 'wrong key and verify = false should not raise JWT::DecodeError' do
-        key = OpenSSL::PKey.read File.read(File.join(CERT_PATH, 'rsa-2048-wrong-public.pem'))
+        key = test_pkey('rsa-2048-wrong-public.pem')
 
         expect do
           JWT.decode data[alg], key, false
@@ -240,7 +240,7 @@ RSpec.describe JWT do
         data[alg] = JWT.encode(payload, data["#{alg}_private"], alg)
       end
 
-      let(:wrong_key) { OpenSSL::PKey.read(File.read(File.join(CERT_PATH, 'ec256-wrong-public.pem'))) }
+      let(:wrong_key) { test_pkey('ec256-wrong-public.pem') }
 
       it 'should generate a valid token' do
         jwt_payload, header = JWT.decode data[alg], data["#{alg}_public"], true, algorithm: alg
