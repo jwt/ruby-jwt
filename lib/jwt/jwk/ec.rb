@@ -227,10 +227,6 @@ module JWT
         end
       end
 
-      def decode_open_ssl_bn(jwk_data)
-        OpenSSL::BN.new(::JWT::Base64.url_decode(jwk_data), BINARY)
-      end
-
       class << self
         def import(jwk_data)
           new(jwk_data)
