@@ -1,5 +1,9 @@
 # Changelog
 
+**Fixes and enhancements:**
+
+- Repair EC x/y coordinates when importing JWK [#585](https://github.com/jwt/ruby-jwt/pull/585) - [@julik](https://github.com/julik).
+
 ## [v2.7.2](https://github.com/jwt/ruby-jwt/tree/v2.7.2) (NEXT)
 
 [Full Changelog](https://github.com/jwt/ruby-jwt/compare/v2.7.1...v2.7.2)
