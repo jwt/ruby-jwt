@@ -138,6 +138,28 @@ RSpec.describe JWT::JWK::EC do
           end
         end
       end
+
+      context 'with missing 0-byte at the start of EC coordinates' do
+        let(:example_keysets) do
+          [
+            "{\"kty\":\"EC\",\"crv\":\"P-256\",\"x\":\"0Nv5IKAlkvXuAKmOmFgmrwXKR7qGePOzu_7RXg5msw\",\"y\":\"FqnPSNutcjfvXNlufwb7nLJuUEnBkbMdZ3P79nY9c3k\"}",
+            "{\"kty\":\"EC\",\"crv\":\"P-256\",\"x\":\"xGjPg-7meZamM_yfkGeBUB2eJ5c82Y8vQdXwi5cVGw\",\"y\":\"9FwKAuJacVyEy71yoVn1u1ETsQoiwF7QfkfXURGxg14\"}",
+            "{\"kty\":\"EC\",\"crv\":\"P-256\",\"x\":\"yTvy0bwt5s29mIg1DMq-IjZH4pDgZIN9keEEaSuWZhk\",\"y\":\"a0nrmd8qz8jpZDgpY82Rgv3vZ5xiJuiAoMIuRlGnaw\"}",
+            "{\"kty\":\"EC\",\"crv\":\"P-256\",\"x\":\"yJen7AW4lLUTMH4luDj0wlMNSGCuOBB5R-ZoxlAU_g\",\"y\":\"aMbA-M6ORHePSatiPVz_Pzu7z2XRnKMzK-HIscpfud8\"}",
+            "{\"kty\":\"EC\",\"crv\":\"P-256\",\"x\":\"p_D00Z1ydC7mBIpSKPUUrzVzY9Fr5NMhhGfnf4P9guw\",\"y\":\"lCqM3B_s04uhm7_91oycBvoWzuQWJCbMoZc46uqHXA\"}",
+            "{\"kty\":\"EC\",\"crv\":\"P-256\",\"x\":\"hKS-vxV1bvfZ2xOuHv6Qt3lmHIiArTnhWac31kXw3w\",\"y\":\"f_UWjrTpmq_oTdfss7YJ-9dEiYw_JC90kwAE-y0Yu-w\"}",
+            "{\"kty\":\"EC\",\"crv\":\"P-256\",\"x\":\"3W22hN16OJN1XPpUQuCxtwoBRlf-wGyBNIihQiTmSdI\",\"y\":\"eUaveaPQ4CpyfY7sfCqEF1DCOoxHdMpPHW15BmUF0w\"}",
+            "{\"kty\":\"EC\",\"crv\":\"P-256\",\"x\":\"oq_00cGL3SxUZTA-JvcXALhfQya7elFuC7jcJScN7Bs\",\"y\":\"1nNPIinv_gQiwStfx7vqs7Vt_MSyzoQDy9sCnZlFfg\"}",
+            "{\"crv\":\"P-521\",\"kty\":\"EC\",\"x\":\"AMNQr/q+YGv4GfkEjrXH2N0+hnGes4cCqahJlV39m3aJpqSK+uiAvkRE5SDm2bZBc3YHGzhDzfMTUpnvXwjugUQP\",\"y\":\"fIwouWsnp44Fjh2gBmO8ZafnpXZwLOCoaT5itu/Q4Z6j3duRfqmDsqyxZueDA3Gaac2LkbWGplT7mg4j7vCuGsw=\"}"
+          ]
+        end
+
+        it 'prepends a 0-byte so that the keys parse correctly' do
+          example_keysets.each do |keyset_json|
+            keypair = described_class.import(JSON.parse(keyset_json))
+          end
+        end
+      end
     end
   end
 end
