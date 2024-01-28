@@ -206,6 +206,20 @@ module JWT
 
       def decode_octets(base64_encoded_coordinate)
         bytes = ::JWT::Base64.url_decode(base64_encoded_coordinate)
+        # Some base64 encoders on some platform omit a single 0-byte at
+        # the start of either Y or X coordinate of the elliptic curve point.
+        # This leads to an encoding error when data is passed to OpenSSL BN.
+        # It is know to have happend to exported JWKs on a Java application and
+        # on a Flutter/Dart application (both iOS and Android). All that is
+        # needed to fix the problem is adding a leading 0-byte. We know the
+        # required byte is 0 because with any other byte the point is no longer
+        # on the curve - and OpenSSL will actually communicate this via another
+        # exception. The indication of a stripped byte will be the fact that the
+        # coordinates - once decoded into bytes - should always be an even
+        # bytesize. For example, with a P-521 curve, both x and y must be 66 bytes.
+        # With a P-256 curve, both x and y must be 32 and so on. The simplest way
+        # to check for this truncation is thus to check whether the number of bytes
+        # is odd, and restore the leading 0-byte if it is.
         if bytes.bytesize.odd?
           "\0".b + bytes
         else
