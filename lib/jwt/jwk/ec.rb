@@ -143,7 +143,6 @@ module JWT
       if ::JWT.openssl_3?
         def create_ec_key(jwk_crv, jwk_x, jwk_y, jwk_d) # rubocop:disable Metrics/MethodLength
           curve = EC.to_openssl_curve(jwk_crv)
-
           x_octets = decode_octets(jwk_x)
           y_octets = decode_octets(jwk_y)
 
@@ -205,8 +204,13 @@ module JWT
         end
       end
 
-      def decode_octets(jwk_data)
-        ::JWT::Base64.url_decode(jwk_data)
+      def decode_octets(base64_encoded_coordinate)
+        bytes = ::JWT::Base64.url_decode(base64_encoded_coordinate)
+        if bytes.bytesize.odd?
+          "\0".b + bytes
+        else
+          bytes
+        end
       end
 
       def decode_open_ssl_bn(jwk_data)

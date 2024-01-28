@@ -154,9 +154,10 @@ RSpec.describe JWT::JWK::EC do
           ]
         end
 
-        it 'prepends a 0-byte so that the keys parse correctly' do
+        it 'prepends a 0-byte to either X or Y coordinate so that the keys decode correctly' do
           example_keysets.each do |keyset_json|
-            keypair = described_class.import(JSON.parse(keyset_json))
+            jwk = described_class.import(JSON.parse(keyset_json))
+            expect(jwk).to be_kind_of(JWT::JWK::EC)
           end
         end
       end
