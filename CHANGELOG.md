@@ -1,9 +1,5 @@
 # Changelog
 
-**Fixes and enhancements:**
-
-- Repair EC x/y coordinates when importing JWK [#585](https://github.com/jwt/ruby-jwt/pull/585) - [@julik](https://github.com/julik).
-
 ## [v2.7.2](https://github.com/jwt/ruby-jwt/tree/v2.7.2) (NEXT)
 
 [Full Changelog](https://github.com/jwt/ruby-jwt/compare/v2.7.1...v2.7.2)
@@ -20,6 +16,7 @@
 - Fix key base equality and spaceship operators [#569](https://github.com/jwt/ruby-jwt/pull/569) - [@magneland](https://github.com/magneland).
 - Remove explicit base64 require from x5c_key_finder [#580](https://github.com/jwt/ruby-jwt/pull/580) - [@anakinj](https://github.com/anakinj).
 - Performance improvements and cleanup of tests [#581](https://github.com/jwt/ruby-jwt/pull/581) - [@anakinj](https://github.com/anakinj).
+- Repair EC x/y coordinates when importing JWK [#585](https://github.com/jwt/ruby-jwt/pull/585) - [@julik](https://github.com/julik).
 - Your contribution here
 
 ## [v2.7.1](https://github.com/jwt/ruby-jwt/tree/v2.8.0) (2023-06-09)
