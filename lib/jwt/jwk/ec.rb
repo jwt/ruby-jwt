@@ -11,6 +11,7 @@ module JWT
       EC_PUBLIC_KEY_ELEMENTS = %i[kty crv x y].freeze
       EC_PRIVATE_KEY_ELEMENTS = %i[d].freeze
       EC_KEY_ELEMENTS = (EC_PRIVATE_KEY_ELEMENTS + EC_PUBLIC_KEY_ELEMENTS).freeze
+      ZERO_BYTE = "\0".b.freeze
 
       def initialize(key, params = nil, options = {})
         params ||= {}
@@ -221,7 +222,7 @@ module JWT
         # to check for this truncation is thus to check whether the number of bytes
         # is odd, and restore the leading 0-byte if it is.
         if bytes.bytesize.odd?
-          "\0".b + bytes
+          ZERO_BYTE + bytes
         else
           bytes
         end
