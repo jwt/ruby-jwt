@@ -1,28 +1,26 @@
 # Changelog
 
-## [v2.7.2](https://github.com/jwt/ruby-jwt/tree/v2.7.2) (NEXT)
+## [v2.8.0](https://github.com/jwt/ruby-jwt/tree/v2.8.0) (2024-02-17)
 
-[Full Changelog](https://github.com/jwt/ruby-jwt/compare/v2.7.1...v2.7.2)
+[Full Changelog](https://github.com/jwt/ruby-jwt/compare/v2.7.1...v2.8.0)
 
 **Features:**
 
-- Updated rubocop to 1.56 [#573](https://github.com/jwt/ruby-jwt/pull/573) - [@anakinj](https://github.com/anakinj).
-- Run CI on Ruby 3.3 [#577](https://github.com/jwt/ruby-jwt/pull/577) - [@anakinj](https://github.com/anakinj).
-- Deprecation warning added for the HMAC algorithm HS512256 (HMAC-SHA-512 truncated to 256-bits) [#575](https://github.com/jwt/ruby-jwt/pull/575) ([@anakinj](https://github.com/anakinj)).
-- Stop using RbNaCl for standard HMAC algorithms [#575](https://github.com/jwt/ruby-jwt/pull/575) ([@anakinj](https://github.com/anakinj)).
-- Your contribution here
+- Updated rubocop to 1.56 [#573](https://github.com/jwt/ruby-jwt/pull/573) ([@anakinj](https://github.com/anakinj))
+- Run CI on Ruby 3.3 [#577](https://github.com/jwt/ruby-jwt/pull/577) ([@anakinj](https://github.com/anakinj))
+- Deprecation warning added for the HMAC algorithm HS512256 (HMAC-SHA-512 truncated to 256-bits) [#575](https://github.com/jwt/ruby-jwt/pull/575) ([@anakinj](https://github.com/anakinj))
+- Stop using RbNaCl for standard HMAC algorithms [#575](https://github.com/jwt/ruby-jwt/pull/575) ([@anakinj](https://github.com/anakinj))
 
 **Fixes and enhancements:**
 
-- Fix signature has expired error if payload is a string [#555](https://github.com/jwt/ruby-jwt/pull/555) - [@GobinathAL](https://github.com/GobinathAL).
-- Fix key base equality and spaceship operators [#569](https://github.com/jwt/ruby-jwt/pull/569) - [@magneland](https://github.com/magneland).
-- Remove explicit base64 require from x5c_key_finder [#580](https://github.com/jwt/ruby-jwt/pull/580) - [@anakinj](https://github.com/anakinj).
-- Performance improvements and cleanup of tests [#581](https://github.com/jwt/ruby-jwt/pull/581) - [@anakinj](https://github.com/anakinj).
-- Repair EC x/y coordinates when importing JWK [#585](https://github.com/jwt/ruby-jwt/pull/585) - [@julik](https://github.com/julik).
-- Explicit dependency to the base64 gem [#582](https://github.com/jwt/ruby-jwt/pull/582) - [@anakinj](https://github.com/anakinj).
-- Deprecation warning for decoding content not compliant with RFC 4648 [#582](https://github.com/jwt/ruby-jwt/pull/582) - [@anakinj](https://github.com/anakinj).
-- Algorithms moved under the `::JWT::JWA` module ([@anakinj](https://github.com/anakinj)).
-- Your contribution here
+- Fix signature has expired error if payload is a string [#555](https://github.com/jwt/ruby-jwt/pull/555) ([@GobinathAL](https://github.com/GobinathAL))
+- Fix key base equality and spaceship operators [#569](https://github.com/jwt/ruby-jwt/pull/569) ([@magneland](https://github.com/magneland))
+- Remove explicit base64 require from x5c_key_finder [#580](https://github.com/jwt/ruby-jwt/pull/580) ([@anakinj](https://github.com/anakinj))
+- Performance improvements and cleanup of tests [#581](https://github.com/jwt/ruby-jwt/pull/581) ([@anakinj](https://github.com/anakinj))
+- Repair EC x/y coordinates when importing JWK [#585](https://github.com/jwt/ruby-jwt/pull/585) ([@julik](https://github.com/julik))
+- Explicit dependency to the base64 gem [#582](https://github.com/jwt/ruby-jwt/pull/582) ([@anakinj](https://github.com/anakinj))
+- Deprecation warning for decoding content not compliant with RFC 4648 [#582](https://github.com/jwt/ruby-jwt/pull/582) ([@anakinj](https://github.com/anakinj))
+- Algorithms moved under the `::JWT::JWA` module ([@anakinj](https://github.com/anakinj))
 
 ## [v2.7.1](https://github.com/jwt/ruby-jwt/tree/v2.8.0) (2023-06-09)
 
@@ -30,8 +28,8 @@
 
 **Fixes and enhancements:**
 
-- Handle invalid algorithm when decoding JWT [#559](https://github.com/jwt/ruby-jwt/pull/559) - [@nataliastanko](https://github.com/nataliastanko)
-- Do not raise error when verifying bad HMAC signature [#563](https://github.com/jwt/ruby-jwt/pull/563) - [@hieuk09](https://github.com/hieuk09)
+- Handle invalid algorithm when decoding JWT [#559](https://github.com/jwt/ruby-jwt/pull/559) ([@nataliastanko](https://github.com/nataliastanko))
+- Do not raise error when verifying bad HMAC signature [#563](https://github.com/jwt/ruby-jwt/pull/563) ([@hieuk09](https://github.com/hieuk09))
 
 ## [v2.7.0](https://github.com/jwt/ruby-jwt/tree/v2.7.0) (2023-02-01)
 
@@ -53,14 +51,14 @@
 
 **Features:**
 
-- Support custom algorithms by passing algorithm objects[#512](https://github.com/jwt/ruby-jwt/pull/512) ([@anakinj](https://github.com/anakinj)).
-- Support descriptive (not key related) JWK parameters[#520](https://github.com/jwt/ruby-jwt/pull/520) ([@bellebaum](https://github.com/bellebaum)).
-- Support for JSON Web Key Sets[#525](https://github.com/jwt/ruby-jwt/pull/525) ([@bellebaum](https://github.com/bellebaum)).
-- Support HMAC keys over 32 chars when using RbNaCl[#521](https://github.com/jwt/ruby-jwt/pull/521) ([@anakinj](https://github.com/anakinj)).
+- Support custom algorithms by passing algorithm objects [#512](https://github.com/jwt/ruby-jwt/pull/512) ([@anakinj](https://github.com/anakinj))
+- Support descriptive (not key related) JWK parameters [#520](https://github.com/jwt/ruby-jwt/pull/520) ([@bellebaum](https://github.com/bellebaum))
+- Support for JSON Web Key Sets [#525](https://github.com/jwt/ruby-jwt/pull/525) ([@bellebaum](https://github.com/bellebaum))
+- Support HMAC keys over 32 chars when using RbNaCl [#521](https://github.com/jwt/ruby-jwt/pull/521) ([@anakinj](https://github.com/anakinj))
 
 **Fixes and enhancements:**
 
-- Raise descriptive error on empty hmac_secret and OpenSSL 3.0/openssl gem <3.0.1 [#530](https://github.com/jwt/ruby-jwt/pull/530) ([@jonmchan](https://github.com/jonmchan)).
+- Raise descriptive error on empty hmac_secret and OpenSSL 3.0/openssl gem <3.0.1 [#530](https://github.com/jwt/ruby-jwt/pull/530) ([@jonmchan](https://github.com/jonmchan))
 
 ## [v2.5.0](https://github.com/jwt/ruby-jwt/tree/v2.5.0) (2022-08-25)
 
@@ -68,21 +66,21 @@
 
 **Features:**
 
-- Support JWK thumbprints as key ids [#481](https://github.com/jwt/ruby-jwt/pull/481) ([@anakinj](https://github.com/anakinj)).
-- Support OpenSSL >= 3.0 [#496](https://github.com/jwt/ruby-jwt/pull/496) ([@anakinj](https://github.com/anakinj)).
+- Support JWK thumbprints as key ids [#481](https://github.com/jwt/ruby-jwt/pull/481) ([@anakinj](https://github.com/anakinj))
+- Support OpenSSL >= 3.0 [#496](https://github.com/jwt/ruby-jwt/pull/496) ([@anakinj](https://github.com/anakinj))
 
 **Fixes and enhancements:**
-- Bring back the old Base64 (RFC2045) deocode mechanisms [#488](https://github.com/jwt/ruby-jwt/pull/488) ([@anakinj](https://github.com/anakinj)).
-- Rescue RbNaCl exception for EdDSA wrong key [#491](https://github.com/jwt/ruby-jwt/pull/491) ([@n-studio](https://github.com/n-studio)).
-- New parameter name for cases when kid is not found using JWK key loader proc [#501](https://github.com/jwt/ruby-jwt/pull/501) ([@anakinj](https://github.com/anakinj)).
-- Fix NoMethodError when a 2 segment token is missing 'alg' header [#502](https://github.com/jwt/ruby-jwt/pull/502) ([@cmrd-senya](https://github.com/cmrd-senya)).
+- Bring back the old Base64 (RFC2045) deocode mechanisms [#488](https://github.com/jwt/ruby-jwt/pull/488) ([@anakinj](https://github.com/anakinj))
+- Rescue RbNaCl exception for EdDSA wrong key [#491](https://github.com/jwt/ruby-jwt/pull/491) ([@n-studio](https://github.com/n-studio))
+- New parameter name for cases when kid is not found using JWK key loader proc [#501](https://github.com/jwt/ruby-jwt/pull/501) ([@anakinj](https://github.com/anakinj))
+- Fix NoMethodError when a 2 segment token is missing 'alg' header [#502](https://github.com/jwt/ruby-jwt/pull/502) ([@cmrd-senya](https://github.com/cmrd-senya))
 
 ## [v2.4.1](https://github.com/jwt/ruby-jwt/tree/v2.4.1) (2022-06-07)
 
 [Full Changelog](https://github.com/jwt/ruby-jwt/compare/v2.4.0...v2.4.1)
 
 **Fixes and enhancements:**
-- Raise JWT::DecodeError on invalid signature [\#484](https://github.com/jwt/ruby-jwt/pull/484) ([@freakyfelt!](https://github.com/freakyfelt!)).
+- Raise JWT::DecodeError on invalid signature [\#484](https://github.com/jwt/ruby-jwt/pull/484) ([@freakyfelt!](https://github.com/freakyfelt!))
 
 ## [v2.4.0](https://github.com/jwt/ruby-jwt/tree/v2.4.0) (2022-06-06)
 
@@ -90,20 +88,20 @@
 
 **Features:**
 
-- Dropped support for Ruby 2.5 and older [#453](https://github.com/jwt/ruby-jwt/pull/453) - [@anakinj](https://github.com/anakinj).
-- Use Ruby built-in url-safe base64 methods [#454](https://github.com/jwt/ruby-jwt/pull/454) - [@bdewater](https://github.com/bdewater).
-- Updated rubocop to 1.23.0 [#457](https://github.com/jwt/ruby-jwt/pull/457) - [@anakinj](https://github.com/anakinj).
-- Add x5c header key finder [#338](https://github.com/jwt/ruby-jwt/pull/338) - [@bdewater](https://github.com/bdewater).
-- Author driven changelog process [#463](https://github.com/jwt/ruby-jwt/pull/463) - [@anakinj](https://github.com/anakinj).
-- Allow regular expressions and procs to verify issuer [\#437](https://github.com/jwt/ruby-jwt/pull/437) ([rewritten](https://github.com/rewritten)).
-- Add Support to be able to verify from multiple keys [\#425](https://github.com/jwt/ruby-jwt/pull/425) ([ritikesh](https://github.com/ritikesh)).
+- Dropped support for Ruby 2.5 and older [#453](https://github.com/jwt/ruby-jwt/pull/453) - ([@anakinj](https://github.com/anakinj))
+- Use Ruby built-in url-safe base64 methods [#454](https://github.com/jwt/ruby-jwt/pull/454) - ([@bdewater](https://github.com/bdewater))
+- Updated rubocop to 1.23.0 [#457](https://github.com/jwt/ruby-jwt/pull/457) - ([@anakinj](https://github.com/anakinj))
+- Add x5c header key finder [#338](https://github.com/jwt/ruby-jwt/pull/338) - ([@bdewater](https://github.com/bdewater))
+- Author driven changelog process [#463](https://github.com/jwt/ruby-jwt/pull/463) - ([@anakinj](https://github.com/anakinj))
+- Allow regular expressions and procs to verify issuer [\#437](https://github.com/jwt/ruby-jwt/pull/437) ([rewritten](https://github.com/rewritten))
+- Add Support to be able to verify from multiple keys [\#425](https://github.com/jwt/ruby-jwt/pull/425) ([ritikesh](https://github.com/ritikesh))
 
 **Fixes and enhancements:**
-- Readme: Typo fix re MissingRequiredClaim [\#451](https://github.com/jwt/ruby-jwt/pull/451) ([antonmorant](https://github.com/antonmorant)).
-- Fix RuboCop TODOs [\#476](https://github.com/jwt/ruby-jwt/pull/476) ([typhoon2099](https://github.com/typhoon2099)).
-- Make specific algorithms in README linkable [\#472](https://github.com/jwt/ruby-jwt/pull/472) ([milieu](https://github.com/milieu)).
-- Update note about supported JWK types [\#475](https://github.com/jwt/ruby-jwt/pull/475) ([dpashkevich](https://github.com/dpashkevich)).
-- Create CODE\_OF\_CONDUCT.md [\#449](https://github.com/jwt/ruby-jwt/pull/449) ([loic5](https://github.com/loic5)).
+- Readme: Typo fix re MissingRequiredClaim [\#451](https://github.com/jwt/ruby-jwt/pull/451) ([antonmorant](https://github.com/antonmorant))
+- Fix RuboCop TODOs [\#476](https://github.com/jwt/ruby-jwt/pull/476) ([typhoon2099](https://github.com/typhoon2099))
+- Make specific algorithms in README linkable [\#472](https://github.com/jwt/ruby-jwt/pull/472) ([milieu](https://github.com/milieu))
+- Update note about supported JWK types [\#475](https://github.com/jwt/ruby-jwt/pull/475) ([dpashkevich](https://github.com/dpashkevich))
+- Create CODE\_OF\_CONDUCT.md [\#449](https://github.com/jwt/ruby-jwt/pull/449) ([loic5](https://github.com/loic5))
 
 ## [v2.3.0](https://github.com/jwt/ruby-jwt/tree/v2.3.0) (2021-10-03)
 
