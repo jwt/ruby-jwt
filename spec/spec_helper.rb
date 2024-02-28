@@ -15,7 +15,12 @@ RSpec.configure do |config|
     c.syntax = :expect
   end
   config.include(SpecSupport::TestKeys)
-  config.before(:example) { JWT.configuration.reset! }
+
+  config.before(:example) do
+    JWT.configuration.reset!
+    JWT.configuration.deprecation_warnings = :warn
+  end
+
   config.run_all_when_everything_filtered = true
   config.filter_run :focus
   config.order = 'random'

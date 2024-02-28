@@ -9,7 +9,7 @@ module JWT
       class << self
         def sign(algorithm, msg, key)
           key ||= ''
-          warn("[DEPRECATION] The use of the algorithm #{algorithm} is deprecated and will be removed in the next major version of ruby-jwt")
+          Deprecations.warning("The use of the algorithm #{algorithm} is deprecated and will be removed in the next major version of ruby-jwt")
           raise JWT::DecodeError, 'HMAC key expected to be a String' unless key.is_a?(String)
 
           if (hmac = resolve_algorithm(algorithm)) && key.bytesize <= hmac.key_bytes
@@ -21,7 +21,7 @@ module JWT
 
         def verify(algorithm, key, signing_input, signature)
           key ||= ''
-          warn("[DEPRECATION] The use of the algorithm #{algorithm} is deprecated and will be removed in the next major version of ruby-jwt")
+          Deprecations.warning("The use of the algorithm #{algorithm} is deprecated and will be removed in the next major version of ruby-jwt")
           raise JWT::DecodeError, 'HMAC key expected to be a String' unless key.is_a?(String)
 
           if (hmac = resolve_algorithm(algorithm)) && key.bytesize <= hmac.key_bytes
