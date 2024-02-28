@@ -774,6 +774,17 @@ RSpec.describe JWT do
     end
   end
 
+  context 'when token ends with a newline char and strict_decoding enabled' do
+    let(:token) { "#{JWT.encode(payload, 'secret', 'HS256')}\n" }
+    before do
+      JWT.configuration.strict_base64_decoding = true
+    end
+
+    it 'raises JWT::DecodeError' do
+      expect { JWT.decode(token, 'secret', true, algorithm: 'HS256') }.to raise_error(JWT::DecodeError, 'Invalid base64 encoding')
+    end
+  end
+
   context 'when multiple algorithms given' do
     let(:token) { JWT.encode(payload, 'secret', 'HS256') }
 

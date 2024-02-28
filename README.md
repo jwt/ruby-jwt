@@ -43,6 +43,23 @@ The JWT spec supports NONE, HMAC, RSASSA, ECDSA and RSASSA-PSS algorithms for cr
 
 See: [ JSON Web Algorithms (JWA) 3.1. "alg" (Algorithm) Header Parameter Values for JWS](https://tools.ietf.org/html/rfc7518#section-3.1)
 
+### Deprecation warnings
+
+Deprecation warnings are logged once (`:once` option) by default to avoid spam in logs. Other options are `:silent` to completely silence warnings and `:warn` to log every time a deprecated path is executed.
+
+```ruby
+  JWT.configuration.deprecation_warnings = :warn # default is :once
+```
+
+### Base64 decoding
+
+In the past the gem has been supporting the Base64 decoding specified in [RFC2045](https://www.rfc-editor.org/rfc/rfc2045) allowing newlines and blanks in the base64 encoded payload. In future versions base64 decoding will be stricter and only comply to [RFC4648](https://www.rfc-editor.org/rfc/rfc4648).
+
+The stricter base64 decoding when processing tokens can be done via the `strict_base64_decoding` configuration accessor.
+```ruby
+  JWT.configuration.strict_base64_decoding = true # default is false
+```
+
 ### **NONE**
 
 * none - unsigned token

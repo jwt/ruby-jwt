@@ -7,7 +7,7 @@ module JWT
       SUPPORTED = MAPPING.keys
       class << self
         def sign(algorithm, msg, key)
-          warn("[DEPRECATION] The use of the algorithm #{algorithm} is deprecated and will be removed in the next major version of ruby-jwt")
+          Deprecations.warning("The use of the algorithm #{algorithm} is deprecated and will be removed in the next major version of ruby-jwt")
           if (hmac = resolve_algorithm(algorithm))
             hmac.auth(key_for_rbnacl(hmac, key).encode('binary'), msg.encode('binary'))
           else
@@ -16,7 +16,7 @@ module JWT
         end
 
         def verify(algorithm, key, signing_input, signature)
-          warn("[DEPRECATION] The use of the algorithm #{algorithm} is deprecated and will be removed in the next major version of ruby-jwt")
+          Deprecations.warning("The use of the algorithm #{algorithm} is deprecated and will be removed in the next major version of ruby-jwt")
           if (hmac = resolve_algorithm(algorithm))
             hmac.verify(key_for_rbnacl(hmac, key).encode('binary'), signature.encode('binary'), signing_input.encode('binary'))
           else

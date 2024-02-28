@@ -6,10 +6,12 @@
 
 **Features:**
 
+- Configurable base64 decode behaviour [#589](https://github.com/jwt/ruby-jwt/pull/589) ([@anakinj](https://github.com/anakinj))
 - Your contribution here
 
 **Fixes and enhancements:**
 
+- Output deprecation warnings once [#589](https://github.com/jwt/ruby-jwt/pull/589) ([@anakinj](https://github.com/anakinj))
 - Your contribution here
 
 ## [v2.8.0](https://github.com/jwt/ruby-jwt/tree/v2.8.0) (2024-02-17)
