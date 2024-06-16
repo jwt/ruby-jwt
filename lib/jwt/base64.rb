@@ -20,7 +20,7 @@ module JWT
         raise Base64DecodeError, 'Invalid base64 encoding' if JWT.configuration.strict_base64_decoding
 
         loose_urlsafe_decode64(str).tap do
-          Deprecations.warning('Invalid base64 input detected, could be because of invalid padding, trailing whitespaces or newline chars. Graceful handling of invalid input will be dropped in the next major version of ruby-jwt')
+          Deprecations.warning('Invalid base64 input detected, could be because of invalid padding, trailing whitespaces or newline chars. Graceful handling of invalid input will be dropped in the next major version of ruby-jwt', only_if_valid: true)
         end
       end
 
