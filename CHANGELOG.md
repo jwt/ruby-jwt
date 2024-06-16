@@ -6,6 +6,7 @@
 
 **Features:**
 
+- Print deprecation warnings only on when token decoding succeeds [#601](https://github.com/jwt/ruby-jwt/pull/601) ([@jeremyevans](https://github.com/jeremyevans))
 - Your contribution here
 
 **Fixes and enhancements:**
