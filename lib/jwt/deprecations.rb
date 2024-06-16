@@ -4,15 +4,34 @@ module JWT
   # Deprecations module to handle deprecation warnings in the gem
   module Deprecations
     class << self
-      def warning(message)
+      def context
+        yield.tap { emit_warnings }
+      end
+
+      def warning(message, only_if_valid: false)
+        method_name = only_if_valid ? :store : :warn
         case JWT.configuration.deprecation_warnings
-        when :warn
-          warn("[DEPRECATION WARNING] #{message}")
         when :once
           return if record_warned(message)
-
-          warn("[DEPRECATION WARNING] #{message}")
+        when :warn
+          # noop
+        else
+          return
         end
+
+        send(method_name, "[DEPRECATION WARNING] #{message}")
+      end
+
+      def store(message)
+        (Thread.current[:jwt_warning_store] ||= []) << message
+      end
+
+      def emit_warnings
+        return if Thread.current[:jwt_warning_store].nil?
+
+        Thread.current[:jwt_warning_store].each { |warning| warn(warning) }
+
+        Thread.current[:jwt_warning_store] = nil
       end
 
       private

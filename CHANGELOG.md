@@ -10,8 +10,9 @@
 
 **Fixes and enhancements:**
 
+- Print deprecation warnings only on when token decoding succeeds [#600](https://github.com/jwt/ruby-jwt/pull/600) ([@anakinj](https://github.com/anakinj))
 - Your contribution here
--
+
 ## [v2.8.1](https://github.com/jwt/ruby-jwt/tree/v2.8.1) (2024-02-29)
 
 [Full Changelog](https://github.com/jwt/ruby-jwt/compare/v2.8.0...v2.8.1)

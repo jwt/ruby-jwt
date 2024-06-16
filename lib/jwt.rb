@@ -27,6 +27,8 @@ module JWT
   end
 
   def decode(jwt, key = nil, verify = true, options = {}, &keyfinder) # rubocop:disable Style/OptionalBooleanParameter
-    Decode.new(jwt, key, verify, configuration.decode.to_h.merge(options), &keyfinder).decode_segments
+    Deprecations.context do
+      Decode.new(jwt, key, verify, configuration.decode.to_h.merge(options), &keyfinder).decode_segments
+    end
   end
 end
