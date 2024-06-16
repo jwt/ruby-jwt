@@ -957,9 +957,23 @@ RSpec.describe JWT do
     end
   end
 
-  context 'when valid token is invalid strict base64' do
+  context 'when valid token is invalid strict base64 and decoded with the correct key' do
     it 'does outputs deprecation warning' do
-      expect { JWT.decode("#{JWT.encode('a', 'b')} ", 'b') }.to output(/DEPRECATION/).to_stderr
+      expect { JWT.decode("#{JWT.encode('payload', 'key')} ", 'key') }.to output(/DEPRECATION/).to_stderr
+    end
+  end
+
+  context 'when valid token is invalid strict base64 and decoded with the incorrect key' do
+    it 'does not output deprecation warning, even when decoded with the correct key' do
+      token = JWT.encode('payload', 'key')
+      expect {
+        begin
+          JWT.decode("#{token} ", 'incorrect')
+        rescue JWT::VerificationError
+          nil
+        end
+        JWT.decode(token, 'key')
+      }.not_to output(/DEPRECATION/).to_stderr
     end
   end
 end
