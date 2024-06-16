@@ -6,6 +6,8 @@ module JWT
     class << self
       def context
         yield.tap { emit_warnings }
+      ensure
+        Thread.current[:jwt_warning_store] = nil
       end
 
       def warning(message, only_if_valid: false)
@@ -30,8 +32,6 @@ module JWT
         return if Thread.current[:jwt_warning_store].nil?
 
         Thread.current[:jwt_warning_store].each { |warning| warn(warning) }
-
-        Thread.current[:jwt_warning_store] = nil
       end
 
       private
