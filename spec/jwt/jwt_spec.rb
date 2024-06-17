@@ -379,7 +379,7 @@ RSpec.describe JWT do
 
       it 'should fail if only invalid keys are given' do
         expect do
-          JWT.decode(token, ['not_the_secret', 'not_the_secret_2'], true, { algorithm: 'HS256' })
+          JWT.decode(token, %w[not_the_secret not_the_secret_2], true, { algorithm: 'HS256' })
         end.to raise_error(JWT::VerificationError, 'Signature verification failed')
       end
     end
@@ -513,11 +513,11 @@ RSpec.describe JWT do
         end.to raise_error JWT::IncorrectAlgorithm
 
         expect do
-          JWT.decode token, data[:secret], true, algorithms: ['HS512', 'HS384']
+          JWT.decode token, data[:secret], true, algorithms: %w[HS512 HS384]
         end.not_to raise_error
 
         expect do
-          JWT.decode token, data[:secret], true, 'algorithms' => ['HS512', 'HS384']
+          JWT.decode token, data[:secret], true, 'algorithms' => %w[HS512 HS384]
         end.not_to raise_error
       end
 
@@ -608,7 +608,7 @@ RSpec.describe JWT do
 
   it 'should not raise InvalidPayload exception if payload is an array' do
     expect do
-      JWT.encode(['my', 'payload'], 'secret')
+      JWT.encode(%w[my payload], 'secret')
     end.not_to raise_error
   end
 
@@ -790,7 +790,7 @@ RSpec.describe JWT do
 
     it 'starts trying with the algorithm referred in the header' do
       expect(JWT::JWA::Rsa).not_to receive(:verify)
-      JWT.decode(token, 'secret', true, algorithm: ['RS512', 'HS256'])
+      JWT.decode(token, 'secret', true, algorithm: %w[RS512 HS256])
     end
   end
 
@@ -805,7 +805,7 @@ RSpec.describe JWT do
     context 'with issue with ES256 keys' do
       it 'tries until the first match' do
         token = JWT.encode(payload, data['ES256_private'], 'ES256', 'iss' => 'ES256')
-        result = JWT.decode(token, nil, true, algorithm: ['ES256', 'HS256']) do |header, _|
+        result = JWT.decode(token, nil, true, algorithm: %w[ES256 HS256]) do |header, _|
           iss_key_mappings[header['iss']]
         end
 
@@ -814,7 +814,7 @@ RSpec.describe JWT do
 
       it 'tries until the first match' do
         token = JWT.encode(payload, data['ES256_private_v2'], 'ES256', 'iss' => 'ES256')
-        result = JWT.decode(token, nil, true, algorithm: ['ES256', 'HS256']) do |header, _|
+        result = JWT.decode(token, nil, true, algorithm: %w[ES256 HS256]) do |header, _|
           iss_key_mappings[header['iss']]
         end
 
@@ -825,7 +825,7 @@ RSpec.describe JWT do
     context 'with issue with HS256 keys' do
       it 'tries until the first match' do
         token = JWT.encode(payload, data['HS256'], 'HS256', 'iss' => 'HS256')
-        result = JWT.decode(token, nil, true, algorithm: ['ES256', 'HS256']) do |header, _|
+        result = JWT.decode(token, nil, true, algorithm: %w[ES256 HS256]) do |header, _|
           iss_key_mappings[header['iss']]
         end
 
@@ -947,13 +947,11 @@ RSpec.describe JWT do
 
   context 'when invalid token is valid loose base64' do
     it 'does not output deprecations warnings' do
-      expect {
-        begin
-          JWT.decode("#{JWT.encode('a', 'b')} 9", 'b')
-        rescue JWT::VerificationError
-          nil
-        end
-      }.not_to output(/DEPRECATION/).to_stderr
+      expect do
+        JWT.decode("#{JWT.encode('a', 'b')} 9", 'b')
+      rescue JWT::VerificationError
+        nil
+      end.not_to output(/DEPRECATION/).to_stderr
     end
   end
 
@@ -966,14 +964,14 @@ RSpec.describe JWT do
   context 'when valid token is invalid strict base64 and decoded with the incorrect key' do
     it 'does not output deprecation warning, even when decoded with the correct key' do
       token = JWT.encode('payload', 'key')
-      expect {
+      expect do
         begin
           JWT.decode("#{token} ", 'incorrect')
         rescue JWT::VerificationError
           nil
         end
         JWT.decode(token, 'key')
-      }.not_to output(/DEPRECATION/).to_stderr
+      end.not_to output(/DEPRECATION/).to_stderr
     end
   end
 end

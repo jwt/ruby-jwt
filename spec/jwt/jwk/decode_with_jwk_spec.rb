@@ -59,7 +59,7 @@ RSpec.describe JWT do
 
     context 'when jwk keys are loaded using a proc/lambda' do
       it 'decodes the token' do
-        payload, _header = described_class.decode(signed_token, nil, true, { algorithms: [algorithm], jwks: lambda { |_opts| public_jwks } })
+        payload, _header = described_class.decode(signed_token, nil, true, { algorithms: [algorithm], jwks: ->(_opts) { public_jwks } })
         expect(payload).to eq(token_payload)
       end
     end

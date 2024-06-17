@@ -308,7 +308,7 @@ RSpec.describe 'README.md code test' do
         # The jwk loader would fetch the set of JWKs from a trusted source,
         # to avoid malicious invalidations some kind of protection needs to be implemented.
         # This example only allows cache invalidations every 5 minutes.
-        jwk_loader = ->(options) do
+        jwk_loader = lambda do |options|
           if options[:kid_not_found] && @cache_last_update < Time.now.to_i - 300
             logger.info("Invalidating JWK cache. #{options[:kid]} not found from previous cache")
             @cached_keys = nil
@@ -352,7 +352,7 @@ RSpec.describe 'README.md code test' do
 
         token = JWT.encode(payload, jwk.signing_key, 'RS512', headers)
 
-        jwks_loader = ->(options) do
+        jwks_loader = lambda do |options|
           # The jwk loader would fetch the set of JWKs from a trusted source.
           # To avoid malicious requests triggering cache invalidations there needs to be
           # some kind of grace time or other logic for determining the validity of the invalidation.

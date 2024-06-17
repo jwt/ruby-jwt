@@ -9,33 +9,17 @@ AllCops:
 Style/Documentation:
   Enabled: false
 
-Style/BlockDelimiters:
-  Exclude:
-    - spec/**/*_spec.rb
-
-Style/GuardClause:
-  Enabled: false
-
 Style/IfUnlessModifier:
-  Enabled: false
-
-Style/Lambda:
-  Enabled: false
-
-Style/RaiseArgs:
   Enabled: false
 
 Metrics/AbcSize:
   Max: 25
 
 Metrics/ClassLength:
-  Max: 121
-
-Metrics/ModuleLength:
-  Max: 100
+  Max: 112
 
 Metrics/MethodLength:
-  Max: 20
+  Max: 18
 
 Metrics/BlockLength:
   Exclude:
@@ -43,25 +27,6 @@ Metrics/BlockLength:
     - '*.gemspec'
 
 Layout/LineLength:
-  Enabled: false
-
-Layout/EndAlignment:
-  EnforcedStyleAlignWith: variable
-
-Layout/EmptyLineBetweenDefs:
-  Enabled: true
-  AllowAdjacentOneLineDefs: true
-
-Style/FormatString:
-  Enabled: false
-
-Layout/MultilineMethodCallIndentation:
-  EnforcedStyle: indented
-
-Layout/MultilineOperationIndentation:
-  EnforcedStyle: indented
-
-Style/WordArray:
   Enabled: false
 
 Gemspec/DevelopmentDependencies:

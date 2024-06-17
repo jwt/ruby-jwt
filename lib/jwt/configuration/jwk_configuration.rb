@@ -18,7 +18,7 @@ module JWT
                                JWT::JWK::Thumbprint
                              else
                                raise ArgumentError, "#{value} is not a valid kid generator type."
-        end
+                             end
       end
 
       attr_accessor :kid_generator

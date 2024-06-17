@@ -34,19 +34,19 @@ module JWT
       return unless (options_aud = @options[:aud])
 
       aud = @payload['aud']
-      raise(JWT::InvalidAudError, "Invalid audience. Expected #{options_aud}, received #{aud || '<none>'}") if ([*aud] & [*options_aud]).empty?
+      raise JWT::InvalidAudError, "Invalid audience. Expected #{options_aud}, received #{aud || '<none>'}" if ([*aud] & [*options_aud]).empty?
     end
 
     def verify_expiration
       return unless contains_key?(@payload, 'exp')
-      raise(JWT::ExpiredSignature, 'Signature has expired') if @payload['exp'].to_i <= (Time.now.to_i - exp_leeway)
+      raise JWT::ExpiredSignature, 'Signature has expired' if @payload['exp'].to_i <= (Time.now.to_i - exp_leeway)
     end
 
     def verify_iat
       return unless contains_key?(@payload, 'iat')
 
       iat = @payload['iat']
-      raise(JWT::InvalidIatError, 'Invalid iat') if !iat.is_a?(Numeric) || iat.to_f > Time.now.to_f
+      raise JWT::InvalidIatError, 'Invalid iat' if !iat.is_a?(Numeric) || iat.to_f > Time.now.to_f
     end
 
     def verify_iss
@@ -60,7 +60,7 @@ module JWT
       when *options_iss
         nil
       else
-        raise(JWT::InvalidIssuerError, "Invalid issuer. Expected #{options_iss}, received #{iss || '<none>'}")
+        raise JWT::InvalidIssuerError, "Invalid issuer. Expected #{options_iss}, received #{iss || '<none>'}"
       end
     end
 
@@ -70,29 +70,29 @@ module JWT
 
       if options_verify_jti.respond_to?(:call)
         verified = options_verify_jti.arity == 2 ? options_verify_jti.call(jti, @payload) : options_verify_jti.call(jti)
-        raise(JWT::InvalidJtiError, 'Invalid jti') unless verified
+        raise JWT::InvalidJtiError, 'Invalid jti' unless verified
       elsif jti.to_s.strip.empty?
-        raise(JWT::InvalidJtiError, 'Missing jti')
+        raise JWT::InvalidJtiError, 'Missing jti'
       end
     end
 
     def verify_not_before
       return unless contains_key?(@payload, 'nbf')
-      raise(JWT::ImmatureSignature, 'Signature nbf has not been reached') if @payload['nbf'].to_i > (Time.now.to_i + nbf_leeway)
+      raise JWT::ImmatureSignature, 'Signature nbf has not been reached' if @payload['nbf'].to_i > (Time.now.to_i + nbf_leeway)
     end
 
     def verify_sub
       return unless (options_sub = @options[:sub])
 
       sub = @payload['sub']
-      raise(JWT::InvalidSubError, "Invalid subject. Expected #{options_sub}, received #{sub || '<none>'}") unless sub.to_s == options_sub.to_s
+      raise JWT::InvalidSubError, "Invalid subject. Expected #{options_sub}, received #{sub || '<none>'}" unless sub.to_s == options_sub.to_s
     end
 
     def verify_required_claims
       return unless (options_required_claims = @options[:required_claims])
 
       options_required_claims.each do |required_claim|
-        raise(JWT::MissingRequiredClaim, "Missing required claim #{required_claim}") unless contains_key?(@payload, required_claim)
+        raise JWT::MissingRequiredClaim, "Missing required claim #{required_claim}" unless contains_key?(@payload, required_claim)
       end
     end
 

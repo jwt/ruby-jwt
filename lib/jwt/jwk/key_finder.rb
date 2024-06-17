@@ -8,10 +8,10 @@ module JWT
         jwks_or_loader = options[:jwks]
 
         @jwks_loader = if jwks_or_loader.respond_to?(:call)
-          jwks_or_loader
-        else
-          ->(_options) { jwks_or_loader }
-        end
+                         jwks_or_loader
+                       else
+                         ->(_options) { jwks_or_loader }
+                       end
       end
 
       def key_for(kid)
