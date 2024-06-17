@@ -56,18 +56,18 @@ RSpec.describe JWT::JWK::HMAC do
       end
 
       context 'with a custom "kid" value' do
-        let(:exported_key) {
+        let(:exported_key) do
           super().merge(kid: 'custom_key_identifier')
-        }
+        end
         it 'imports that "kid" value' do
           expect(subject.kid).to eq('custom_key_identifier')
         end
       end
 
       context 'with a common parameter' do
-        let(:exported_key) {
+        let(:exported_key) do
           super().merge(use: 'sig')
-        }
+        end
         it 'imports that common parameter' do
           expect(subject[:use]).to eq('sig')
         end

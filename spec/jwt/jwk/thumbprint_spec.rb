@@ -8,7 +8,7 @@ describe JWT::JWK::Thumbprint do
     subject(:thumbprint) { described_class.new(jwk).to_s }
 
     context 'when example from RFC is given' do
-      let(:jwk_json) {
+      let(:jwk_json) do
         '
         {
            "kty": "RSA",
@@ -22,13 +22,13 @@ describe JWT::JWK::Thumbprint do
            "alg": "RS256"
         }
         '
-      }
+      end
 
       it { is_expected.to eq('NzbLsXh8uDCcd-6MNwXF4W_7noWXFZAfHkxZsRGC9Xs') }
     end
 
     context 'when HMAC key is given' do
-      let(:jwk_json) {
+      let(:jwk_json) do
         '
         {
           "kty":"oct",
@@ -36,7 +36,7 @@ describe JWT::JWK::Thumbprint do
           "k":"B4uZ7IbZTnjdCQjUBXTpzMUznCYj3wdYDZcceeU0mLg"
         }
         '
-      }
+      end
 
       it { is_expected.to eq('wPf4ZF5qlzoFxsGkft4eu1iWcehgAcahZL4XPV4dT-s') }
     end

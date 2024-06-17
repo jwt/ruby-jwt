@@ -7,7 +7,7 @@ module JWT
   # See https://tools.ietf.org/html/rfc7515#section-4.1.6
   class X5cKeyFinder
     def initialize(root_certificates, crls = nil)
-      raise(ArgumentError, 'Root certificates must be specified') unless root_certificates
+      raise ArgumentError, 'Root certificates must be specified' unless root_certificates
 
       @store = build_store(root_certificates, crls)
     end
@@ -24,7 +24,7 @@ module JWT
           error = "#{error} Certificate subject: #{current_cert.subject}."
         end
 
-        raise(JWT::VerificationError, error)
+        raise JWT::VerificationError, error
       end
     end
 

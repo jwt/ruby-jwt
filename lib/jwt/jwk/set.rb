@@ -25,7 +25,7 @@ module JWT
                   jwks.map { |k| JWT::JWK.new(k, nil, options) }
                 else
                   raise ArgumentError, 'Can only create new JWKS from Hash, Array and JWK'
-        end
+                end
       end
 
       def export(options = {})

@@ -93,7 +93,7 @@ RSpec.describe JWT::JWK::EC do
     let(:include_private) { false }
     let(:exported_key) { described_class.new(keypair).export(include_private: include_private) }
 
-    ['P-256', 'P-384', 'P-521', 'P-256K'].each do |crv|
+    %w[P-256 P-384 P-521 P-256K].each do |crv|
       context "when crv=#{crv}" do
         let(:openssl_curve) { JWT::JWK::EC.to_openssl_curve(crv) }
         let(:ec_key) { OpenSSL::PKey::EC.generate(openssl_curve) }
@@ -116,9 +116,9 @@ RSpec.describe JWT::JWK::EC do
           end
 
           context 'with a custom "kid" value' do
-            let(:exported_key) {
+            let(:exported_key) do
               super().merge(kid: 'custom_key_identifier')
-            }
+            end
             it 'imports that "kid" value' do
               expect(subject.kid).to eq('custom_key_identifier')
             end

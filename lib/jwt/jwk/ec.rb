@@ -153,26 +153,26 @@ module JWT
           )
 
           sequence = if jwk_d
-            # https://datatracker.ietf.org/doc/html/rfc5915.html
-            # ECPrivateKey ::= SEQUENCE {
-            #   version        INTEGER { ecPrivkeyVer1(1) } (ecPrivkeyVer1),
-            #   privateKey     OCTET STRING,
-            #   parameters [0] ECParameters {{ NamedCurve }} OPTIONAL,
-            #   publicKey  [1] BIT STRING OPTIONAL
-            # }
+                       # https://datatracker.ietf.org/doc/html/rfc5915.html
+                       # ECPrivateKey ::= SEQUENCE {
+                       #   version        INTEGER { ecPrivkeyVer1(1) } (ecPrivkeyVer1),
+                       #   privateKey     OCTET STRING,
+                       #   parameters [0] ECParameters {{ NamedCurve }} OPTIONAL,
+                       #   publicKey  [1] BIT STRING OPTIONAL
+                       # }
 
-            OpenSSL::ASN1::Sequence([
-                                      OpenSSL::ASN1::Integer(1),
-                                      OpenSSL::ASN1::OctetString(OpenSSL::BN.new(decode_octets(jwk_d), 2).to_s(2)),
-                                      OpenSSL::ASN1::ObjectId(curve, 0, :EXPLICIT),
-                                      OpenSSL::ASN1::BitString(point.to_octet_string(:uncompressed), 1, :EXPLICIT)
-                                    ])
-          else
-            OpenSSL::ASN1::Sequence([
-                                      OpenSSL::ASN1::Sequence([OpenSSL::ASN1::ObjectId('id-ecPublicKey'), OpenSSL::ASN1::ObjectId(curve)]),
-                                      OpenSSL::ASN1::BitString(point.to_octet_string(:uncompressed))
-                                    ])
-          end
+                       OpenSSL::ASN1::Sequence([
+                                                 OpenSSL::ASN1::Integer(1),
+                                                 OpenSSL::ASN1::OctetString(OpenSSL::BN.new(decode_octets(jwk_d), 2).to_s(2)),
+                                                 OpenSSL::ASN1::ObjectId(curve, 0, :EXPLICIT),
+                                                 OpenSSL::ASN1::BitString(point.to_octet_string(:uncompressed), 1, :EXPLICIT)
+                                               ])
+                     else
+                       OpenSSL::ASN1::Sequence([
+                                                 OpenSSL::ASN1::Sequence([OpenSSL::ASN1::ObjectId('id-ecPublicKey'), OpenSSL::ASN1::ObjectId(curve)]),
+                                                 OpenSSL::ASN1::BitString(point.to_octet_string(:uncompressed))
+                                               ])
+                     end
 
           OpenSSL::PKey::EC.new(sequence.to_der)
         end

@@ -246,13 +246,13 @@ RSpec.describe JWT::Verify do
 
     it 'it should not throw arguement error with 2 args' do
       expect do
-        described_class.verify_jti(payload, options.merge(verify_jti: ->(_jti, _pl) {
+        described_class.verify_jti(payload, options.merge(verify_jti: lambda { |_jti, _pl|
           true
         }))
       end.to_not raise_error
     end
     it 'should have payload as second param in proc' do
-      described_class.verify_jti(payload, options.merge(verify_jti: ->(_jti, pl) {
+      described_class.verify_jti(payload, options.merge(verify_jti: lambda { |_jti, pl|
         expect(pl).to eq(payload)
       }))
     end
@@ -296,7 +296,7 @@ RSpec.describe JWT::Verify do
 
   context '.verify_claims' do
     let(:fail_verifications_options) { { iss: 'mismatched-issuer', aud: 'no-match', sub: 'some subject' } }
-    let(:fail_verifications_payload) {
+    let(:fail_verifications_payload) do
       {
         'exp' => (Time.now.to_i - 50),
         'jti' => '   ',
@@ -305,7 +305,7 @@ RSpec.describe JWT::Verify do
         'iat' => 'not a number',
         'sub' => 'not-a-match'
       }
-    }
+    end
 
     %w[verify_aud verify_expiration verify_iat verify_iss verify_jti verify_not_before verify_sub].each do |method|
       let(:payload) { base_payload.merge(fail_verifications_payload) }
@@ -330,7 +330,7 @@ RSpec.describe JWT::Verify do
 
     it 'must verify the claims if all required claims are present' do
       payload = base_payload.merge('exp' => (Time.now.to_i + 5), 'custom_claim' => true)
-      described_class.verify_required_claims(payload, options.merge(required_claims: ['exp', 'custom_claim']))
+      described_class.verify_required_claims(payload, options.merge(required_claims: %w[exp custom_claim]))
     end
   end
 end

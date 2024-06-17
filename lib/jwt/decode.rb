@@ -10,7 +10,7 @@ module JWT
   # Decoding logic for JWT
   class Decode
     def initialize(jwt, key, verify, options, &keyfinder)
-      raise(JWT::DecodeError, 'Nil JSON web token') unless jwt
+      raise JWT::DecodeError, 'Nil JSON web token' unless jwt
 
       @jwt = jwt
       @key = key
@@ -30,7 +30,7 @@ module JWT
         verify_signature
         verify_claims
       end
-      raise(JWT::DecodeError, 'Not enough or too many segments') unless header && payload
+      raise JWT::DecodeError, 'Not enough or too many segments' unless header && payload
 
       [payload, header]
     end
@@ -46,21 +46,21 @@ module JWT
 
       return if Array(@key).any? { |key| verify_signature_for?(key) }
 
-      raise(JWT::VerificationError, 'Signature verification failed')
+      raise JWT::VerificationError, 'Signature verification failed'
     end
 
     def verify_algo
-      raise(JWT::IncorrectAlgorithm, 'An algorithm must be specified') if allowed_algorithms.empty?
-      raise(JWT::IncorrectAlgorithm, 'Token is missing alg header') unless alg_in_header
-      raise(JWT::IncorrectAlgorithm, 'Expected a different algorithm') if allowed_and_valid_algorithms.empty?
+      raise JWT::IncorrectAlgorithm, 'An algorithm must be specified' if allowed_algorithms.empty?
+      raise JWT::IncorrectAlgorithm, 'Token is missing alg header' unless alg_in_header
+      raise JWT::IncorrectAlgorithm, 'Expected a different algorithm' if allowed_and_valid_algorithms.empty?
     end
 
     def set_key
       @key = find_key(&@keyfinder) if @keyfinder
       @key = ::JWT::JWK::KeyFinder.new(jwks: @options[:jwks], allow_nil_kid: @options[:allow_nil_kid]).key_for(header['kid']) if @options[:jwks]
-      if (x5c_options = @options[:x5c])
-        @key = X5cKeyFinder.new(x5c_options[:root_certificates], x5c_options[:crls]).from(header['x5c'])
-      end
+      return unless (x5c_options = @options[:x5c])
+
+      @key = X5cKeyFinder.new(x5c_options[:root_certificates], x5c_options[:crls]).from(header['x5c'])
     end
 
     def verify_signature_for?(key)
@@ -122,7 +122,7 @@ module JWT
       return if !@verify && segment_length == 2 # If no verifying required, the signature is not needed
       return if segment_length == 2 && none_algorithm?
 
-      raise(JWT::DecodeError, 'Not enough or too many segments')
+      raise JWT::DecodeError, 'Not enough or too many segments'
     end
 
     def segment_length
