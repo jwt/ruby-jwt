@@ -13,7 +13,7 @@ module JWT
     # minor version
     MINOR = 8
     # tiny version
-    TINY  = 2
+    TINY  = 3
     # alpha, beta, etc. tag
     PRE   = nil
 
