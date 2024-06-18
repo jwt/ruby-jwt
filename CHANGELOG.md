@@ -1,18 +1,13 @@
 # Changelog
 
-## [v2.8.2](https://github.com/jwt/ruby-jwt/tree/v2.8.2) (NEXT)
+## [v2.8.2](https://github.com/jwt/ruby-jwt/tree/v2.8.2) (2024-06-18)
 
-[Full Changelog](https://github.com/jwt/ruby-jwt/compare/v2.8.1...main)
-
-**Features:**
-
-- Your contribution here
+[Full Changelog](https://github.com/jwt/ruby-jwt/compare/v2.8.1...v2.8.2)
 
 **Fixes and enhancements:**
 
 - Print deprecation warnings only on when token decoding succeeds [#600](https://github.com/jwt/ruby-jwt/pull/600) ([@anakinj](https://github.com/anakinj))
 - Unify code style [#602](https://github.com/jwt/ruby-jwt/pull/602) ([@anakinj](https://github.com/anakinj))
-- Your contribution here
 
 ## [v2.8.1](https://github.com/jwt/ruby-jwt/tree/v2.8.1) (2024-02-29)
 
