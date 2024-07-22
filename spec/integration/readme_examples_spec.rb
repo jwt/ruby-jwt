@@ -239,7 +239,15 @@ RSpec.describe 'README.md code test' do
       token = JWT.encode sub_payload, hmac_secret, 'HS256'
 
       expect do
-        JWT.decode token, hmac_secret, true, 'sub' => sub, :verify_sub => true, :algorithm => 'HS256'
+        JWT.decode token, hmac_secret, true, { sub: sub, verify_sub: true, algorithm: 'HS256' }
+      end.not_to raise_error
+
+      expect do
+        JWT.decode token, hmac_secret, true, { sub: 'sub', verify_sub: true, algorithm: 'HS256' }
+      end.to raise_error(JWT::InvalidSubError)
+
+      expect do
+        JWT.decode token, hmac_secret, true, { 'sub' => 'sub', verify_sub: true, algorithm: 'HS256' }
       end.not_to raise_error
     end
 

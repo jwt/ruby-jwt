@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 require 'json'
-
-require 'jwt/verify'
 require 'jwt/x5c_key_finder'
 
 # JWT::Decode module
@@ -113,8 +111,7 @@ module JWT
     end
 
     def verify_claims
-      Verify.verify_claims(payload, @options)
-      Verify.verify_required_claims(payload, @options)
+      Claims.verify!(payload, @options)
     end
 
     def validate_segment_count!
