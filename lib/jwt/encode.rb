@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require_relative 'jwa'
-require_relative 'claims_validator'
 
 # JWT::Encode module
 module JWT
@@ -55,7 +54,7 @@ module JWT
     def validate_claims!
       return unless @payload.is_a?(Hash)
 
-      ClaimsValidator.new(@payload).validate!
+      Claims::Numeric.new(@payload).validate!
     end
 
     def encode_signature

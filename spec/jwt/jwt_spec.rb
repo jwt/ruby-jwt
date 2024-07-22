@@ -105,25 +105,6 @@ RSpec.describe JWT do
     end
   end
 
-  context 'payload validation' do
-    it 'validates the payload with the ClaimsValidator if the payload is a hash' do
-      validator = double
-      expect(JWT::ClaimsValidator).to receive(:new) { validator }
-      expect(validator).to receive(:validate!) { true }
-
-      payload = {}
-      JWT.encode payload, 'secret', 'HS256'
-    end
-
-    it 'does not validate the payload if it is not present' do
-      validator = double
-      expect(JWT::ClaimsValidator).not_to receive(:new) { validator }
-
-      payload = nil
-      JWT.encode payload, 'secret', 'HS256'
-    end
-  end
-
   algorithms = %w[HS256 HS384 HS512]
   algorithms << 'HS512256' if JWT.rbnacl?
 

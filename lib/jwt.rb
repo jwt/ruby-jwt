@@ -9,6 +9,7 @@ require 'jwt/deprecations'
 require 'jwt/encode'
 require 'jwt/error'
 require 'jwt/jwk'
+require 'jwt/claims'
 
 # JSON Web Token implementation
 #
