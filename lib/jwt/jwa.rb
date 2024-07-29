@@ -7,7 +7,7 @@ begin
 rescue LoadError
   raise if defined?(RbNaCl)
 end
-
+require_relative 'jwa/algorithm'
 require_relative 'jwa/hmac'
 require_relative 'jwa/eddsa'
 require_relative 'jwa/ecdsa'
@@ -30,10 +30,6 @@ module JWT
     end.freeze
 
     class << self
-      def find(algorithm)
-        indexed[algorithm&.downcase]
-      end
-
       def create(algorithm)
         return algorithm if JWA.implementation?(algorithm)
 
@@ -43,19 +39,6 @@ module JWT
       def implementation?(algorithm)
         (algorithm.respond_to?(:valid_alg?) && algorithm.respond_to?(:verify)) ||
           (algorithm.respond_to?(:alg) && algorithm.respond_to?(:sign))
-      end
-
-      private
-
-      def indexed
-        @indexed ||= begin
-          fallback = [nil, Unsupported]
-          ALGOS.each_with_object(Hash.new(fallback)) do |cls, hash|
-            cls.const_get(:SUPPORTED).each do |alg|
-              hash[alg.downcase] = [alg, cls]
-            end
-          end
-        end
       end
     end
   end

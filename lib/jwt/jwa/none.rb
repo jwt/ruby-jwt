@@ -3,16 +3,19 @@
 module JWT
   module JWA
     module None
-      module_function
-
+      include JWT::JWA::Algorithm
       SUPPORTED = %w[none].freeze
 
-      def sign(*)
-        ''
-      end
+      register_algorithm(*SUPPORTED)
 
-      def verify(*)
-        true
+      class << self
+        def sign(*)
+          ''
+        end
+
+        def verify(*)
+          true
+        end
       end
     end
   end
