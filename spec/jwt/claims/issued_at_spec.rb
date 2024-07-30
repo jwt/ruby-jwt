@@ -3,7 +3,7 @@
 RSpec.describe JWT::Claims::IssuedAt do
   let(:payload) { { 'iat' => Time.now.to_f } }
 
-  subject(:validate!) { described_class.new.validate!(context: Struct.new(:payload).new(payload)) }
+  subject(:validate!) { described_class.new.validate!(context: JWT::Claims::ValidationContext.new(payload: payload)) }
 
   context 'when iat is now' do
     it 'passes validation' do

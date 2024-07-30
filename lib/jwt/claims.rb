@@ -6,7 +6,7 @@ module JWT
       leeway: 0
     }.freeze
 
-    ClaimsContext = Struct.new(:payload, keyword_init: true)
+    ValidationContext = Struct.new(:payload, keyword_init: true)
 
     class << self
       def verify!(payload, options)
@@ -24,50 +24,50 @@ module JWT
       def verify_aud(payload, options)
         return unless options[:verify_aud]
 
-        Claims::Audience.new(expected_audience: options[:aud]).validate!(context: ClaimsContext.new(payload: payload))
+        Claims::Audience.new(expected_audience: options[:aud]).validate!(context: ValidationContext.new(payload: payload))
       end
 
       def verify_expiration(payload, options)
         return unless options[:verify_expiration]
 
-        Claims::Expiration.new(leeway: options[:exp_leeway] || options[:leeway]).validate!(context: ClaimsContext.new(payload: payload))
+        Claims::Expiration.new(leeway: options[:exp_leeway] || options[:leeway]).validate!(context: ValidationContext.new(payload: payload))
       end
 
       def verify_iat(payload, options)
         return unless options[:verify_iat]
 
-        Claims::IssuedAt.new.validate!(context: ClaimsContext.new(payload: payload))
+        Claims::IssuedAt.new.validate!(context: ValidationContext.new(payload: payload))
       end
 
       def verify_iss(payload, options)
         return unless options[:verify_iss]
 
-        Claims::Issuer.new(issuers: options[:iss]).validate!(context: ClaimsContext.new(payload: payload))
+        Claims::Issuer.new(issuers: options[:iss]).validate!(context: ValidationContext.new(payload: payload))
       end
 
       def verify_jti(payload, options)
         return unless options[:verify_jti]
 
-        Claims::JwtId.new(validator: options[:verify_jti]).validate!(context: ClaimsContext.new(payload: payload))
+        Claims::JwtId.new(validator: options[:verify_jti]).validate!(context: ValidationContext.new(payload: payload))
       end
 
       def verify_not_before(payload, options)
         return unless options[:verify_not_before]
 
-        Claims::NotBefore.new(leeway: options[:nbf_leeway] || options[:leeway]).validate!(context: ClaimsContext.new(payload: payload))
+        Claims::NotBefore.new(leeway: options[:nbf_leeway] || options[:leeway]).validate!(context: ValidationContext.new(payload: payload))
       end
 
       def verify_sub(payload, options)
         return unless options[:verify_sub]
         return unless options[:sub]
 
-        Claims::Subject.new(expected_subject: options[:sub]).validate!(context: ClaimsContext.new(payload: payload))
+        Claims::Subject.new(expected_subject: options[:sub]).validate!(context: ValidationContext.new(payload: payload))
       end
 
       def verify_required_claims(payload, options)
         return unless (options_required_claims = options[:required_claims])
 
-        Claims::Required.new(required_claims: options_required_claims).validate!(context: ClaimsContext.new(payload: payload))
+        Claims::Required.new(required_claims: options_required_claims).validate!(context: ValidationContext.new(payload: payload))
       end
     end
   end

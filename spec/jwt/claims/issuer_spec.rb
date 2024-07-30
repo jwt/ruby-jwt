@@ -5,7 +5,7 @@ RSpec.describe JWT::Claims::Issuer do
   let(:payload) { { 'iss' => issuer } }
   let(:expected_issuers) { 'ruby-jwt-gem' }
 
-  subject(:validate!) { described_class.new(issuers: expected_issuers).validate!(context: Struct.new(:payload).new(payload)) }
+  subject(:validate!) { described_class.new(issuers: expected_issuers).validate!(context: JWT::Claims::ValidationContext.new(payload: payload)) }
 
   context 'when expected issuer is a string that matches the payload' do
     it 'passes validation' do

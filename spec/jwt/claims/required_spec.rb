@@ -3,7 +3,7 @@
 RSpec.describe JWT::Claims::Required do
   let(:payload) { { 'data' => 'value' } }
 
-  subject(:validate!) { described_class.new(required_claims: required_claims).validate!(context: Struct.new(:payload).new(payload)) }
+  subject(:validate!) { described_class.new(required_claims: required_claims).validate!(context: JWT::Claims::ValidationContext.new(payload: payload)) }
 
   context 'when payload is missing the required claim' do
     let(:required_claims) { ['exp'] }
