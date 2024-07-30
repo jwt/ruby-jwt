@@ -5,7 +5,7 @@ RSpec.describe JWT::Claims::JwtId do
   let(:payload) { { 'jti' => jti } }
   let(:validator) { nil }
 
-  subject(:validate!) { described_class.new(validator: validator).validate!(context: Struct.new(:payload).new(payload)) }
+  subject(:validate!) { described_class.new(validator: validator).validate!(context: JWT::Claims::ValidationContext.new(payload: payload)) }
   context 'when payload contains a jti' do
     it 'passes validation' do
       validate!
@@ -56,7 +56,7 @@ RSpec.describe JWT::Claims::JwtId do
 
   context 'when jti validator has 2 args' do
     it 'the second arg is the payload' do
-      described_class.new(validator: ->(_jti, pl) { expect(pl).to eq(payload) }).validate!(context: Struct.new(:payload).new(payload))
+      described_class.new(validator: ->(_jti, pl) { expect(pl).to eq(payload) }).validate!(context: JWT::Claims::ValidationContext.new(payload: payload))
     end
   end
 end

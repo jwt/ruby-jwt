@@ -4,7 +4,7 @@ RSpec.describe JWT::Claims::Expiration do
   let(:payload) { { 'exp' => (Time.now.to_i + 5) } }
   let(:leeway) { 0 }
 
-  subject(:validate!) { described_class.new(leeway: leeway).validate!(context: Struct.new(:payload).new(payload)) }
+  subject(:validate!) { described_class.new(leeway: leeway).validate!(context: JWT::Claims::ValidationContext.new(payload: payload)) }
 
   context 'when token is expired' do
     let(:payload) { { 'exp' => (Time.now.to_i - 5) } }
