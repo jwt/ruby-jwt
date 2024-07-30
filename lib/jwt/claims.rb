@@ -2,15 +2,10 @@
 
 module JWT
   module Claims
-    DEFAULTS = {
-      leeway: 0
-    }.freeze
-
     ValidationContext = Struct.new(:payload, keyword_init: true)
 
     class << self
       def verify!(payload, options)
-        options = DEFAULTS.merge(options)
         verify_aud(payload, options)
         verify_expiration(payload, options)
         verify_iat(payload, options)

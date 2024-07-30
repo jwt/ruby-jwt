@@ -4,7 +4,7 @@ module JWT
   module Claims
     class Expiration
       def initialize(leeway:)
-        @leeway = leeway
+        @leeway = leeway || 0
       end
 
       def validate!(context:, **_args)
