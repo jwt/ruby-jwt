@@ -9,6 +9,14 @@ module JWT
         def register_algorithm(*algos)
           ::JWT::JWA.register_algorithm(self, *algos)
         end
+
+        def raise_verify_error!(message)
+          raise(EncodeError.new(message).tap { |e| e.set_backtrace(caller(1)) })
+        end
+
+        def raise_sign_error!(message)
+          raise(DecodeError.new(message).tap { |e| e.set_backtrace(caller(1)) })
+        end
       end
 
       def self.included(klass)

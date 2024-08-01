@@ -17,12 +17,12 @@ module JWT
         def sign(algorithm, msg, key)
           key ||= ''
 
-          raise JWT::DecodeError, 'HMAC key expected to be a String' unless key.is_a?(String)
+          raise_sign_error!('HMAC key expected to be a String') unless key.is_a?(String)
 
           OpenSSL::HMAC.digest(DIGEST_MAPPING[algorithm].new, key, msg)
         rescue OpenSSL::HMACError => e
           if key == '' && e.message == 'EVP_PKEY_new_mac_key: malloc failure'
-            raise JWT::DecodeError, 'OpenSSL 3.0 does not support nil or empty hmac_secret'
+            raise_sign_error!('OpenSSL 3.0 does not support nil or empty hmac_secret')
           end
 
           raise e
