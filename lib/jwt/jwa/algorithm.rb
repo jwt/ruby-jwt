@@ -11,11 +11,11 @@ module JWT
         end
 
         def raise_verify_error!(message)
-          raise(EncodeError.new(message).tap { |e| e.set_backtrace(caller(1)) })
+          raise(DecodeError.new(message).tap { |e| e.set_backtrace(caller(1)) })
         end
 
         def raise_sign_error!(message)
-          raise(DecodeError.new(message).tap { |e| e.set_backtrace(caller(1)) })
+          raise(EncodeError.new(message).tap { |e| e.set_backtrace(caller(1)) })
         end
       end
 
