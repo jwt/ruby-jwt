@@ -3,8 +3,12 @@
 module JWT
   module JWA
     module Eddsa
+      include JWT::JWA::SignatureAlgorithm
+
       SUPPORTED = %w[ED25519 EdDSA].freeze
       SUPPORTED_DOWNCASED = SUPPORTED.map(&:downcase).freeze
+
+      register_algorithm(*SUPPORTED)
 
       class << self
         def sign(algorithm, msg, key)

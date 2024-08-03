@@ -3,32 +3,34 @@
 module JWT
   module JWA
     module Hmac
-      module_function
+      include JWT::JWA::SignatureAlgorithm
 
-      MAPPING = {
+      DIGEST_MAPPING = {
         'HS256' => OpenSSL::Digest::SHA256,
         'HS384' => OpenSSL::Digest::SHA384,
         'HS512' => OpenSSL::Digest::SHA512
       }.freeze
 
-      SUPPORTED = MAPPING.keys
+      register_algorithm(*DIGEST_MAPPING.keys)
 
-      def sign(algorithm, msg, key)
-        key ||= ''
+      class << self
+        def sign(algorithm, msg, key)
+          key ||= ''
 
-        raise JWT::DecodeError, 'HMAC key expected to be a String' unless key.is_a?(String)
+          raise JWT::DecodeError, 'HMAC key expected to be a String' unless key.is_a?(String)
 
-        OpenSSL::HMAC.digest(MAPPING[algorithm].new, key, msg)
-      rescue OpenSSL::HMACError => e
-        if key == '' && e.message == 'EVP_PKEY_new_mac_key: malloc failure'
-          raise JWT::DecodeError, 'OpenSSL 3.0 does not support nil or empty hmac_secret'
+          OpenSSL::HMAC.digest(DIGEST_MAPPING[algorithm].new, key, msg)
+        rescue OpenSSL::HMACError => e
+          if key == '' && e.message == 'EVP_PKEY_new_mac_key: malloc failure'
+            raise JWT::DecodeError, 'OpenSSL 3.0 does not support nil or empty hmac_secret'
+          end
+
+          raise e
         end
 
-        raise e
-      end
-
-      def verify(algorithm, key, signing_input, signature)
-        SecurityUtils.secure_compare(signature, sign(algorithm, signing_input, key))
+        def verify(algorithm, key, signing_input, signature)
+          SecurityUtils.secure_compare(signature, sign(algorithm, signing_input, key))
+        end
       end
 
       # Copy of https://github.com/rails/rails/blob/v7.0.3.1/activesupport/lib/active_support/security_utils.rb

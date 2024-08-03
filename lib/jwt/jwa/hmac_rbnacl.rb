@@ -3,8 +3,13 @@
 module JWT
   module Algos
     module HmacRbNaCl
+      include JWT::JWA::SignatureAlgorithm
+
       MAPPING   = { 'HS512256' => ::RbNaCl::HMAC::SHA512256 }.freeze
       SUPPORTED = MAPPING.keys
+
+      register_algorithm(*SUPPORTED)
+
       class << self
         def sign(algorithm, msg, key)
           Deprecations.warning("The use of the algorithm #{algorithm} is deprecated and will be removed in the next major version of ruby-jwt")
