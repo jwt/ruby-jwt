@@ -3,7 +3,7 @@
 module JWT
   module JWA
     module Ecdsa
-      include JWT::JWA::Algorithm
+      include JWT::JWA::SignatureAlgorithm
 
       NAMED_CURVES = {
         'prime256v1' => {

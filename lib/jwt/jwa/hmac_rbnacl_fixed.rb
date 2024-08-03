@@ -3,12 +3,13 @@
 module JWT
   module Algos
     module HmacRbNaClFixed
-      include JWT::JWA::Algorithm
+      include JWT::JWA::SignatureAlgorithm
 
       MAPPING   = { 'HS512256' => ::RbNaCl::HMAC::SHA512256 }.freeze
       SUPPORTED = MAPPING.keys
 
       register_algorithm(*SUPPORTED)
+
       class << self
         def sign(algorithm, msg, key)
           key ||= ''

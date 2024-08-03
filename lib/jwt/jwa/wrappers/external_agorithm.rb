@@ -10,7 +10,7 @@ module JWT
 
         def header(signing_key:)
           jwa.header(signing_key: signing_key) if jwa.respond_to?(:header)
-          { Algorithm::ALG_HEADER_KEY => alg }
+          { 'alg' => alg }
         end
 
         def valid_alg?(alg)

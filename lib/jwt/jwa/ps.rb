@@ -5,7 +5,7 @@ module JWT
     module Ps
       # RSASSA-PSS signing algorithms
 
-      include JWT::JWA::Algorithm
+      include JWT::JWA::SignatureAlgorithm
       SUPPORTED = %w[PS256 PS384 PS512].freeze
 
       register_algorithm(*SUPPORTED)

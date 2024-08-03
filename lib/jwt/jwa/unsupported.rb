@@ -3,7 +3,7 @@
 module JWT
   module JWA
     module Unsupported
-      include JWT::JWA::Algorithm
+      include JWT::JWA::SignatureAlgorithm
 
       class << self
         def sign(*)

@@ -3,7 +3,7 @@
 module JWT
   module JWA
     module Eddsa
-      include JWT::JWA::Algorithm
+      include JWT::JWA::SignatureAlgorithm
 
       SUPPORTED = %w[ED25519 EdDSA].freeze
       SUPPORTED_DOWNCASED = SUPPORTED.map(&:downcase).freeze

@@ -3,7 +3,7 @@
 module JWT
   module JWA
     module None
-      include JWT::JWA::Algorithm
+      include JWT::JWA::SignatureAlgorithm
       SUPPORTED = %w[none].freeze
 
       register_algorithm(*SUPPORTED)

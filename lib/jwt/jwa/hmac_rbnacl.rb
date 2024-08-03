@@ -3,7 +3,7 @@
 module JWT
   module Algos
     module HmacRbNaCl
-      include JWT::JWA::Algorithm
+      include JWT::JWA::SignatureAlgorithm
 
       MAPPING   = { 'HS512256' => ::RbNaCl::HMAC::SHA512256 }.freeze
       SUPPORTED = MAPPING.keys

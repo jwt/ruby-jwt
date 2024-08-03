@@ -3,7 +3,7 @@
 module JWT
   module JWA
     module Hmac
-      include JWT::JWA::Algorithm
+      include JWT::JWA::SignatureAlgorithm
 
       DIGEST_MAPPING = {
         'HS256' => OpenSSL::Digest::SHA256,

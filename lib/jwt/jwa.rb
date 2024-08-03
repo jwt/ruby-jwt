@@ -10,7 +10,7 @@ end
 
 require_relative 'jwa/wrappers/external_agorithm'
 require_relative 'jwa/wrappers/registered_algorithm'
-require_relative 'jwa/algorithm'
+require_relative 'jwa/signature_algorithm'
 require_relative 'jwa/hmac'
 require_relative 'jwa/eddsa'
 require_relative 'jwa/ecdsa'

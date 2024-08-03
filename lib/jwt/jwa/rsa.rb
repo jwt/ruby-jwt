@@ -3,7 +3,7 @@
 module JWT
   module JWA
     module Rsa
-      include JWT::JWA::Algorithm
+      include JWT::JWA::SignatureAlgorithm
       SUPPORTED = %w[RS256 RS384 RS512].freeze
 
       register_algorithm(*SUPPORTED)

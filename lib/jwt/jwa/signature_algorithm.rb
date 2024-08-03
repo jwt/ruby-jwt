@@ -2,16 +2,14 @@
 
 module JWT
   module JWA
-    module Algorithm
-      ALG_HEADER_KEY = 'alg'
-
+    module SignatureAlgorithm
       module ClassMethods
         def register_algorithm(*algos)
           ::JWT::JWA.register_algorithm(self, *algos)
         end
 
         def header(alg, *)
-          { ALG_HEADER_KEY => alg }
+          { 'alg' => alg }
         end
 
         def raise_verify_error!(message)
