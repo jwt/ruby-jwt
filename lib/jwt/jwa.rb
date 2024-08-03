@@ -7,6 +7,9 @@ begin
 rescue LoadError
   raise if defined?(RbNaCl)
 end
+
+require_relative 'jwa/wrappers/external_agorithm'
+require_relative 'jwa/wrappers/registered_algorithm'
 require_relative 'jwa/algorithm'
 require_relative 'jwa/hmac'
 require_relative 'jwa/eddsa'
@@ -14,31 +17,20 @@ require_relative 'jwa/ecdsa'
 require_relative 'jwa/rsa'
 require_relative 'jwa/ps'
 require_relative 'jwa/none'
-require_relative 'jwa/unsupported'
-require_relative 'jwa/wrapper'
+
+if JWT.rbnacl_6_or_greater?
+  require_relative 'jwa/hmac_rbnacl'
+elsif JWT.rbnacl?
+  require_relative 'jwa/hmac_rbnacl_fixed'
+end
 
 module JWT
   module JWA
-    ALGOS = [Hmac, Ecdsa, Rsa, Eddsa, Ps, None, Unsupported].tap do |l|
-      if ::JWT.rbnacl_6_or_greater?
-        require_relative 'jwa/hmac_rbnacl'
-        l << Algos::HmacRbNaCl
-      elsif ::JWT.rbnacl?
-        require_relative 'jwa/hmac_rbnacl_fixed'
-        l << Algos::HmacRbNaClFixed
-      end
-    end.freeze
-
     class << self
-      def create(algorithm)
-        return algorithm if JWA.implementation?(algorithm)
+      def resolve(algorithm)
+        return find(algorithm) if algorithm.is_a?(String) || algorithm.is_a?(Symbol)
 
-        Wrapper.new(*find(algorithm))
-      end
-
-      def implementation?(algorithm)
-        (algorithm.respond_to?(:valid_alg?) && algorithm.respond_to?(:verify)) ||
-          (algorithm.respond_to?(:alg) && algorithm.respond_to?(:sign))
+        Wrappers::ExternalAlgorithm.new(algorithm)
       end
     end
   end

@@ -1,13 +1,17 @@
 # frozen_string_literal: true
 
-require_relative 'unsupported'
-
 module JWT
   module JWA
     module Algorithm
+      ALG_HEADER_KEY = 'alg'
+
       module ClassMethods
         def register_algorithm(*algos)
           ::JWT::JWA.register_algorithm(self, *algos)
+        end
+
+        def header(alg, *)
+          { ALG_HEADER_KEY => alg }
         end
 
         def raise_verify_error!(message)
@@ -24,21 +28,23 @@ module JWT
       end
     end
 
+    require_relative 'unsupported' # Require the unsupported algo as it's needed as a default for the rest
+
     class << self
       def register_algorithm(klass, *algos)
         algos.each do |algo|
-          algorithms[algo.to_s.downcase] = [algo, klass]
+          algorithms[algo.to_s.downcase] = Wrappers::RegisteredAlgorithm.new(algo, klass)
         end
       end
 
       def find(algo)
-        algorithms.fetch(algo.downcase) { [nil, Unsupported] }
+        algorithms[algo.to_s.downcase]
       end
 
       private
 
       def algorithms
-        @algorithms ||= {}
+        @algorithms ||= {}.tap { |h| h.default = Wrappers::RegisteredAlgorithm.new(nil, Unsupported) }
       end
     end
   end

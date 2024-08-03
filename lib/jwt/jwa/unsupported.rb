@@ -3,6 +3,8 @@
 module JWT
   module JWA
     module Unsupported
+      include JWT::JWA::Algorithm
+
       class << self
         def sign(*)
           raise NotImplementedError, 'Unsupported signing method'
