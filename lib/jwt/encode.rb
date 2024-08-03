@@ -38,7 +38,7 @@ module JWT
     end
 
     def encode_header
-      encode_data(@headers.merge(@algorithm.header(signing_key: @key).merge))
+      encode_data(@headers.merge(@algorithm.header(signing_key: @key)))
     end
 
     def encode_payload
