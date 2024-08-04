@@ -3,11 +3,11 @@
 RSpec.describe JWT::Claims::IssuedAt do
   let(:payload) { { 'iat' => Time.now.to_f } }
 
-  subject(:validate!) { described_class.new.validate!(context: JWT::Claims::ValidationContext.new(payload: payload)) }
+  subject(:verify!) { described_class.new.verify!(context: JWT::Claims::VerificationContext.new(payload: payload)) }
 
   context 'when iat is now' do
     it 'passes validation' do
-      validate!
+      verify!
     end
   end
 
@@ -15,14 +15,14 @@ RSpec.describe JWT::Claims::IssuedAt do
     let(:payload) { { 'iat' => Time.now.to_i } }
 
     it 'passes validation' do
-      validate!
+      verify!
     end
   end
   context 'when iat is not a number' do
     let(:payload) { { 'iat' => 'not_a_number' } }
 
     it 'fails validation' do
-      expect { validate! }.to raise_error(JWT::InvalidIatError)
+      expect { verify! }.to raise_error(JWT::InvalidIatError)
     end
   end
 
@@ -30,7 +30,7 @@ RSpec.describe JWT::Claims::IssuedAt do
     let(:payload) { { 'iat' => Time.now.to_f + 120.0 } }
 
     it 'fails validation' do
-      expect { validate! }.to raise_error(JWT::InvalidIatError)
+      expect { verify! }.to raise_error(JWT::InvalidIatError)
     end
   end
 
@@ -38,7 +38,7 @@ RSpec.describe JWT::Claims::IssuedAt do
     let(:payload) { 'beautyexperts_nbf_iat' }
 
     it 'passes validation' do
-      validate!
+      verify!
     end
   end
 end

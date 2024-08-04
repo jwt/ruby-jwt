@@ -7,7 +7,7 @@ module JWT
         @validator = validator
       end
 
-      def validate!(context:, **_args)
+      def verify!(context:, **_args)
         jti = context.payload['jti']
         if validator.respond_to?(:call)
           verified = validator.arity == 2 ? validator.call(jti, context.payload) : validator.call(jti)

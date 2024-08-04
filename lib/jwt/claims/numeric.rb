@@ -3,10 +3,10 @@
 module JWT
   module Claims
     class Numeric
-      def self.validate!(payload:, **_args)
+      def self.verify!(payload:, **_args)
         return unless payload.is_a?(Hash)
 
-        new(payload).validate!
+        new(payload).verify!
       end
 
       NUMERIC_CLAIMS = %i[
@@ -19,7 +19,7 @@ module JWT
         @payload = payload.transform_keys(&:to_sym)
       end
 
-      def validate!
+      def verify!
         validate_numeric_claims
 
         true

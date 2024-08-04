@@ -7,7 +7,7 @@ module JWT
         @required_claims = required_claims
       end
 
-      def validate!(context:, **_args)
+      def verify!(context:, **_args)
         required_claims.each do |required_claim|
           next if context.payload.is_a?(Hash) && context.payload.include?(required_claim)
 

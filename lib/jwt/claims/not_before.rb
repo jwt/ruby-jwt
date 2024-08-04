@@ -7,7 +7,7 @@ module JWT
         @leeway = leeway || 0
       end
 
-      def validate!(context:, **_args)
+      def verify!(context:, **_args)
         return unless context.payload.is_a?(Hash)
         return unless context.payload.key?('nbf')
 

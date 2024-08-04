@@ -54,7 +54,7 @@ module JWT
     def validate_claims!
       return unless @payload.is_a?(Hash)
 
-      Claims::Numeric.new(@payload).validate!
+      Claims::Numeric.new(@payload).verify!
     end
 
     def encode_signature

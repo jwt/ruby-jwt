@@ -3,11 +3,11 @@
 RSpec.describe JWT::Claims::Audience do
   let(:payload) { { 'nbf' => (Time.now.to_i + 5) } }
 
-  describe '#validate!' do
+  describe '#verify!' do
     let(:scalar_aud) { 'ruby-jwt-aud' }
     let(:array_aud) { %w[ruby-jwt-aud test-aud ruby-ruby-ruby] }
 
-    subject(:validate!) { described_class.new(expected_audience: expected_audience).validate!(context: JWT::Claims::ValidationContext.new(payload: payload)) }
+    subject(:verify!) { described_class.new(expected_audience: expected_audience).verify!(context: JWT::Claims::VerificationContext.new(payload: payload)) }
 
     context 'when the singular audience does not match' do
       let(:expected_audience) { 'no-match' }
