@@ -553,7 +553,7 @@ RSpec.describe JWT do
       let(:iss) { 'ruby-jwt-gem' }
       let(:invalid_token) { JWT.encode payload, data[:secret] }
 
-      let :token do
+      let(:token) do
         iss_payload = payload.merge(iss: iss)
         JWT.encode iss_payload, data[:secret]
       end
@@ -561,6 +561,16 @@ RSpec.describe JWT do
         expect do
           JWT.decode token, data[:secret], true, iss: iss, algorithm: 'HS256'
         end.not_to raise_error
+      end
+    end
+
+    context 'claim verification order' do
+      let(:token) { JWT.encode({ nbf: Time.now.to_i + 100 }, 'secret') }
+
+      context 'when two claims are invalid' do
+        it 'depends on the order of the parameters what error is raised' do
+          expect { JWT.decode(token, 'secret', true, { verify_jti: true, verify_not_before: true }) }.to raise_error(JWT::ImmatureSignature, 'Signature nbf has not been reached')
+        end
       end
     end
   end
