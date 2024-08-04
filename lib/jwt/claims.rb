@@ -6,12 +6,12 @@ module JWT
 
     class << self
       def verify!(payload, options)
-        verify_aud(payload, options)
         verify_expiration(payload, options)
-        verify_iat(payload, options)
-        verify_iss(payload, options)
-        verify_jti(payload, options)
         verify_not_before(payload, options)
+        verify_iss(payload, options)
+        verify_iat(payload, options)
+        verify_jti(payload, options)
+        verify_aud(payload, options)
         verify_sub(payload, options)
         verify_required_claims(payload, options)
       end
