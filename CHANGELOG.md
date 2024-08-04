@@ -10,7 +10,7 @@
 
 **Fixes and enhancements:**
 
-- Refactor claim validators into their own classes [#605](https://github.com/jwt/ruby-jwt/pull/605) ([@anakinj](https://github.com/anakinj))
+- Refactor claim validators into their own classes [#605](https://github.com/jwt/ruby-jwt/pull/605) ([@anakinj](https://github.com/anakinj), [@MatteoPierro](https://github.com/MatteoPierro))
 - Your contribution here
 
 ## [v2.8.2](https://github.com/jwt/ruby-jwt/tree/v2.8.2) (2024-06-18)
