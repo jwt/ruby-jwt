@@ -9,7 +9,7 @@ module JWT
 
       def verify!(context:, **_args)
         required_claims.each do |required_claim|
-          next if context.payload.is_a?(Hash) && context.payload.include?(required_claim)
+          next if context.payload.is_a?(Hash) && context.payload.key?(required_claim)
 
           raise JWT::MissingRequiredClaim, "Missing required claim #{required_claim}"
         end
