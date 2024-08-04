@@ -3,8 +3,8 @@
 RSpec.describe JWT::Claims::Numeric do
   let(:validator) { described_class.new(claims) }
 
-  describe '#validate!' do
-    subject { validator.validate! }
+  describe '#verify!' do
+    subject { validator.verify! }
 
     shared_examples_for 'a NumericDate claim' do |claim|
       context "when #{claim} payload is an integer" do

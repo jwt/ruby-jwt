@@ -7,7 +7,7 @@ module JWT
         @expected_subject = expected_subject.to_s
       end
 
-      def validate!(context:, **_args)
+      def verify!(context:, **_args)
         sub = context.payload['sub']
         raise(JWT::InvalidSubError, "Invalid subject. Expected #{expected_subject}, received #{sub || '<none>'}") unless sub.to_s == expected_subject
       end

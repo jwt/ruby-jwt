@@ -7,7 +7,7 @@ module JWT
         @expected_audience = expected_audience
       end
 
-      def validate!(context:, **_args)
+      def verify!(context:, **_args)
         aud = context.payload['aud']
         raise JWT::InvalidAudError, "Invalid audience. Expected #{expected_audience}, received #{aud || '<none>'}" if ([*aud] & [*expected_audience]).empty?
       end

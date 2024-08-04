@@ -7,7 +7,7 @@ module JWT
         @issuers = Array(issuers).map { |item| item.is_a?(Symbol) ? item.to_s : item }
       end
 
-      def validate!(context:, **_args)
+      def verify!(context:, **_args)
         case (iss = context.payload['iss'])
         when *issuers
           nil

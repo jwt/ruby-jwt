@@ -3,7 +3,7 @@
 module JWT
   module Claims
     class IssuedAt
-      def validate!(context:, **_args)
+      def verify!(context:, **_args)
         return unless context.payload.is_a?(Hash)
         return unless context.payload.key?('iat')
 
