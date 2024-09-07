@@ -1,45 +1,41 @@
 # frozen_string_literal: true
 
 module JWT
-  module Algos
-    module HmacRbNaClFixed
-      MAPPING   = { 'HS512256' => ::RbNaCl::HMAC::SHA512256 }.freeze
-      SUPPORTED = MAPPING.keys
+  module JWA
+    class HmacRbNaClFixed
+      include JWT::JWA::SigningAlgorithm
 
-      class << self
-        def sign(algorithm, msg, key)
-          key ||= ''
-          Deprecations.warning("The use of the algorithm #{algorithm} is deprecated and will be removed in the next major version of ruby-jwt")
-          raise JWT::DecodeError, 'HMAC key expected to be a String' unless key.is_a?(String)
+      def initialize(alg, hmac)
+        @alg = alg
+        @hmac = hmac
+      end
 
-          if (hmac = resolve_algorithm(algorithm)) && key.bytesize <= hmac.key_bytes
-            hmac.auth(padded_key_bytes(key, hmac.key_bytes), msg.encode('binary'))
-          else
-            Hmac.sign(algorithm, msg, key)
-          end
-        end
+      def sign(data:, signing_key:)
+        signing_key ||= ''
+        Deprecations.warning("The use of the algorithm #{alg} is deprecated and will be removed in the next major version of ruby-jwt")
+        raise JWT::DecodeError, 'HMAC key expected to be a String' unless signing_key.is_a?(String)
 
-        def verify(algorithm, key, signing_input, signature)
-          key ||= ''
-          Deprecations.warning("The use of the algorithm #{algorithm} is deprecated and will be removed in the next major version of ruby-jwt")
-          raise JWT::DecodeError, 'HMAC key expected to be a String' unless key.is_a?(String)
+        hmac.auth(padded_key_bytes(signing_key, hmac.key_bytes), data.encode('binary'))
+      end
 
-          if (hmac = resolve_algorithm(algorithm)) && key.bytesize <= hmac.key_bytes
-            hmac.verify(padded_key_bytes(key, hmac.key_bytes), signature.encode('binary'), signing_input.encode('binary'))
-          else
-            Hmac.verify(algorithm, key, signing_input, signature)
-          end
-        rescue ::RbNaCl::BadAuthenticatorError, ::RbNaCl::LengthError
-          false
-        end
+      def verify(data:, signature:, verification_key:)
+        verification_key ||= ''
+        Deprecations.warning("The use of the algorithm #{alg} is deprecated and will be removed in the next major version of ruby-jwt")
+        raise JWT::DecodeError, 'HMAC key expected to be a String' unless verification_key.is_a?(String)
 
-        def resolve_algorithm(algorithm)
-          MAPPING.fetch(algorithm)
-        end
+        hmac.verify(padded_key_bytes(verification_key, hmac.key_bytes), signature.encode('binary'), data.encode('binary'))
+      rescue ::RbNaCl::BadAuthenticatorError, ::RbNaCl::LengthError
+        false
+      end
 
-        def padded_key_bytes(key, bytesize)
-          key.bytes.fill(0, key.bytesize...bytesize).pack('C*')
-        end
+      register_algorithm(new('HS512256', ::RbNaCl::HMAC::SHA512256))
+
+      private
+
+      attr_reader :hmac
+
+      def padded_key_bytes(key, bytesize)
+        key.bytes.fill(0, key.bytesize...bytesize).pack('C*')
       end
     end
   end

@@ -6,14 +6,11 @@ require_relative 'jwa'
 module JWT
   # Encoding logic for JWT
   class Encode
-    ALG_KEY = 'alg'
-
     def initialize(options)
       @payload          = options[:payload]
       @key              = options[:key]
-      @algorithm        = JWA.create(options[:algorithm])
+      @algorithm        = JWA.resolve(options[:algorithm])
       @headers          = options[:headers].transform_keys(&:to_s)
-      @headers[ALG_KEY] = @algorithm.alg
     end
 
     def segments
@@ -40,7 +37,7 @@ module JWT
     end
 
     def encode_header
-      encode_data(@headers)
+      encode_data(@headers.merge(@algorithm.header(signing_key: @key)))
     end
 
     def encode_payload

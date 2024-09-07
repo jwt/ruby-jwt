@@ -451,12 +451,10 @@ RSpec.describe 'README.md code test' do
   context 'custom algorithm example' do
     it 'allows a module to be used as algorithm on encode and decode' do
       custom_hs512_alg = Module.new do
+        extend JWT::JWA::SigningAlgorithm
+
         def self.alg
           'HS512'
-        end
-
-        def self.valid_alg?(alg_to_validate)
-          alg_to_validate == alg
         end
 
         def self.sign(data:, signing_key:)
@@ -469,7 +467,8 @@ RSpec.describe 'README.md code test' do
       end
 
       token = JWT.encode({ 'pay' => 'load' }, 'secret', custom_hs512_alg)
-      _payload, _header = JWT.decode(token, 'secret', true, algorithm: custom_hs512_alg)
+      _payload, header = JWT.decode(token, 'secret', true, algorithm: custom_hs512_alg)
+      expect(header).to include('alg' => 'HS512')
     end
   end
 end

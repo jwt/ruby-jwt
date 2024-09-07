@@ -314,10 +314,10 @@ RSpec.describe JWT do
   end
 
   context 'Invalid' do
-    it 'algorithm should raise NotImplementedError' do
+    it 'algorithm should raise DecodeError' do
       expect do
         JWT.encode payload, 'secret', 'HS255'
-      end.to raise_error NotImplementedError
+      end.to raise_error JWT::EncodeError
     end
 
     it 'raises "No verification key available" error' do
@@ -651,7 +651,7 @@ RSpec.describe JWT do
     it 'raises error for invalid algorithm' do
       expect do
         JWT.encode(payload, '', 'xyz')
-      end.to raise_error(NotImplementedError)
+      end.to raise_error(JWT::EncodeError)
     end
   end
 
@@ -851,11 +851,11 @@ RSpec.describe JWT do
   context 'when algorithm is a custom class' do
     let(:custom_algorithm) do
       Class.new do
-        attr_reader :alg
+        include JWT::JWA::SigningAlgorithm
 
         def initialize(signature: 'custom_signature', alg: 'custom')
           @signature = signature
-          @alg = alg
+          @alg       = alg
         end
 
         def sign(*)
@@ -864,10 +864,6 @@ RSpec.describe JWT do
 
         def verify(data:, signature:, verification_key:) # rubocop:disable Lint/UnusedMethodArgument
           signature == @signature
-        end
-
-        def valid_alg?(alg)
-          alg == self.alg
         end
       end
     end
@@ -886,6 +882,50 @@ RSpec.describe JWT do
     context 'when multiple custom algorithms are given for decoding' do
       it 'tries until the first match' do
         expect(JWT.decode(token, 'secret', true, algorithms: [custom_algorithm.new(signature: 'not_this'), custom_algorithm.new])).to eq([payload, { 'alg' => 'custom' }])
+      end
+    end
+
+    context 'when class has custom header method' do
+      before do
+        custom_algorithm.class_eval do
+          def header(*)
+            { 'alg' => alg, 'foo' => 'bar' }
+          end
+        end
+      end
+
+      it 'uses the provided header' do
+        expect(JWT.decode(token, 'secret', true, algorithm: custom_algorithm.new)).to eq([payload, { 'alg' => 'custom', 'foo' => 'bar' }])
+      end
+    end
+
+    context 'when class is not utilizing the ::JWT::JWA::SigningAlgorithm module' do
+      let(:custom_algorithm) do
+        Class.new do
+          attr_reader :alg
+
+          def initialize(signature: 'custom_signature', alg: 'custom')
+            @signature = signature
+            @alg       = alg
+          end
+
+          def header(*)
+            { 'alg' => @alg, 'foo' => 'bar' }
+          end
+
+          def sign(*)
+            @signature
+          end
+
+          def verify(*)
+            true
+          end
+        end
+      end
+
+      it 'emits a deprecation warning' do
+        expect { token }.to output("[DEPRECATION WARNING] Custom algorithms are required to include JWT::JWA::SigningAlgorithm\n").to_stderr
+        expect(JWT.decode(token, 'secret', true, algorithm: custom_algorithm.new)).to eq([payload, { 'alg' => 'custom', 'foo' => 'bar' }])
       end
     end
 
@@ -908,9 +948,8 @@ RSpec.describe JWT do
         end
       end
 
-      # This behaviour should be somehow nicer
       it 'raises an error on encoding' do
-        expect { token }.to raise_error(NoMethodError)
+        expect { token }.to raise_error(JWT::EncodeError, /missing the sign method/)
       end
 
       it 'allows decoding' do
@@ -929,9 +968,8 @@ RSpec.describe JWT do
         expect(token).to eq(expected_token)
       end
 
-      # This behaviour should be somehow nicer
       it 'raises error on decoding' do
-        expect { JWT.decode(expected_token, 'secret', true, algorithm: custom_algorithm.new) }.to raise_error(NoMethodError)
+        expect { JWT.decode(expected_token, 'secret', true, algorithm: custom_algorithm.new) }.to raise_error(JWT::DecodeError, /missing the verify method/)
       end
     end
   end
