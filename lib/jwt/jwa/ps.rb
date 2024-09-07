@@ -2,29 +2,35 @@
 
 module JWT
   module JWA
-    module Ps
-      # RSASSA-PSS signing algorithms
+    class Ps
+      include JWT::JWA::SigningAlgorithm
 
-      module_function
-
-      SUPPORTED = %w[PS256 PS384 PS512].freeze
-
-      def sign(algorithm, msg, key)
-        unless key.is_a?(::OpenSSL::PKey::RSA)
-          raise EncodeError, "The given key is a #{key_class}. It has to be an OpenSSL::PKey::RSA instance."
-        end
-
-        translated_algorithm = algorithm.sub('PS', 'sha')
-
-        key.sign_pss(translated_algorithm, msg, salt_length: :digest, mgf1_hash: translated_algorithm)
+      def initialize(alg)
+        @alg = alg
+        @digest_algorithm = alg.sub('PS', 'sha')
       end
 
-      def verify(algorithm, public_key, signing_input, signature)
-        translated_algorithm = algorithm.sub('PS', 'sha')
-        public_key.verify_pss(translated_algorithm, signature, signing_input, salt_length: :auto, mgf1_hash: translated_algorithm)
+      def sign(data:, signing_key:)
+        unless signing_key.is_a?(::OpenSSL::PKey::RSA)
+          raise_sign_error!("The given key is a #{signing_key.class}. It has to be an OpenSSL::PKey::RSA instance.")
+        end
+
+        signing_key.sign_pss(digest_algorithm, data, salt_length: :digest, mgf1_hash: digest_algorithm)
+      end
+
+      def verify(data:, signature:, verification_key:)
+        verification_key.verify_pss(digest_algorithm, signature, data, salt_length: :auto, mgf1_hash: digest_algorithm)
       rescue OpenSSL::PKey::PKeyError
         raise JWT::VerificationError, 'Signature verification raised'
       end
+
+      register_algorithm(new('PS256'))
+      register_algorithm(new('PS384'))
+      register_algorithm(new('PS512'))
+
+      private
+
+      attr_reader :digest_algorithm
     end
   end
 end

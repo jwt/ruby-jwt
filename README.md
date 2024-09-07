@@ -223,16 +223,20 @@ puts decoded_token
 
 ### **Custom algorithms**
 
-An object implementing custom signing or verification behaviour can be passed in the `algorithm` option when encoding and decoding. The given object needs to implement the method `valid_alg?` and `verify` and/or `alg` and `sign`, depending if object is used for encoding or decoding.
+When encoding or decoding a token, you can pass in a custom object through the `algorithm` option to handle signing or verification. This custom object must include or extend the `JWT::JWA::SigningAlgorithm` module and implement certain methods:
+
+- For decoding/verifying: The object must implement the methods `alg` and `verify`.
+- For encoding/signing: The object must implement the methods `alg` and `sign`.
+
+For customization options check the details from `JWT::JWA::SigningAlgorithm`.
+
 
 ```ruby
 module CustomHS512Algorithm
+  extend JWT::JWA::SigningAlgorithm
+
   def self.alg
     'HS512'
-  end
-
-  def self.valid_alg?(alg_to_validate)
-    alg_to_validate == alg
   end
 
   def self.sign(data:, signing_key:)

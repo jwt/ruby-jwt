@@ -2,8 +2,35 @@
 
 module JWT
   module JWA
-    module Ecdsa
-      module_function
+    class Ecdsa
+      include JWT::JWA::SigningAlgorithm
+
+      def initialize(alg, digest)
+        @alg = alg
+        @digest = OpenSSL::Digest.new(digest)
+      end
+
+      def sign(data:, signing_key:)
+        curve_definition = curve_by_name(signing_key.group.curve_name)
+        key_algorithm = curve_definition[:algorithm]
+        if alg != key_algorithm
+          raise IncorrectAlgorithm, "payload algorithm is #{alg} but #{key_algorithm} signing key was provided"
+        end
+
+        asn1_to_raw(signing_key.dsa_sign_asn1(digest.digest(data)), signing_key)
+      end
+
+      def verify(data:, signature:, verification_key:)
+        curve_definition = curve_by_name(verification_key.group.curve_name)
+        key_algorithm = curve_definition[:algorithm]
+        if alg != key_algorithm
+          raise IncorrectAlgorithm, "payload algorithm is #{alg} but #{key_algorithm} verification key was provided"
+        end
+
+        verification_key.dsa_verify_asn1(digest.digest(data), raw_to_asn1(signature, verification_key))
+      rescue OpenSSL::PKey::PKeyError
+        raise JWT::VerificationError, 'Signature verification raised'
+      end
 
       NAMED_CURVES = {
         'prime256v1' => {
@@ -28,36 +55,22 @@ module JWT
         }
       }.freeze
 
-      SUPPORTED = NAMED_CURVES.map { |_, c| c[:algorithm] }.uniq.freeze
-
-      def sign(algorithm, msg, key)
-        curve_definition = curve_by_name(key.group.curve_name)
-        key_algorithm = curve_definition[:algorithm]
-        if algorithm != key_algorithm
-          raise IncorrectAlgorithm, "payload algorithm is #{algorithm} but #{key_algorithm} signing key was provided"
-        end
-
-        digest = OpenSSL::Digest.new(curve_definition[:digest])
-        asn1_to_raw(key.dsa_sign_asn1(digest.digest(msg)), key)
+      NAMED_CURVES.each_value do |v|
+        register_algorithm(new(v[:algorithm], v[:digest]))
       end
 
-      def verify(algorithm, public_key, signing_input, signature)
-        curve_definition = curve_by_name(public_key.group.curve_name)
-        key_algorithm = curve_definition[:algorithm]
-        if algorithm != key_algorithm
-          raise IncorrectAlgorithm, "payload algorithm is #{algorithm} but #{key_algorithm} verification key was provided"
-        end
-
-        digest = OpenSSL::Digest.new(curve_definition[:digest])
-        public_key.dsa_verify_asn1(digest.digest(signing_input), raw_to_asn1(signature, public_key))
-      rescue OpenSSL::PKey::PKeyError
-        raise JWT::VerificationError, 'Signature verification raised'
-      end
-
-      def curve_by_name(name)
+      def self.curve_by_name(name)
         NAMED_CURVES.fetch(name) do
           raise UnsupportedEcdsaCurve, "The ECDSA curve '#{name}' is not supported"
         end
+      end
+
+      private
+
+      attr_reader :digest
+
+      def curve_by_name(name)
+        self.class.curve_by_name(name)
       end
 
       def raw_to_asn1(signature, private_key)

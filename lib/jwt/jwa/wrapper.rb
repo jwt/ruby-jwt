@@ -3,23 +3,40 @@
 module JWT
   module JWA
     class Wrapper
-      attr_reader :alg, :cls
+      include SigningAlgorithm
 
-      def initialize(alg, cls)
-        @alg = alg
-        @cls = cls
+      def initialize(algorithm)
+        @algorithm = algorithm
+      end
+
+      def alg
+        return @algorithm.alg if @algorithm.respond_to?(:alg)
+
+        super
       end
 
       def valid_alg?(alg_to_check)
-        alg&.casecmp(alg_to_check)&.zero? == true
+        return @algorithm.valid_alg?(alg_to_check) if @algorithm.respond_to?(:valid_alg?)
+
+        super
       end
 
-      def sign(data:, signing_key:)
-        cls.sign(alg, data, signing_key)
+      def header(*args, **kwargs)
+        return @algorithm.header(*args, **kwargs) if @algorithm.respond_to?(:header)
+
+        super
       end
 
-      def verify(data:, signature:, verification_key:)
-        cls.verify(alg, verification_key, data, signature)
+      def sign(*args, **kwargs)
+        return @algorithm.sign(*args, **kwargs) if @algorithm.respond_to?(:sign)
+
+        super
+      end
+
+      def verify(*args, **kwargs)
+        return @algorithm.verify(*args, **kwargs) if @algorithm.respond_to?(:verify)
+
+        super
       end
     end
   end
