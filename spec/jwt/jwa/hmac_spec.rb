@@ -2,9 +2,15 @@
 
 RSpec.describe JWT::JWA::Hmac do
   let(:instance) { described_class.new('HS256', OpenSSL::Digest::SHA256) }
+  let(:valid_signature) { [60, 56, 87, 72, 185, 194, 150, 13, 18, 148, 76, 245, 94, 91, 201, 64, 111, 91, 167, 156, 43, 148, 41, 113, 168, 156, 137, 12, 11, 31, 58, 97].pack('C*') }
+  let(:hmac_secret) { 'secret_key' }
 
   describe '#sign' do
     subject { instance.sign(data: 'test', signing_key: hmac_secret) }
+
+    context 'when signing with a key' do
+      it { is_expected.to eq(valid_signature) }
+    end
 
     # Address OpenSSL 3.0 errors with empty hmac_secret - https://github.com/jwt/ruby-jwt/issues/526
     context 'when nil hmac_secret is passed' do
@@ -101,6 +107,22 @@ RSpec.describe JWT::JWA::Hmac do
 
         it { is_expected.to eql(response) }
       end
+    end
+  end
+
+  describe '#verify' do
+    subject { instance.verify(data: 'test', signature: signature, verification_key: hmac_secret) }
+
+    context 'when signature is valid' do
+      let(:signature) { valid_signature }
+
+      it { is_expected.to be(true) }
+    end
+
+    context 'when signature is invalid' do
+      let(:signature) { [60, 56, 87, 72, 185, 194].pack('C*') }
+
+      it { is_expected.to be(false) }
     end
   end
 end
