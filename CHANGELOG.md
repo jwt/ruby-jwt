@@ -13,6 +13,7 @@
 
 - Refactor claim validators into their own classes [#605](https://github.com/jwt/ruby-jwt/pull/605) ([@anakinj](https://github.com/anakinj), [@MatteoPierro](https://github.com/MatteoPierro))
 - Allow extending available algorithms [#607](https://github.com/jwt/ruby-jwt/pull/607) ([@anakinj](https://github.com/anakinj))
+- Do not include the EdDSA algorithm if rbnacl not available [#613](https://github.com/jwt/ruby-jwt/pull/613) ([@anakinj](https://github.com/anakinj))
 - Your contribution here
 
 ## [v2.8.2](https://github.com/jwt/ruby-jwt/tree/v2.8.2) (2024-06-18)

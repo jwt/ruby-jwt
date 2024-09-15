@@ -9,15 +9,17 @@ rescue LoadError
 end
 
 require_relative 'jwa/signing_algorithm'
-
 require_relative 'jwa/ecdsa'
-require_relative 'jwa/eddsa'
 require_relative 'jwa/hmac'
 require_relative 'jwa/none'
 require_relative 'jwa/ps'
 require_relative 'jwa/rsa'
 require_relative 'jwa/unsupported'
 require_relative 'jwa/wrapper'
+
+if JWT.rbnacl?
+  require_relative 'jwa/eddsa'
+end
 
 if JWT.rbnacl_6_or_greater?
   require_relative 'jwa/hmac_rbnacl'

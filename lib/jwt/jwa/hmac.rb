@@ -12,7 +12,6 @@ module JWT
 
       def sign(data:, signing_key:)
         signing_key ||= ''
-
         raise_verify_error!('HMAC key expected to be a String') unless signing_key.is_a?(String)
 
         OpenSSL::HMAC.digest(digest.new, signing_key, data)
