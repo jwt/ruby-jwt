@@ -6,6 +6,7 @@
 
 **Features:**
 
+- Build and push gem using a GH action [#612](https://github.com/jwt/ruby-jwt/pull/612) ([@anakinj](https://github.com/anakinj))
 - Your contribution here
 
 **Fixes and enhancements:**
