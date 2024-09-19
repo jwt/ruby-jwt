@@ -458,7 +458,7 @@ RSpec.describe 'README.md code test' do
         end
 
         def self.sign(data:, signing_key:)
-          OpenSSL::HMAC.digest(OpenSSL::Digest.new('sha512'), data, signing_key)
+          OpenSSL::HMAC.digest(OpenSSL::Digest.new('sha512'), signing_key, data)
         end
 
         def self.verify(data:, signature:, verification_key:)
