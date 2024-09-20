@@ -538,10 +538,31 @@ RSpec.describe JWT do
         iss_payload = payload.merge(iss: iss)
         JWT.encode iss_payload, data[:secret]
       end
+
       it 'if verify_iss is set to false (default option) should not raise JWT::InvalidIssuerError' do
         expect do
           JWT.decode token, data[:secret], true, iss: iss, algorithm: 'HS256'
         end.not_to raise_error
+      end
+
+      context 'when verify_iss is set to true and no issues given' do
+        it 'does not raise' do
+          expect do
+            JWT.decode(token, data[:secret], true, verify_iss: true, algorithm: 'HS256')
+          end.not_to raise_error
+        end
+      end
+    end
+
+    context 'audience claim' do
+      let(:token) { JWT.encode(payload, data[:secret]) }
+
+      context 'when verify_aud is set to true and no audience given' do
+        it 'does not raise' do
+          expect do
+            JWT.decode(token, data[:secret], true, verify_aud: true, algorithm: 'HS256')
+          end.not_to raise_error
+        end
       end
     end
 
