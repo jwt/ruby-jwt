@@ -1,17 +1,12 @@
 # Changelog
 
-## [v2.9.1](https://github.com/jwt/ruby-jwt/tree/v2.9.1) (NEXT)
+## [v2.9.1](https://github.com/jwt/ruby-jwt/tree/v2.9.1) (2024-09-23)
 
-[Full Changelog](https://github.com/jwt/ruby-jwt/compare/v2.9.0...main)
-
-**Features:**
-
-- Your contribution here
+[Full Changelog](https://github.com/jwt/ruby-jwt/compare/v2.9.0...v2.9.1)
 
 **Fixes and enhancements:**
 
 - Fix regression in `iss` and `aud` claim validation [#619](https://github.com/jwt/ruby-jwt/pull/619) ([@anakinj](https://github.com/anakinj))
-- Your contribution here
 
 ## [v2.9.0](https://github.com/jwt/ruby-jwt/tree/v2.9.0) (2024-09-15)
 
