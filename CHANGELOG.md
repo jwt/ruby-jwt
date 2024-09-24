@@ -1,5 +1,17 @@
 # Changelog
 
+## [v2.9.2](https://github.com/jwt/ruby-jwt/tree/v2.9.2) (NEXT)
+
+[Full Changelog](https://github.com/jwt/ruby-jwt/compare/v2.9.1...main)
+
+**Features:**
+
+- Your contribution here
+
+**Fixes and enhancements:**
+
+- Your contribution here
+
 ## [v2.9.1](https://github.com/jwt/ruby-jwt/tree/v2.9.1) (2024-09-23)
 
 [Full Changelog](https://github.com/jwt/ruby-jwt/compare/v2.9.0...v2.9.1)
