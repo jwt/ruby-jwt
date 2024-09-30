@@ -11,6 +11,7 @@
 **Fixes and enhancements:**
 
 - Updated README to correctly document `OpenSSL::HMAC` documentation [#617](https://github.com/jwt/ruby-jwt/pull/617) ([@aedryan](https://github.com/aedryan))
+- Verify JWT header format [#622](https://github.com/jwt/ruby-jwt/pull/622) ([@304](https://github.com/304))
 - Your contribution here
 
 ## [v2.9.1](https://github.com/jwt/ruby-jwt/tree/v2.9.1) (2024-09-23)
