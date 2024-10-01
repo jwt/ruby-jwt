@@ -5,6 +5,10 @@ module JWT
     class HmacRbNaClFixed
       include JWT::JWA::SigningAlgorithm
 
+      def self.from_algorithm(algorithm)
+        new(algorithm, ::RbNaCl::HMAC.const_get(algorithm.upcase.gsub('HS', 'SHA')))
+      end
+
       def initialize(alg, hmac)
         @alg = alg
         @hmac = hmac

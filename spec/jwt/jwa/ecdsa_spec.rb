@@ -31,4 +31,12 @@ RSpec.describe JWT::JWA::Ecdsa do
       end
     end
   end
+
+  context 'backwards compatibility' do
+    it 'signs and verifies' do
+      key = OpenSSL::PKey::EC.generate('prime256v1')
+      signature = described_class.sign('ES256', 'data', key)
+      expect(described_class.verify('ES256', key, 'data', signature)).to be(true)
+    end
+  end
 end

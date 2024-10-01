@@ -28,10 +28,11 @@ module JWT
     class << self
       def verify!(payload, options)
         VERIFIERS.each do |key, verifier_builder|
-          next unless options[key]
+          next unless options[key] || options[key.to_s]
 
           verifier_builder&.call(options)&.verify!(context: VerificationContext.new(payload: payload))
         end
+        nil
       end
     end
   end

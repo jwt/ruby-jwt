@@ -8,6 +8,7 @@ rescue LoadError
   raise if defined?(RbNaCl)
 end
 
+require_relative 'jwa/compat'
 require_relative 'jwa/signing_algorithm'
 require_relative 'jwa/ecdsa'
 require_relative 'jwa/hmac'
@@ -34,11 +35,16 @@ module JWT
         return find(algorithm) if algorithm.is_a?(String) || algorithm.is_a?(Symbol)
 
         unless algorithm.is_a?(SigningAlgorithm)
-          Deprecations.warning('Custom algorithms are required to include JWT::JWA::SigningAlgorithm')
+          Deprecations.warning('Custom algorithms are required to include JWT::JWA::SigningAlgorithm. Custom algorithms that do not include this module may stop working in the next major version of ruby-jwt.')
           return Wrapper.new(algorithm)
         end
 
         algorithm
+      end
+
+      def create(algorithm)
+        Deprecations.warning('The ::JWT::JWA.create method is deprecated and will be removed in the next major version of ruby-jwt.')
+        resolve(algorithm)
       end
     end
   end

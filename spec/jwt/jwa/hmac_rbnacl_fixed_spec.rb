@@ -41,4 +41,11 @@ RSpec.describe 'JWT::JWA::HmacRbNaClFixed' do
       it { is_expected.to be(false) }
     end
   end
+
+  context 'backwards compatibility' do
+    it 'signs and verifies' do
+      signature = JWT::JWA::HmacRbNaClFixed.sign('HS512256', 'data', 'key')
+      expect(JWT::JWA::HmacRbNaClFixed.verify('HS512256', 'key', 'data', signature)).to be(true)
+    end
+  end
 end

@@ -50,4 +50,11 @@ RSpec.describe JWT::JWA::Rsa do
       end
     end
   end
+
+  context 'backwards compatibility' do
+    it 'signs and verifies' do
+      signature = described_class.sign('RS256', 'data', rsa_key)
+      expect(described_class.verify('RS256', rsa_key, 'data', signature)).to be(true)
+    end
+  end
 end

@@ -69,4 +69,11 @@ RSpec.describe JWT::JWA::Ps do
       end
     end
   end
+
+  context 'backwards compatibility' do
+    it 'signs and verifies' do
+      signature = described_class.sign('PS256', 'data', rsa_key)
+      expect(described_class.verify('PS256', rsa_key, 'data', signature)).to be(true)
+    end
+  end
 end
