@@ -11,6 +11,7 @@ module JWT
 
       def self.included(klass)
         klass.extend(ClassMethods)
+        klass.include(JWT::JWA::Compat)
       end
 
       attr_reader :alg

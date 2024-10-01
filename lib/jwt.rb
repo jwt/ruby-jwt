@@ -11,6 +11,9 @@ require 'jwt/error'
 require 'jwt/jwk'
 require 'jwt/claims'
 
+require 'jwt/claims_validator'
+require 'jwt/verify'
+
 # JSON Web Token implementation
 #
 # Should be up to date with the latest spec:

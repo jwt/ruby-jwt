@@ -5,6 +5,10 @@ module JWT
     class Hmac
       include JWT::JWA::SigningAlgorithm
 
+      def self.from_algorithm(algorithm)
+        new(algorithm, OpenSSL::Digest.new(algorithm.downcase.gsub('hs', 'sha')))
+      end
+
       def initialize(alg, digest)
         @alg = alg
         @digest = digest

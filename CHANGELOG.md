@@ -12,6 +12,7 @@
 
 - Updated README to correctly document `OpenSSL::HMAC` documentation [#617](https://github.com/jwt/ruby-jwt/pull/617) ([@aedryan](https://github.com/aedryan))
 - Verify JWT header format [#622](https://github.com/jwt/ruby-jwt/pull/622) ([@304](https://github.com/304))
+- Bring back `::JWT::ClaimsValidator`, `::JWT::Verify` and a few other removed interfaces for preserved backwards compatibility [#624](https://github.com/jwt/ruby-jwt/pull/624) ([@anakinj](https://github.com/anakinj))
 - Your contribution here
 
 ## [v2.9.1](https://github.com/jwt/ruby-jwt/tree/v2.9.1) (2024-09-23)

@@ -11,3 +11,4 @@ coverage/
 *gemfile.lock
 .byebug_history
 *.gem
+doc/
