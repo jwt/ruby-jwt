@@ -10,7 +10,7 @@ module JWT
     end
 
     def validate!
-      Claims::Numeric.verify!(payload: @payload)
+      Claims.verify_payload!(@payload, :numeric)
     end
   end
 end

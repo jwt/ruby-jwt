@@ -6,6 +6,7 @@
 
 **Features:**
 
+- Standalone claim verification interface [#626](https://github.com/jwt/ruby-jwt/pull/626) ([@anakinj](https://github.com/anakinj))
 - Your contribution here
 
 **Fixes and enhancements:**
