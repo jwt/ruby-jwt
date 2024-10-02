@@ -112,7 +112,7 @@ module JWT
     end
 
     def verify_claims
-      Claims.verify!(payload, @options)
+      Claims::DecodeVerifier.verify!(payload, @options)
     end
 
     def validate_segment_count!

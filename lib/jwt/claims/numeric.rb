@@ -3,10 +3,14 @@
 module JWT
   module Claims
     class Numeric
-      def self.verify!(payload:, **_args)
-        return unless payload.is_a?(Hash)
+      class Compat
+        def initialize(payload)
+          @payload = payload
+        end
 
-        new(payload).verify!
+        def verify!
+          JWT::Claims.verify_payload!(@payload, :numeric)
+        end
       end
 
       NUMERIC_CLAIMS = %i[
@@ -15,28 +19,38 @@ module JWT
         nbf
       ].freeze
 
-      def initialize(payload)
-        @payload = payload.transform_keys(&:to_sym)
+      def self.new(*args)
+        return super if args.empty?
+
+        Deprecations.warning('Calling ::JWT::Claims::Numeric.new with the payload will be removed in the next major version of ruby-jwt')
+        Compat.new(*args)
       end
 
-      def verify!
-        validate_numeric_claims
+      def verify!(context:)
+        validate_numeric_claims(context.payload)
+      end
 
-        true
+      def self.verify!(payload:, **_args)
+        Deprecations.warning('Calling ::JWT::Claims::Numeric.verify! with the payload will be removed in the next major version of ruby-jwt')
+        JWT::Claims.verify_payload!(payload, :numeric)
       end
 
       private
 
-      def validate_numeric_claims
+      def validate_numeric_claims(payload)
         NUMERIC_CLAIMS.each do |claim|
-          validate_is_numeric(claim) if @payload.key?(claim)
+          validate_is_numeric(payload, claim)
         end
       end
 
-      def validate_is_numeric(claim)
-        return if @payload[claim].is_a?(::Numeric)
+      def validate_is_numeric(payload, claim)
+        return unless payload.is_a?(Hash)
+        return unless payload.key?(claim) ||
+                      payload.key?(claim.to_s)
 
-        raise InvalidPayload, "#{claim} claim must be a Numeric value but it is a #{@payload[claim].class}"
+        return if payload[claim].is_a?(::Numeric) || payload[claim.to_s].is_a?(::Numeric)
+
+        raise InvalidPayload, "#{claim} claim must be a Numeric value but it is a #{(payload[claim] || payload[claim.to_s]).class}"
       end
     end
   end

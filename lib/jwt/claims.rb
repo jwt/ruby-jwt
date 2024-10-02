@@ -9,30 +9,74 @@ require_relative 'claims/not_before'
 require_relative 'claims/numeric'
 require_relative 'claims/required'
 require_relative 'claims/subject'
+require_relative 'claims/decode_verifier'
+require_relative 'claims/verifier'
 
 module JWT
+  # JWT Claim verifications
+  # https://datatracker.ietf.org/doc/html/rfc7519#section-4
+  #
+  # Verification is supported for the following claims:
+  # exp
+  # nbf
+  # iss
+  # iat
+  # jti
+  # aud
+  # sub
+  # required
+  # numeric
+  #
   module Claims
-    VerificationContext = Struct.new(:payload, keyword_init: true)
-
-    VERIFIERS = {
-      verify_expiration: ->(options) { Claims::Expiration.new(leeway: options[:exp_leeway] || options[:leeway]) },
-      verify_not_before: ->(options) { Claims::NotBefore.new(leeway: options[:nbf_leeway] || options[:leeway]) },
-      verify_iss: ->(options) { options[:iss] && Claims::Issuer.new(issuers: options[:iss]) },
-      verify_iat: ->(*) { Claims::IssuedAt.new },
-      verify_jti: ->(options) { Claims::JwtId.new(validator: options[:verify_jti]) },
-      verify_aud: ->(options) { options[:aud] && Claims::Audience.new(expected_audience: options[:aud]) },
-      verify_sub: ->(options) { options[:sub] && Claims::Subject.new(expected_subject: options[:sub]) },
-      required_claims: ->(options) { Claims::Required.new(required_claims: options[:required_claims]) }
-    }.freeze
+    # Represents a claim verification error
+    Error = Struct.new(:message, keyword_init: true)
 
     class << self
+      # @deprecated Use {verify_payload!} instead. Will be removed in the next major version of ruby-jwt.
       def verify!(payload, options)
-        VERIFIERS.each do |key, verifier_builder|
-          next unless options[key] || options[key.to_s]
+        Deprecations.warning('Calling ::JWT::Claims::verify! will be removed in the next major version of ruby-jwt')
+        DecodeVerifier.verify!(payload, options)
+      end
 
-          verifier_builder&.call(options)&.verify!(context: VerificationContext.new(payload: payload))
-        end
-        nil
+      # Checks if the claims in the JWT payload are valid.
+      # @example
+      #
+      #   ::JWT::Claims.verify_payload!({"exp" => Time.now.to_i + 10}, :exp)
+      #   ::JWT::Claims.verify_payload!({"exp" => Time.now.to_i - 10}, exp: { leeway: 11})
+      #
+      # @param payload [Hash] the JWT payload.
+      # @param options [Array] the options for verifying the claims.
+      # @return [void]
+      # @raise [JWT::DecodeError] if any claim is invalid.
+      def verify_payload!(payload, *options)
+        verify_token!(VerificationContext.new(payload: payload), *options)
+      end
+
+      # Checks if the claims in the JWT payload are valid.
+      #
+      # @param payload [Hash] the JWT payload.
+      # @param options [Array] the options for verifying the claims.
+      # @return [Boolean] true if the claims are valid, false otherwise
+      def valid_payload?(payload, *options)
+        payload_errors(payload, *options).empty?
+      end
+
+      # Returns the errors in the claims of the JWT token.
+      #
+      # @param options [Array] the options for verifying the claims.
+      # @return [Array<JWT::Claims::Error>] the errors in the claims of the JWT
+      def payload_errors(payload, *options)
+        token_errors(VerificationContext.new(payload: payload), *options)
+      end
+
+      private
+
+      def verify_token!(token, *options)
+        Verifier.verify!(token, *options)
+      end
+
+      def token_errors(token, *options)
+        Verifier.errors(token, *options)
       end
     end
   end
