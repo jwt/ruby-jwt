@@ -530,6 +530,24 @@ rescue JWT::InvalidSubError
 end
 ```
 
+### Standalone claim verification
+
+The JWT claim verifications can be used to verify any Hash to include expected keys and values.
+
+A few example on verifying the claims for a payload:
+```ruby
+JWT::Claims.verify_payload!({"exp" => Time.now.to_i + 10}, :numeric, :exp)
+JWT::Claims.valid_payload?({"exp" => Time.now.to_i + 10}, :exp)
+# => true
+JWT::Claims.payload_errors({"exp" => Time.now.to_i - 10}, :exp)
+# => [#<struct JWT::Claims::Error message="Signature has expired">]
+JWT::Claims.verify_payload!({"exp" => Time.now.to_i - 10}, exp: { leeway: 11})
+
+JWT::Claims.verify_payload!({"exp" => Time.now.to_i + 10, "sub" => "subject"}, :exp, sub: "subject")
+```
+
+
+
 ### Finding a Key
 
 To dynamically find the key for verifying the JWT signature, pass a block to the decode block. The block receives headers and the original payload as parameters. It should return with the key to verify the signature that was used to sign the JWT.
