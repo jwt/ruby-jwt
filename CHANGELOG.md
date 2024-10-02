@@ -22,21 +22,19 @@ Notable changes in the upcoming **version 3.0**:
   - The `sign` and `verify` static methods on all the algorithms (`::JWT::JWA`) will be removed.
   - Custom algorithms are expected to include the `JWT::JWA::SigningAlgorithm` module.
 
-## [v2.9.2](https://github.com/jwt/ruby-jwt/tree/v2.9.2) (NEXT)
+## [v2.9.2](https://github.com/jwt/ruby-jwt/tree/v2.9.2) (2024-10-03)
 
-[Full Changelog](https://github.com/jwt/ruby-jwt/compare/v2.9.1...main)
+[Full Changelog](https://github.com/jwt/ruby-jwt/compare/v2.9.1...v2.9.2)
 
 **Features:**
 
 - Standalone claim verification interface [#626](https://github.com/jwt/ruby-jwt/pull/626) ([@anakinj](https://github.com/anakinj))
-- Your contribution here
 
 **Fixes and enhancements:**
 
 - Updated README to correctly document `OpenSSL::HMAC` documentation [#617](https://github.com/jwt/ruby-jwt/pull/617) ([@aedryan](https://github.com/aedryan))
 - Verify JWT header format [#622](https://github.com/jwt/ruby-jwt/pull/622) ([@304](https://github.com/304))
 - Bring back `::JWT::ClaimsValidator`, `::JWT::Verify` and a few other removed interfaces for preserved backwards compatibility [#624](https://github.com/jwt/ruby-jwt/pull/624) ([@anakinj](https://github.com/anakinj))
-- Your contribution here
 
 ## [v2.9.1](https://github.com/jwt/ruby-jwt/tree/v2.9.1) (2024-09-23)
 
