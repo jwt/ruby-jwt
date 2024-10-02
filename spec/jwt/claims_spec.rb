@@ -54,6 +54,34 @@ RSpec.describe JWT::Claims do
         end
       end
     end
+
+    context 'various types of params' do
+      context 'when payload is missing most of the claims' do
+        it 'raises an error' do
+          expect do
+            described_class.verify_payload!(payload,
+                                            :nbf,
+                                            iss: ['www.host.com', 'https://other.host.com'].freeze,
+                                            aud: 'aud',
+                                            exp: { leeway: 10 })
+          end.to raise_error(JWT::InvalidIssuerError)
+        end
+      end
+
+      context 'when payload has everything that is expected of it' do
+        let(:payload) { { 'iss' => 'www.host.com', 'aud' => 'audience', 'exp' => Time.now.to_i - 10, 'pay' => 'load' } }
+
+        it 'does not raise' do
+          expect do
+            described_class.verify_payload!(payload,
+                                            :nbf,
+                                            iss: ['www.host.com', 'https://other.host.com'].freeze,
+                                            aud: 'audience',
+                                            exp: { leeway: 11 })
+          end.not_to raise_error
+        end
+      end
+    end
   end
 
   describe '.payload_errors' do
@@ -69,6 +97,23 @@ RSpec.describe JWT::Claims do
       context 'when claim is invalid' do
         it 'returns array with error objects' do
           expect(described_class.payload_errors(payload, :exp).map(&:message)).to eq(['Signature has expired'])
+        end
+      end
+    end
+
+    context 'various types of params' do
+      let(:payload) { { 'exp' => Time.now.to_i - 10, 'pay' => 'load' } }
+
+      context 'when payload is most of the claims' do
+        it 'raises an error' do
+          messages = described_class.payload_errors(payload,
+                                                    :nbf,
+                                                    iss: ['www.host.com', 'https://other.host.com'].freeze,
+                                                    aud: 'aud',
+                                                    exp: { leeway: 10 }).map(&:message)
+          expect(messages).to eq(['Invalid issuer. Expected ["www.host.com", "https://other.host.com"], received <none>',
+                                  'Invalid audience. Expected aud, received <none>',
+                                  'Signature has expired'])
         end
       end
     end
