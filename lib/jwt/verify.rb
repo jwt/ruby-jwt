@@ -15,13 +15,11 @@ module JWT
       end
 
       def verify_claims(payload, options)
-        Deprecations.warning('The ::JWT::Verify.verify_claims method is deprecated and will be removed in the next major version of ruby-jwt')
         ::JWT::Claims.verify!(payload, options)
       end
     end
 
     def initialize(payload, options)
-      Deprecations.warning('The ::JWT::Verify class is deprecated and will be removed in the next major version of ruby-jwt')
       @payload = payload
       @options = DEFAULTS.merge(options)
     end

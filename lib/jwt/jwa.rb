@@ -43,7 +43,6 @@ module JWT
       end
 
       def create(algorithm)
-        Deprecations.warning('The ::JWT::JWA.create method is deprecated and will be removed in the next major version of ruby-jwt.')
         resolve(algorithm)
       end
     end
