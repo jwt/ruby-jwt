@@ -15,25 +15,20 @@ Notable changes in the upcoming **version 3.0**:
   - The `::JWT::Claims::verify!` method will be removed in favor of `::JWT::Claims::verify_payload!`.
   - The `::JWT::JWA.create` method will be removed. No recommended alternatives.
   - The `::JWT::Verify` class will be removed in favor of the functionality provided by `::JWT::Claims`.
-  - Calling `::JWT::Claims::Numeric.new` with a payload will be removed in favor of `::JWT::Claims::verify_payload!(payload, :numeric)`
-  - Calling `::JWT::Claims::Numeric.verify!` with a payload will be removed in favor of `::JWT::Claims::verify_payload!(payload, :numeric)`
+  - Calling `::JWT::Claims::Numeric.new` with a payload will be removed in favor of `::JWT::Claims::verify_payload!(payload, :numeric)`.
+  - Calling `::JWT::Claims::Numeric.verify!` with a payload will be removed in favor of `::JWT::Claims::verify_payload!(payload, :numeric)`.
 
 - The internal algorithms were [restructured](https://github.com/jwt/ruby-jwt/pull/607) to support extensions from separate libraries. The changes lead to a few deprecations and new requirements:
   - The `sign` and `verify` static methods on all the algorithms (`::JWT::JWA`) will be removed.
   - Custom algorithms are expected to include the `JWT::JWA::SigningAlgorithm` module.
 
-## [v2.9.3](https://github.com/jwt/ruby-jwt/tree/v2.9.3) (NEXT)
+## [v2.9.3](https://github.com/jwt/ruby-jwt/tree/v2.9.3) (2024-10-03)
 
-[Full Changelog](https://github.com/jwt/ruby-jwt/compare/v2.9.2...main)
-
-**Features:**
-
-- Your contribution here
+[Full Changelog](https://github.com/jwt/ruby-jwt/compare/v2.9.2...v2.9.3)
 
 **Fixes and enhancements:**
 
 - Return truthy value for `::JWT::ClaimsValidator#validate!` and `::JWT::Verify.verify_claims` [#628](https://github.com/jwt/ruby-jwt/pull/628) ([@anakinj](https://github.com/anakinj))
-- Your contribution here
 
 ## [v2.9.2](https://github.com/jwt/ruby-jwt/tree/v2.9.2) (2024-10-03)
 
