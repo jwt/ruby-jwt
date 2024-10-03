@@ -22,7 +22,6 @@ module JWT
       def self.new(*args)
         return super if args.empty?
 
-        Deprecations.warning('Calling ::JWT::Claims::Numeric.new with the payload will be removed in the next major version of ruby-jwt')
         Compat.new(*args)
       end
 
@@ -31,7 +30,6 @@ module JWT
       end
 
       def self.verify!(payload:, **_args)
-        Deprecations.warning('Calling ::JWT::Claims::Numeric.verify! with the payload will be removed in the next major version of ruby-jwt')
         JWT::Claims.verify_payload!(payload, :numeric)
       end
 
