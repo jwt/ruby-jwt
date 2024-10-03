@@ -310,7 +310,7 @@ RSpec.describe JWT::Verify do
     %w[verify_aud verify_expiration verify_iat verify_iss verify_jti verify_not_before verify_sub].each do |method|
       let(:payload) { base_payload.merge(fail_verifications_payload) }
       it "must skip verification when #{method} option is set to false" do
-        described_class.verify_claims(payload, options.merge(method => false))
+        expect(described_class.verify_claims(payload, options.merge(method => false))).to be_truthy
       end
 
       it "must raise error when #{method} option is set to true" do

@@ -16,6 +16,7 @@ module JWT
 
       def verify_claims(payload, options)
         ::JWT::Claims.verify!(payload, options)
+        true
       end
     end
 
