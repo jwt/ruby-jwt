@@ -32,6 +32,7 @@ Notable changes in the upcoming **version 3.0**:
 
 **Fixes and enhancements:**
 
+- Return truthy value for `::JWT::ClaimsValidator#validate!` and `::JWT::Verify.verify_claims` [#628](https://github.com/jwt/ruby-jwt/pull/628) ([@anakinj](https://github.com/anakinj))
 - Your contribution here
 
 ## [v2.9.2](https://github.com/jwt/ruby-jwt/tree/v2.9.2) (2024-10-03)

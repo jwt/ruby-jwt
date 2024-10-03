@@ -10,6 +10,7 @@ RSpec.describe JWT::ClaimsValidator do
       context "when #{claim} payload is an integer" do
         let(:claims) { { claim => 12_345 } }
 
+        it { is_expected.to be_truthy }
         it 'does not raise error' do
           expect { subject }.not_to raise_error
         end
