@@ -42,6 +42,12 @@ module JWT
         algorithm
       end
 
+      # @api private
+      def resolve_and_sort(algorithms:, preferred_algorithm:)
+        algs = Array(algorithms).map { |alg| JWA.resolve(alg) }
+        algs.partition { |alg| alg.valid_alg?(preferred_algorithm) }.flatten
+      end
+
       def create(algorithm)
         resolve(algorithm)
       end

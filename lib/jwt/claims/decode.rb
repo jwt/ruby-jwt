@@ -2,15 +2,8 @@
 
 module JWT
   module Claims
-    # Context class to contain the data passed to individual claim validators
-    #
     # @api private
-    VerificationContext = Struct.new(:payload, keyword_init: true)
-
-    # Verifiers to support the ::JWT.decode method
-    #
-    # @api private
-    module DecodeVerifier
+    module Decode
       VERIFIERS = {
         verify_expiration: ->(options) { Claims::Expiration.new(leeway: options[:exp_leeway] || options[:leeway]) },
         verify_not_before: ->(options) { Claims::NotBefore.new(leeway: options[:nbf_leeway] || options[:leeway]) },
@@ -22,17 +15,14 @@ module JWT
         required_claims: ->(options) { Claims::Required.new(required_claims: options[:required_claims]) }
       }.freeze
 
-      private_constant(:VERIFIERS)
-
       class << self
         # @api private
-        def verify!(payload, options)
+        def verify!(token, options)
           VERIFIERS.each do |key, verifier_builder|
-            next unless options[key] || options[key.to_s]
+            next unless options[key]
 
-            verifier_builder&.call(options)&.verify!(context: VerificationContext.new(payload: payload))
+            verifier_builder&.call(options)&.verify!(context: token)
           end
-          nil
         end
       end
     end

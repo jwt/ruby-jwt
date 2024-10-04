@@ -2,7 +2,7 @@
 
 module JWT
   module Claims
-    # @private
+    # @api private
     module Verifier
       VERIFIERS = {
         exp: ->(options) { Claims::Expiration.new(leeway: options.dig(:exp, :leeway)) },
@@ -20,7 +20,7 @@ module JWT
       private_constant(:VERIFIERS)
 
       class << self
-        # @private
+        # @api private
         def verify!(context, *options)
           iterate_verifiers(*options) do |verifier, verifier_options|
             verify_one!(context, verifier, verifier_options)
@@ -28,7 +28,7 @@ module JWT
           nil
         end
 
-        # @private
+        # @api private
         def errors(context, *options)
           errors = []
           iterate_verifiers(*options) do |verifier, verifier_options|
@@ -39,7 +39,8 @@ module JWT
           errors
         end
 
-        # @private
+        private
+
         def iterate_verifiers(*options)
           options.each do |element|
             if element.is_a?(Hash)
@@ -49,8 +50,6 @@ module JWT
             end
           end
         end
-
-        private
 
         def verify_one!(context, verifier, options)
           verifier_builder = VERIFIERS.fetch(verifier) { raise ArgumentError, "#{verifier} not a valid claim verifier" }

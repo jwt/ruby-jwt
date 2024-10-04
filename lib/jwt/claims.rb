@@ -11,6 +11,7 @@ require_relative 'claims/required'
 require_relative 'claims/subject'
 require_relative 'claims/decode_verifier'
 require_relative 'claims/verifier'
+require_relative 'claims/verification_methods'
 
 module JWT
   # JWT Claim verifications
@@ -48,7 +49,7 @@ module JWT
       # @return [void]
       # @raise [JWT::DecodeError] if any claim is invalid.
       def verify_payload!(payload, *options)
-        verify_token!(VerificationContext.new(payload: payload), *options)
+        Verifier.verify!(VerificationContext.new(payload: payload), *options)
       end
 
       # Checks if the claims in the JWT payload are valid.
@@ -65,17 +66,7 @@ module JWT
       # @param options [Array] the options for verifying the claims.
       # @return [Array<JWT::Claims::Error>] the errors in the claims of the JWT
       def payload_errors(payload, *options)
-        token_errors(VerificationContext.new(payload: payload), *options)
-      end
-
-      private
-
-      def verify_token!(token, *options)
-        Verifier.verify!(token, *options)
-      end
-
-      def token_errors(token, *options)
-        Verifier.errors(token, *options)
+        Verifier.errors(VerificationContext.new(payload: payload), *options)
       end
     end
   end

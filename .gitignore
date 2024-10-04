@@ -12,3 +12,4 @@ coverage/
 .byebug_history
 *.gem
 doc/
+.yardoc/

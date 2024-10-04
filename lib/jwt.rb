@@ -10,6 +10,8 @@ require 'jwt/encode'
 require 'jwt/error'
 require 'jwt/jwk'
 require 'jwt/claims'
+require 'jwt/encoded_token'
+require 'jwt/token'
 
 require 'jwt/claims_validator'
 require 'jwt/verify'
