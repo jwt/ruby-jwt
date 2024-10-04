@@ -28,6 +28,7 @@ Notable changes in the upcoming **version 3.0**:
 
 **Features:**
 
+- JWT::Token and JWT::EncodedToken for signing and verifying tokens [#621](https://github.com/jwt/ruby-jwt/pull/621) ([@anakinj](https://github.com/anakinj))
 - Your contribution here
 
 **Fixes and enhancements:**

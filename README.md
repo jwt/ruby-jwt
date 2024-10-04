@@ -221,6 +221,30 @@ decoded_token = JWT.decode token, rsa_public, true, { algorithm: 'PS256' }
 puts decoded_token
 ```
 
+### Using a Token object
+
+The `JWT::Token` and `JWT::EncodedToken` classes can be used to manage your JWTs.
+
+```ruby
+token = JWT::Token.new(payload: { exp: Time.now.to_i + 60, jti: '1234', sub: "my-subject" }, header: { kid: 'hmac' })
+token.sign!(algorithm: 'HS256', key: "secret")
+
+token.jwt # => "eyJhbGciOiJIUzI1N..."
+```
+
+The `JWT::EncodedToken` can be used to create a token object that allows verification of signatures and claims
+```ruby
+encoded_token = JWT::EncodedToken.new(token.jwt)
+
+encoded_token.verify_signature!(algorithm: 'HS256', key: "secret")
+encoded_token.verify_signature!(algorithm: 'HS256', key: "wrong_secret") # raises JWT::VerificationError
+encoded_token.verify_claims!(:exp, :jti)
+encoded_token.verify_claims!(sub: ["not-my-subject"]) # raises JWT::InvalidSubError
+encoded_token.claim_errors(sub: ["not-my-subject"]).map(&:message) # => ["Invalid subject. Expected [\"not-my-subject\"], received my-subject"]
+encoded_token.payload # => { 'exp'=>1234, 'jti'=>'1234", 'sub'=>'my-subject' }
+encoded_token.header # {'kid'=>'hmac', 'alg'=>'HS256'}
+```
+
 ### **Custom algorithms**
 
 When encoding or decoding a token, you can pass in a custom object through the `algorithm` option to handle signing or verification. This custom object must include or extend the `JWT::JWA::SigningAlgorithm` module and implement certain methods:
@@ -625,7 +649,6 @@ jwks.filter! {|key| key[:use] == 'sig' } # Signing keys only!
 algorithms = jwks.map { |key| key[:alg] }.compact.uniq
 JWT.decode(token, nil, true, algorithms: algorithms, jwks: jwks)
 ```
-
 
 The `jwks` option can also be given as a lambda that evaluates every time a kid is resolved.
 This can be used to implement caching of remotely fetched JWK Sets.
