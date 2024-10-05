@@ -1,0 +1,1131 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>
+  Class: JWT::Token
+  
+    &mdash; Documentation by YARD 0.9.37
+  
+</title>
+
+  <link rel="stylesheet" href="../css/style.css" type="text/css" />
+
+  <link rel="stylesheet" href="../css/common.css" type="text/css" />
+
+<script type="text/javascript">
+  pathId = "JWT::Token";
+  relpath = '../';
+</script>
+
+
+  <script type="text/javascript" charset="utf-8" src="../js/jquery.js"></script>
+
+  <script type="text/javascript" charset="utf-8" src="../js/app.js"></script>
+
+
+  </head>
+  <body>
+    <div class="nav_wrap">
+      <iframe id="nav" src="../class_list.html?1"></iframe>
+      <div id="resizer"></div>
+    </div>
+
+    <div id="main" tabindex="-1">
+      <div id="header">
+        <div id="menu">
+  
+    <a href="../_index.html">Index (T)</a> &raquo;
+    <span class='title'><span class='object_link'><a href="../JWT.html" title="JWT (module)">JWT</a></span></span>
+     &raquo; 
+    <span class="title">Token</span>
+  
+</div>
+
+        <div id="search">
+  
+    <a class="full_list_link" id="class_list_link"
+        href="../class_list.html">
+
+        <svg width="24" height="24">
+          <rect x="0" y="4" width="24" height="4" rx="1" ry="1"></rect>
+          <rect x="0" y="12" width="24" height="4" rx="1" ry="1"></rect>
+          <rect x="0" y="20" width="24" height="4" rx="1" ry="1"></rect>
+        </svg>
+    </a>
+  
+</div>
+        <div class="clear"></div>
+      </div>
+
+      <div id="content"><h1>Class: JWT::Token
+  
+  
+  
+</h1>
+<div class="box_info">
+  
+  <dl>
+    <dt>Inherits:</dt>
+    <dd>
+      <span class="inheritName">Object</span>
+      
+        <ul class="fullTree">
+          <li>Object</li>
+          
+            <li class="next">JWT::Token</li>
+          
+        </ul>
+        <a href="#" class="inheritanceTree">show all</a>
+      
+    </dd>
+  </dl>
+  
+
+  
+  
+  
+  
+  <dl>
+      <dt>Includes:</dt>
+      <dd><span class='object_link'><a href="Claims/VerificationMethods.html" title="JWT::Claims::VerificationMethods (module)">Claims::VerificationMethods</a></span></dd>
+  </dl>
+  
+  
+
+  
+
+  
+  <dl>
+    <dt>Defined in:</dt>
+    <dd>lib/jwt/token.rb</dd>
+  </dl>
+  
+</div>
+
+<h2>Overview</h2><div class="docstring">
+  <div class="discussion">
+    
+<p>Represents a JWT token</p>
+
+<p>Basic token signed using the HS256 algorithm:</p>
+
+<pre class="code ruby"><code class="ruby"><span class='id identifier rubyid_token'>token</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="../JWT.html" title="JWT (module)">JWT</a></span></span><span class='op'>::</span><span class='const'>Token</span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="#initialize-instance_method" title="JWT::Token#initialize (method)">new</a></span></span><span class='lparen'>(</span><span class='label'>payload:</span> <span class='lbrace'>{</span><span class='label'>pay:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>load</span><span class='tstring_end'>&#39;</span></span><span class='rbrace'>}</span><span class='rparen'>)</span>
+<span class='id identifier rubyid_token'>token</span><span class='period'>.</span><span class='id identifier rubyid_sign!'>sign!</span><span class='lparen'>(</span><span class='label'>algorithm:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>HS256</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>key:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>secret</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span>
+<span class='id identifier rubyid_token'>token</span><span class='period'>.</span><span class='id identifier rubyid_jwt'>jwt</span> <span class='comment'># =&gt; eyJhb....
+</span></code></pre>
+
+<p>Custom headers will be combined with generated headers:</p>
+
+<pre class="code ruby"><code class="ruby"><span class='id identifier rubyid_token'>token</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="../JWT.html" title="JWT (module)">JWT</a></span></span><span class='op'>::</span><span class='const'>Token</span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="#initialize-instance_method" title="JWT::Token#initialize (method)">new</a></span></span><span class='lparen'>(</span><span class='label'>payload:</span> <span class='lbrace'>{</span><span class='label'>pay:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>load</span><span class='tstring_end'>&#39;</span></span><span class='rbrace'>}</span><span class='comma'>,</span> <span class='label'>header:</span> <span class='lbrace'>{</span><span class='label'>custom:</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>value</span><span class='tstring_end'>&quot;</span></span><span class='rbrace'>}</span><span class='rparen'>)</span>
+<span class='id identifier rubyid_token'>token</span><span class='period'>.</span><span class='id identifier rubyid_sign!'>sign!</span><span class='lparen'>(</span><span class='label'>algorithm:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>HS256</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>key:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>secret</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span>
+<span class='id identifier rubyid_token'>token</span><span class='period'>.</span><span class='id identifier rubyid_header'>header</span> <span class='comment'># =&gt; {&quot;custom&quot;=&gt;&quot;value&quot;, &quot;alg&quot;=&gt;&quot;HS256&quot;}
+</span></code></pre>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div>
+
+
+
+  <h2>Instance Attribute Summary <small><a href="#" class="summary_toggle">collapse</a></small></h2>
+  <ul class="summary">
+    
+      <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#header-instance_method" title="#header (instance method)">#<strong>header</strong>  &#x21d2; Hash </a>
+    
+
+    
+  </span>
+  
+  
+  
+    
+      <span class="note title readonly">readonly</span>
+    
+    
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'>
+<p>Returns the decoded header of the JWT token.</p>
+</div></span>
+  
+</li>
+
+    
+      <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#payload-instance_method" title="#payload (instance method)">#<strong>payload</strong>  &#x21d2; Hash </a>
+    
+
+    
+  </span>
+  
+  
+  
+    
+      <span class="note title readonly">readonly</span>
+    
+    
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'>
+<p>Returns the payload of the JWT token.</p>
+</div></span>
+  
+</li>
+
+    
+  </ul>
+
+
+
+
+  
+    <h2>
+      Instance Method Summary
+      <small><a href="#" class="summary_toggle">collapse</a></small>
+    </h2>
+
+    <ul class="summary">
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#encoded_header-instance_method" title="#encoded_header (instance method)">#<strong>encoded_header</strong>  &#x21d2; String </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'>
+<p>Returns the encoded header of the JWT token.</p>
+</div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#encoded_payload-instance_method" title="#encoded_payload (instance method)">#<strong>encoded_payload</strong>  &#x21d2; String </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'>
+<p>Returns the encoded payload of the JWT token.</p>
+</div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#encoded_signature-instance_method" title="#encoded_signature (instance method)">#<strong>encoded_signature</strong>  &#x21d2; String </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'>
+<p>Returns the encoded signature of the JWT token.</p>
+</div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#initialize-instance_method" title="#initialize (instance method)">#<strong>initialize</strong>(payload:, header: {})  &#x21d2; Token </a>
+    
+
+    
+  </span>
+  
+  
+    <span class="note title constructor">constructor</span>
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'>
+<p>Initializes a new Token instance.</p>
+</div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#jwt-instance_method" title="#jwt (instance method)">#<strong>jwt</strong>  &#x21d2; String </a>
+    
+
+    
+      (also: #to_s)
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'>
+<p>Returns the JWT token as a string.</p>
+</div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#sign!-instance_method" title="#sign! (instance method)">#<strong>sign!</strong>(algorithm:, key:)  &#x21d2; void </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'>
+<p>Signs the JWT token.</p>
+</div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#signature-instance_method" title="#signature (instance method)">#<strong>signature</strong>  &#x21d2; String </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'>
+<p>Returns the decoded signature of the JWT token.</p>
+</div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#signing_input-instance_method" title="#signing_input (instance method)">#<strong>signing_input</strong>  &#x21d2; String </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'>
+<p>Returns the signing input of the JWT token.</p>
+</div></span>
+  
+</li>
+
+      
+    </ul>
+  
+
+
+  
+  
+  
+  
+  
+  
+  
+  
+  <h3 class="inherited">Methods included from <span class='object_link'><a href="Claims/VerificationMethods.html" title="JWT::Claims::VerificationMethods (module)">Claims::VerificationMethods</a></span></h3>
+  <p class="inherited"><span class='object_link'><a href="Claims/VerificationMethods.html#claim_errors-instance_method" title="JWT::Claims::VerificationMethods#claim_errors (method)">#claim_errors</a></span>, <span class='object_link'><a href="Claims/VerificationMethods.html#valid_claims%3F-instance_method" title="JWT::Claims::VerificationMethods#valid_claims? (method)">#valid_claims?</a></span>, <span class='object_link'><a href="Claims/VerificationMethods.html#verify_claims!-instance_method" title="JWT::Claims::VerificationMethods#verify_claims! (method)">#verify_claims!</a></span></p>
+<div id="constructor_details" class="method_details_list">
+  <h2>Constructor Details</h2>
+  
+    <div class="method_details first">
+  <h3 class="signature first" id="initialize-instance_method">
+  
+    #<strong>initialize</strong>(payload:, header: {})  &#x21d2; <tt><span class='object_link'><a href="" title="JWT::Token (class)">Token</a></span></tt> 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    
+<p>Initializes a new Token instance.</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  <p class="tag_title">Parameters:</p>
+<ul class="param">
+  
+    <li>
+      
+        <span class='name'>header</span>
+      
+      
+        <span class='type'>(<tt>Hash</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>{}</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>the header of the JWT token.</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>payload</span>
+      
+      
+        <span class='type'>(<tt>Hash</tt>)</span>
+      
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>the payload of the JWT token.</p>
+</div>
+      
+    </li>
+  
+</ul>
+
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+24
+25
+26
+27</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/jwt/token.rb', line 24</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_initialize'>initialize</span><span class='lparen'>(</span><span class='label'>payload:</span><span class='comma'>,</span> <span class='label'>header:</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='rparen'>)</span>
+  <span class='ivar'>@header</span>  <span class='op'>=</span> <span class='id identifier rubyid_header'>header</span><span class='op'>&amp;.</span><span class='id identifier rubyid_transform_keys'>transform_keys</span><span class='lparen'>(</span><span class='op'>&amp;</span><span class='symbol'>:to_s</span><span class='rparen'>)</span>
+  <span class='ivar'>@payload</span> <span class='op'>=</span> <span class='id identifier rubyid_payload'>payload</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+  
+</div>
+
+  <div id="instance_attr_details" class="attr_details">
+    <h2>Instance Attribute Details</h2>
+    
+      
+      <span id=""></span>
+      <div class="method_details first">
+  <h3 class="signature first" id="header-instance_method">
+  
+    #<strong>header</strong>  &#x21d2; <tt>Hash</tt>  <span class="extras">(readonly)</span>
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    
+<p>Returns the decoded header of the JWT token.</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+<p class="tag_title">Returns:</p>
+<ul class="return">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt>Hash</tt>)</span>
+      
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>the header of the JWT token.</p>
+</div>
+      
+    </li>
+  
+</ul>
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+46
+47
+48</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/jwt/token.rb', line 46</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_header'>header</span>
+  <span class='ivar'>@header</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      
+      <span id=""></span>
+      <div class="method_details ">
+  <h3 class="signature " id="payload-instance_method">
+  
+    #<strong>payload</strong>  &#x21d2; <tt>Hash</tt>  <span class="extras">(readonly)</span>
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    
+<p>Returns the payload of the JWT token.</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+<p class="tag_title">Returns:</p>
+<ul class="return">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt>Hash</tt>)</span>
+      
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>the payload of the JWT token.</p>
+</div>
+      
+    </li>
+  
+</ul>
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+58
+59
+60</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/jwt/token.rb', line 58</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_payload'>payload</span>
+  <span class='ivar'>@payload</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+  </div>
+
+
+  <div id="instance_method_details" class="method_details_list">
+    <h2>Instance Method Details</h2>
+
+    
+      <div class="method_details first">
+  <h3 class="signature first" id="encoded_header-instance_method">
+  
+    #<strong>encoded_header</strong>  &#x21d2; <tt>String</tt> 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    
+<p>Returns the encoded header of the JWT token.</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+<p class="tag_title">Returns:</p>
+<ul class="return">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt>String</tt>)</span>
+      
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>the encoded header of the JWT token.</p>
+</div>
+      
+    </li>
+  
+</ul>
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+51
+52
+53</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/jwt/token.rb', line 51</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_encoded_header'>encoded_header</span>
+  <span class='ivar'>@encoded_header</span> <span class='op'>||=</span> <span class='op'>::</span><span class='const'><span class='object_link'><a href="../JWT.html" title="JWT (module)">JWT</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="Base64.html" title="JWT::Base64 (class)">Base64</a></span></span><span class='period'>.</span><span class='id identifier rubyid_url_encode'><span class='object_link'><a href="Base64.html#url_encode-class_method" title="JWT::Base64.url_encode (method)">url_encode</a></span></span><span class='lparen'>(</span><span class='const'><span class='object_link'><a href="../JWT.html" title="JWT (module)">JWT</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="JSON.html" title="JWT::JSON (class)">JSON</a></span></span><span class='period'>.</span><span class='id identifier rubyid_generate'><span class='object_link'><a href="JSON.html#generate-class_method" title="JWT::JSON.generate (method)">generate</a></span></span><span class='lparen'>(</span><span class='id identifier rubyid_header'>header</span><span class='rparen'>)</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="encoded_payload-instance_method">
+  
+    #<strong>encoded_payload</strong>  &#x21d2; <tt>String</tt> 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    
+<p>Returns the encoded payload of the JWT token.</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+<p class="tag_title">Returns:</p>
+<ul class="return">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt>String</tt>)</span>
+      
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>the encoded payload of the JWT token.</p>
+</div>
+      
+    </li>
+  
+</ul>
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+63
+64
+65</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/jwt/token.rb', line 63</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_encoded_payload'>encoded_payload</span>
+  <span class='ivar'>@encoded_payload</span> <span class='op'>||=</span> <span class='op'>::</span><span class='const'><span class='object_link'><a href="../JWT.html" title="JWT (module)">JWT</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="Base64.html" title="JWT::Base64 (class)">Base64</a></span></span><span class='period'>.</span><span class='id identifier rubyid_url_encode'><span class='object_link'><a href="Base64.html#url_encode-class_method" title="JWT::Base64.url_encode (method)">url_encode</a></span></span><span class='lparen'>(</span><span class='const'><span class='object_link'><a href="../JWT.html" title="JWT (module)">JWT</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="JSON.html" title="JWT::JSON (class)">JSON</a></span></span><span class='period'>.</span><span class='id identifier rubyid_generate'><span class='object_link'><a href="JSON.html#generate-class_method" title="JWT::JSON.generate (method)">generate</a></span></span><span class='lparen'>(</span><span class='id identifier rubyid_payload'>payload</span><span class='rparen'>)</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="encoded_signature-instance_method">
+  
+    #<strong>encoded_signature</strong>  &#x21d2; <tt>String</tt> 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    
+<p>Returns the encoded signature of the JWT token.</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+<p class="tag_title">Returns:</p>
+<ul class="return">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt>String</tt>)</span>
+      
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>the encoded signature of the JWT token.</p>
+</div>
+      
+    </li>
+  
+</ul>
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+39
+40
+41</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/jwt/token.rb', line 39</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_encoded_signature'>encoded_signature</span>
+  <span class='ivar'>@encoded_signature</span> <span class='op'>||=</span> <span class='op'>::</span><span class='const'><span class='object_link'><a href="../JWT.html" title="JWT (module)">JWT</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="Base64.html" title="JWT::Base64 (class)">Base64</a></span></span><span class='period'>.</span><span class='id identifier rubyid_url_encode'><span class='object_link'><a href="Base64.html#url_encode-class_method" title="JWT::Base64.url_encode (method)">url_encode</a></span></span><span class='lparen'>(</span><span class='id identifier rubyid_signature'>signature</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="jwt-instance_method">
+  
+    #<strong>jwt</strong>  &#x21d2; <tt>String</tt> 
+  
+
+  
+    <span class="aliases">Also known as:
+    <span class="names"><span id='to_s-instance_method'>to_s</span></span>
+    </span>
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    
+<p>Returns the JWT token as a string.</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+<p class="tag_title">Returns:</p>
+<ul class="return">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt>String</tt>)</span>
+      
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>the JWT token as a string.</p>
+</div>
+      
+    </li>
+  
+</ul>
+<p class="tag_title">Raises:</p>
+<ul class="raise">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt><span class='object_link'><a href="EncodeError.html" title="JWT::EncodeError (class)">JWT::EncodeError</a></span></tt>)</span>
+      
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>if the token is not signed or other encoding issues</p>
+</div>
+      
+    </li>
+  
+</ul>
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+78
+79
+80</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/jwt/token.rb', line 78</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_jwt'>jwt</span>
+  <span class='ivar'>@jwt</span> <span class='op'>||=</span> <span class='lparen'>(</span><span class='ivar'>@signature</span> <span class='op'>&amp;&amp;</span> <span class='lbracket'>[</span><span class='id identifier rubyid_encoded_header'>encoded_header</span><span class='comma'>,</span> <span class='id identifier rubyid_encoded_payload'>encoded_payload</span><span class='comma'>,</span> <span class='id identifier rubyid_encoded_signature'>encoded_signature</span><span class='rbracket'>]</span><span class='period'>.</span><span class='id identifier rubyid_join'>join</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>.</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span><span class='rparen'>)</span> <span class='op'>||</span> <span class='id identifier rubyid_raise'>raise</span><span class='lparen'>(</span><span class='op'>::</span><span class='const'><span class='object_link'><a href="../JWT.html" title="JWT (module)">JWT</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="EncodeError.html" title="JWT::EncodeError (class)">EncodeError</a></span></span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>Token is not signed</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="sign!-instance_method">
+  
+    #<strong>sign!</strong>(algorithm:, key:)  &#x21d2; <tt>void</tt> 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    <p class="note returns_void">This method returns an undefined value.</p>
+<p>Signs the JWT token.</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  <p class="tag_title">Parameters:</p>
+<ul class="param">
+  
+    <li>
+      
+        <span class='name'>algorithm</span>
+      
+      
+        <span class='type'>(<tt>String</tt>, <tt>Object</tt>)</span>
+      
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>the algorithm to use for signing.</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>key</span>
+      
+      
+        <span class='type'>(<tt>String</tt>)</span>
+      
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>the key to use for signing.</p>
+</div>
+      
+    </li>
+  
+</ul>
+
+<p class="tag_title">Raises:</p>
+<ul class="raise">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt><span class='object_link'><a href="EncodeError.html" title="JWT::EncodeError (class)">JWT::EncodeError</a></span></tt>)</span>
+      
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>if the token is already signed or other problems when signing</p>
+</div>
+      
+    </li>
+  
+</ul>
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+88
+89
+90
+91
+92
+93
+94
+95</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/jwt/token.rb', line 88</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_sign!'>sign!</span><span class='lparen'>(</span><span class='label'>algorithm:</span><span class='comma'>,</span> <span class='label'>key:</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_raise'>raise</span> <span class='op'>::</span><span class='const'><span class='object_link'><a href="../JWT.html" title="JWT (module)">JWT</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="EncodeError.html" title="JWT::EncodeError (class)">EncodeError</a></span></span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>Token already signed</span><span class='tstring_end'>&#39;</span></span> <span class='kw'>if</span> <span class='ivar'>@signature</span>
+
+  <span class='const'><span class='object_link'><a href="JWA.html" title="JWT::JWA (module)">JWA</a></span></span><span class='period'>.</span><span class='id identifier rubyid_resolve'><span class='object_link'><a href="JWA.html#resolve-class_method" title="JWT::JWA.resolve (method)">resolve</a></span></span><span class='lparen'>(</span><span class='id identifier rubyid_algorithm'>algorithm</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_tap'>tap</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_algo'>algo</span><span class='op'>|</span>
+    <span class='id identifier rubyid_header'>header</span><span class='period'>.</span><span class='id identifier rubyid_merge!'>merge!</span><span class='lparen'>(</span><span class='id identifier rubyid_algo'>algo</span><span class='period'>.</span><span class='id identifier rubyid_header'>header</span><span class='rparen'>)</span>
+    <span class='ivar'>@signature</span> <span class='op'>=</span> <span class='id identifier rubyid_algo'>algo</span><span class='period'>.</span><span class='id identifier rubyid_sign'>sign</span><span class='lparen'>(</span><span class='label'>data:</span> <span class='id identifier rubyid_signing_input'>signing_input</span><span class='comma'>,</span> <span class='label'>signing_key:</span> <span class='id identifier rubyid_key'>key</span><span class='rparen'>)</span>
+  <span class='kw'>end</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="signature-instance_method">
+  
+    #<strong>signature</strong>  &#x21d2; <tt>String</tt> 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    
+<p>Returns the decoded signature of the JWT token.</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+<p class="tag_title">Returns:</p>
+<ul class="return">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt>String</tt>)</span>
+      
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>the decoded signature of the JWT token.</p>
+</div>
+      
+    </li>
+  
+</ul>
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+32
+33
+34</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/jwt/token.rb', line 32</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_signature'>signature</span>
+  <span class='ivar'>@signature</span> <span class='op'>||=</span> <span class='op'>::</span><span class='const'><span class='object_link'><a href="../JWT.html" title="JWT (module)">JWT</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="Base64.html" title="JWT::Base64 (class)">Base64</a></span></span><span class='period'>.</span><span class='id identifier rubyid_url_decode'><span class='object_link'><a href="Base64.html#url_decode-class_method" title="JWT::Base64.url_decode (method)">url_decode</a></span></span><span class='lparen'>(</span><span class='id identifier rubyid_encoded_signature'>encoded_signature</span> <span class='op'>||</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="signing_input-instance_method">
+  
+    #<strong>signing_input</strong>  &#x21d2; <tt>String</tt> 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    
+<p>Returns the signing input of the JWT token.</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+<p class="tag_title">Returns:</p>
+<ul class="return">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt>String</tt>)</span>
+      
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>the signing input of the JWT token.</p>
+</div>
+      
+    </li>
+  
+</ul>
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+70
+71
+72</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/jwt/token.rb', line 70</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_signing_input'>signing_input</span>
+  <span class='ivar'>@signing_input</span> <span class='op'>||=</span> <span class='lbracket'>[</span><span class='id identifier rubyid_encoded_header'>encoded_header</span><span class='comma'>,</span> <span class='id identifier rubyid_encoded_payload'>encoded_payload</span><span class='rbracket'>]</span><span class='period'>.</span><span class='id identifier rubyid_join'>join</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>.</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+  </div>
+
+</div>
+
+      <div id="footer">
+  Generated on Sat Oct  5 21:00:11 2024 by
+  <a href="https://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
+  0.9.37 (ruby-3.3.5).
+</div>
+
+    </div>
+  </body>
+</html>

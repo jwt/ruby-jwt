@@ -1,0 +1,1009 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>
+  Module: JWT
+  
+    &mdash; Documentation by YARD 0.9.37
+  
+</title>
+
+  <link rel="stylesheet" href="css/style.css" type="text/css" />
+
+  <link rel="stylesheet" href="css/common.css" type="text/css" />
+
+<script type="text/javascript">
+  pathId = "JWT";
+  relpath = '';
+</script>
+
+
+  <script type="text/javascript" charset="utf-8" src="js/jquery.js"></script>
+
+  <script type="text/javascript" charset="utf-8" src="js/app.js"></script>
+
+
+  </head>
+  <body>
+    <div class="nav_wrap">
+      <iframe id="nav" src="class_list.html?1"></iframe>
+      <div id="resizer"></div>
+    </div>
+
+    <div id="main" tabindex="-1">
+      <div id="header">
+        <div id="menu">
+  
+    <a href="_index.html">Index (J)</a> &raquo;
+    
+    
+    <span class="title">JWT</span>
+  
+</div>
+
+        <div id="search">
+  
+    <a class="full_list_link" id="class_list_link"
+        href="class_list.html">
+
+        <svg width="24" height="24">
+          <rect x="0" y="4" width="24" height="4" rx="1" ry="1"></rect>
+          <rect x="0" y="12" width="24" height="4" rx="1" ry="1"></rect>
+          <rect x="0" y="20" width="24" height="4" rx="1" ry="1"></rect>
+        </svg>
+    </a>
+  
+</div>
+        <div class="clear"></div>
+      </div>
+
+      <div id="content"><h1>Module: JWT
+  
+  
+  
+</h1>
+<div class="box_info">
+  
+
+  
+  
+  <dl>
+      <dt>Extended by:</dt>
+      <dd><span class='object_link'><a href="JWT/Configuration.html" title="JWT::Configuration (module)">Configuration</a></span></dd>
+  </dl>
+  
+  
+  
+  
+
+  
+
+  
+  <dl>
+    <dt>Defined in:</dt>
+    <dd>lib/jwt.rb<span class="defines">,<br />
+  lib/jwt/jwa.rb,<br /> lib/jwt/jwk.rb,<br /> lib/jwt/json.rb,<br /> lib/jwt/error.rb,<br /> lib/jwt/token.rb,<br /> lib/jwt/base64.rb,<br /> lib/jwt/claims.rb,<br /> lib/jwt/decode.rb,<br /> lib/jwt/encode.rb,<br /> lib/jwt/jwa/ps.rb,<br /> lib/jwt/jwk/ec.rb,<br /> lib/jwt/verify.rb,<br /> lib/jwt/jwa/rsa.rb,<br /> lib/jwt/jwk/rsa.rb,<br /> lib/jwt/jwk/set.rb,<br /> lib/jwt/version.rb,<br /> lib/jwt/jwa/hmac.rb,<br /> lib/jwt/jwa/none.rb,<br /> lib/jwt/jwk/hmac.rb,<br /> lib/jwt/jwa/ecdsa.rb,<br /> lib/jwt/jwa/eddsa.rb,<br /> lib/jwt/jwa/compat.rb,<br /> lib/jwt/jwa/wrapper.rb,<br /> lib/jwt/deprecations.rb,<br /> lib/jwt/jwk/key_base.rb,<br /> lib/jwt/claims/issuer.rb,<br /> lib/jwt/claims/jwt_id.rb,<br /> lib/jwt/configuration.rb,<br /> lib/jwt/encoded_token.rb,<br /> lib/jwt/claims/numeric.rb,<br /> lib/jwt/claims/subject.rb,<br /> lib/jwt/jwk/key_finder.rb,<br /> lib/jwt/jwk/okp_rbnacl.rb,<br /> lib/jwt/jwk/thumbprint.rb,<br /> lib/jwt/x5c_key_finder.rb,<br /> lib/jwt/claims/audience.rb,<br /> lib/jwt/claims/required.rb,<br /> lib/jwt/claims/verifier.rb,<br /> lib/jwt/jwa/hmac_rbnacl.rb,<br /> lib/jwt/jwa/unsupported.rb,<br /> lib/jwt/claims/issued_at.rb,<br /> lib/jwt/claims_validator.rb,<br /> lib/jwt/claims/expiration.rb,<br /> lib/jwt/claims/not_before.rb,<br /> lib/jwt/jwa/hmac_rbnacl_fixed.rb,<br /> lib/jwt/jwa/signing_algorithm.rb,<br /> lib/jwt/jwk/kid_as_key_digest.rb,<br /> lib/jwt/claims/decode_verifier.rb,<br /> lib/jwt/configuration/container.rb,<br /> lib/jwt/claims/verification_methods.rb,<br /> lib/jwt/configuration/jwk_configuration.rb,<br /> lib/jwt/configuration/decode_configuration.rb</span>
+</dd>
+  </dl>
+  
+</div>
+
+<h2>Overview</h2><div class="docstring">
+  <div class="discussion">
+    
+<p>JSON Web Token implementation</p>
+
+<p>Should be up to date with the latest spec: <a href="https://tools.ietf.org/html/rfc7519">tools.ietf.org/html/rfc7519</a></p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><h2>Defined Under Namespace</h2>
+<p class="children">
+  
+    
+      <strong class="modules">Modules:</strong> <span class='object_link'><a href="JWT/Claims.html" title="JWT::Claims (module)">Claims</a></span>, <span class='object_link'><a href="JWT/Configuration.html" title="JWT::Configuration (module)">Configuration</a></span>, <span class='object_link'><a href="JWT/Deprecations.html" title="JWT::Deprecations (module)">Deprecations</a></span>, <span class='object_link'><a href="JWT/JWA.html" title="JWT::JWA (module)">JWA</a></span>, <span class='object_link'><a href="JWT/JWK.html" title="JWT::JWK (module)">JWK</a></span>, <span class='object_link'><a href="JWT/VERSION.html" title="JWT::VERSION (module)">VERSION</a></span>
+    
+  
+    
+      <strong class="classes">Classes:</strong> <span class='object_link'><a href="JWT/Base64.html" title="JWT::Base64 (class)">Base64</a></span>, <span class='object_link'><a href="JWT/Base64DecodeError.html" title="JWT::Base64DecodeError (class)">Base64DecodeError</a></span>, <span class='object_link'><a href="JWT/ClaimsValidator.html" title="JWT::ClaimsValidator (class)">ClaimsValidator</a></span>, <span class='object_link'><a href="JWT/Decode.html" title="JWT::Decode (class)">Decode</a></span>, <span class='object_link'><a href="JWT/DecodeError.html" title="JWT::DecodeError (class)">DecodeError</a></span>, <span class='object_link'><a href="JWT/Encode.html" title="JWT::Encode (class)">Encode</a></span>, <span class='object_link'><a href="JWT/EncodeError.html" title="JWT::EncodeError (class)">EncodeError</a></span>, <span class='object_link'><a href="JWT/EncodedToken.html" title="JWT::EncodedToken (class)">EncodedToken</a></span>, <span class='object_link'><a href="JWT/ExpiredSignature.html" title="JWT::ExpiredSignature (class)">ExpiredSignature</a></span>, <span class='object_link'><a href="JWT/ImmatureSignature.html" title="JWT::ImmatureSignature (class)">ImmatureSignature</a></span>, <span class='object_link'><a href="JWT/IncorrectAlgorithm.html" title="JWT::IncorrectAlgorithm (class)">IncorrectAlgorithm</a></span>, <span class='object_link'><a href="JWT/InvalidAudError.html" title="JWT::InvalidAudError (class)">InvalidAudError</a></span>, <span class='object_link'><a href="JWT/InvalidIatError.html" title="JWT::InvalidIatError (class)">InvalidIatError</a></span>, <span class='object_link'><a href="JWT/InvalidIssuerError.html" title="JWT::InvalidIssuerError (class)">InvalidIssuerError</a></span>, <span class='object_link'><a href="JWT/InvalidJtiError.html" title="JWT::InvalidJtiError (class)">InvalidJtiError</a></span>, <span class='object_link'><a href="JWT/InvalidPayload.html" title="JWT::InvalidPayload (class)">InvalidPayload</a></span>, <span class='object_link'><a href="JWT/InvalidSubError.html" title="JWT::InvalidSubError (class)">InvalidSubError</a></span>, <span class='object_link'><a href="JWT/JSON.html" title="JWT::JSON (class)">JSON</a></span>, <span class='object_link'><a href="JWT/JWKError.html" title="JWT::JWKError (class)">JWKError</a></span>, <span class='object_link'><a href="JWT/MissingRequiredClaim.html" title="JWT::MissingRequiredClaim (class)">MissingRequiredClaim</a></span>, <span class='object_link'><a href="JWT/RequiredDependencyError.html" title="JWT::RequiredDependencyError (class)">RequiredDependencyError</a></span>, <span class='object_link'><a href="JWT/Token.html" title="JWT::Token (class)">Token</a></span>, <span class='object_link'><a href="JWT/UnsupportedEcdsaCurve.html" title="JWT::UnsupportedEcdsaCurve (class)">UnsupportedEcdsaCurve</a></span>, <span class='object_link'><a href="JWT/VerificationError.html" title="JWT::VerificationError (class)">VerificationError</a></span>, <span class='object_link'><a href="JWT/Verify.html" title="JWT::Verify (class)">Verify</a></span>, <span class='object_link'><a href="JWT/X5cKeyFinder.html" title="JWT::X5cKeyFinder (class)">X5cKeyFinder</a></span>
+    
+  
+</p>
+
+
+
+
+
+
+
+  
+    <h2>
+      Class Method Summary
+      <small><a href="#" class="summary_toggle">collapse</a></small>
+    </h2>
+
+    <ul class="summary">
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#decode-class_method" title="decode (class method)">.<strong>decode</strong>(jwt, key = nil, verify = true, options = {}, &amp;keyfinder)  &#x21d2; Array&lt;Hash&gt; </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'>
+<p>Decodes a JWT to extract the payload and header.</p>
+</div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#encode-class_method" title="encode (class method)">.<strong>encode</strong>(payload, key, algorithm = &#39;HS256&#39;, header_fields = {})  &#x21d2; String </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'>
+<p>Encodes a payload into a JWT.</p>
+</div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#gem_version-class_method" title="gem_version (class method)">.<strong>gem_version</strong>  &#x21d2; Gem::Version </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'>
+<p>Returns the gem version of the JWT library.</p>
+</div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#openssl_3%3F-class_method" title="openssl_3? (class method)">.<strong>openssl_3?</strong>  &#x21d2; Boolean </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  <span class="private note title">private</span>
+
+  
+    <span class="summary_desc"><div class='inline'>
+<p>Checks if the OpenSSL version is 3 or greater.</p>
+</div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#openssl_3_hmac_empty_key_regression%3F-class_method" title="openssl_3_hmac_empty_key_regression? (class method)">.<strong>openssl_3_hmac_empty_key_regression?</strong>  &#x21d2; Boolean </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  <span class="private note title">private</span>
+
+  
+    <span class="summary_desc"><div class='inline'>
+<p>Checks if there is an OpenSSL 3 HMAC empty key regression.</p>
+</div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#openssl_version-class_method" title="openssl_version (class method)">.<strong>openssl_version</strong>  &#x21d2; Gem::Version </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  <span class="private note title">private</span>
+
+  
+    <span class="summary_desc"><div class='inline'>
+<p>Returns the OpenSSL version.</p>
+</div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#rbnacl%3F-class_method" title="rbnacl? (class method)">.<strong>rbnacl?</strong>  &#x21d2; Boolean </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  <span class="private note title">private</span>
+
+  
+    <span class="summary_desc"><div class='inline'>
+<p>Checks if the RbNaCl library is defined.</p>
+</div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#rbnacl_6_or_greater%3F-class_method" title="rbnacl_6_or_greater? (class method)">.<strong>rbnacl_6_or_greater?</strong>  &#x21d2; Boolean </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  <span class="private note title">private</span>
+
+  
+    <span class="summary_desc"><div class='inline'>
+<p>Checks if the RbNaCl library version is 6.0.0 or greater.</p>
+</div></span>
+  
+</li>
+
+      
+    </ul>
+  
+
+
+  
+  
+  
+  
+  
+  
+  
+  
+  <h3 class="inherited">Methods included from <span class='object_link'><a href="JWT/Configuration.html" title="JWT::Configuration (module)">Configuration</a></span></h3>
+  <p class="inherited"><span class='object_link'><a href="JWT/Configuration.html#configuration-instance_method" title="JWT::Configuration#configuration (method)">configuration</a></span>, <span class='object_link'><a href="JWT/Configuration.html#configure-instance_method" title="JWT::Configuration#configure (method)">configure</a></span></p>
+
+
+  <div id="class_method_details" class="method_details_list">
+    <h2>Class Method Details</h2>
+
+    
+      <div class="method_details first">
+  <h3 class="signature first" id="decode-class_method">
+  
+    .<strong>decode</strong>(jwt, key = nil, verify = true, options = {}, &amp;keyfinder)  &#x21d2; <tt>Array&lt;Hash&gt;</tt> 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    
+<p>Decodes a JWT to extract the payload and header</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  <p class="tag_title">Parameters:</p>
+<ul class="param">
+  
+    <li>
+      
+        <span class='name'>jwt</span>
+      
+      
+        <span class='type'>(<tt>String</tt>)</span>
+      
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>the JWT to decode.</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>key</span>
+      
+      
+        <span class='type'>(<tt>String</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>nil</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>the key used to verify the JWT.</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>verify</span>
+      
+      
+        <span class='type'>(<tt>Boolean</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>true</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>whether to verify the JWT signature.</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>options</span>
+      
+      
+        <span class='type'>(<tt>Hash</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>{}</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>additional options for decoding.</p>
+</div>
+      
+    </li>
+  
+</ul>
+
+<p class="tag_title">Returns:</p>
+<ul class="return">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt>Array&lt;Hash&gt;</tt>)</span>
+      
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>the decoded payload and headers.</p>
+</div>
+      
+    </li>
+  
+</ul>
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+49
+50
+51
+52
+53</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/jwt.rb', line 49</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_decode'>decode</span><span class='lparen'>(</span><span class='id identifier rubyid_jwt'>jwt</span><span class='comma'>,</span> <span class='id identifier rubyid_key'>key</span> <span class='op'>=</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='id identifier rubyid_verify'>verify</span> <span class='op'>=</span> <span class='kw'>true</span><span class='comma'>,</span> <span class='id identifier rubyid_options'>options</span> <span class='op'>=</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='comma'>,</span> <span class='op'>&amp;</span><span class='id identifier rubyid_keyfinder'>keyfinder</span><span class='rparen'>)</span> <span class='comment'># rubocop:disable Style/OptionalBooleanParameter
+</span>  <span class='const'><span class='object_link'><a href="JWT/Deprecations.html" title="JWT::Deprecations (module)">Deprecations</a></span></span><span class='period'>.</span><span class='id identifier rubyid_context'><span class='object_link'><a href="JWT/Deprecations.html#context-class_method" title="JWT::Deprecations.context (method)">context</a></span></span> <span class='kw'>do</span>
+    <span class='const'><span class='object_link'><a href="JWT/Decode.html" title="JWT::Decode (class)">Decode</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="JWT/Decode.html#initialize-instance_method" title="JWT::Decode#initialize (method)">new</a></span></span><span class='lparen'>(</span><span class='id identifier rubyid_jwt'>jwt</span><span class='comma'>,</span> <span class='id identifier rubyid_key'>key</span><span class='comma'>,</span> <span class='id identifier rubyid_verify'>verify</span><span class='comma'>,</span> <span class='id identifier rubyid_configuration'>configuration</span><span class='period'>.</span><span class='id identifier rubyid_decode'>decode</span><span class='period'>.</span><span class='id identifier rubyid_to_h'>to_h</span><span class='period'>.</span><span class='id identifier rubyid_merge'>merge</span><span class='lparen'>(</span><span class='id identifier rubyid_options'>options</span><span class='rparen'>)</span><span class='comma'>,</span> <span class='op'>&amp;</span><span class='id identifier rubyid_keyfinder'>keyfinder</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_decode_segments'><span class='object_link'><a href="JWT/Decode.html#decode_segments-instance_method" title="JWT::Decode#decode_segments (method)">decode_segments</a></span></span>
+  <span class='kw'>end</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="encode-class_method">
+  
+    .<strong>encode</strong>(payload, key, algorithm = &#39;HS256&#39;, header_fields = {})  &#x21d2; <tt>String</tt> 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    
+<p>Encodes a payload into a JWT.</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  <p class="tag_title">Parameters:</p>
+<ul class="param">
+  
+    <li>
+      
+        <span class='name'>payload</span>
+      
+      
+        <span class='type'>(<tt>Hash</tt>)</span>
+      
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>the payload to encode.</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>key</span>
+      
+      
+        <span class='type'>(<tt>String</tt>)</span>
+      
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>the key used to sign the JWT.</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>algorithm</span>
+      
+      
+        <span class='type'>(<tt>String</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>&#39;HS256&#39;</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>the algorithm used to sign the JWT.</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>header_fields</span>
+      
+      
+        <span class='type'>(<tt>Hash</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>{}</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>additional headers to include in the JWT.</p>
+</div>
+      
+    </li>
+  
+</ul>
+
+<p class="tag_title">Returns:</p>
+<ul class="return">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt>String</tt>)</span>
+      
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>the encoded JWT.</p>
+</div>
+      
+    </li>
+  
+</ul>
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+35
+36
+37
+38
+39
+40</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/jwt.rb', line 35</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_encode'>encode</span><span class='lparen'>(</span><span class='id identifier rubyid_payload'>payload</span><span class='comma'>,</span> <span class='id identifier rubyid_key'>key</span><span class='comma'>,</span> <span class='id identifier rubyid_algorithm'>algorithm</span> <span class='op'>=</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>HS256</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='id identifier rubyid_header_fields'>header_fields</span> <span class='op'>=</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='rparen'>)</span>
+  <span class='const'><span class='object_link'><a href="JWT/Encode.html" title="JWT::Encode (class)">Encode</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="JWT/Encode.html#initialize-instance_method" title="JWT::Encode#initialize (method)">new</a></span></span><span class='lparen'>(</span><span class='label'>payload:</span> <span class='id identifier rubyid_payload'>payload</span><span class='comma'>,</span>
+             <span class='label'>key:</span> <span class='id identifier rubyid_key'>key</span><span class='comma'>,</span>
+             <span class='label'>algorithm:</span> <span class='id identifier rubyid_algorithm'>algorithm</span><span class='comma'>,</span>
+             <span class='label'>headers:</span> <span class='id identifier rubyid_header_fields'>header_fields</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_segments'><span class='object_link'><a href="JWT/Encode.html#segments-instance_method" title="JWT::Encode#segments (method)">segments</a></span></span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="gem_version-class_method">
+  
+    .<strong>gem_version</strong>  &#x21d2; <tt>Gem::Version</tt> 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    
+<p>Returns the gem version of the JWT library.</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+<p class="tag_title">Returns:</p>
+<ul class="return">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt>Gem::Version</tt>)</span>
+      
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>the gem version.</p>
+</div>
+      
+    </li>
+  
+</ul>
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+7
+8
+9</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/jwt/version.rb', line 7</span>
+
+<span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_gem_version'>gem_version</span>
+  <span class='const'>Gem</span><span class='op'>::</span><span class='const'>Version</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='const'><span class='object_link'><a href="JWT/VERSION.html" title="JWT::VERSION (module)">VERSION</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="JWT/VERSION.html#STRING-constant" title="JWT::VERSION::STRING (constant)">STRING</a></span></span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="openssl_3?-class_method">
+  
+    .<strong>openssl_3?</strong>  &#x21d2; <tt>Boolean</tt> 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    <p class="note private">
+  <strong>This method is part of a private API.</strong>
+  You should avoid using this method if possible, as it may be removed or be changed in the future.
+</p>
+
+<p>Checks if the OpenSSL version is 3 or greater.</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+<p class="tag_title">Returns:</p>
+<ul class="return">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt>Boolean</tt>)</span>
+      
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>true if OpenSSL version is 3 or greater, false otherwise.</p>
+</div>
+      
+    </li>
+  
+</ul>
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+27
+28
+29
+30
+31</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/jwt/version.rb', line 27</span>
+
+<span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_openssl_3?'>openssl_3?</span>
+  <span class='kw'>return</span> <span class='kw'>false</span> <span class='kw'>if</span> <span class='const'>OpenSSL</span><span class='op'>::</span><span class='const'>OPENSSL_VERSION</span><span class='period'>.</span><span class='id identifier rubyid_include?'>include?</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>LibreSSL</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span>
+
+  <span class='kw'>true</span> <span class='kw'>if</span> <span class='int'>3</span> <span class='op'>*</span> <span class='int'>0x10000000</span> <span class='op'>&lt;=</span> <span class='const'>OpenSSL</span><span class='op'>::</span><span class='const'>OPENSSL_VERSION_NUMBER</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="openssl_3_hmac_empty_key_regression?-class_method">
+  
+    .<strong>openssl_3_hmac_empty_key_regression?</strong>  &#x21d2; <tt>Boolean</tt> 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    <p class="note private">
+  <strong>This method is part of a private API.</strong>
+  You should avoid using this method if possible, as it may be removed or be changed in the future.
+</p>
+
+<p>Checks if there is an OpenSSL 3 HMAC empty key regression.</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+<p class="tag_title">Returns:</p>
+<ul class="return">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt>Boolean</tt>)</span>
+      
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>true if there is an OpenSSL 3 HMAC empty key regression, false otherwise.</p>
+</div>
+      
+    </li>
+  
+</ul>
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+53
+54
+55</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/jwt/version.rb', line 53</span>
+
+<span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_openssl_3_hmac_empty_key_regression?'>openssl_3_hmac_empty_key_regression?</span>
+  <span class='id identifier rubyid_openssl_3?'>openssl_3?</span> <span class='op'>&amp;&amp;</span> <span class='id identifier rubyid_openssl_version'>openssl_version</span> <span class='op'>&lt;=</span> <span class='op'>::</span><span class='const'>Gem</span><span class='op'>::</span><span class='const'>Version</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>3.0.0</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="openssl_version-class_method">
+  
+    .<strong>openssl_version</strong>  &#x21d2; <tt>Gem::Version</tt> 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    <p class="note private">
+  <strong>This method is part of a private API.</strong>
+  You should avoid using this method if possible, as it may be removed or be changed in the future.
+</p>
+
+<p>Returns the OpenSSL version.</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+<p class="tag_title">Returns:</p>
+<ul class="return">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt>Gem::Version</tt>)</span>
+      
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>the OpenSSL version.</p>
+</div>
+      
+    </li>
+  
+</ul>
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+61
+62
+63</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/jwt/version.rb', line 61</span>
+
+<span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_openssl_version'>openssl_version</span>
+  <span class='ivar'>@openssl_version</span> <span class='op'>||=</span> <span class='op'>::</span><span class='const'>Gem</span><span class='op'>::</span><span class='const'>Version</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='const'>OpenSSL</span><span class='op'>::</span><span class='const'>VERSION</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="rbnacl?-class_method">
+  
+    .<strong>rbnacl?</strong>  &#x21d2; <tt>Boolean</tt> 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    <p class="note private">
+  <strong>This method is part of a private API.</strong>
+  You should avoid using this method if possible, as it may be removed or be changed in the future.
+</p>
+
+<p>Checks if the RbNaCl library is defined.</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+<p class="tag_title">Returns:</p>
+<ul class="return">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt>Boolean</tt>)</span>
+      
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>true if RbNaCl is defined, false otherwise.</p>
+</div>
+      
+    </li>
+  
+</ul>
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+37
+38
+39</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/jwt/version.rb', line 37</span>
+
+<span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_rbnacl?'>rbnacl?</span>
+  <span class='kw'>defined?</span><span class='lparen'>(</span><span class='op'>::</span><span class='const'>RbNaCl</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="rbnacl_6_or_greater?-class_method">
+  
+    .<strong>rbnacl_6_or_greater?</strong>  &#x21d2; <tt>Boolean</tt> 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    <p class="note private">
+  <strong>This method is part of a private API.</strong>
+  You should avoid using this method if possible, as it may be removed or be changed in the future.
+</p>
+
+<p>Checks if the RbNaCl library version is 6.0.0 or greater.</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+<p class="tag_title">Returns:</p>
+<ul class="return">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt>Boolean</tt>)</span>
+      
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>true if RbNaCl version is 6.0.0 or greater, false otherwise.</p>
+</div>
+      
+    </li>
+  
+</ul>
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+45
+46
+47</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/jwt/version.rb', line 45</span>
+
+<span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_rbnacl_6_or_greater?'>rbnacl_6_or_greater?</span>
+  <span class='id identifier rubyid_rbnacl?'>rbnacl?</span> <span class='op'>&amp;&amp;</span> <span class='op'>::</span><span class='const'>Gem</span><span class='op'>::</span><span class='const'>Version</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='op'>::</span><span class='const'>RbNaCl</span><span class='op'>::</span><span class='const'>VERSION</span><span class='rparen'>)</span> <span class='op'>&gt;=</span> <span class='op'>::</span><span class='const'>Gem</span><span class='op'>::</span><span class='const'>Version</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>6.0.0</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+  </div>
+
+</div>
+
+      <div id="footer">
+  Generated on Sat Oct  5 21:00:11 2024 by
+  <a href="https://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
+  0.9.37 (ruby-3.3.5).
+</div>
+
+    </div>
+  </body>
+</html>

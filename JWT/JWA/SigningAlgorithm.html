@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>
+  Module: JWT::JWA::SigningAlgorithm
+  
+    &mdash; Documentation by YARD 0.9.37
+  
+</title>
+
+  <link rel="stylesheet" href="../../css/style.css" type="text/css" />
+
+  <link rel="stylesheet" href="../../css/common.css" type="text/css" />
+
+<script type="text/javascript">
+  pathId = "JWT::JWA::SigningAlgorithm";
+  relpath = '../../';
+</script>
+
+
+  <script type="text/javascript" charset="utf-8" src="../../js/jquery.js"></script>
+
+  <script type="text/javascript" charset="utf-8" src="../../js/app.js"></script>
+
+
+  </head>
+  <body>
+    <div class="nav_wrap">
+      <iframe id="nav" src="../../class_list.html?1"></iframe>
+      <div id="resizer"></div>
+    </div>
+
+    <div id="main" tabindex="-1">
+      <div id="header">
+        <div id="menu">
+  
+    <a href="../../_index.html">Index (S)</a> &raquo;
+    <span class='title'><span class='object_link'><a href="../../JWT.html" title="JWT (module)">JWT</a></span></span> &raquo; <span class='title'><span class='object_link'><a href="../JWA.html" title="JWT::JWA (module)">JWA</a></span></span>
+     &raquo; 
+    <span class="title">SigningAlgorithm</span>
+  
+</div>
+
+        <div id="search">
+  
+    <a class="full_list_link" id="class_list_link"
+        href="../../class_list.html">
+
+        <svg width="24" height="24">
+          <rect x="0" y="4" width="24" height="4" rx="1" ry="1"></rect>
+          <rect x="0" y="12" width="24" height="4" rx="1" ry="1"></rect>
+          <rect x="0" y="20" width="24" height="4" rx="1" ry="1"></rect>
+        </svg>
+    </a>
+  
+</div>
+        <div class="clear"></div>
+      </div>
+
+      <div id="content"><h1>Module: JWT::JWA::SigningAlgorithm
+  
+  
+  
+</h1>
+<div class="box_info">
+  
+
+  
+  
+  
+  
+  
+
+  
+  <dl>
+    <dt>Included in:</dt>
+    <dd><span class='object_link'><a href="Ecdsa.html" title="JWT::JWA::Ecdsa (class)">Ecdsa</a></span>, <span class='object_link'><a href="Eddsa.html" title="JWT::JWA::Eddsa (class)">Eddsa</a></span>, <span class='object_link'><a href="Hmac.html" title="JWT::JWA::Hmac (class)">Hmac</a></span>, <span class='object_link'><a href="HmacRbNaCl.html" title="JWT::JWA::HmacRbNaCl (class)">HmacRbNaCl</a></span>, <span class='object_link'><a href="HmacRbNaClFixed.html" title="JWT::JWA::HmacRbNaClFixed (class)">HmacRbNaClFixed</a></span>, <span class='object_link'><a href="None.html" title="JWT::JWA::None (class)">None</a></span>, <span class='object_link'><a href="Ps.html" title="JWT::JWA::Ps (class)">Ps</a></span>, <span class='object_link'><a href="Rsa.html" title="JWT::JWA::Rsa (class)">Rsa</a></span>, <span class='object_link'><a href="Unsupported.html" title="JWT::JWA::Unsupported (module)">Unsupported</a></span>, <span class='object_link'><a href="Wrapper.html" title="JWT::JWA::Wrapper (class)">Wrapper</a></span></dd>
+  </dl>
+  
+
+  
+  <dl>
+    <dt>Defined in:</dt>
+    <dd>lib/jwt/jwa/signing_algorithm.rb</dd>
+  </dl>
+  
+</div>
+
+<h2>Defined Under Namespace</h2>
+<p class="children">
+  
+    
+      <strong class="modules">Modules:</strong> <span class='object_link'><a href="SigningAlgorithm/ClassMethods.html" title="JWT::JWA::SigningAlgorithm::ClassMethods (module)">ClassMethods</a></span>
+    
+  
+    
+  
+</p>
+
+
+
+
+  <h2>Instance Attribute Summary <small><a href="#" class="summary_toggle">collapse</a></small></h2>
+  <ul class="summary">
+    
+      <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#alg-instance_method" title="#alg (instance method)">#<strong>alg</strong>  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+    
+      <span class="note title readonly">readonly</span>
+    
+    
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'>
+<p>Returns the value of attribute alg.</p>
+</div></span>
+  
+</li>
+
+    
+  </ul>
+
+
+
+
+  
+    <h2>
+      Class Method Summary
+      <small><a href="#" class="summary_toggle">collapse</a></small>
+    </h2>
+
+    <ul class="summary">
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#included-class_method" title="included (class method)">.<strong>included</strong>(klass)  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+    </ul>
+  
+    <h2>
+      Instance Method Summary
+      <small><a href="#" class="summary_toggle">collapse</a></small>
+    </h2>
+
+    <ul class="summary">
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#header-instance_method" title="#header (instance method)">#<strong>header</strong>  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#raise_sign_error!-instance_method" title="#raise_sign_error! (instance method)">#<strong>raise_sign_error!</strong>(message)  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#raise_verify_error!-instance_method" title="#raise_verify_error! (instance method)">#<strong>raise_verify_error!</strong>(message)  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#sign-instance_method" title="#sign (instance method)">#<strong>sign</strong>  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#valid_alg%3F-instance_method" title="#valid_alg? (instance method)">#<strong>valid_alg?</strong>(alg_to_check)  &#x21d2; Boolean </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#verify-instance_method" title="#verify (instance method)">#<strong>verify</strong>  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+    </ul>
+  
+
+
+  <div id="instance_attr_details" class="attr_details">
+    <h2>Instance Attribute Details</h2>
+    
+      
+      <span id=""></span>
+      <div class="method_details first">
+  <h3 class="signature first" id="alg-instance_method">
+  
+    #<strong>alg</strong>  &#x21d2; <tt>Object</tt>  <span class="extras">(readonly)</span>
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    
+<p>Returns the value of attribute alg.</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+17
+18
+19</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/jwt/jwa/signing_algorithm.rb', line 17</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_alg'>alg</span>
+  <span class='ivar'>@alg</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+  </div>
+
+
+  <div id="class_method_details" class="method_details_list">
+    <h2>Class Method Details</h2>
+
+    
+      <div class="method_details first">
+  <h3 class="signature first" id="included-class_method">
+  
+    .<strong>included</strong>(klass)  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+12
+13
+14
+15</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/jwt/jwa/signing_algorithm.rb', line 12</span>
+
+<span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_included'>included</span><span class='lparen'>(</span><span class='id identifier rubyid_klass'>klass</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_klass'>klass</span><span class='period'>.</span><span class='id identifier rubyid_extend'>extend</span><span class='lparen'>(</span><span class='const'><span class='object_link'><a href="SigningAlgorithm/ClassMethods.html" title="JWT::JWA::SigningAlgorithm::ClassMethods (module)">ClassMethods</a></span></span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_klass'>klass</span><span class='period'>.</span><span class='id identifier rubyid_include'>include</span><span class='lparen'>(</span><span class='const'><span class='object_link'><a href="../../JWT.html" title="JWT (module)">JWT</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="../JWA.html" title="JWT::JWA (module)">JWA</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="Compat.html" title="JWT::JWA::Compat (module)">Compat</a></span></span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+  </div>
+
+  <div id="instance_method_details" class="method_details_list">
+    <h2>Instance Method Details</h2>
+
+    
+      <div class="method_details first">
+  <h3 class="signature first" id="header-instance_method">
+  
+    #<strong>header</strong>  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+23
+24
+25</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/jwt/jwa/signing_algorithm.rb', line 23</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_header'>header</span><span class='lparen'>(</span><span class='op'>*</span><span class='rparen'>)</span>
+  <span class='lbrace'>{</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>alg</span><span class='tstring_end'>&#39;</span></span> <span class='op'>=&gt;</span> <span class='id identifier rubyid_alg'>alg</span> <span class='rbrace'>}</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="raise_sign_error!-instance_method">
+  
+    #<strong>raise_sign_error!</strong>(message)  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+39
+40
+41</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/jwt/jwa/signing_algorithm.rb', line 39</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_raise_sign_error!'>raise_sign_error!</span><span class='lparen'>(</span><span class='id identifier rubyid_message'>message</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_raise'>raise</span><span class='lparen'>(</span><span class='const'><span class='object_link'><a href="../EncodeError.html" title="JWT::EncodeError (class)">EncodeError</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='id identifier rubyid_message'>message</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_tap'>tap</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_e'>e</span><span class='op'>|</span> <span class='id identifier rubyid_e'>e</span><span class='period'>.</span><span class='id identifier rubyid_set_backtrace'>set_backtrace</span><span class='lparen'>(</span><span class='id identifier rubyid_caller'>caller</span><span class='lparen'>(</span><span class='int'>1</span><span class='rparen'>)</span><span class='rparen'>)</span> <span class='rbrace'>}</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="raise_verify_error!-instance_method">
+  
+    #<strong>raise_verify_error!</strong>(message)  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+35
+36
+37</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/jwt/jwa/signing_algorithm.rb', line 35</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_raise_verify_error!'>raise_verify_error!</span><span class='lparen'>(</span><span class='id identifier rubyid_message'>message</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_raise'>raise</span><span class='lparen'>(</span><span class='const'><span class='object_link'><a href="../DecodeError.html" title="JWT::DecodeError (class)">DecodeError</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='id identifier rubyid_message'>message</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_tap'>tap</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_e'>e</span><span class='op'>|</span> <span class='id identifier rubyid_e'>e</span><span class='period'>.</span><span class='id identifier rubyid_set_backtrace'>set_backtrace</span><span class='lparen'>(</span><span class='id identifier rubyid_caller'>caller</span><span class='lparen'>(</span><span class='int'>1</span><span class='rparen'>)</span><span class='rparen'>)</span> <span class='rbrace'>}</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="sign-instance_method">
+  
+    #<strong>sign</strong>  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+27
+28
+29</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/jwt/jwa/signing_algorithm.rb', line 27</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_sign'>sign</span><span class='lparen'>(</span><span class='op'>*</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_raise_sign_error!'>raise_sign_error!</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>Algorithm implementation is missing the sign method</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="valid_alg?-instance_method">
+  
+    #<strong>valid_alg?</strong>(alg_to_check)  &#x21d2; <tt>Boolean</tt> 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    
+
+  </div>
+</div>
+<div class="tags">
+  
+<p class="tag_title">Returns:</p>
+<ul class="return">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt>Boolean</tt>)</span>
+      
+      
+      
+    </li>
+  
+</ul>
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+19
+20
+21</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/jwt/jwa/signing_algorithm.rb', line 19</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_valid_alg?'>valid_alg?</span><span class='lparen'>(</span><span class='id identifier rubyid_alg_to_check'>alg_to_check</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_alg'>alg</span><span class='op'>&amp;.</span><span class='id identifier rubyid_casecmp'>casecmp</span><span class='lparen'>(</span><span class='id identifier rubyid_alg_to_check'>alg_to_check</span><span class='rparen'>)</span><span class='op'>&amp;.</span><span class='id identifier rubyid_zero?'>zero?</span> <span class='op'>==</span> <span class='kw'>true</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="verify-instance_method">
+  
+    #<strong>verify</strong>  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+31
+32
+33</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/jwt/jwa/signing_algorithm.rb', line 31</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_verify'>verify</span><span class='lparen'>(</span><span class='op'>*</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_raise_verify_error!'>raise_verify_error!</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>Algorithm implementation is missing the verify method</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+  </div>
+
+</div>
+
+      <div id="footer">
+  Generated on Sat Oct  5 21:00:11 2024 by
+  <a href="https://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
+  0.9.37 (ruby-3.3.5).
+</div>
+
+    </div>
+  </body>
+</html>
