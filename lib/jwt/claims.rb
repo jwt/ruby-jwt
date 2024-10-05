@@ -35,6 +35,7 @@ module JWT
     class << self
       # @deprecated Use {verify_payload!} instead. Will be removed in the next major version of ruby-jwt.
       def verify!(payload, options)
+        Deprecations.warning('The ::JWT::Claims.verify! method is deprecated will be removed in the next major version of ruby-jwt')
         DecodeVerifier.verify!(payload, options)
       end
 

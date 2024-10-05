@@ -29,8 +29,10 @@ elsif JWT.rbnacl?
 end
 
 module JWT
+  # The JWA module contains all supported algorithms.
   module JWA
     class << self
+      # @api private
       def resolve(algorithm)
         return find(algorithm) if algorithm.is_a?(String) || algorithm.is_a?(Symbol)
 
@@ -48,7 +50,9 @@ module JWT
         algs.partition { |alg| alg.valid_alg?(preferred_algorithm) }.flatten
       end
 
+      # @deprecated The `::JWT::JWA.create` method is deprecated and will be removed in the next major version of ruby-jwt.
       def create(algorithm)
+        Deprecations.warning('The ::JWT::JWA.create method is deprecated and will be removed in the next major version of ruby-jwt.')
         resolve(algorithm)
       end
     end

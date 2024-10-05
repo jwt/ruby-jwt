@@ -3,10 +3,17 @@
 require 'json'
 require 'jwt/x5c_key_finder'
 
-# JWT::Decode module
 module JWT
-  # Decoding logic for JWT
+  # The Decode class is responsible for decoding and verifying JWT tokens.
   class Decode
+    # Initializes a new Decode instance.
+    #
+    # @param jwt [String] the JWT to decode.
+    # @param key [String, Array<String>] the key(s) to use for verification.
+    # @param verify [Boolean] whether to verify the token's signature.
+    # @param options [Hash] additional options for decoding and verification.
+    # @param keyfinder [Proc] an optional key finder block to dynamically find the key for verification.
+    # @raise [JWT::DecodeError] if decoding or verification fails.
     def initialize(jwt, key, verify, options, &keyfinder)
       raise JWT::DecodeError, 'Nil JSON web token' unless jwt
 
@@ -17,6 +24,9 @@ module JWT
       @keyfinder = keyfinder
     end
 
+    # Decodes the JWT token and verifies its segments if verification is enabled.
+    #
+    # @return [Array<Hash>] an array containing the decoded payload and header.
     def decode_segments
       validate_segment_count!
       if @verify

@@ -1,27 +1,5 @@
 # Changelog
 
-## Upcoming breaking changes
-
-Notable changes in the upcoming **version 3.0**:
-
-- The indirect dependency to [rbnacl](https://github.com/RubyCrypto/rbnacl) will be removed:
-  - Support for the nonstandard SHA512256 algorithm will be removed.
-  - Support for Ed25519 will be moved to a [separate gem](https://github.com/anakinj/jwt-eddsa) for better dependency handling.
-
-- Base64 decoding will no longer fallback on the looser RFC 2045.
-
-- Claim verification has been [split into separate classes](https://github.com/jwt/ruby-jwt/pull/605) and has [a new api](https://github.com/jwt/ruby-jwt/pull/626) and lead to the following deprecations:
-  - The `::JWT::ClaimsValidator` class will be removed in favor of the functionality provided by `::JWT::Claims`.
-  - The `::JWT::Claims::verify!` method will be removed in favor of `::JWT::Claims::verify_payload!`.
-  - The `::JWT::JWA.create` method will be removed. No recommended alternatives.
-  - The `::JWT::Verify` class will be removed in favor of the functionality provided by `::JWT::Claims`.
-  - Calling `::JWT::Claims::Numeric.new` with a payload will be removed in favor of `::JWT::Claims::verify_payload!(payload, :numeric)`.
-  - Calling `::JWT::Claims::Numeric.verify!` with a payload will be removed in favor of `::JWT::Claims::verify_payload!(payload, :numeric)`.
-
-- The internal algorithms were [restructured](https://github.com/jwt/ruby-jwt/pull/607) to support extensions from separate libraries. The changes lead to a few deprecations and new requirements:
-  - The `sign` and `verify` static methods on all the algorithms (`::JWT::JWA`) will be removed.
-  - Custom algorithms are expected to include the `JWT::JWA::SigningAlgorithm` module.
-
 ## [v2.9.4](https://github.com/jwt/ruby-jwt/tree/v2.9.4) (NEXT)
 
 [Full Changelog](https://github.com/jwt/ruby-jwt/compare/v2.9.3...main)
@@ -33,6 +11,8 @@ Notable changes in the upcoming **version 3.0**:
 
 **Fixes and enhancements:**
 
+- Deprecation warnings for deprecated methods and classes [#629](https://github.com/jwt/ruby-jwt/pull/629) ([@anakinj](https://github.com/anakinj))
+- Improved documentation for public apis [#629](https://github.com/jwt/ruby-jwt/pull/629) ([@anakinj](https://github.com/anakinj))
 - Your contribution here
 
 ## [v2.9.3](https://github.com/jwt/ruby-jwt/tree/v2.9.3) (2024-10-03)
