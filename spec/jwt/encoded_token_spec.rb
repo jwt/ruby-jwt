@@ -24,7 +24,7 @@ RSpec.describe JWT::EncodedToken do
 
   describe '#verify_signature!' do
     context 'when key is valid' do
-      it 'returns nil' do
+      it 'does not raise' do
         expect(token.verify_signature!(algorithm: 'HS256', key: 'secret')).to eq(nil)
       end
     end
@@ -32,6 +32,34 @@ RSpec.describe JWT::EncodedToken do
     context 'when key is invalid' do
       it 'raises an error' do
         expect { token.verify_signature!(algorithm: 'HS256', key: 'wrong') }.to raise_error(JWT::VerificationError, 'Signature verification failed')
+      end
+    end
+
+    context 'when key is an array with one valid entry' do
+      it 'does not raise' do
+        expect(token.verify_signature!(algorithm: 'HS256', key: %w[wrong secret])).to eq(nil)
+      end
+    end
+
+    context 'when key_finder is given' do
+      it 'uses key provided by keyfinder' do
+        expect(token.verify_signature!(algorithm: 'HS256', key_finder: ->(_token) { 'secret' })).to eq(nil)
+      end
+
+      it 'can utilize an array provided by keyfinder' do
+        expect(token.verify_signature!(algorithm: 'HS256', key_finder: ->(_token) { %w[wrong secret] })).to eq(nil)
+      end
+    end
+
+    context 'when neither key or key_finder is given' do
+      it 'raises an ArgumentError' do
+        expect { token.verify_signature!(algorithm: 'HS256') }.to raise_error(ArgumentError, 'Provide either key or key_finder, not both or neither')
+      end
+    end
+
+    context 'when both key or key_finder is given' do
+      it 'raises an ArgumentError' do
+        expect { token.verify_signature!(algorithm: 'HS256', key: 'key', key_finder: 'finder') }.to raise_error(ArgumentError, 'Provide either key or key_finder, not both or neither')
       end
     end
   end

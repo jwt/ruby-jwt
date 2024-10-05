@@ -75,9 +75,14 @@ module JWT
     #
     # @param algorithm [String, Array<String>, Object, Array<Object>] the algorithm(s) to use for verification.
     # @param key [String, Array<String>] the key(s) to use for verification.
+    # @param key_finder [#call] an object responding to `call` to find the key for verification.
     # @return [nil]
     # @raise [JWT::VerificationError] if the signature verification fails.
-    def verify_signature!(algorithm:, key:)
+    # @raise [ArgumentError] if neither key nor key_finder is provided, or if both are provided.
+    def verify_signature!(algorithm:, key: nil, key_finder: nil)
+      raise ArgumentError, 'Provide either key or key_finder, not both or neither' if key.nil? == key_finder.nil?
+
+      key ||= key_finder.call(self)
       return if valid_signature?(algorithm: algorithm, key: key)
 
       raise JWT::VerificationError, 'Signature verification failed'
