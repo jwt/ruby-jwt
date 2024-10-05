@@ -25,6 +25,13 @@ module JWT
 
   module_function
 
+  # Encodes a payload into a JWT.
+  #
+  # @param payload [Hash] the payload to encode.
+  # @param key [String] the key used to sign the JWT.
+  # @param algorithm [String] the algorithm used to sign the JWT.
+  # @param header_fields [Hash] additional headers to include in the JWT.
+  # @return [String] the encoded JWT.
   def encode(payload, key, algorithm = 'HS256', header_fields = {})
     Encode.new(payload: payload,
                key: key,
@@ -32,6 +39,13 @@ module JWT
                headers: header_fields).segments
   end
 
+  # Decodes a JWT to extract the payload and header
+  #
+  # @param jwt [String] the JWT to decode.
+  # @param key [String] the key used to verify the JWT.
+  # @param verify [Boolean] whether to verify the JWT signature.
+  # @param options [Hash] additional options for decoding.
+  # @return [Array<Hash>] the decoded payload and headers.
   def decode(jwt, key = nil, verify = true, options = {}, &keyfinder) # rubocop:disable Style/OptionalBooleanParameter
     Deprecations.context do
       Decode.new(jwt, key, verify, configuration.decode.to_h.merge(options), &keyfinder).decode_segments

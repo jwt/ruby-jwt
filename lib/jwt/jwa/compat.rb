@@ -2,7 +2,10 @@
 
 module JWT
   module JWA
+    # Provides backwards compatibility for algorithms
+    # @api private
     module Compat
+      # @api private
       module ClassMethods
         def from_algorithm(algorithm)
           new(algorithm)

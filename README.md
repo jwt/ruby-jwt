@@ -10,12 +10,29 @@ A ruby implementation of the [RFC 7519 OAuth JSON Web Token (JWT)](https://tools
 
 If you have further questions related to development or usage, join us: [ruby-jwt google group](https://groups.google.com/forum/#!forum/ruby-jwt).
 
-## Announcements
-* Ruby 2.4 support was dropped in version 2.4.0
-* Ruby 1.9.3 support was dropped at December 31st, 2016.
-* Version 1.5.3 yanked. See: [#132](https://github.com/jwt/ruby-jwt/issues/132) and [#133](https://github.com/jwt/ruby-jwt/issues/133)
-
 See [CHANGELOG.md](CHANGELOG.md) for a complete set of changes.
+
+## Upcoming breaking changes
+
+Notable changes in the upcoming **version 3.0**:
+
+- The indirect dependency to [rbnacl](https://github.com/RubyCrypto/rbnacl) will be removed:
+  - Support for the non-standard SHA512256 algorithm will be removed.
+  - Support for Ed25519 will be moved to a [separate gem](https://github.com/anakinj/jwt-eddsa) for better dependency handling.
+
+- Base64 decoding will no longer fallback on the looser RFC 2045.
+
+- Claim verification has been [split into separate classes](https://github.com/jwt/ruby-jwt/pull/605) and has [a new api](https://github.com/jwt/ruby-jwt/pull/626) and lead to the following deprecations:
+  - The `::JWT::ClaimsValidator` class will be removed in favor of the functionality provided by `::JWT::Claims`.
+  - The `::JWT::Claims::verify!` method will be removed in favor of `::JWT::Claims::verify_payload!`.
+  - The `::JWT::JWA.create` method will be removed.
+  - The `::JWT::Verify` class will be removed in favor of the functionality provided by `::JWT::Claims`.
+  - Calling `::JWT::Claims::Numeric.new` with a payload will be removed in favor of `::JWT::Claims::verify_payload!(payload, :numeric)`.
+  - Calling `::JWT::Claims::Numeric.verify!` with a payload will be removed in favor of `::JWT::Claims::verify_payload!(payload, :numeric)`.
+
+- The internal algorithms were [restructured](https://github.com/jwt/ruby-jwt/pull/607) to support extensions from separate libraries. The changes lead to a few deprecations and new requirements:
+  - The `sign` and `verify` static methods on all the algorithms (`::JWT::JWA`) will be removed.
+  - Custom algorithms are expected to include the `JWT::JWA::SigningAlgorithm` module.
 
 ## Sponsors
 
@@ -26,20 +43,32 @@ See [CHANGELOG.md](CHANGELOG.md) for a complete set of changes.
 ## Installing
 
 ### Using Rubygems:
+
 ```bash
 gem install jwt
 ```
 
 ### Using Bundler:
+
 Add the following to your Gemfile
 ```
 gem 'jwt'
 ```
+
 And run `bundle install`
+
+Finally require the gem in your application
+```ruby
+require 'jwt'
+```
 
 ## Algorithms and Usage
 
-The JWT spec supports NONE, HMAC, RSASSA, ECDSA and RSASSA-PSS algorithms for cryptographic signing. Currently the jwt gem supports NONE, HMAC, RSASSA and ECDSA. If you are using cryptographic signing, you need to specify the algorithm in the options hash whenever you call JWT.decode to ensure that an attacker [cannot bypass the algorithm verification step](https://auth0.com/blog/critical-vulnerabilities-in-json-web-token-libraries/). **It is strongly recommended that you hard code the algorithm, as you may leave yourself vulnerable by dynamically picking the algorithm**
+The jwt gem natively supports the NONE, HMAC, RSASSA, ECDSA and RSASSA-PSS algorithms via the openssl library. The gem can be extended with additional or alternative implementations of the algorithms via extensions.
+
+Additionally the EdDSA algorithm is supported via a [separate gem](https://rubygems.org/gems/jwt-eddsa).
+
+For safe cryptographic signing, you need to specify the algorithm in the options hash whenever you call `JWT.decode` to ensure that an attacker [cannot bypass the algorithm verification step](https://auth0.com/blog/critical-vulnerabilities-in-json-web-token-libraries/). **It is strongly recommended that you hard code the algorithm, as you may leave yourself vulnerable by dynamically picking the algorithm**
 
 See: [ JSON Web Algorithms (JWA) 3.1. "alg" (Algorithm) Header Parameter Values for JWS](https://tools.ietf.org/html/rfc7518#section-3.1)
 
@@ -65,18 +94,17 @@ The stricter base64 decoding when processing tokens can be done via the `strict_
 * none - unsigned token
 
 ```ruby
-require 'jwt'
 
 payload = { data: 'test' }
 
 # IMPORTANT: set nil as password parameter
-token = JWT.encode payload, nil, 'none'
+token = JWT.encode(payload, nil, 'none')
 
 # eyJhbGciOiJub25lIn0.eyJkYXRhIjoidGVzdCJ9.
 puts token
 
 # Set password to nil and validation to false otherwise this won't work
-decoded_token = JWT.decode token, nil, false
+decoded_token = JWT.decode(token, nil, false)
 
 # Array
 # [
@@ -96,12 +124,12 @@ puts decoded_token
 # The secret must be a string. With OpenSSL 3.0/openssl gem `<3.0.1`, JWT::DecodeError will be raised if it isn't provided.
 hmac_secret = 'my$ecretK3y'
 
-token = JWT.encode payload, hmac_secret, 'HS256'
+token = JWT.encode(payload, hmac_secret, 'HS256')
 
 # eyJhbGciOiJIUzI1NiJ9.eyJkYXRhIjoidGVzdCJ9.pNIWIL34Jo13LViZAJACzK6Yf0qnvT_BuwOxiMCPE-Y
 puts token
 
-decoded_token = JWT.decode token, hmac_secret, true, { algorithm: 'HS256' }
+decoded_token = JWT.decode(token, hmac_secret, true, { algorithm: 'HS256' })
 
 # Array
 # [
@@ -118,15 +146,15 @@ puts decoded_token
 * RS512 - RSA using SHA-512 hash algorithm
 
 ```ruby
-rsa_private = OpenSSL::PKey::RSA.generate 2048
+rsa_private = OpenSSL::PKey::RSA.generate(2048)
 rsa_public = rsa_private.public_key
 
-token = JWT.encode payload, rsa_private, 'RS256'
+token = JWT.encode(payload, rsa_private, 'RS256')
 
 # eyJhbGciOiJSUzI1NiJ9.eyJkYXRhIjoidGVzdCJ9.GplO4w1spRgvEJQ3-FOtZr-uC8L45Jt7SN0J4woBnEXG_OZBSNcZjAJWpjadVYEe2ev3oUBFDYM1N_-0BTVeFGGYvMewu8E6aMjSZvOpf1cZBew-Vt4poSq7goG2YRI_zNPt3af2lkPqXD796IKC5URrEvcgF5xFQ-6h07XRDpSRx1ECrNsUOt7UM3l1IB4doY11GzwQA5sHDTmUZ0-kBT76ZMf12Srg_N3hZwphxBtudYtN5VGZn420sVrQMdPE_7Ni3EiWT88j7WCr1xrF60l8sZT3yKCVleG7D2BEXacTntB7GktBv4Xo8OKnpwpqTpIlC05dMowMkz3rEAAYbQ
 puts token
 
-decoded_token = JWT.decode token, rsa_public, true, { algorithm: 'RS256' }
+decoded_token = JWT.decode(token, rsa_public, true, { algorithm: 'RS256' })
 
 # Array
 # [
@@ -146,12 +174,12 @@ puts decoded_token
 ```ruby
 ecdsa_key = OpenSSL::PKey::EC.generate('prime256v1')
 
-token = JWT.encode payload, ecdsa_key, 'ES256'
+token = JWT.encode(payload, ecdsa_key, 'ES256')
 
 # eyJhbGciOiJFUzI1NiJ9.eyJkYXRhIjoidGVzdCJ9.AlLW--kaF7EX1NMX9WJRuIW8NeRJbn2BLXHns7Q5TZr7Hy3lF6MOpMlp7GoxBFRLISQ6KrD0CJOrR8aogEsPeg
 puts token
 
-decoded_token = JWT.decode token, ecdsa_key, true, { algorithm: 'ES256' }
+decoded_token = JWT.decode(token, ecdsa_key, true, { algorithm: 'ES256' })
 
 # Array
 # [
@@ -206,12 +234,12 @@ gem 'openssl', '~> 2.1'
 rsa_private = OpenSSL::PKey::RSA.generate 2048
 rsa_public = rsa_private.public_key
 
-token = JWT.encode payload, rsa_private, 'PS256'
+token = JWT.encode(payload, rsa_private, 'PS256')
 
 # eyJhbGciOiJQUzI1NiJ9.eyJkYXRhIjoidGVzdCJ9.KEmqagMUHM-NcmXo6818ZazVTIAkn9qU9KQFT1c5Iq91n0KRpAI84jj4ZCdkysDlWokFs3Dmn4MhcXP03oJKLFgnoPL40_Wgg9iFr0jnIVvnMUp1kp2RFUbL0jqExGTRA3LdAhuvw6ZByGD1bkcWjDXygjQw-hxILrT1bENjdr0JhFd-cB0-ps5SB0mwhFNcUw-OM3Uu30B1-mlFaelUY8jHJYKwLTZPNxHzndt8RGXF8iZLp7dGb06HSCKMcVzhASGMH4ZdFystRe2hh31cwcvnl-Eo_D4cdwmpN3Abhk_8rkxawQJR3duh8HNKc4AyFPo7SabEaSu2gLnLfN3yfg
 puts token
 
-decoded_token = JWT.decode token, rsa_public, true, { algorithm: 'PS256' }
+decoded_token = JWT.decode(token, rsa_public, true, { algorithm: 'PS256' })
 
 # Array
 # [
@@ -293,24 +321,23 @@ Ruby-jwt gem supports custom [header fields](https://tools.ietf.org/html/rfc7519
 To add custom header fields you need to pass `header_fields` parameter
 
 ```ruby
-token = JWT.encode payload, key, algorithm='HS256', header_fields={}
+token = JWT.encode(payload, key, algorithm='HS256', header_fields={})
 ```
 
 **Example:**
 
 ```ruby
-require 'jwt'
 
 payload = { data: 'test' }
 
 # IMPORTANT: set nil as password parameter
-token = JWT.encode payload, nil, 'none', { typ: 'JWT' }
+token = JWT.encode(payload, nil, 'none', { typ: 'JWT' })
 
 # eyJhbGciOiJub25lIiwidHlwIjoiSldUIn0.eyJkYXRhIjoidGVzdCJ9.
 puts token
 
 # Set password to nil and validation to false otherwise this won't work
-decoded_token = JWT.decode token, nil, false
+decoded_token = JWT.decode(token, nil, false)
 
 # Array
 # [
@@ -332,10 +359,10 @@ From [Oauth JSON Web Token 4.1.4. "exp" (Expiration Time) Claim](https://tools.i
 exp = Time.now.to_i + 4 * 3600
 exp_payload = { data: 'data', exp: exp }
 
-token = JWT.encode exp_payload, hmac_secret, 'HS256'
+token = JWT.encode(exp_payload, hmac_secret, 'HS256')
 
 begin
-  decoded_token = JWT.decode token, hmac_secret, true, { algorithm: 'HS256' }
+  decoded_token = JWT.decode(token, hmac_secret, true, { algorithm: 'HS256' })
 rescue JWT::ExpiredSignature
   # Handle expired token, e.g. logout user or deny access
 end
@@ -344,7 +371,7 @@ end
 The Expiration Claim verification can be disabled.
 ```ruby
 # Decode token without raising JWT::ExpiredSignature error
-JWT.decode token, hmac_secret, true, { verify_expiration: false, algorithm: 'HS256' }
+JWT.decode(token, hmac_secret, true, { verify_expiration: false, algorithm: 'HS256' })
 ```
 
 **Adding Leeway**
@@ -356,11 +383,11 @@ leeway = 30 # seconds
 exp_payload = { data: 'data', exp: exp }
 
 # build expired token
-token = JWT.encode exp_payload, hmac_secret, 'HS256'
+token = JWT.encode(exp_payload, hmac_secret, 'HS256')
 
 begin
   # add leeway to ensure the token is still accepted
-  decoded_token = JWT.decode token, hmac_secret, true, { exp_leeway: leeway, algorithm: 'HS256' }
+  decoded_token = JWT.decode(token, hmac_secret, true, { exp_leeway: leeway, algorithm: 'HS256' })
 rescue JWT::ExpiredSignature
   # Handle expired token, e.g. logout user or deny access
 end
@@ -378,10 +405,10 @@ From [Oauth JSON Web Token 4.1.5. "nbf" (Not Before) Claim](https://tools.ietf.o
 nbf = Time.now.to_i - 3600
 nbf_payload = { data: 'data', nbf: nbf }
 
-token = JWT.encode nbf_payload, hmac_secret, 'HS256'
+token = JWT.encode(nbf_payload, hmac_secret, 'HS256')
 
 begin
-  decoded_token = JWT.decode token, hmac_secret, true, { algorithm: 'HS256' }
+  decoded_token = JWT.decode(token, hmac_secret, true, { algorithm: 'HS256' })
 rescue JWT::ImmatureSignature
   # Handle invalid token, e.g. logout user or deny access
 end
@@ -390,7 +417,7 @@ end
 The Not Before Claim verification can be disabled.
 ```ruby
 # Decode token without raising JWT::ImmatureSignature error
-JWT.decode token, hmac_secret, true, { verify_not_before: false, algorithm: 'HS256' }
+JWT.decode(token, hmac_secret, true, { verify_not_before: false, algorithm: 'HS256' })
 ```
 
 **Adding Leeway**
@@ -402,11 +429,11 @@ leeway = 30
 nbf_payload = { data: 'data', nbf: nbf }
 
 # build expired token
-token = JWT.encode nbf_payload, hmac_secret, 'HS256'
+token = JWT.encode(nbf_payload, hmac_secret, 'HS256')
 
 begin
   # add leeway to ensure the token is valid
-  decoded_token = JWT.decode token, hmac_secret, true, { nbf_leeway: leeway, algorithm: 'HS256' }
+  decoded_token = JWT.decode(token, hmac_secret, true, { nbf_leeway: leeway, algorithm: 'HS256' })
 rescue JWT::ImmatureSignature
   # Handle invalid token, e.g. logout user or deny access
 end
@@ -424,11 +451,11 @@ You can pass multiple allowed issuers as an Array, verification will pass if one
 iss = 'My Awesome Company Inc. or https://my.awesome.website/'
 iss_payload = { data: 'data', iss: iss }
 
-token = JWT.encode iss_payload, hmac_secret, 'HS256'
+token = JWT.encode(iss_payload, hmac_secret, 'HS256')
 
 begin
   # Add iss to the validation to check if the token has been manipulated
-  decoded_token = JWT.decode token, hmac_secret, true, { iss: iss, verify_iss: true, algorithm: 'HS256' }
+  decoded_token = JWT.decode(token, hmac_secret, true, { iss: iss, verify_iss: true, algorithm: 'HS256' })
 rescue JWT::InvalidIssuerError
   # Handle invalid token, e.g. logout user or deny access
 end
@@ -439,24 +466,24 @@ On supported ruby versions (>= 2.5) you can also delegate to methods, on older v
 to convert them to proc (using `to_proc`)
 
 ```ruby
-JWT.decode token, hmac_secret, true,
+JWT.decode(token, hmac_secret, true,
            iss: %r'https://my.awesome.website/',
            verify_iss: true,
-           algorithm: 'HS256'
+           algorithm: 'HS256')
 ```
 
 ```ruby
-JWT.decode token, hmac_secret, true,
+JWT.decode(token, hmac_secret, true,
            iss: ->(issuer) { issuer.start_with?('My Awesome Company Inc') },
            verify_iss: true,
-           algorithm: 'HS256'
+           algorithm: 'HS256')
 ```
 
 ```ruby
-JWT.decode token, hmac_secret, true,
+JWT.decode(token, hmac_secret, true,
            iss: method(:valid_issuer?),
            verify_iss: true,
-           algorithm: 'HS256'
+           algorithm: 'HS256')
 
 # somewhere in the same class:
 def valid_issuer?(issuer)
@@ -474,11 +501,11 @@ From [Oauth JSON Web Token 4.1.3. "aud" (Audience) Claim](https://tools.ietf.org
 aud = ['Young', 'Old']
 aud_payload = { data: 'data', aud: aud }
 
-token = JWT.encode aud_payload, hmac_secret, 'HS256'
+token = JWT.encode(aud_payload, hmac_secret, 'HS256')
 
 begin
   # Add aud to the validation to check if the token has been manipulated
-  decoded_token = JWT.decode token, hmac_secret, true, { aud: aud, verify_aud: true, algorithm: 'HS256' }
+  decoded_token = JWT.decode(token, hmac_secret, true, { aud: aud, verify_aud: true, algorithm: 'HS256' })
 rescue JWT::InvalidAudError
   # Handle invalid token, e.g. logout user or deny access
   puts 'Audience Error'
@@ -497,15 +524,15 @@ jti_raw = [hmac_secret, iat].join(':').to_s
 jti = Digest::MD5.hexdigest(jti_raw)
 jti_payload = { data: 'data', iat: iat, jti: jti }
 
-token = JWT.encode jti_payload, hmac_secret, 'HS256'
+token = JWT.encode(jti_payload, hmac_secret, 'HS256')
 
 begin
   # If :verify_jti is true, validation will pass if a JTI is present
-  #decoded_token = JWT.decode token, hmac_secret, true, { verify_jti: true, algorithm: 'HS256' }
+  #decoded_token = JWT.decode(token, hmac_secret, true, { verify_jti: true, algorithm: 'HS256' })
   # Alternatively, pass a proc with your own code to check if the JTI has already been used
-  decoded_token = JWT.decode token, hmac_secret, true, { verify_jti: proc { |jti| my_validation_method(jti) }, algorithm: 'HS256' }
+  decoded_token = JWT.decode(token, hmac_secret, true, { verify_jti: proc { |jti| my_validation_method(jti) }, algorithm: 'HS256' })
   # or
-  decoded_token = JWT.decode token, hmac_secret, true, { verify_jti: proc { |jti, payload| my_validation_method(jti, payload) }, algorithm: 'HS256' }
+  decoded_token = JWT.decode(token, hmac_secret, true, { verify_jti: proc { |jti, payload| my_validation_method(jti, payload) }, algorithm: 'HS256' })
 rescue JWT::InvalidJtiError
   # Handle invalid token, e.g. logout user or deny access
   puts 'Error'
@@ -524,11 +551,11 @@ From [Oauth JSON Web Token 4.1.6. "iat" (Issued At) Claim](https://tools.ietf.or
 iat = Time.now.to_i
 iat_payload = { data: 'data', iat: iat }
 
-token = JWT.encode iat_payload, hmac_secret, 'HS256'
+token = JWT.encode(iat_payload, hmac_secret, 'HS256')
 
 begin
   # Add iat to the validation to check if the token has been manipulated
-  decoded_token = JWT.decode token, hmac_secret, true, { verify_iat: true, algorithm: 'HS256' }
+  decoded_token = JWT.decode(token, hmac_secret, true, { verify_iat: true, algorithm: 'HS256' })
 rescue JWT::InvalidIatError
   # Handle invalid token, e.g. logout user or deny access
 end
@@ -544,11 +571,11 @@ From [Oauth JSON Web Token 4.1.2. "sub" (Subject) Claim](https://tools.ietf.org/
 sub = 'Subject'
 sub_payload = { data: 'data', sub: sub }
 
-token = JWT.encode sub_payload, hmac_secret, 'HS256'
+token = JWT.encode(sub_payload, hmac_secret, 'HS256')
 
 begin
   # Add sub to the validation to check if the token has been manipulated
-  decoded_token = JWT.decode token, hmac_secret, true, { sub: sub, verify_sub: true, algorithm: 'HS256' }
+  decoded_token = JWT.decode(token, hmac_secret, true, { sub: sub, verify_sub: true, algorithm: 'HS256' })
 rescue JWT::InvalidSubError
   # Handle invalid token, e.g. logout user or deny access
 end
@@ -570,8 +597,6 @@ JWT::Claims.verify_payload!({"exp" => Time.now.to_i - 10}, exp: { leeway: 11})
 JWT::Claims.verify_payload!({"exp" => Time.now.to_i + 10, "sub" => "subject"}, :exp, sub: "subject")
 ```
 
-
-
 ### Finding a Key
 
 To dynamically find the key for verifying the JWT signature, pass a block to the decode block. The block receives headers and the original payload as parameters. It should return with the key to verify the signature that was used to sign the JWT.
@@ -582,7 +607,7 @@ iss_payload = { data: 'data', iss: issuers.first }
 
 secrets = { issuers.first => hmac_secret, issuers.last => 'hmac_secret2' }
 
-token = JWT.encode iss_payload, hmac_secret, 'HS256'
+token = JWT.encode(iss_payload, hmac_secret, 'HS256')
 
 begin
   # Add iss to the validation to check if the token has been manipulated
@@ -599,7 +624,7 @@ end
 You can specify claims that must be present for decoding to be successful. JWT::MissingRequiredClaim will be raised if any are missing
 ```ruby
 # Will raise a JWT::MissingRequiredClaim error if the 'exp' claim is absent
-JWT.decode token, hmac_secret, true, { required_claims: ['exp'], algorithm: 'HS256' }
+JWT.decode(token, hmac_secret, true, { required_claims: ['exp'], algorithm: 'HS256' })
 ```
 
 ### X.509 certificates in x5c header
