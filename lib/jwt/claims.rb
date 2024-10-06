@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 require_relative 'claims/audience'
+require_relative 'claims/crit'
+require_relative 'claims/decode_verifier'
 require_relative 'claims/expiration'
 require_relative 'claims/issued_at'
 require_relative 'claims/issuer'
@@ -9,9 +11,8 @@ require_relative 'claims/not_before'
 require_relative 'claims/numeric'
 require_relative 'claims/required'
 require_relative 'claims/subject'
-require_relative 'claims/decode_verifier'
-require_relative 'claims/verifier'
 require_relative 'claims/verification_methods'
+require_relative 'claims/verifier'
 
 module JWT
   # JWT Claim verifications
@@ -27,7 +28,6 @@ module JWT
   # sub
   # required
   # numeric
-  #
   module Claims
     # Represents a claim verification error
     Error = Struct.new(:message, keyword_init: true)

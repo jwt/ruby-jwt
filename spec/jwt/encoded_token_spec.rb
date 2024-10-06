@@ -2,13 +2,15 @@
 
 RSpec.describe JWT::EncodedToken do
   let(:payload) { { 'pay' => 'load' } }
-  let(:encoded_token) { JWT.encode(payload, 'secret', 'HS256') }
+  let(:header) { {} }
+  let(:encoded_token) { JWT::Token.new(payload: payload, header: header).tap { |t| t.sign!(algorithm: 'HS256', key: 'secret') }.jwt }
   let(:detached_payload_token) do
     JWT::Token.new(payload: payload).tap do |t|
       t.detach_payload!
       t.sign!(algorithm: 'HS256', key: 'secret')
     end
   end
+
   subject(:token) { described_class.new(encoded_token) }
 
   describe '#payload' do
@@ -26,6 +28,16 @@ RSpec.describe JWT::EncodedToken do
         it 'raises decode error' do
           expect { token.payload }.to raise_error(JWT::DecodeError, 'Encoded payload is empty')
         end
+      end
+    end
+
+    context 'when payload is not encoded and the b64 crit is enabled' do
+      subject(:token) { described_class.new(encoded_token) }
+      let(:encoded_token) { 'eyJhbGciOiJIUzI1NiIsImI2NCI6ZmFsc2UsImNyaXQiOlsiYjY0Il19..signature' }
+      before { token.encoded_payload = '{"foo": "bar"}' }
+
+      it 'handles the payload encoding' do
+        expect(token.payload).to eq({ 'foo' => 'bar' })
       end
     end
   end
@@ -99,6 +111,17 @@ RSpec.describe JWT::EncodedToken do
         expect { token.verify_signature!(algorithm: 'HS256', key: 'key', key_finder: 'finder') }.to raise_error(ArgumentError, 'Provide either key or key_finder, not both or neither')
       end
     end
+
+    context 'when payload is not encoded' do
+      let(:encoded_token) { 'eyJhbGciOiJIUzI1NiIsImI2NCI6ZmFsc2UsImNyaXQiOlsiYjY0Il19..A5dxf2s96_n5FLueVuW1Z_vh161FwXZC4YLPff6dmDY' }
+      before { token.encoded_payload = '$.02' }
+
+      let(:key) { Base64.urlsafe_decode64('AyM1SysPpbyDfgZld3umj1qzKObwVMkoqQ-EstJQLr_T-1qS0gZH75aKtMN3Yj0iPS4hcgUuTwjAzZr1Z9CAow') }
+
+      it 'does not raise' do
+        expect(token.verify_signature!(algorithm: 'HS256', key: key)).to eq(nil)
+      end
+    end
   end
 
   describe '#verify_claims!' do
@@ -147,6 +170,22 @@ RSpec.describe JWT::EncodedToken do
           it 'raises decode error' do
             expect { token.verify_claims!(:exp, :nbf) }.to raise_error(JWT::DecodeError, 'Encoded payload is empty')
           end
+        end
+      end
+    end
+
+    context 'when header contains crits header' do
+      let(:header) { { crit: ['b64'] } }
+
+      context 'when expected crits are missing' do
+        it 'raises an error' do
+          expect { token.verify_claims!(crit: ['other']) }.to raise_error(JWT::InvalidCritError, 'Crit header missing expected values: other')
+        end
+      end
+
+      context 'when expected crits are present' do
+        it 'passes verification' do
+          expect { token.verify_claims!(crit: ['b64']) }.not_to raise_error
         end
       end
     end

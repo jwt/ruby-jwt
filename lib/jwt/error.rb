@@ -37,6 +37,9 @@ module JWT
   # The InvalidSubError class is raised when the JWT subject (sub) claim is invalid.
   class InvalidSubError < DecodeError; end
 
+  # The InvalidCritError class is raised when the JWT crit header is invalid.
+  class InvalidCritError < DecodeError; end
+
   # The InvalidJtiError class is raised when the JWT ID (jti) claim is invalid.
   class InvalidJtiError < DecodeError; end
 
