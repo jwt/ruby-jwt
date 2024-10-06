@@ -23,7 +23,7 @@ module JWT
     # @param jwt [String] the encoded JWT token.
     # @raise [ArgumentError] if the provided JWT is not a String.
     def initialize(jwt)
-      raise ArgumentError 'Provided JWT must be a String' unless jwt.is_a?(String)
+      raise ArgumentError, 'Provided JWT must be a String' unless jwt.is_a?(String)
 
       @jwt = jwt
       @encoded_header, @encoded_payload, @encoded_signature = jwt.split('.')
@@ -57,7 +57,7 @@ module JWT
     #
     # @return [Hash] the payload.
     def payload
-      @payload ||= encoded_payload == '' ? raise(JWT::DecodeError, 'Encoded payload is empty') : parse_and_decode(encoded_payload)
+      @payload ||= decode_payload
     end
 
     # Sets or returns the encoded payload of the JWT token.
@@ -85,6 +85,7 @@ module JWT
       raise ArgumentError, 'Provide either key or key_finder, not both or neither' if key.nil? == key_finder.nil?
 
       key ||= key_finder.call(self)
+
       return if valid_signature?(algorithm: algorithm, key: key)
 
       raise JWT::VerificationError, 'Signature verification failed'
@@ -107,8 +108,31 @@ module JWT
 
     private
 
+    def decode_payload
+      raise JWT::DecodeError, 'Encoded payload is empty' if encoded_payload == ''
+
+      if unecoded_payload?
+        verify_claims!(crit: ['b64'])
+        return parse_unencoded(encoded_payload)
+      end
+
+      parse_and_decode(encoded_payload)
+    end
+
+    def unecoded_payload?
+      header['b64'] == false
+    end
+
     def parse_and_decode(segment)
-      JWT::JSON.parse(::JWT::Base64.url_decode(segment))
+      parse(::JWT::Base64.url_decode(segment))
+    end
+
+    def parse_unencoded(segment)
+      parse(segment)
+    end
+
+    def parse(segment)
+      JWT::JSON.parse(segment)
     rescue ::JSON::ParserError
       raise JWT::DecodeError, 'Invalid segment encoding'
     end
