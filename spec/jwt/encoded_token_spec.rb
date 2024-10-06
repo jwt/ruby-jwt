@@ -3,11 +3,31 @@
 RSpec.describe JWT::EncodedToken do
   let(:payload) { { 'pay' => 'load' } }
   let(:encoded_token) { JWT.encode(payload, 'secret', 'HS256') }
-
+  let(:detached_payload_token) do
+    JWT::Token.new(payload: payload).tap do |t|
+      t.detach_payload!
+      t.sign!(algorithm: 'HS256', key: 'secret')
+    end
+  end
   subject(:token) { described_class.new(encoded_token) }
 
   describe '#payload' do
     it { expect(token.payload).to eq(payload) }
+
+    context 'when payload is detached' do
+      let(:encoded_token) { detached_payload_token.jwt }
+
+      context 'when payload provided in separate' do
+        before { token.encoded_payload = detached_payload_token.encoded_payload }
+        it { expect(token.payload).to eq(payload) }
+      end
+
+      context 'when payload is not provided' do
+        it 'raises decode error' do
+          expect { token.payload }.to raise_error(JWT::DecodeError, 'Encoded payload is empty')
+        end
+      end
+    end
   end
 
   describe '#header' do
@@ -38,6 +58,23 @@ RSpec.describe JWT::EncodedToken do
     context 'when key is an array with one valid entry' do
       it 'does not raise' do
         expect(token.verify_signature!(algorithm: 'HS256', key: %w[wrong secret])).to eq(nil)
+      end
+    end
+
+    context 'when payload is detached' do
+      let(:encoded_token) { detached_payload_token.jwt }
+
+      context 'when payload provided in separate' do
+        before { token.encoded_payload = detached_payload_token.encoded_payload }
+        it 'does not raise' do
+          expect(token.verify_signature!(algorithm: 'HS256', key: 'secret')).to eq(nil)
+        end
+      end
+
+      context 'when payload is not provided' do
+        it 'raises VerificationError' do
+          expect { token.verify_signature!(algorithm: 'HS256', key: 'secret') }.to raise_error(JWT::VerificationError, 'Signature verification failed')
+        end
       end
     end
 
@@ -95,6 +132,21 @@ RSpec.describe JWT::EncodedToken do
       context 'when claims given as a list of symbols and hashes' do
         it 'validates the claim' do
           expect { token.verify_claims!({ exp: { leeway: 1000 }, nbf: {} }, :exp, :nbf) }.to raise_error(JWT::ExpiredSignature, 'Signature has expired')
+        end
+      end
+
+      context 'when payload is detached' do
+        let(:encoded_token) { detached_payload_token.jwt }
+        context 'when payload provided in separate' do
+          before { token.encoded_payload = detached_payload_token.encoded_payload }
+          it 'raises claim verification error' do
+            expect { token.verify_claims!(:exp, :nbf) }.to raise_error(JWT::ExpiredSignature, 'Signature has expired')
+          end
+        end
+        context 'when payload is not provided' do
+          it 'raises decode error' do
+            expect { token.verify_claims!(:exp, :nbf) }.to raise_error(JWT::DecodeError, 'Encoded payload is empty')
+          end
         end
       end
     end

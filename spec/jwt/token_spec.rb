@@ -42,4 +42,14 @@ RSpec.describe JWT::Token do
       end
     end
   end
+
+  describe '#detach_payload!' do
+    context 'before token is signed' do
+      it 'detaches the payload' do
+        token.detach_payload!
+        token.sign!(algorithm: 'HS256', key: 'secret')
+        expect(token.jwt).to eq('eyJhbGciOiJIUzI1NiJ9..UEhDY1Qlj29ammxuVRA_-gBah4qTy5FngIWg0yEAlC0')
+      end
+    end
+  end
 end

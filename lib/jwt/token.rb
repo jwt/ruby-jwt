@@ -76,7 +76,15 @@ module JWT
     # @return [String] the JWT token as a string.
     # @raise [JWT::EncodeError] if the token is not signed or other encoding issues
     def jwt
-      @jwt ||= (@signature && [encoded_header, encoded_payload, encoded_signature].join('.')) || raise(::JWT::EncodeError, 'Token is not signed')
+      @jwt ||= (@signature && [encoded_header, @detached_payload ? '' : encoded_payload, encoded_signature].join('.')) || raise(::JWT::EncodeError, 'Token is not signed')
+    end
+
+    # Detaches the payload according to https://datatracker.ietf.org/doc/html/rfc7515#appendix-F
+    #
+    def detach_payload!
+      @detached_payload = true
+
+      nil
     end
 
     # Signs the JWT token.
@@ -92,6 +100,8 @@ module JWT
         header.merge!(algo.header)
         @signature = algo.sign(data: signing_input, signing_key: key)
       end
+
+      nil
     end
 
     # Returns the JWT token as a string.
