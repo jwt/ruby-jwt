@@ -57,7 +57,7 @@ module JWT
     #
     # @return [Hash] the payload.
     def payload
-      @payload ||= encoded_payload == '' ? raise(JWT::DecodeError, 'Encoded payload is empty') : parse_and_decode(encoded_payload)
+      @payload ||= decode_payload
     end
 
     # Sets or returns the encoded payload of the JWT token.
@@ -107,8 +107,26 @@ module JWT
 
     private
 
+    def decode_payload
+      raise(JWT::DecodeError, 'Encoded payload is empty') if encoded_payload == ''
+
+      if unecoded_payload?
+        return parse(encoded_payload)
+      end
+
+      parse_and_decode(encoded_payload)
+    end
+
+    def unecoded_payload?
+      header['b64'] == false
+    end
+
     def parse_and_decode(segment)
-      JWT::JSON.parse(::JWT::Base64.url_decode(segment))
+      parse(::JWT::Base64.url_decode(segment))
+    end
+
+    def parse(segment)
+      JWT::JSON.parse(segment)
     rescue ::JSON::ParserError
       raise JWT::DecodeError, 'Invalid segment encoding'
     end
