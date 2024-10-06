@@ -249,28 +249,35 @@ decoded_token = JWT.decode(token, rsa_public, true, { algorithm: 'PS256' })
 puts decoded_token
 ```
 
-### Using a Token object
-
-The `JWT::Token` and `JWT::EncodedToken` classes can be used to manage your JWTs.
+### Add custom header fields
+Ruby-jwt gem supports custom [header fields](https://tools.ietf.org/html/rfc7519#section-5)
+To add custom header fields you need to pass `header_fields` parameter
 
 ```ruby
-token = JWT::Token.new(payload: { exp: Time.now.to_i + 60, jti: '1234', sub: "my-subject" }, header: { kid: 'hmac' })
-token.sign!(algorithm: 'HS256', key: "secret")
-
-token.jwt # => "eyJhbGciOiJIUzI1N..."
+token = JWT.encode(payload, key, algorithm='HS256', header_fields={})
 ```
 
-The `JWT::EncodedToken` can be used to create a token object that allows verification of signatures and claims
-```ruby
-encoded_token = JWT::EncodedToken.new(token.jwt)
+**Example:**
 
-encoded_token.verify_signature!(algorithm: 'HS256', key: "secret")
-encoded_token.verify_signature!(algorithm: 'HS256', key: "wrong_secret") # raises JWT::VerificationError
-encoded_token.verify_claims!(:exp, :jti)
-encoded_token.verify_claims!(sub: ["not-my-subject"]) # raises JWT::InvalidSubError
-encoded_token.claim_errors(sub: ["not-my-subject"]).map(&:message) # => ["Invalid subject. Expected [\"not-my-subject\"], received my-subject"]
-encoded_token.payload # => { 'exp'=>1234, 'jti'=>'1234", 'sub'=>'my-subject' }
-encoded_token.header # {'kid'=>'hmac', 'alg'=>'HS256'}
+```ruby
+
+payload = { data: 'test' }
+
+# IMPORTANT: set nil as password parameter
+token = JWT.encode(payload, nil, 'none', { typ: 'JWT' })
+
+# eyJhbGciOiJub25lIiwidHlwIjoiSldUIn0.eyJkYXRhIjoidGVzdCJ9.
+puts token
+
+# Set password to nil and validation to false otherwise this won't work
+decoded_token = JWT.decode(token, nil, false)
+
+# Array
+# [
+#   {"data"=>"test"}, # payload
+#   {"typ"=>"JWT", "alg"=>"none"} # header
+# ]
+puts decoded_token
 ```
 
 ### **Custom algorithms**
@@ -304,7 +311,53 @@ token = ::JWT.encode({'pay' => 'load'}, 'secret', CustomHS512Algorithm)
 payload, header = ::JWT.decode(token, 'secret', true, algorithm: CustomHS512Algorithm)
 ```
 
-## Support for reserved claim names
+## `JWT::Token` and `JWT::EncodedToken`
+
+The `JWT::Token` and `JWT::EncodedToken` classes can be used to manage your JWTs.
+
+```ruby
+token = JWT::Token.new(payload: { exp: Time.now.to_i + 60, jti: '1234', sub: "my-subject" }, header: { kid: 'hmac' })
+token.sign!(algorithm: 'HS256', key: "secret")
+
+token.jwt # => "eyJhbGciOiJIUzI1N..."
+```
+
+The `JWT::EncodedToken` can be used to create a token object that allows verification of signatures and claims
+```ruby
+encoded_token = JWT::EncodedToken.new(token.jwt)
+
+encoded_token.verify_signature!(algorithm: 'HS256', key: "secret")
+encoded_token.verify_signature!(algorithm: 'HS256', key: "wrong_secret") # raises JWT::VerificationError
+encoded_token.verify_claims!(:exp, :jti)
+encoded_token.verify_claims!(sub: ["not-my-subject"]) # raises JWT::InvalidSubError
+encoded_token.claim_errors(sub: ["not-my-subject"]).map(&:message) # => ["Invalid subject. Expected [\"not-my-subject\"], received my-subject"]
+encoded_token.payload # => { 'exp'=>1234, 'jti'=>'1234", 'sub'=>'my-subject' }
+encoded_token.header # {'kid'=>'hmac', 'alg'=>'HS256'}
+```
+
+### Detached payload
+
+The `::JWT::Token#detach_payload!` method can be use to detach the payload from the JWT.
+
+```ruby
+token = JWT::Token.new(payload: { pay: 'load' })
+token.sign!(algorithm: 'HS256', key: "secret")
+token.detach_payload!
+token.jwt # => "eyJhbGciOiJIUzI1NiJ9..UEhDY1Qlj29ammxuVRA_-gBah4qTy5FngIWg0yEAlC0"
+token.encoded_payload # => "eyJwYXkiOiJsb2FkIn0"
+```
+
+The `JWT::EncodedToken` class can be used to decode a token with a detached payload by providing the payload to the token instance in separate.
+
+```ruby
+encoded_token = JWT::EncodedToken.new(token.jwt)
+encoded_token.encoded_payload = "eyJwYXkiOiJsb2FkIn0"
+encoded_token.verify_signature!(algorithm: 'HS256', key: "secret")
+encoded_token.payload # => {"pay"=>"load"}
+```
+
+## Claims
+
 JSON Web Token defines some reserved claim names and defines how they should be
 used. JWT supports these reserved claim names:
 
@@ -315,37 +368,6 @@ used. JWT supports these reserved claim names:
  - 'jti' (JWT ID) Claim
  - 'iat' (Issued At) Claim
  - 'sub' (Subject) Claim
-
-## Add custom header fields
-Ruby-jwt gem supports custom [header fields](https://tools.ietf.org/html/rfc7519#section-5)
-To add custom header fields you need to pass `header_fields` parameter
-
-```ruby
-token = JWT.encode(payload, key, algorithm='HS256', header_fields={})
-```
-
-**Example:**
-
-```ruby
-
-payload = { data: 'test' }
-
-# IMPORTANT: set nil as password parameter
-token = JWT.encode(payload, nil, 'none', { typ: 'JWT' })
-
-# eyJhbGciOiJub25lIiwidHlwIjoiSldUIn0.eyJkYXRhIjoidGVzdCJ9.
-puts token
-
-# Set password to nil and validation to false otherwise this won't work
-decoded_token = JWT.decode(token, nil, false)
-
-# Array
-# [
-#   {"data"=>"test"}, # payload
-#   {"typ"=>"JWT", "alg"=>"none"} # header
-# ]
-puts decoded_token
-```
 
 ### Expiration Time Claim
 
@@ -648,7 +670,7 @@ rescue JWT::DecodeError
 end
 ```
 
-### JSON Web Key (JWK)
+## JSON Web Key (JWK)
 
 JWK is a JSON structure representing a cryptographic key. This gem currently supports RSA, EC, OKP and HMAC keys. OKP support requires [RbNaCl](https://github.com/RubyCrypto/rbnacl) and currently only supports the Ed25519 curve.
 

@@ -27,7 +27,6 @@ module JWT
 
       @jwt = jwt
       @encoded_header, @encoded_payload, @encoded_signature = jwt.split('.')
-      @signing_input = [encoded_header, encoded_payload].join('.')
     end
 
     # Returns the decoded signature of the JWT token.
@@ -58,18 +57,21 @@ module JWT
     #
     # @return [Hash] the payload.
     def payload
-      @payload ||= parse_and_decode(encoded_payload)
+      @payload ||= encoded_payload == '' ? raise(JWT::DecodeError, 'Encoded payload is empty') : parse_and_decode(encoded_payload)
     end
 
-    # Returns the encoded payload of the JWT token.
+    # Sets or returns the encoded payload of the JWT token.
     #
     # @return [String] the encoded payload.
-    attr_reader :encoded_payload
+    # @param value [String] the encoded payload to set.
+    attr_accessor :encoded_payload
 
     # Returns the signing input of the JWT token.
     #
     # @return [String] the signing input.
-    attr_reader :signing_input
+    def signing_input
+      [encoded_header, encoded_payload].join('.')
+    end
 
     # Verifies the signature of the JWT token.
     #
