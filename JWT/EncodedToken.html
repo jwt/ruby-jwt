@@ -173,8 +173,6 @@ encoded_token.payload # =&gt; {&#39;pay&#39; =&gt; &#39;load&#39;}
   
   
     
-      <span class="note title readonly">readonly</span>
-    
     
   
   
@@ -184,7 +182,7 @@ encoded_token.payload # =&gt; {&#39;pay&#39; =&gt; &#39;load&#39;}
 
   
     <span class="summary_desc"><div class='inline'>
-<p>Returns the encoded payload of the JWT token.</p>
+<p>Sets or returns the encoded payload of the JWT token.</p>
 </div></span>
   
 </li>
@@ -245,35 +243,6 @@ encoded_token.payload # =&gt; {&#39;pay&#39; =&gt; &#39;load&#39;}
   
     <span class="summary_desc"><div class='inline'>
 <p>Returns the original token provided to the class.</p>
-</div></span>
-  
-</li>
-
-    
-      <li class="public ">
-  <span class="summary_signature">
-    
-      <a href="#signing_input-instance_method" title="#signing_input (instance method)">#<strong>signing_input</strong>  &#x21d2; String </a>
-    
-
-    
-  </span>
-  
-  
-  
-    
-      <span class="note title readonly">readonly</span>
-    
-    
-  
-  
-  
-  
-  
-
-  
-    <span class="summary_desc"><div class='inline'>
-<p>Returns the signing input of the JWT token.</p>
 </div></span>
   
 </li>
@@ -385,6 +354,30 @@ encoded_token.payload # =&gt; {&#39;pay&#39; =&gt; &#39;load&#39;}
   
     <span class="summary_desc"><div class='inline'>
 <p>Returns the decoded signature of the JWT token.</p>
+</div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#signing_input-instance_method" title="#signing_input (instance method)">#<strong>signing_input</strong>  &#x21d2; String </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'>
+<p>Returns the signing input of the JWT token.</p>
 </div></span>
   
 </li>
@@ -524,8 +517,7 @@ encoded_token.payload # =&gt; {&#39;pay&#39; =&gt; &#39;load&#39;}
 27
 28
 29
-30
-31</pre>
+30</pre>
     </td>
     <td>
       <pre class="code"><span class="info file"># File 'lib/jwt/encoded_token.rb', line 25</span>
@@ -535,7 +527,6 @@ encoded_token.payload # =&gt; {&#39;pay&#39; =&gt; &#39;load&#39;}
 
   <span class='ivar'>@jwt</span> <span class='op'>=</span> <span class='id identifier rubyid_jwt'>jwt</span>
   <span class='ivar'>@encoded_header</span><span class='comma'>,</span> <span class='ivar'>@encoded_payload</span><span class='comma'>,</span> <span class='ivar'>@encoded_signature</span> <span class='op'>=</span> <span class='id identifier rubyid_jwt'>jwt</span><span class='period'>.</span><span class='id identifier rubyid_split'>split</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>.</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span>
-  <span class='ivar'>@signing_input</span> <span class='op'>=</span> <span class='lbracket'>[</span><span class='id identifier rubyid_encoded_header'>encoded_header</span><span class='comma'>,</span> <span class='id identifier rubyid_encoded_payload'>encoded_payload</span><span class='rbracket'>]</span><span class='period'>.</span><span class='id identifier rubyid_join'>join</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>.</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -593,12 +584,12 @@ encoded_token.payload # =&gt; {&#39;pay&#39; =&gt; &#39;load&#39;}
       <pre class="lines">
 
 
+54
 55
-56
-57</pre>
+56</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/jwt/encoded_token.rb', line 55</span>
+      <pre class="code"><span class="info file"># File 'lib/jwt/encoded_token.rb', line 54</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_encoded_header'>encoded_header</span>
   <span class='ivar'>@encoded_header</span>
@@ -609,11 +600,11 @@ encoded_token.payload # =&gt; {&#39;pay&#39; =&gt; &#39;load&#39;}
 </div>
     
       
-      <span id=""></span>
+      <span id="encoded_payload=-instance_method"></span>
       <div class="method_details ">
   <h3 class="signature " id="encoded_payload-instance_method">
   
-    #<strong>encoded_payload</strong>  &#x21d2; <tt>String</tt>  <span class="extras">(readonly)</span>
+    #<strong>encoded_payload</strong>  &#x21d2; <tt>String</tt> 
   
 
   
@@ -622,13 +613,33 @@ encoded_token.payload # =&gt; {&#39;pay&#39; =&gt; &#39;load&#39;}
 </h3><div class="docstring">
   <div class="discussion">
     
-<p>Returns the encoded payload of the JWT token.</p>
+<p>Sets or returns the encoded payload of the JWT token.</p>
 
 
   </div>
 </div>
 <div class="tags">
+  <p class="tag_title">Parameters:</p>
+<ul class="param">
   
+    <li>
+      
+        <span class='name'>value</span>
+      
+      
+        <span class='type'>(<tt>String</tt>)</span>
+      
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>the encoded payload to set.</p>
+</div>
+      
+    </li>
+  
+</ul>
+
 <p class="tag_title">Returns:</p>
 <ul class="return">
   
@@ -715,12 +726,12 @@ encoded_token.payload # =&gt; {&#39;pay&#39; =&gt; &#39;load&#39;}
       <pre class="lines">
 
 
+42
 43
-44
-45</pre>
+44</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/jwt/encoded_token.rb', line 43</span>
+      <pre class="code"><span class="info file"># File 'lib/jwt/encoded_token.rb', line 42</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_encoded_signature'>encoded_signature</span>
   <span class='ivar'>@encoded_signature</span>
@@ -795,67 +806,6 @@ encoded_token.payload # =&gt; {&#39;pay&#39; =&gt; &#39;load&#39;}
 </table>
 </div>
     
-      
-      <span id=""></span>
-      <div class="method_details ">
-  <h3 class="signature " id="signing_input-instance_method">
-  
-    #<strong>signing_input</strong>  &#x21d2; <tt>String</tt>  <span class="extras">(readonly)</span>
-  
-
-  
-
-  
-</h3><div class="docstring">
-  <div class="discussion">
-    
-<p>Returns the signing input of the JWT token.</p>
-
-
-  </div>
-</div>
-<div class="tags">
-  
-<p class="tag_title">Returns:</p>
-<ul class="return">
-  
-    <li>
-      
-      
-        <span class='type'>(<tt>String</tt>)</span>
-      
-      
-      
-        &mdash;
-        <div class='inline'>
-<p>the signing input.</p>
-</div>
-      
-    </li>
-  
-</ul>
-
-</div><table class="source_code">
-  <tr>
-    <td>
-      <pre class="lines">
-
-
-72
-73
-74</pre>
-    </td>
-    <td>
-      <pre class="code"><span class="info file"># File 'lib/jwt/encoded_token.rb', line 72</span>
-
-<span class='kw'>def</span> <span class='id identifier rubyid_signing_input'>signing_input</span>
-  <span class='ivar'>@signing_input</span>
-<span class='kw'>end</span></pre>
-    </td>
-  </tr>
-</table>
-</div>
-    
   </div>
 
 
@@ -907,12 +857,12 @@ encoded_token.payload # =&gt; {&#39;pay&#39; =&gt; &#39;load&#39;}
       <pre class="lines">
 
 
+47
 48
-49
-50</pre>
+49</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/jwt/encoded_token.rb', line 48</span>
+      <pre class="code"><span class="info file"># File 'lib/jwt/encoded_token.rb', line 47</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_header'>header</span>
   <span class='ivar'>@header</span> <span class='op'>||=</span> <span class='id identifier rubyid_parse_and_decode'>parse_and_decode</span><span class='lparen'>(</span><span class='ivar'>@encoded_header</span><span class='rparen'>)</span>
@@ -966,15 +916,15 @@ encoded_token.payload # =&gt; {&#39;pay&#39; =&gt; &#39;load&#39;}
       <pre class="lines">
 
 
+59
 60
-61
-62</pre>
+61</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/jwt/encoded_token.rb', line 60</span>
+      <pre class="code"><span class="info file"># File 'lib/jwt/encoded_token.rb', line 59</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_payload'>payload</span>
-  <span class='ivar'>@payload</span> <span class='op'>||=</span> <span class='id identifier rubyid_parse_and_decode'>parse_and_decode</span><span class='lparen'>(</span><span class='id identifier rubyid_encoded_payload'>encoded_payload</span><span class='rparen'>)</span>
+  <span class='ivar'>@payload</span> <span class='op'>||=</span> <span class='id identifier rubyid_encoded_payload'>encoded_payload</span> <span class='op'>==</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_end'>&#39;</span></span> <span class='op'>?</span> <span class='id identifier rubyid_raise'>raise</span><span class='lparen'>(</span><span class='const'><span class='object_link'><a href="../JWT.html" title="JWT (module)">JWT</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="DecodeError.html" title="JWT::DecodeError (class)">DecodeError</a></span></span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>Encoded payload is empty</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span> <span class='op'>:</span> <span class='id identifier rubyid_parse_and_decode'>parse_and_decode</span><span class='lparen'>(</span><span class='id identifier rubyid_encoded_payload'>encoded_payload</span><span class='rparen'>)</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -1025,15 +975,74 @@ encoded_token.payload # =&gt; {&#39;pay&#39; =&gt; &#39;load&#39;}
       <pre class="lines">
 
 
+35
 36
-37
-38</pre>
+37</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/jwt/encoded_token.rb', line 36</span>
+      <pre class="code"><span class="info file"># File 'lib/jwt/encoded_token.rb', line 35</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_signature'>signature</span>
   <span class='ivar'>@signature</span> <span class='op'>||=</span> <span class='op'>::</span><span class='const'><span class='object_link'><a href="../JWT.html" title="JWT (module)">JWT</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="Base64.html" title="JWT::Base64 (class)">Base64</a></span></span><span class='period'>.</span><span class='id identifier rubyid_url_decode'><span class='object_link'><a href="Base64.html#url_decode-class_method" title="JWT::Base64.url_decode (method)">url_decode</a></span></span><span class='lparen'>(</span><span class='id identifier rubyid_encoded_signature'>encoded_signature</span> <span class='op'>||</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
+  <h3 class="signature " id="signing_input-instance_method">
+  
+    #<strong>signing_input</strong>  &#x21d2; <tt>String</tt> 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    
+<p>Returns the signing input of the JWT token.</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+<p class="tag_title">Returns:</p>
+<ul class="return">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt>String</tt>)</span>
+      
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>the signing input.</p>
+</div>
+      
+    </li>
+  
+</ul>
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+72
+73
+74</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/jwt/encoded_token.rb', line 72</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_signing_input'>signing_input</span>
+  <span class='lbracket'>[</span><span class='id identifier rubyid_encoded_header'>encoded_header</span><span class='comma'>,</span> <span class='id identifier rubyid_encoded_payload'>encoded_payload</span><span class='rbracket'>]</span><span class='period'>.</span><span class='id identifier rubyid_join'>join</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>.</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -1120,16 +1129,16 @@ encoded_token.payload # =&gt; {&#39;pay&#39; =&gt; &#39;load&#39;}
       <pre class="lines">
 
 
-96
-97
 98
 99
 100
 101
-102</pre>
+102
+103
+104</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/jwt/encoded_token.rb', line 96</span>
+      <pre class="code"><span class="info file"># File 'lib/jwt/encoded_token.rb', line 98</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_valid_signature?'>valid_signature?</span><span class='lparen'>(</span><span class='label'>algorithm:</span><span class='comma'>,</span> <span class='label'>key:</span><span class='rparen'>)</span>
   <span class='const'>Array</span><span class='lparen'>(</span><span class='const'><span class='object_link'><a href="JWA.html" title="JWT::JWA (module)">JWA</a></span></span><span class='period'>.</span><span class='id identifier rubyid_resolve_and_sort'><span class='object_link'><a href="JWA.html#resolve_and_sort-class_method" title="JWT::JWA.resolve_and_sort (method)">resolve_and_sort</a></span></span><span class='lparen'>(</span><span class='label'>algorithms:</span> <span class='id identifier rubyid_algorithm'>algorithm</span><span class='comma'>,</span> <span class='label'>preferred_algorithm:</span> <span class='id identifier rubyid_header'>header</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>alg</span><span class='tstring_end'>&#39;</span></span><span class='rbracket'>]</span><span class='rparen'>)</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_any?'>any?</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_algo'>algo</span><span class='op'>|</span>
@@ -1270,17 +1279,17 @@ encoded_token.payload # =&gt; {&#39;pay&#39; =&gt; &#39;load&#39;}
       <pre class="lines">
 
 
-82
-83
 84
 85
 86
 87
 88
-89</pre>
+89
+90
+91</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/jwt/encoded_token.rb', line 82</span>
+      <pre class="code"><span class="info file"># File 'lib/jwt/encoded_token.rb', line 84</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_verify_signature!'>verify_signature!</span><span class='lparen'>(</span><span class='label'>algorithm:</span><span class='comma'>,</span> <span class='label'>key:</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='label'>key_finder:</span> <span class='kw'>nil</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_raise'>raise</span> <span class='const'>ArgumentError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>Provide either key or key_finder, not both or neither</span><span class='tstring_end'>&#39;</span></span> <span class='kw'>if</span> <span class='id identifier rubyid_key'>key</span><span class='period'>.</span><span class='id identifier rubyid_nil?'>nil?</span> <span class='op'>==</span> <span class='id identifier rubyid_key_finder'>key_finder</span><span class='period'>.</span><span class='id identifier rubyid_nil?'>nil?</span>
@@ -1300,7 +1309,7 @@ encoded_token.payload # =&gt; {&#39;pay&#39; =&gt; &#39;load&#39;}
 </div>
 
       <div id="footer">
-  Generated on Sat Oct  5 21:00:12 2024 by
+  Generated on Sun Oct  6 15:17:04 2024 by
   <a href="https://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.9.37 (ruby-3.3.5).
 </div>
