@@ -14,6 +14,7 @@
 
 - Deprecation warnings for deprecated methods and classes [#629](https://github.com/jwt/ruby-jwt/pull/629) ([@anakinj](https://github.com/anakinj))
 - Improved documentation for public apis [#629](https://github.com/jwt/ruby-jwt/pull/629) ([@anakinj](https://github.com/anakinj))
+- Use correct methods when raising error during signing/verification with EdDSA [#633](https://github.com/jwt/ruby-jwt/pull/633)
 - Your contribution here
 
 ## [v2.9.3](https://github.com/jwt/ruby-jwt/tree/v2.9.3) (2024-10-03)

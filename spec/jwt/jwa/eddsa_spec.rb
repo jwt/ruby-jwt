@@ -13,4 +13,20 @@ RSpec.describe 'JWT::JWA::Eddsa' do
       expect(JWT::JWA::Eddsa.verify('RS256', key.verify_key, 'data', signature)).to be(true)
     end
   end
+
+  context 'when when signing with invalid RbNaCl::Signatures::Ed25519::SigningKey' do
+    it 'raises an error' do
+      expect do
+        JWT::JWA::Eddsa.sign('RS256', 'data', 'key')
+      end.to raise_error(JWT::EncodeError, 'Key given is a String but has to be an RbNaCl::Signatures::Ed25519::SigningKey')
+    end
+  end
+
+  context 'when when verifying with invalid RbNaCl::Signatures::Ed25519::VerifyKey' do
+    it 'raises an error' do
+      expect do
+        JWT::JWA::Eddsa.verify('RS256', 'key', 'data', 'signature')
+      end.to raise_error(JWT::DecodeError, 'key given is a String but has to be a RbNaCl::Signatures::Ed25519::VerifyKey')
+    end
+  end
 end

@@ -11,7 +11,7 @@ module JWT
 
       def sign(data:, signing_key:)
         unless signing_key.is_a?(RbNaCl::Signatures::Ed25519::SigningKey)
-          raise_encode_error!("Key given is a #{signing_key.class} but has to be an RbNaCl::Signatures::Ed25519::SigningKey")
+          raise_sign_error!("Key given is a #{signing_key.class} but has to be an RbNaCl::Signatures::Ed25519::SigningKey")
         end
 
         signing_key.sign(data)
@@ -19,7 +19,7 @@ module JWT
 
       def verify(data:, signature:, verification_key:)
         unless verification_key.is_a?(RbNaCl::Signatures::Ed25519::VerifyKey)
-          raise_decode_error!("key given is a #{verification_key.class} but has to be a RbNaCl::Signatures::Ed25519::VerifyKey")
+          raise_verify_error!("key given is a #{verification_key.class} but has to be a RbNaCl::Signatures::Ed25519::VerifyKey")
         end
 
         verification_key.verify(signature, data)
