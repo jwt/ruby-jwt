@@ -11,6 +11,7 @@ module JWT
   #   encoded_token = JWT::EncodedToken.new(token.jwt)
   #   encoded_token.verify_signature!algorithm: 'HS256', key: 'secret')
   #   encoded_token.payload # => {'pay' => 'load'}
+  #
   class EncodedToken
     include Claims::VerificationMethods
 
@@ -21,11 +22,17 @@ module JWT
     # Initializes a new EncodedToken instance.
     #
     # @param jwt [String] the encoded JWT token.
+    # @param enabled_crits [Array<String>] the list of enabled critical headers.
+    # @param allow_unverified [Boolean] whether to allow access to payload for unverified tokens.
     # @raise [ArgumentError] if the provided JWT is not a String.
-    def initialize(jwt)
-      raise ArgumentError 'Provided JWT must be a String' unless jwt.is_a?(String)
+    # @raise [ArgumentError] if enabled_crits is not an Array.
+    def initialize(jwt, enabled_crits: [])
+      raise ArgumentError, 'Provided JWT must be a String' unless jwt.is_a?(String)
+      raise ArgumentError, 'enabled_crits must be an Array' unless enabled_crits.is_a?(Array)
 
+      @enabled_crits = enabled_crits
       @jwt = jwt
+      @signature_verified = false
       @encoded_header, @encoded_payload, @encoded_signature = jwt.split('.')
     end
 
@@ -55,6 +62,7 @@ module JWT
 
     # Returns the payload of the JWT token.
     #
+    # @param allow_unverified [Boolean] whether to allow payloads to be accessed for unverified tokens.
     # @return [Hash] the payload.
     def payload
       @payload ||= decode_payload
@@ -85,6 +93,7 @@ module JWT
       raise ArgumentError, 'Provide either key or key_finder, not both or neither' if key.nil? == key_finder.nil?
 
       key ||= key_finder.call(self)
+
       return if valid_signature?(algorithm: algorithm, key: key)
 
       raise JWT::VerificationError, 'Signature verification failed'
@@ -103,15 +112,33 @@ module JWT
       end
     end
 
+    # Verifies that a critical header is present and enabled.
+    #
+    # @param critical_header [String] the critical header to verify.
+    # @return [nil]
+    # @raise [InvalidCritError] if the critical header is missing or not enabled.
+    def verify_crit!(crit)
+      unless Array(header['crit']).include?(crit)
+        raise InvalidCritError, "'#{crit}' missing from crit header"
+      end
+
+      return if Array(enabled_crits).include?(crit)
+
+      raise InvalidCritError, "'#{crit}' not enabled for token instance"
+    end
+
     alias to_s jwt
 
     private
 
+    attr_reader :enabled_crits
+
     def decode_payload
-      raise(JWT::DecodeError, 'Encoded payload is empty') if encoded_payload == ''
+      raise JWT::DecodeError, 'Encoded payload is empty' if encoded_payload == ''
 
       if unecoded_payload?
-        return parse(encoded_payload)
+        verify_crit!('b64')
+        return parse_unencoded(encoded_payload)
       end
 
       parse_and_decode(encoded_payload)
@@ -123,6 +150,10 @@ module JWT
 
     def parse_and_decode(segment)
       parse(::JWT::Base64.url_decode(segment))
+    end
+
+    def parse_unencoded(segment)
+      parse(segment)
     end
 
     def parse(segment)

@@ -29,12 +29,22 @@ RSpec.describe JWT::EncodedToken do
       end
     end
 
-    context 'when payload is not encoded' do
+    context 'when payload is not encoded and the b64 crit is enabled' do
+      subject(:token) { described_class.new(encoded_token, enabled_crits: ['b64']) }
       let(:encoded_token) { 'eyJhbGciOiJIUzI1NiIsImI2NCI6ZmFsc2UsImNyaXQiOlsiYjY0Il19..signature' }
       before { token.encoded_payload = '{"foo": "bar"}' }
 
       it 'does not raise' do
         expect(token.payload).to eq({ 'foo' => 'bar' })
+      end
+    end
+
+    context 'when payload is not encoded and the b64 crit is NOT enabled' do
+      let(:encoded_token) { 'eyJhbGciOiJIUzI1NiIsImI2NCI6ZmFsc2UsImNyaXQiOlsiYjY0Il19..signature' }
+      before { token.encoded_payload = '{"foo": "bar"}' }
+
+      it 'raises an error' do
+        expect { token.payload }.to raise_error(JWT::InvalidCritError, "'b64' not enabled for token instance")
       end
     end
   end
