@@ -28,6 +28,25 @@ RSpec.describe JWT::EncodedToken do
         end
       end
     end
+
+    context 'when payload is not encoded and the b64 crit is enabled' do
+      subject(:token) { described_class.new(encoded_token, enabled_crits: ['b64']) }
+      let(:encoded_token) { 'eyJhbGciOiJIUzI1NiIsImI2NCI6ZmFsc2UsImNyaXQiOlsiYjY0Il19..signature' }
+      before { token.encoded_payload = '{"foo": "bar"}' }
+
+      it 'does not raise' do
+        expect(token.payload).to eq({ 'foo' => 'bar' })
+      end
+    end
+
+    context 'when payload is not encoded and the b64 crit is NOT enabled' do
+      let(:encoded_token) { 'eyJhbGciOiJIUzI1NiIsImI2NCI6ZmFsc2UsImNyaXQiOlsiYjY0Il19..signature' }
+      before { token.encoded_payload = '{"foo": "bar"}' }
+
+      it 'raises an error' do
+        expect { token.payload }.to raise_error(JWT::InvalidCritError, "'b64' not enabled for token instance")
+      end
+    end
   end
 
   describe '#header' do
@@ -97,6 +116,17 @@ RSpec.describe JWT::EncodedToken do
     context 'when both key or key_finder is given' do
       it 'raises an ArgumentError' do
         expect { token.verify_signature!(algorithm: 'HS256', key: 'key', key_finder: 'finder') }.to raise_error(ArgumentError, 'Provide either key or key_finder, not both or neither')
+      end
+    end
+
+    context 'when payload is not encoded' do
+      let(:encoded_token) { 'eyJhbGciOiJIUzI1NiIsImI2NCI6ZmFsc2UsImNyaXQiOlsiYjY0Il19..A5dxf2s96_n5FLueVuW1Z_vh161FwXZC4YLPff6dmDY' }
+      before { token.encoded_payload = '$.02' }
+
+      let(:key) { Base64.urlsafe_decode64('AyM1SysPpbyDfgZld3umj1qzKObwVMkoqQ-EstJQLr_T-1qS0gZH75aKtMN3Yj0iPS4hcgUuTwjAzZr1Z9CAow') }
+
+      it 'does not raise' do
+        expect(token.verify_signature!(algorithm: 'HS256', key: key)).to eq(nil)
       end
     end
   end

@@ -51,4 +51,7 @@ module JWT
 
   # The JWKError class is raised when there is an error with the JSON Web Key (JWK).
   class JWKError < DecodeError; end
+
+  # The InvalidCritError class is raised when the JWT crit header contains unexpected or invalid values.
+  class InvalidCritError < DecodeError; end
 end
