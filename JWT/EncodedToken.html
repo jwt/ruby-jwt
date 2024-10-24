@@ -111,13 +111,13 @@
 
 <p>Processing an encoded and signed token:</p>
 
-<pre class="code ruby"><code class="ruby">token = JWT::Token.new(payload: {pay: &#39;load&#39;})
-token.sign!(algorithm: &#39;HS256&#39;, key: &#39;secret&#39;)
+<pre class="code ruby"><code class="ruby"><span class='id identifier rubyid_token'>token</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="../JWT.html" title="JWT (module)">JWT</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="Token.html" title="JWT::Token (class)">Token</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="Token.html#initialize-instance_method" title="JWT::Token#initialize (method)">new</a></span></span><span class='lparen'>(</span><span class='label'>payload:</span> <span class='lbrace'>{</span><span class='label'>pay:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>load</span><span class='tstring_end'>&#39;</span></span><span class='rbrace'>}</span><span class='rparen'>)</span>
+<span class='id identifier rubyid_token'>token</span><span class='period'>.</span><span class='id identifier rubyid_sign!'>sign!</span><span class='lparen'>(</span><span class='label'>algorithm:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>HS256</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>key:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>secret</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span>
 
-encoded_token = JWT::EncodedToken.new(token.jwt)
-encoded_token.verify_signature!algorithm: &#39;HS256&#39;, key: &#39;secret&#39;)
-encoded_token.payload # =&gt; {&#39;pay&#39; =&gt; &#39;load&#39;}
-</code></pre>
+<span class='id identifier rubyid_encoded_token'>encoded_token</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="../JWT.html" title="JWT (module)">JWT</a></span></span><span class='op'>::</span><span class='const'>EncodedToken</span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="#initialize-instance_method" title="JWT::EncodedToken#initialize (method)">new</a></span></span><span class='lparen'>(</span><span class='id identifier rubyid_token'>token</span><span class='period'>.</span><span class='id identifier rubyid_jwt'>jwt</span><span class='rparen'>)</span>
+<span class='id identifier rubyid_encoded_token'>encoded_token</span><span class='period'>.</span><span class='id identifier rubyid_verify_signature!'>verify_signature!</span><span class='lparen'>(</span><span class='label'>algorithm:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>HS256</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>key:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>secret</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span>
+<span class='id identifier rubyid_encoded_token'>encoded_token</span><span class='period'>.</span><span class='id identifier rubyid_payload'>payload</span> <span class='comment'># =&gt; {&#39;pay&#39; =&gt; &#39;load&#39;}
+</span></code></pre>
 
 
   </div>
@@ -1309,7 +1309,7 @@ encoded_token.payload # =&gt; {&#39;pay&#39; =&gt; &#39;load&#39;}
 </div>
 
       <div id="footer">
-  Generated on Wed Oct  9 04:28:29 2024 by
+  Generated on Thu Oct 24 06:35:10 2024 by
   <a href="https://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.9.37 (ruby-3.3.5).
 </div>
