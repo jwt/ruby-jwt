@@ -9,7 +9,7 @@ module JWT
   #   token.sign!(algorithm: 'HS256', key: 'secret')
   #
   #   encoded_token = JWT::EncodedToken.new(token.jwt)
-  #   encoded_token.verify_signature!algorithm: 'HS256', key: 'secret')
+  #   encoded_token.verify_signature!(algorithm: 'HS256', key: 'secret')
   #   encoded_token.payload # => {'pay' => 'load'}
   class EncodedToken
     include Claims::VerificationMethods
