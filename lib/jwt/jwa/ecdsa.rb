@@ -2,6 +2,7 @@
 
 module JWT
   module JWA
+    # ECDSA signing algorithm
     class Ecdsa
       include JWT::JWA::SigningAlgorithm
 

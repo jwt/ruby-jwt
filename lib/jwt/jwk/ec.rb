@@ -4,6 +4,7 @@ require 'forwardable'
 
 module JWT
   module JWK
+    # JWK representation for Elliptic Curve (EC) keys
     class EC < KeyBase # rubocop:disable Metrics/ClassLength
       KTY    = 'EC'
       KTYS   = [KTY, OpenSSL::PKey::EC, JWT::JWK::EC].freeze

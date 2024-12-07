@@ -2,6 +2,7 @@
 
 module JWT
   module JWA
+    # Implementation of the RSA family of algorithms
     class Rsa
       include JWT::JWA::SigningAlgorithm
 

@@ -1,8 +1,11 @@
 # frozen_string_literal: true
 
 module JWT
+  # JSON Web Algorithms
   module JWA
+    # Base functionality for signing algorithms
     module SigningAlgorithm
+      # Class methods for the SigningAlgorithm module
       module ClassMethods
         def register_algorithm(algo)
           ::JWT::JWA.register_algorithm(algo)

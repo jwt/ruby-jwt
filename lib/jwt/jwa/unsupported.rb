@@ -2,6 +2,7 @@
 
 module JWT
   module JWA
+    # Represents an unsupported algorithm
     module Unsupported
       class << self
         include JWT::JWA::SigningAlgorithm

@@ -1,5 +1,9 @@
 # frozen_string_literal: true
 
+# JSON Web Token implementation
+#
+# Should be up to date with the latest spec:
+# https://tools.ietf.org/html/rfc7519
 module JWT
   # Returns the gem version of the JWT library.
   #

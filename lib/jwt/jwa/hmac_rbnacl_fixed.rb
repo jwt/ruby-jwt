@@ -2,6 +2,7 @@
 
 module JWT
   module JWA
+    # Implementation of the HMAC family of algorithms (using RbNaCl prior to a certain version)
     class HmacRbNaClFixed
       include JWT::JWA::SigningAlgorithm
 

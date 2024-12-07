@@ -3,7 +3,7 @@
 require 'json'
 
 module JWT
-  # JSON wrapper
+  # @api private
   class JSON
     class << self
       def generate(data)

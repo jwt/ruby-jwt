@@ -2,6 +2,7 @@
 
 module JWT
   module JWA
+    # Implementation of the EdDSA family of algorithms
     class Eddsa
       include JWT::JWA::SigningAlgorithm
 

@@ -2,6 +2,7 @@
 
 module JWT
   module JWK
+    # JWK for HMAC keys
     class HMAC < KeyBase
       KTY  = 'oct'
       KTYS = [KTY, String, JWT::JWK::HMAC].freeze
