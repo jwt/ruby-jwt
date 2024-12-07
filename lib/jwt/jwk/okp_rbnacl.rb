@@ -83,9 +83,7 @@ module JWT
           x: ::JWT::Base64.url_encode(verify_key.to_bytes)
         }
 
-        if signing_key
-          params[:d] = ::JWT::Base64.url_encode(signing_key.to_bytes)
-        end
+        params[:d] = ::JWT::Base64.url_encode(signing_key.to_bytes) if signing_key
 
         params
       end

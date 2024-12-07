@@ -11,9 +11,7 @@ module JWT
       end
 
       def sign(data:, signing_key:)
-        unless signing_key.is_a?(OpenSSL::PKey::RSA)
-          raise_sign_error!("The given key is a #{signing_key.class}. It has to be an OpenSSL::PKey::RSA instance")
-        end
+        raise_sign_error!("The given key is a #{signing_key.class}. It has to be an OpenSSL::PKey::RSA instance") unless signing_key.is_a?(OpenSSL::PKey::RSA)
 
         signing_key.sign(digest, data)
       end

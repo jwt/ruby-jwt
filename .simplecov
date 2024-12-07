@@ -10,6 +10,4 @@ SimpleCov.start do
   add_filter 'spec'
 end
 
-if ENV['CI']
-  SimpleCov.formatters = SimpleCov::Formatter::JSONFormatter
-end
+SimpleCov.formatters = SimpleCov::Formatter::JSONFormatter if ENV['CI']

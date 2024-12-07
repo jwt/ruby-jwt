@@ -18,9 +18,7 @@ require_relative 'jwa/rsa'
 require_relative 'jwa/unsupported'
 require_relative 'jwa/wrapper'
 
-if JWT.rbnacl?
-  require_relative 'jwa/eddsa'
-end
+require_relative 'jwa/eddsa' if JWT.rbnacl?
 
 if JWT.rbnacl_6_or_greater?
   require_relative 'jwa/hmac_rbnacl'
