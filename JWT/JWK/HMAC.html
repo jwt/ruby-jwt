@@ -101,7 +101,18 @@
   
 </div>
 
+<h2>Overview</h2><div class="docstring">
+  <div class="discussion">
+    
+<p>JWK for HMAC keys</p>
 
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div>
   
     <h2>
       Constant Summary
@@ -452,7 +463,6 @@
       <pre class="lines">
 
 
-12
 13
 14
 15
@@ -464,10 +474,11 @@
 21
 22
 23
-24</pre>
+24
+25</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/jwt/jwk/hmac.rb', line 12</span>
+      <pre class="code"><span class="info file"># File 'lib/jwt/jwk/hmac.rb', line 13</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_initialize'>initialize</span><span class='lparen'>(</span><span class='id identifier rubyid_key'>key</span><span class='comma'>,</span> <span class='id identifier rubyid_params'>params</span> <span class='op'>=</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='id identifier rubyid_options'>options</span> <span class='op'>=</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_params'>params</span> <span class='op'>||=</span> <span class='lbrace'>{</span><span class='rbrace'>}</span>
@@ -509,12 +520,12 @@
       <pre class="lines">
 
 
-95
 96
-97</pre>
+97
+98</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/jwt/jwk/hmac.rb', line 95</span>
+      <pre class="code"><span class="info file"># File 'lib/jwt/jwk/hmac.rb', line 96</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_import'>import</span><span class='lparen'>(</span><span class='id identifier rubyid_jwk_data'>jwk_data</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='id identifier rubyid_jwk_data'>jwk_data</span><span class='rparen'>)</span>
@@ -567,14 +578,14 @@
       <pre class="lines">
 
 
-63
 64
 65
 66
-67</pre>
+67
+68</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/jwt/jwk/hmac.rb', line 63</span>
+      <pre class="code"><span class="info file"># File 'lib/jwt/jwk/hmac.rb', line 64</span>
 
 <span class='kw'>def</span> <span class='op'>[]=</span><span class='lparen'>(</span><span class='id identifier rubyid_key'>key</span><span class='comma'>,</span> <span class='id identifier rubyid_value'>value</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_raise'>raise</span> <span class='const'>ArgumentError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>cannot overwrite cryptographic key attributes</span><span class='tstring_end'>&#39;</span></span> <span class='kw'>if</span> <span class='const'><span class='object_link'><a href="#HMAC_KEY_ELEMENTS-constant" title="JWT::JWK::HMAC::HMAC_KEY_ELEMENTS (constant)">HMAC_KEY_ELEMENTS</a></span></span><span class='period'>.</span><span class='id identifier rubyid_include?'>include?</span><span class='lparen'>(</span><span class='id identifier rubyid_key'>key</span><span class='period'>.</span><span class='id identifier rubyid_to_sym'>to_sym</span><span class='rparen'>)</span>
@@ -612,14 +623,14 @@
       <pre class="lines">
 
 
-47
 48
 49
 50
-51</pre>
+51
+52</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/jwt/jwk/hmac.rb', line 47</span>
+      <pre class="code"><span class="info file"># File 'lib/jwt/jwk/hmac.rb', line 48</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_export'>export</span><span class='lparen'>(</span><span class='id identifier rubyid_options'>options</span> <span class='op'>=</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_exported'>exported</span> <span class='op'>=</span> <span class='id identifier rubyid_parameters'>parameters</span><span class='period'>.</span><span class='id identifier rubyid_clone'>clone</span>
@@ -646,14 +657,14 @@
       <pre class="lines">
 
 
-57
 58
 59
 60
-61</pre>
+61
+62</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/jwt/jwk/hmac.rb', line 57</span>
+      <pre class="code"><span class="info file"># File 'lib/jwt/jwk/hmac.rb', line 58</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_key_digest'>key_digest</span>
   <span class='id identifier rubyid_sequence'>sequence</span> <span class='op'>=</span> <span class='const'>OpenSSL</span><span class='op'>::</span><span class='const'>ASN1</span><span class='op'>::</span><span class='const'>Sequence</span><span class='lparen'>(</span><span class='lbracket'>[</span><span class='const'>OpenSSL</span><span class='op'>::</span><span class='const'>ASN1</span><span class='op'>::</span><span class='const'>UTF8String</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='id identifier rubyid_signing_key'>signing_key</span><span class='rparen'>)</span><span class='comma'>,</span>
@@ -680,12 +691,12 @@
       <pre class="lines">
 
 
-26
 27
-28</pre>
+28
+29</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/jwt/jwk/hmac.rb', line 26</span>
+      <pre class="code"><span class="info file"># File 'lib/jwt/jwk/hmac.rb', line 27</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_keypair'>keypair</span>
   <span class='id identifier rubyid_secret'>secret</span>
@@ -710,12 +721,12 @@
       <pre class="lines">
 
 
-53
 54
-55</pre>
+55
+56</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/jwt/jwk/hmac.rb', line 53</span>
+      <pre class="code"><span class="info file"># File 'lib/jwt/jwk/hmac.rb', line 54</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_members'>members</span>
   <span class='const'><span class='object_link'><a href="#HMAC_KEY_ELEMENTS-constant" title="JWT::JWK::HMAC::HMAC_KEY_ELEMENTS (constant)">HMAC_KEY_ELEMENTS</a></span></span><span class='period'>.</span><span class='id identifier rubyid_each_with_object'>each_with_object</span><span class='lparen'>(</span><span class='lbrace'>{</span><span class='rbrace'>}</span><span class='rparen'>)</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_i'>i</span><span class='comma'>,</span> <span class='id identifier rubyid_h'>h</span><span class='op'>|</span> <span class='id identifier rubyid_h'>h</span><span class='lbracket'>[</span><span class='id identifier rubyid_i'>i</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='kw'>self</span><span class='lbracket'>[</span><span class='id identifier rubyid_i'>i</span><span class='rbracket'>]</span> <span class='rbrace'>}</span>
@@ -762,12 +773,12 @@
       <pre class="lines">
 
 
-30
 31
-32</pre>
+32
+33</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/jwt/jwk/hmac.rb', line 30</span>
+      <pre class="code"><span class="info file"># File 'lib/jwt/jwk/hmac.rb', line 31</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_private?'>private?</span>
   <span class='kw'>true</span>
@@ -792,12 +803,12 @@
       <pre class="lines">
 
 
-34
 35
-36</pre>
+36
+37</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/jwt/jwk/hmac.rb', line 34</span>
+      <pre class="code"><span class="info file"># File 'lib/jwt/jwk/hmac.rb', line 35</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_public_key'>public_key</span>
   <span class='kw'>nil</span>
@@ -822,12 +833,12 @@
       <pre class="lines">
 
 
-42
 43
-44</pre>
+44
+45</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/jwt/jwk/hmac.rb', line 42</span>
+      <pre class="code"><span class="info file"># File 'lib/jwt/jwk/hmac.rb', line 43</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_signing_key'>signing_key</span>
   <span class='id identifier rubyid_secret'>secret</span>
@@ -852,12 +863,12 @@
       <pre class="lines">
 
 
-38
 39
-40</pre>
+40
+41</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/jwt/jwk/hmac.rb', line 38</span>
+      <pre class="code"><span class="info file"># File 'lib/jwt/jwk/hmac.rb', line 39</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_verify_key'>verify_key</span>
   <span class='id identifier rubyid_secret'>secret</span>
@@ -872,7 +883,7 @@
 </div>
 
       <div id="footer">
-  Generated on Sat Dec  7 14:30:38 2024 by
+  Generated on Sat Dec  7 15:36:45 2024 by
   <a href="https://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.9.37 (ruby-3.3.6).
 </div>

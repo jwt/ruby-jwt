@@ -88,7 +88,18 @@
   
 </div>
 
-<h2>Defined Under Namespace</h2>
+<h2>Overview</h2><div class="docstring">
+  <div class="discussion">
+    
+<p>Base functionality for signing algorithms</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><h2>Defined Under Namespace</h2>
 <p class="children">
   
     
@@ -345,12 +356,12 @@
       <pre class="lines">
 
 
-17
-18
-19</pre>
+20
+21
+22</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/jwt/jwa/signing_algorithm.rb', line 17</span>
+      <pre class="code"><span class="info file"># File 'lib/jwt/jwa/signing_algorithm.rb', line 20</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_alg'>alg</span>
   <span class='ivar'>@alg</span>
@@ -382,13 +393,13 @@
       <pre class="lines">
 
 
-12
-13
-14
-15</pre>
+15
+16
+17
+18</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/jwt/jwa/signing_algorithm.rb', line 12</span>
+      <pre class="code"><span class="info file"># File 'lib/jwt/jwa/signing_algorithm.rb', line 15</span>
 
 <span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_included'>included</span><span class='lparen'>(</span><span class='id identifier rubyid_klass'>klass</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_klass'>klass</span><span class='period'>.</span><span class='id identifier rubyid_extend'>extend</span><span class='lparen'>(</span><span class='const'><span class='object_link'><a href="SigningAlgorithm/ClassMethods.html" title="JWT::JWA::SigningAlgorithm::ClassMethods (module)">ClassMethods</a></span></span><span class='rparen'>)</span>
@@ -420,12 +431,12 @@
       <pre class="lines">
 
 
-23
-24
-25</pre>
+26
+27
+28</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/jwt/jwa/signing_algorithm.rb', line 23</span>
+      <pre class="code"><span class="info file"># File 'lib/jwt/jwa/signing_algorithm.rb', line 26</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_header'>header</span><span class='lparen'>(</span><span class='op'>*</span><span class='rparen'>)</span>
   <span class='lbrace'>{</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>alg</span><span class='tstring_end'>&#39;</span></span> <span class='op'>=&gt;</span> <span class='id identifier rubyid_alg'>alg</span> <span class='rbrace'>}</span>
@@ -450,12 +461,12 @@
       <pre class="lines">
 
 
-39
-40
-41</pre>
+42
+43
+44</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/jwt/jwa/signing_algorithm.rb', line 39</span>
+      <pre class="code"><span class="info file"># File 'lib/jwt/jwa/signing_algorithm.rb', line 42</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_raise_sign_error!'>raise_sign_error!</span><span class='lparen'>(</span><span class='id identifier rubyid_message'>message</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_raise'>raise</span><span class='lparen'>(</span><span class='const'><span class='object_link'><a href="../EncodeError.html" title="JWT::EncodeError (class)">EncodeError</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='id identifier rubyid_message'>message</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_tap'>tap</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_e'>e</span><span class='op'>|</span> <span class='id identifier rubyid_e'>e</span><span class='period'>.</span><span class='id identifier rubyid_set_backtrace'>set_backtrace</span><span class='lparen'>(</span><span class='id identifier rubyid_caller'>caller</span><span class='lparen'>(</span><span class='int'>1</span><span class='rparen'>)</span><span class='rparen'>)</span> <span class='rbrace'>}</span><span class='rparen'>)</span>
@@ -480,12 +491,12 @@
       <pre class="lines">
 
 
-35
-36
-37</pre>
+38
+39
+40</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/jwt/jwa/signing_algorithm.rb', line 35</span>
+      <pre class="code"><span class="info file"># File 'lib/jwt/jwa/signing_algorithm.rb', line 38</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_raise_verify_error!'>raise_verify_error!</span><span class='lparen'>(</span><span class='id identifier rubyid_message'>message</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_raise'>raise</span><span class='lparen'>(</span><span class='const'><span class='object_link'><a href="../DecodeError.html" title="JWT::DecodeError (class)">DecodeError</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='id identifier rubyid_message'>message</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_tap'>tap</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_e'>e</span><span class='op'>|</span> <span class='id identifier rubyid_e'>e</span><span class='period'>.</span><span class='id identifier rubyid_set_backtrace'>set_backtrace</span><span class='lparen'>(</span><span class='id identifier rubyid_caller'>caller</span><span class='lparen'>(</span><span class='int'>1</span><span class='rparen'>)</span><span class='rparen'>)</span> <span class='rbrace'>}</span><span class='rparen'>)</span>
@@ -510,12 +521,12 @@
       <pre class="lines">
 
 
-27
-28
-29</pre>
+30
+31
+32</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/jwt/jwa/signing_algorithm.rb', line 27</span>
+      <pre class="code"><span class="info file"># File 'lib/jwt/jwa/signing_algorithm.rb', line 30</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_sign'>sign</span><span class='lparen'>(</span><span class='op'>*</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_raise_sign_error!'>raise_sign_error!</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>Algorithm implementation is missing the sign method</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span>
@@ -562,12 +573,12 @@
       <pre class="lines">
 
 
-19
-20
-21</pre>
+22
+23
+24</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/jwt/jwa/signing_algorithm.rb', line 19</span>
+      <pre class="code"><span class="info file"># File 'lib/jwt/jwa/signing_algorithm.rb', line 22</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_valid_alg?'>valid_alg?</span><span class='lparen'>(</span><span class='id identifier rubyid_alg_to_check'>alg_to_check</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_alg'>alg</span><span class='op'>&amp;.</span><span class='id identifier rubyid_casecmp'>casecmp</span><span class='lparen'>(</span><span class='id identifier rubyid_alg_to_check'>alg_to_check</span><span class='rparen'>)</span><span class='op'>&amp;.</span><span class='id identifier rubyid_zero?'>zero?</span> <span class='op'>==</span> <span class='kw'>true</span>
@@ -592,12 +603,12 @@
       <pre class="lines">
 
 
-31
-32
-33</pre>
+34
+35
+36</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/jwt/jwa/signing_algorithm.rb', line 31</span>
+      <pre class="code"><span class="info file"># File 'lib/jwt/jwa/signing_algorithm.rb', line 34</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_verify'>verify</span><span class='lparen'>(</span><span class='op'>*</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_raise_verify_error!'>raise_verify_error!</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>Algorithm implementation is missing the verify method</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span>
@@ -612,7 +623,7 @@
 </div>
 
       <div id="footer">
-  Generated on Sat Dec  7 14:30:38 2024 by
+  Generated on Sat Dec  7 15:36:45 2024 by
   <a href="https://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.9.37 (ruby-3.3.6).
 </div>

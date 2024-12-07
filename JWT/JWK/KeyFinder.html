@@ -62,7 +62,7 @@
       <div id="content"><h1>Class: JWT::JWK::KeyFinder
   
   
-  
+  <span class="private note title">Private</span>
 </h1>
 <div class="box_info">
   
@@ -99,7 +99,20 @@
   
 </div>
 
+<div class="docstring">
+  <div class="discussion">
+    <p class="note private">
+  <strong>This class is part of a private API.</strong>
+  You should avoid using this class if possible, as it may be removed or be changed in the future.
+</p>
 
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div>
 
 
 
@@ -130,7 +143,7 @@
   
   
   
-  
+  <span class="private note title">private</span>
 
   
     <span class="summary_desc"><div class='inline'>
@@ -154,7 +167,7 @@
   
   
   
-  
+  <span class="private note title">private</span>
 
   
     <span class="summary_desc"><div class='inline'></div></span>
@@ -179,7 +192,11 @@
   
 </h3><div class="docstring">
   <div class="discussion">
-    
+    <p class="note private">
+  <strong>This method is part of a private API.</strong>
+  You should avoid using this method if possible, as it may be removed or be changed in the future.
+</p>
+
 <p>Returns a new instance of KeyFinder.</p>
 
 
@@ -194,7 +211,6 @@
       <pre class="lines">
 
 
-6
 7
 8
 9
@@ -203,10 +219,11 @@
 12
 13
 14
-15</pre>
+15
+16</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/jwt/jwk/key_finder.rb', line 6</span>
+      <pre class="code"><span class="info file"># File 'lib/jwt/jwk/key_finder.rb', line 7</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_initialize'>initialize</span><span class='lparen'>(</span><span class='id identifier rubyid_options'>options</span><span class='rparen'>)</span>
   <span class='ivar'>@allow_nil_kid</span> <span class='op'>=</span> <span class='id identifier rubyid_options'>options</span><span class='lbracket'>[</span><span class='symbol'>:allow_nil_kid</span><span class='rbracket'>]</span>
@@ -241,7 +258,11 @@
   
 </h3><div class="docstring">
   <div class="discussion">
-    
+    <p class="note private">
+  <strong>This method is part of a private API.</strong>
+  You should avoid using this method if possible, as it may be removed or be changed in the future.
+</p>
+
 
   </div>
 </div>
@@ -267,7 +288,6 @@
       <pre class="lines">
 
 
-17
 18
 19
 20
@@ -277,10 +297,11 @@
 24
 25
 26
-27</pre>
+27
+28</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/jwt/jwk/key_finder.rb', line 17</span>
+      <pre class="code"><span class="info file"># File 'lib/jwt/jwk/key_finder.rb', line 18</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_key_for'>key_for</span><span class='lparen'>(</span><span class='id identifier rubyid_kid'>kid</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_raise'>raise</span> <span class='op'>::</span><span class='const'><span class='object_link'><a href="../../JWT.html" title="JWT (module)">JWT</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="../DecodeError.html" title="JWT::DecodeError (class)">DecodeError</a></span></span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>No key id (kid) found from token headers</span><span class='tstring_end'>&#39;</span></span> <span class='kw'>unless</span> <span class='id identifier rubyid_kid'>kid</span> <span class='op'>||</span> <span class='ivar'>@allow_nil_kid</span>
@@ -303,7 +324,7 @@
 </div>
 
       <div id="footer">
-  Generated on Sat Dec  7 14:30:38 2024 by
+  Generated on Sat Dec  7 15:36:45 2024 by
   <a href="https://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.9.37 (ruby-3.3.6).
 </div>

@@ -101,7 +101,18 @@
   
 </div>
 
+<h2>Overview</h2><div class="docstring">
+  <div class="discussion">
+    
+<p>JSON Web Key (JWK) representation for Ed25519 keys</p>
 
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div>
   
     <h2>
       Constant Summary
@@ -379,7 +390,6 @@
       <pre class="lines">
 
 
-11
 12
 13
 14
@@ -390,10 +400,11 @@
 19
 20
 21
-22</pre>
+22
+23</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/jwt/jwk/okp_rbnacl.rb', line 11</span>
+      <pre class="code"><span class="info file"># File 'lib/jwt/jwk/okp_rbnacl.rb', line 12</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_initialize'>initialize</span><span class='lparen'>(</span><span class='id identifier rubyid_key'>key</span><span class='comma'>,</span> <span class='id identifier rubyid_params'>params</span> <span class='op'>=</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='id identifier rubyid_options'>options</span> <span class='op'>=</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_params'>params</span> <span class='op'>||=</span> <span class='lbrace'>{</span><span class='rbrace'>}</span>
@@ -434,12 +445,12 @@
       <pre class="lines">
 
 
-102
 103
-104</pre>
+104
+105</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/jwt/jwk/okp_rbnacl.rb', line 102</span>
+      <pre class="code"><span class="info file"># File 'lib/jwt/jwk/okp_rbnacl.rb', line 103</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_import'>import</span><span class='lparen'>(</span><span class='id identifier rubyid_jwk_data'>jwk_data</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='id identifier rubyid_jwk_data'>jwk_data</span><span class='rparen'>)</span>
@@ -470,14 +481,14 @@
       <pre class="lines">
 
 
-48
 49
 50
 51
-52</pre>
+52
+53</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/jwt/jwk/okp_rbnacl.rb', line 48</span>
+      <pre class="code"><span class="info file"># File 'lib/jwt/jwk/okp_rbnacl.rb', line 49</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_export'>export</span><span class='lparen'>(</span><span class='id identifier rubyid_options'>options</span> <span class='op'>=</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_exported'>exported</span> <span class='op'>=</span> <span class='id identifier rubyid_parameters'>parameters</span><span class='period'>.</span><span class='id identifier rubyid_clone'>clone</span>
@@ -504,12 +515,12 @@
       <pre class="lines">
 
 
-36
 37
-38</pre>
+38
+39</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/jwt/jwk/okp_rbnacl.rb', line 36</span>
+      <pre class="code"><span class="info file"># File 'lib/jwt/jwk/okp_rbnacl.rb', line 37</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_key_digest'>key_digest</span>
   <span class='const'><span class='object_link'><a href="Thumbprint.html" title="JWT::JWK::Thumbprint (class)">Thumbprint</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='kw'>self</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_to_s'>to_s</span>
@@ -534,12 +545,12 @@
       <pre class="lines">
 
 
-44
 45
-46</pre>
+46
+47</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/jwt/jwk/okp_rbnacl.rb', line 44</span>
+      <pre class="code"><span class="info file"># File 'lib/jwt/jwk/okp_rbnacl.rb', line 45</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_members'>members</span>
   <span class='const'><span class='object_link'><a href="#OKP_PUBLIC_KEY_ELEMENTS-constant" title="JWT::JWK::OKPRbNaCl::OKP_PUBLIC_KEY_ELEMENTS (constant)">OKP_PUBLIC_KEY_ELEMENTS</a></span></span><span class='period'>.</span><span class='id identifier rubyid_each_with_object'>each_with_object</span><span class='lparen'>(</span><span class='lbrace'>{</span><span class='rbrace'>}</span><span class='rparen'>)</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_i'>i</span><span class='comma'>,</span> <span class='id identifier rubyid_h'>h</span><span class='op'>|</span> <span class='id identifier rubyid_h'>h</span><span class='lbracket'>[</span><span class='id identifier rubyid_i'>i</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='kw'>self</span><span class='lbracket'>[</span><span class='id identifier rubyid_i'>i</span><span class='rbracket'>]</span> <span class='rbrace'>}</span>
@@ -586,12 +597,12 @@
       <pre class="lines">
 
 
-40
 41
-42</pre>
+42
+43</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/jwt/jwk/okp_rbnacl.rb', line 40</span>
+      <pre class="code"><span class="info file"># File 'lib/jwt/jwk/okp_rbnacl.rb', line 41</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_private?'>private?</span>
   <span class='op'>!</span><span class='id identifier rubyid_signing_key'>signing_key</span><span class='period'>.</span><span class='id identifier rubyid_nil?'>nil?</span>
@@ -616,14 +627,14 @@
       <pre class="lines">
 
 
-30
 31
 32
 33
-34</pre>
+34
+35</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/jwt/jwk/okp_rbnacl.rb', line 30</span>
+      <pre class="code"><span class="info file"># File 'lib/jwt/jwk/okp_rbnacl.rb', line 31</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_signing_key'>signing_key</span>
   <span class='kw'>return</span> <span class='ivar'>@signing_key</span> <span class='kw'>if</span> <span class='kw'>defined?</span><span class='lparen'>(</span><span class='ivar'>@signing_key</span><span class='rparen'>)</span>
@@ -650,14 +661,14 @@
       <pre class="lines">
 
 
-24
 25
 26
 27
-28</pre>
+28
+29</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/jwt/jwk/okp_rbnacl.rb', line 24</span>
+      <pre class="code"><span class="info file"># File 'lib/jwt/jwk/okp_rbnacl.rb', line 25</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_verify_key'>verify_key</span>
   <span class='kw'>return</span> <span class='ivar'>@verify_key</span> <span class='kw'>if</span> <span class='kw'>defined?</span><span class='lparen'>(</span><span class='ivar'>@verify_key</span><span class='rparen'>)</span>
@@ -674,7 +685,7 @@
 </div>
 
       <div id="footer">
-  Generated on Sat Dec  7 14:30:38 2024 by
+  Generated on Sat Dec  7 15:36:45 2024 by
   <a href="https://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.9.37 (ruby-3.3.6).
 </div>

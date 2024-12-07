@@ -88,7 +88,7 @@
 <h2>Overview</h2><div class="docstring">
   <div class="discussion">
     
-<p>The JWA module contains all supported algorithms.</p>
+<p>JSON Web Algorithms</p>
 
 
   </div>
@@ -303,12 +303,12 @@
       <pre class="lines">
 
 
-49
-50
-51</pre>
+52
+53
+54</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/jwt/jwa/signing_algorithm.rb', line 49</span>
+      <pre class="code"><span class="info file"># File 'lib/jwt/jwa/signing_algorithm.rb', line 52</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_find'>find</span><span class='lparen'>(</span><span class='id identifier rubyid_algo'>algo</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_algorithms'>algorithms</span><span class='period'>.</span><span class='id identifier rubyid_fetch'>fetch</span><span class='lparen'>(</span><span class='id identifier rubyid_algo'>algo</span><span class='period'>.</span><span class='id identifier rubyid_to_s'>to_s</span><span class='period'>.</span><span class='id identifier rubyid_downcase'>downcase</span><span class='comma'>,</span> <span class='const'><span class='object_link'><a href="JWA/Unsupported.html" title="JWT::JWA::Unsupported (module)">Unsupported</a></span></span><span class='rparen'>)</span>
@@ -333,12 +333,12 @@
       <pre class="lines">
 
 
-45
-46
-47</pre>
+48
+49
+50</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/jwt/jwa/signing_algorithm.rb', line 45</span>
+      <pre class="code"><span class="info file"># File 'lib/jwt/jwa/signing_algorithm.rb', line 48</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_register_algorithm'>register_algorithm</span><span class='lparen'>(</span><span class='id identifier rubyid_algo'>algo</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_algorithms'>algorithms</span><span class='lbracket'>[</span><span class='id identifier rubyid_algo'>algo</span><span class='period'>.</span><span class='id identifier rubyid_alg'>alg</span><span class='period'>.</span><span class='id identifier rubyid_to_s'>to_s</span><span class='period'>.</span><span class='id identifier rubyid_downcase'>downcase</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='id identifier rubyid_algo'>algo</span>
@@ -455,7 +455,7 @@
 </div>
 
       <div id="footer">
-  Generated on Sat Dec  7 14:30:38 2024 by
+  Generated on Sat Dec  7 15:36:45 2024 by
   <a href="https://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.9.37 (ruby-3.3.6).
 </div>

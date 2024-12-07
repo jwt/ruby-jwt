@@ -104,7 +104,7 @@
 <h2>Overview</h2><div class="docstring">
   <div class="discussion">
     
-<p>rubocop:disable Metrics/ClassLength</p>
+<p>JWK representation for Elliptic Curve (EC) keys</p>
 
 
   </div>
@@ -122,7 +122,18 @@
     <dl class="constants">
       
         <dt id="KTY-constant" class="">KTY =
-          
+          <div class="docstring">
+  <div class="discussion">
+    
+<p>rubocop:disable Metrics/ClassLength</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div>
         </dt>
         <dd><pre class="code"><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>EC</span><span class='tstring_end'>&#39;</span></span></pre></dd>
       
@@ -493,7 +504,6 @@
       <pre class="lines">
 
 
-16
 17
 18
 19
@@ -505,10 +515,11 @@
 25
 26
 27
-28</pre>
+28
+29</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/jwt/jwk/ec.rb', line 16</span>
+      <pre class="code"><span class="info file"># File 'lib/jwt/jwk/ec.rb', line 17</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_initialize'>initialize</span><span class='lparen'>(</span><span class='id identifier rubyid_key'>key</span><span class='comma'>,</span> <span class='id identifier rubyid_params'>params</span> <span class='op'>=</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='id identifier rubyid_options'>options</span> <span class='op'>=</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_params'>params</span> <span class='op'>||=</span> <span class='lbrace'>{</span><span class='rbrace'>}</span>
@@ -550,12 +561,12 @@
       <pre class="lines">
 
 
-230
 231
-232</pre>
+232
+233</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/jwt/jwk/ec.rb', line 230</span>
+      <pre class="code"><span class="info file"># File 'lib/jwt/jwk/ec.rb', line 231</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_import'>import</span><span class='lparen'>(</span><span class='id identifier rubyid_jwk_data'>jwk_data</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='id identifier rubyid_jwk_data'>jwk_data</span><span class='rparen'>)</span>
@@ -580,7 +591,6 @@
       <pre class="lines">
 
 
-234
 235
 236
 237
@@ -591,10 +601,11 @@
 242
 243
 244
-245</pre>
+245
+246</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/jwt/jwk/ec.rb', line 234</span>
+      <pre class="code"><span class="info file"># File 'lib/jwt/jwk/ec.rb', line 235</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_to_openssl_curve'>to_openssl_curve</span><span class='lparen'>(</span><span class='id identifier rubyid_crv'>crv</span><span class='rparen'>)</span>
   <span class='comment'># The JWK specs and OpenSSL use different names for the same curves.
@@ -656,14 +667,14 @@
       <pre class="lines">
 
 
-67
 68
 69
 70
-71</pre>
+71
+72</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/jwt/jwk/ec.rb', line 67</span>
+      <pre class="code"><span class="info file"># File 'lib/jwt/jwk/ec.rb', line 68</span>
 
 <span class='kw'>def</span> <span class='op'>[]=</span><span class='lparen'>(</span><span class='id identifier rubyid_key'>key</span><span class='comma'>,</span> <span class='id identifier rubyid_value'>value</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_raise'>raise</span> <span class='const'>ArgumentError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>cannot overwrite cryptographic key attributes</span><span class='tstring_end'>&#39;</span></span> <span class='kw'>if</span> <span class='const'><span class='object_link'><a href="#EC_KEY_ELEMENTS-constant" title="JWT::JWK::EC::EC_KEY_ELEMENTS (constant)">EC_KEY_ELEMENTS</a></span></span><span class='period'>.</span><span class='id identifier rubyid_include?'>include?</span><span class='lparen'>(</span><span class='id identifier rubyid_key'>key</span><span class='period'>.</span><span class='id identifier rubyid_to_sym'>to_sym</span><span class='rparen'>)</span>
@@ -690,14 +701,14 @@
       <pre class="lines">
 
 
-54
 55
 56
 57
-58</pre>
+58
+59</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/jwt/jwk/ec.rb', line 54</span>
+      <pre class="code"><span class="info file"># File 'lib/jwt/jwk/ec.rb', line 55</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_export'>export</span><span class='lparen'>(</span><span class='id identifier rubyid_options'>options</span> <span class='op'>=</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_exported'>exported</span> <span class='op'>=</span> <span class='id identifier rubyid_parameters'>parameters</span><span class='period'>.</span><span class='id identifier rubyid_clone'>clone</span>
@@ -724,15 +735,15 @@
       <pre class="lines">
 
 
-60
 61
 62
 63
 64
-65</pre>
+65
+66</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/jwt/jwk/ec.rb', line 60</span>
+      <pre class="code"><span class="info file"># File 'lib/jwt/jwk/ec.rb', line 61</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_key_digest'>key_digest</span>
   <span class='id identifier rubyid__crv'>_crv</span><span class='comma'>,</span> <span class='id identifier rubyid_x_octets'>x_octets</span><span class='comma'>,</span> <span class='id identifier rubyid_y_octets'>y_octets</span> <span class='op'>=</span> <span class='id identifier rubyid_keypair_components'>keypair_components</span><span class='lparen'>(</span><span class='id identifier rubyid_ec_key'>ec_key</span><span class='rparen'>)</span>
@@ -760,12 +771,12 @@
       <pre class="lines">
 
 
-30
 31
-32</pre>
+32
+33</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/jwt/jwk/ec.rb', line 30</span>
+      <pre class="code"><span class="info file"># File 'lib/jwt/jwk/ec.rb', line 31</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_keypair'>keypair</span>
   <span class='id identifier rubyid_ec_key'>ec_key</span>
@@ -790,12 +801,12 @@
       <pre class="lines">
 
 
-50
 51
-52</pre>
+52
+53</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/jwt/jwk/ec.rb', line 50</span>
+      <pre class="code"><span class="info file"># File 'lib/jwt/jwk/ec.rb', line 51</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_members'>members</span>
   <span class='const'><span class='object_link'><a href="#EC_PUBLIC_KEY_ELEMENTS-constant" title="JWT::JWK::EC::EC_PUBLIC_KEY_ELEMENTS (constant)">EC_PUBLIC_KEY_ELEMENTS</a></span></span><span class='period'>.</span><span class='id identifier rubyid_each_with_object'>each_with_object</span><span class='lparen'>(</span><span class='lbrace'>{</span><span class='rbrace'>}</span><span class='rparen'>)</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_i'>i</span><span class='comma'>,</span> <span class='id identifier rubyid_h'>h</span><span class='op'>|</span> <span class='id identifier rubyid_h'>h</span><span class='lbracket'>[</span><span class='id identifier rubyid_i'>i</span><span class='rbracket'>]</span> <span class='op'>=</span> <span class='kw'>self</span><span class='lbracket'>[</span><span class='id identifier rubyid_i'>i</span><span class='rbracket'>]</span> <span class='rbrace'>}</span>
@@ -842,12 +853,12 @@
       <pre class="lines">
 
 
-34
 35
-36</pre>
+36
+37</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/jwt/jwk/ec.rb', line 34</span>
+      <pre class="code"><span class="info file"># File 'lib/jwt/jwk/ec.rb', line 35</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_private?'>private?</span>
   <span class='id identifier rubyid_ec_key'>ec_key</span><span class='period'>.</span><span class='id identifier rubyid_private_key?'>private_key?</span>
@@ -872,12 +883,12 @@
       <pre class="lines">
 
 
-46
 47
-48</pre>
+48
+49</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/jwt/jwk/ec.rb', line 46</span>
+      <pre class="code"><span class="info file"># File 'lib/jwt/jwk/ec.rb', line 47</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_public_key'>public_key</span>
   <span class='id identifier rubyid_ec_key'>ec_key</span>
@@ -902,12 +913,12 @@
       <pre class="lines">
 
 
-38
 39
-40</pre>
+40
+41</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/jwt/jwk/ec.rb', line 38</span>
+      <pre class="code"><span class="info file"># File 'lib/jwt/jwk/ec.rb', line 39</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_signing_key'>signing_key</span>
   <span class='id identifier rubyid_ec_key'>ec_key</span>
@@ -932,12 +943,12 @@
       <pre class="lines">
 
 
-42
 43
-44</pre>
+44
+45</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/jwt/jwk/ec.rb', line 42</span>
+      <pre class="code"><span class="info file"># File 'lib/jwt/jwk/ec.rb', line 43</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_verify_key'>verify_key</span>
   <span class='id identifier rubyid_ec_key'>ec_key</span>
@@ -952,7 +963,7 @@
 </div>
 
       <div id="footer">
-  Generated on Sat Dec  7 14:30:38 2024 by
+  Generated on Sat Dec  7 15:36:45 2024 by
   <a href="https://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.9.37 (ruby-3.3.6).
 </div>
