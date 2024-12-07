@@ -10,17 +10,13 @@ module JWT
       end
 
       def sign(data:, signing_key:)
-        unless signing_key.is_a?(RbNaCl::Signatures::Ed25519::SigningKey)
-          raise_sign_error!("Key given is a #{signing_key.class} but has to be an RbNaCl::Signatures::Ed25519::SigningKey")
-        end
+        raise_sign_error!("Key given is a #{signing_key.class} but has to be an RbNaCl::Signatures::Ed25519::SigningKey") unless signing_key.is_a?(RbNaCl::Signatures::Ed25519::SigningKey)
 
         signing_key.sign(data)
       end
 
       def verify(data:, signature:, verification_key:)
-        unless verification_key.is_a?(RbNaCl::Signatures::Ed25519::VerifyKey)
-          raise_verify_error!("key given is a #{verification_key.class} but has to be a RbNaCl::Signatures::Ed25519::VerifyKey")
-        end
+        raise_verify_error!("key given is a #{verification_key.class} but has to be a RbNaCl::Signatures::Ed25519::VerifyKey") unless verification_key.is_a?(RbNaCl::Signatures::Ed25519::VerifyKey)
 
         verification_key.verify(signature, data)
       rescue RbNaCl::CryptoError

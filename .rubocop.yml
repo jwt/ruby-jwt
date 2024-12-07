@@ -9,14 +9,8 @@ AllCops:
 Style/Documentation:
   Enabled: false
 
-Style/IfUnlessModifier:
-  Enabled: false
-
 Metrics/AbcSize:
   Max: 25
-
-Metrics/ClassLength:
-  Max: 112
 
 Metrics/MethodLength:
   Max: 18

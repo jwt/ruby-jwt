@@ -20,9 +20,7 @@ module JWT
 
         OpenSSL::HMAC.digest(digest.new, signing_key, data)
       rescue OpenSSL::HMACError => e
-        if signing_key == '' && e.message == 'EVP_PKEY_new_mac_key: malloc failure'
-          raise_verify_error!('OpenSSL 3.0 does not support nil or empty hmac_secret')
-        end
+        raise_verify_error!('OpenSSL 3.0 does not support nil or empty hmac_secret') if signing_key == '' && e.message == 'EVP_PKEY_new_mac_key: malloc failure'
 
         raise e
       end

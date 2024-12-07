@@ -13,9 +13,7 @@ module JWT
       def sign(data:, signing_key:)
         curve_definition = curve_by_name(signing_key.group.curve_name)
         key_algorithm = curve_definition[:algorithm]
-        if alg != key_algorithm
-          raise IncorrectAlgorithm, "payload algorithm is #{alg} but #{key_algorithm} signing key was provided"
-        end
+        raise IncorrectAlgorithm, "payload algorithm is #{alg} but #{key_algorithm} signing key was provided" if alg != key_algorithm
 
         asn1_to_raw(signing_key.dsa_sign_asn1(digest.digest(data)), signing_key)
       end
@@ -23,9 +21,7 @@ module JWT
       def verify(data:, signature:, verification_key:)
         curve_definition = curve_by_name(verification_key.group.curve_name)
         key_algorithm = curve_definition[:algorithm]
-        if alg != key_algorithm
-          raise IncorrectAlgorithm, "payload algorithm is #{alg} but #{key_algorithm} verification key was provided"
-        end
+        raise IncorrectAlgorithm, "payload algorithm is #{alg} but #{key_algorithm} verification key was provided" if alg != key_algorithm
 
         verification_key.dsa_verify_asn1(digest.digest(data), raw_to_asn1(signature, verification_key))
       rescue OpenSSL::PKey::PKeyError
