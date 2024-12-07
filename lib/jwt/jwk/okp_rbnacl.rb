@@ -2,6 +2,7 @@
 
 module JWT
   module JWK
+    # JSON Web Key (JWK) representation for Ed25519 keys
     class OKPRbNaCl < KeyBase
       KTY  = 'OKP'
       KTYS = [KTY, JWT::JWK::OKPRbNaCl, RbNaCl::Signatures::Ed25519::SigningKey, RbNaCl::Signatures::Ed25519::VerifyKey].freeze

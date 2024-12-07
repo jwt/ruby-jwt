@@ -4,6 +4,8 @@ require 'forwardable'
 
 module JWT
   module JWK
+    # JSON Web Key Set (JWKS) representation
+    # https://tools.ietf.org/html/rfc7517
     class Set
       include Enumerable
       extend Forwardable

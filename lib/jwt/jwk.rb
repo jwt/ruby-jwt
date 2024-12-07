@@ -4,6 +4,7 @@ require_relative 'jwk/key_finder'
 require_relative 'jwk/set'
 
 module JWT
+  # JSON Web Key (JWK)
   module JWK
     class << self
       def create_from(key, params = nil, options = {})

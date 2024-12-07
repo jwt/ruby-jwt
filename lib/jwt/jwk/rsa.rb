@@ -2,6 +2,7 @@
 
 module JWT
   module JWK
+    # JSON Web Key (JWK) representation of a RSA key
     class RSA < KeyBase # rubocop:disable Metrics/ClassLength
       BINARY = 2
       KTY    = 'RSA'

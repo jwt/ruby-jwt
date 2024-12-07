@@ -2,6 +2,7 @@
 
 module JWT
   module JWA
+    # Implementation of the HMAC family of algorithms
     class Hmac
       include JWT::JWA::SigningAlgorithm
 

@@ -2,6 +2,7 @@
 
 module JWT
   module JWA
+    # @api private
     class Wrapper
       include SigningAlgorithm
 

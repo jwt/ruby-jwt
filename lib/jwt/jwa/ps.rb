@@ -2,6 +2,7 @@
 
 module JWT
   module JWA
+    # Implementation of the RSASSA-PSS family of algorithms
     class Ps
       include JWT::JWA::SigningAlgorithm
 

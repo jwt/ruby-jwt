@@ -2,6 +2,7 @@
 
 module JWT
   module JWK
+    # Base for JWK implementations
     class KeyBase
       def self.inherited(klass)
         super

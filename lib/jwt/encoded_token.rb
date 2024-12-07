@@ -111,7 +111,7 @@ module JWT
     def decode_payload
       raise JWT::DecodeError, 'Encoded payload is empty' if encoded_payload == ''
 
-      if unecoded_payload?
+      if unencoded_payload?
         verify_claims!(crit: ['b64'])
         return parse_unencoded(encoded_payload)
       end
@@ -119,7 +119,7 @@ module JWT
       parse_and_decode(encoded_payload)
     end
 
-    def unecoded_payload?
+    def unencoded_payload?
       header['b64'] == false
     end
 

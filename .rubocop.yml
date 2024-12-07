@@ -6,9 +6,6 @@ AllCops:
     - 'gemfiles/*.gemfile'
     - 'vendor/**/*'
 
-Style/Documentation:
-  Enabled: false
-
 Metrics/AbcSize:
   Max: 25
 

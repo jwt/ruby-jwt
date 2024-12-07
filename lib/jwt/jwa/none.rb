@@ -2,6 +2,7 @@
 
 module JWT
   module JWA
+    # Implementation of the none algorithm
     class None
       include JWT::JWA::SigningAlgorithm
 

@@ -2,6 +2,7 @@
 
 module JWT
   # Deprecations module to handle deprecation warnings in the gem
+  # @api private
   module Deprecations
     class << self
       def context

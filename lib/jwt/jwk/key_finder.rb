@@ -2,6 +2,7 @@
 
 module JWT
   module JWK
+    # @api private
     class KeyFinder
       def initialize(options)
         @allow_nil_kid = options[:allow_nil_kid]

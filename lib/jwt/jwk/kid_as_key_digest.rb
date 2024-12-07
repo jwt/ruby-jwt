@@ -2,6 +2,7 @@
 
 module JWT
   module JWK
+    # @api private
     class KidAsKeyDigest
       def initialize(jwk)
         @jwk = jwk
