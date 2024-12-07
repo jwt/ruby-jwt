@@ -667,6 +667,8 @@
       <pre class="lines">
 
 
+167
+168
 169
 170
 171
@@ -678,12 +680,10 @@
 177
 178
 179
-180
-181
-182</pre>
+180</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/jwt/jwk/rsa.rb', line 169</span>
+      <pre class="code"><span class="info file"># File 'lib/jwt/jwk/rsa.rb', line 167</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_create_rsa_key_using_accessors'>create_rsa_key_using_accessors</span><span class='lparen'>(</span><span class='id identifier rubyid_rsa_parameters'>rsa_parameters</span><span class='rparen'>)</span> <span class='comment'># rubocop:disable Metrics/AbcSize
 </span>  <span class='id identifier rubyid_validate_rsa_parameters!'>validate_rsa_parameters!</span><span class='lparen'>(</span><span class='id identifier rubyid_rsa_parameters'>rsa_parameters</span><span class='rparen'>)</span>
@@ -719,6 +719,8 @@
       <pre class="lines">
 
 
+139
+140
 141
 142
 143
@@ -733,12 +735,10 @@
 152
 153
 154
-155
-156
-157</pre>
+155</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/jwt/jwk/rsa.rb', line 141</span>
+      <pre class="code"><span class="info file"># File 'lib/jwt/jwk/rsa.rb', line 139</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_create_rsa_key_using_der'>create_rsa_key_using_der</span><span class='lparen'>(</span><span class='id identifier rubyid_rsa_parameters'>rsa_parameters</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_validate_rsa_parameters!'>validate_rsa_parameters!</span><span class='lparen'>(</span><span class='id identifier rubyid_rsa_parameters'>rsa_parameters</span><span class='rparen'>)</span>
@@ -777,18 +777,18 @@
       <pre class="lines">
 
 
+157
+158
 159
 160
 161
 162
 163
 164
-165
-166
-167</pre>
+165</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/jwt/jwk/rsa.rb', line 159</span>
+      <pre class="code"><span class="info file"># File 'lib/jwt/jwk/rsa.rb', line 157</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_create_rsa_key_using_sets'>create_rsa_key_using_sets</span><span class='lparen'>(</span><span class='id identifier rubyid_rsa_parameters'>rsa_parameters</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_validate_rsa_parameters!'>validate_rsa_parameters!</span><span class='lparen'>(</span><span class='id identifier rubyid_rsa_parameters'>rsa_parameters</span><span class='rparen'>)</span>
@@ -819,14 +819,14 @@
       <pre class="lines">
 
 
+133
+134
 135
 136
-137
-138
-139</pre>
+137</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/jwt/jwk/rsa.rb', line 135</span>
+      <pre class="code"><span class="info file"># File 'lib/jwt/jwk/rsa.rb', line 133</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_decode_open_ssl_bn'>decode_open_ssl_bn</span><span class='lparen'>(</span><span class='id identifier rubyid_jwk_data'>jwk_data</span><span class='rparen'>)</span>
   <span class='kw'>return</span> <span class='kw'>nil</span> <span class='kw'>unless</span> <span class='id identifier rubyid_jwk_data'>jwk_data</span>
@@ -853,12 +853,12 @@
       <pre class="lines">
 
 
-131
-132
-133</pre>
+129
+130
+131</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/jwt/jwk/rsa.rb', line 131</span>
+      <pre class="code"><span class="info file"># File 'lib/jwt/jwk/rsa.rb', line 129</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_import'>import</span><span class='lparen'>(</span><span class='id identifier rubyid_jwk_data'>jwk_data</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='id identifier rubyid_jwk_data'>jwk_data</span><span class='rparen'>)</span>
@@ -905,17 +905,17 @@
       <pre class="lines">
 
 
+182
+183
 184
 185
 186
 187
 188
-189
-190
-191</pre>
+189</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/jwt/jwk/rsa.rb', line 184</span>
+      <pre class="code"><span class="info file"># File 'lib/jwt/jwk/rsa.rb', line 182</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_validate_rsa_parameters!'>validate_rsa_parameters!</span><span class='lparen'>(</span><span class='id identifier rubyid_rsa_parameters'>rsa_parameters</span><span class='rparen'>)</span>
   <span class='kw'>return</span> <span class='kw'>unless</span> <span class='id identifier rubyid_rsa_parameters'>rsa_parameters</span><span class='period'>.</span><span class='id identifier rubyid_key?'>key?</span><span class='lparen'>(</span><span class='symbol'>:d</span><span class='rparen'>)</span>
@@ -945,7 +945,29 @@
   
 
   
-</h3><table class="source_code">
+</h3><div class="docstring">
+  <div class="discussion">
+    
+
+  </div>
+</div>
+<div class="tags">
+  
+<p class="tag_title">Raises:</p>
+<ul class="raise">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt>ArgumentError</tt>)</span>
+      
+      
+      
+    </li>
+  
+</ul>
+
+</div><table class="source_code">
   <tr>
     <td>
       <pre class="lines">
@@ -955,17 +977,13 @@
 67
 68
 69
-70
-71
-72</pre>
+70</pre>
     </td>
     <td>
       <pre class="code"><span class="info file"># File 'lib/jwt/jwk/rsa.rb', line 66</span>
 
 <span class='kw'>def</span> <span class='op'>[]=</span><span class='lparen'>(</span><span class='id identifier rubyid_key'>key</span><span class='comma'>,</span> <span class='id identifier rubyid_value'>value</span><span class='rparen'>)</span>
-  <span class='kw'>if</span> <span class='const'><span class='object_link'><a href="#RSA_KEY_ELEMENTS-constant" title="JWT::JWK::RSA::RSA_KEY_ELEMENTS (constant)">RSA_KEY_ELEMENTS</a></span></span><span class='period'>.</span><span class='id identifier rubyid_include?'>include?</span><span class='lparen'>(</span><span class='id identifier rubyid_key'>key</span><span class='period'>.</span><span class='id identifier rubyid_to_sym'>to_sym</span><span class='rparen'>)</span>
-    <span class='id identifier rubyid_raise'>raise</span> <span class='const'>ArgumentError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>cannot overwrite cryptographic key attributes</span><span class='tstring_end'>&#39;</span></span>
-  <span class='kw'>end</span>
+  <span class='id identifier rubyid_raise'>raise</span> <span class='const'>ArgumentError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>cannot overwrite cryptographic key attributes</span><span class='tstring_end'>&#39;</span></span> <span class='kw'>if</span> <span class='const'><span class='object_link'><a href="#RSA_KEY_ELEMENTS-constant" title="JWT::JWK::RSA::RSA_KEY_ELEMENTS (constant)">RSA_KEY_ELEMENTS</a></span></span><span class='period'>.</span><span class='id identifier rubyid_include?'>include?</span><span class='lparen'>(</span><span class='id identifier rubyid_key'>key</span><span class='period'>.</span><span class='id identifier rubyid_to_sym'>to_sym</span><span class='rparen'>)</span>
 
   <span class='kw'>super</span><span class='lparen'>(</span><span class='id identifier rubyid_key'>key</span><span class='comma'>,</span> <span class='id identifier rubyid_value'>value</span><span class='rparen'>)</span>
 <span class='kw'>end</span></pre>
@@ -1249,7 +1267,7 @@
 </div>
 
       <div id="footer">
-  Generated on Sat Dec  7 14:10:59 2024 by
+  Generated on Sat Dec  7 14:30:38 2024 by
   <a href="https://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.9.37 (ruby-3.3.6).
 </div>
