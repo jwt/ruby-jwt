@@ -124,7 +124,7 @@ module JWT
     end
 
     def parse_and_decode(segment)
-      parse(::JWT::Base64.url_decode(segment))
+      parse(::JWT::Base64.url_decode(segment || ''))
     end
 
     def parse_unencoded(segment)

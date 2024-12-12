@@ -40,10 +40,26 @@ RSpec.describe JWT::EncodedToken do
         expect(token.payload).to eq({ 'foo' => 'bar' })
       end
     end
+
+    context 'when token is the empty string' do
+      let(:encoded_token) { '' }
+
+      it 'raises decode error' do
+        expect { token.payload }.to raise_error(JWT::DecodeError, 'Invalid segment encoding')
+      end
+    end
   end
 
   describe '#header' do
     it { expect(token.header).to eq({ 'alg' => 'HS256' }) }
+
+    context 'when token is the empty string' do
+      let(:encoded_token) { '' }
+
+      it 'raises decode error' do
+        expect { token.header }.to raise_error(JWT::DecodeError, 'Invalid segment encoding')
+      end
+    end
   end
 
   describe '#signature' do
