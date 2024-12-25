@@ -1,8 +1,8 @@
 # Changelog
 
-## [v2.9.4](https://github.com/jwt/ruby-jwt/tree/v2.9.4) (NEXT)
+## [v2.10.0](https://github.com/jwt/ruby-jwt/tree/v2.10.0) (2024-12-25)
 
-[Full Changelog](https://github.com/jwt/ruby-jwt/compare/v2.9.3...main)
+[Full Changelog](https://github.com/jwt/ruby-jwt/compare/v2.9.3...v2.10.0)
 
 **Features:**
 
@@ -10,7 +10,6 @@
 - Detached payload support for JWT::Token and JWT::EncodedToken [#630](https://github.com/jwt/ruby-jwt/pull/630) ([@anakinj](https://github.com/anakinj))
 - Skip decoding payload if b64 header is present and false [#631](https://github.com/jwt/ruby-jwt/pull/631) ([@anakinj](https://github.com/anakinj))
 - Remove a few custom Rubocop configs [#638](https://github.com/jwt/ruby-jwt/pull/638) ([@anakinj](https://github.com/anakinj))
-- Your contribution here
 
 **Fixes and enhancements:**
 
@@ -19,7 +18,6 @@
 - Use correct methods when raising error during signing/verification with EdDSA [#633](https://github.com/jwt/ruby-jwt/pull/633)
 - Fix JWT::EncodedToken behavior with empty string as token [#640](https://github.com/jwt/ruby-jwt/pull/640) ([@ragalie](https://github.com/ragalie))
 - Deprecation warnings for rbnacl backed functionality [#641](https://github.com/jwt/ruby-jwt/pull/641) ([@anakinj](https://github.com/anakinj))
-- Your contribution here
 
 ## [v2.9.3](https://github.com/jwt/ruby-jwt/tree/v2.9.3) (2024-10-03)
 

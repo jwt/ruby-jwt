@@ -15,8 +15,8 @@ module JWT
   # @api private
   module VERSION
     MAJOR = 2
-    MINOR = 9
-    TINY  = 4
+    MINOR = 10
+    TINY  = 0
     PRE   = nil
 
     STRING = [MAJOR, MINOR, TINY, PRE].compact.join('.')
