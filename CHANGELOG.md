@@ -1,5 +1,15 @@
 # Changelog
 
+## [v3.0.0](https://github.com/jwt/ruby-jwt/tree/v3.0.0) (NEXT)
+
+**Features:**
+
+- Your contribution here
+
+**Fixes and enhancements:**
+
+- Your contribution here
+
 ## [v2.10.0](https://github.com/jwt/ruby-jwt/tree/v2.10.0) (2024-12-25)
 
 [Full Changelog](https://github.com/jwt/ruby-jwt/compare/v2.9.3...v2.10.0)
