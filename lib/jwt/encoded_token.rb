@@ -63,7 +63,6 @@ module JWT
     # Sets or returns the encoded payload of the JWT token.
     #
     # @return [String] the encoded payload.
-    # @param value [String] the encoded payload to set.
     attr_accessor :encoded_payload
 
     # Returns the signing input of the JWT token.

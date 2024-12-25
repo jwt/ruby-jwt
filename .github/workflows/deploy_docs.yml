@@ -20,6 +20,8 @@ jobs:
           bundler-cache: true
       - name: Install yard
         run: gem install yard
+      - name: Install redcarpet
+        run: gem install redcarpet
       - name: Build docs
         run: yard
       - name: Deploy
