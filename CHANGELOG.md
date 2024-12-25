@@ -18,6 +18,7 @@
 - Improved documentation for public apis [#629](https://github.com/jwt/ruby-jwt/pull/629) ([@anakinj](https://github.com/anakinj))
 - Use correct methods when raising error during signing/verification with EdDSA [#633](https://github.com/jwt/ruby-jwt/pull/633)
 - Fix JWT::EncodedToken behavior with empty string as token [#640](https://github.com/jwt/ruby-jwt/pull/640) ([@ragalie](https://github.com/ragalie))
+- Deprecation warnings for rbnacl backed functionality [#641](https://github.com/jwt/ruby-jwt/pull/641) ([@anakinj](https://github.com/anakinj))
 - Your contribution here
 
 ## [v2.9.3](https://github.com/jwt/ruby-jwt/tree/v2.9.3) (2024-10-03)
