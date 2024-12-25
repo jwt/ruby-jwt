@@ -24,6 +24,8 @@ jobs:
         run: gem install redcarpet
       - name: Build docs
         run: yard
+      - name: Configure CNAME
+        run: echo "ruby-jwt.org" > ./doc/CNAME
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v4
         with:
