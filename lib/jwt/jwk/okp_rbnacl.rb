@@ -11,7 +11,7 @@ module JWT
 
       def initialize(key, params = nil, options = {})
         params ||= {}
-
+        Deprecations.warning('Using the OKP JWK for Ed25519 keys is deprecated and will be removed in a future version of ruby-jwt. Please use the ruby-eddsa gem instead.')
         # For backwards compatibility when kid was a String
         params = { kid: params } if params.is_a?(String)
 
