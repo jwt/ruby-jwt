@@ -619,27 +619,7 @@
   </div>
 </div>
 <div class="tags">
-  <p class="tag_title">Parameters:</p>
-<ul class="param">
   
-    <li>
-      
-        <span class='name'>value</span>
-      
-      
-        <span class='type'>(<tt>String</tt>)</span>
-      
-      
-      
-        &mdash;
-        <div class='inline'>
-<p>the encoded payload to set.</p>
-</div>
-      
-    </li>
-  
-</ul>
-
 <p class="tag_title">Returns:</p>
 <ul class="return">
   
@@ -665,12 +645,12 @@
       <pre class="lines">
 
 
+66
 67
-68
-69</pre>
+68</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/jwt/encoded_token.rb', line 67</span>
+      <pre class="code"><span class="info file"># File 'lib/jwt/encoded_token.rb', line 66</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_encoded_payload'>encoded_payload</span>
   <span class='ivar'>@encoded_payload</span>
@@ -1034,12 +1014,12 @@
       <pre class="lines">
 
 
+71
 72
-73
-74</pre>
+73</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/jwt/encoded_token.rb', line 72</span>
+      <pre class="code"><span class="info file"># File 'lib/jwt/encoded_token.rb', line 71</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_signing_input'>signing_input</span>
   <span class='lbracket'>[</span><span class='id identifier rubyid_encoded_header'>encoded_header</span><span class='comma'>,</span> <span class='id identifier rubyid_encoded_payload'>encoded_payload</span><span class='rbracket'>]</span><span class='period'>.</span><span class='id identifier rubyid_join'>join</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>.</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span>
@@ -1129,16 +1109,16 @@
       <pre class="lines">
 
 
+98
 99
 100
 101
 102
 103
-104
-105</pre>
+104</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/jwt/encoded_token.rb', line 99</span>
+      <pre class="code"><span class="info file"># File 'lib/jwt/encoded_token.rb', line 98</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_valid_signature?'>valid_signature?</span><span class='lparen'>(</span><span class='label'>algorithm:</span><span class='comma'>,</span> <span class='label'>key:</span><span class='rparen'>)</span>
   <span class='const'>Array</span><span class='lparen'>(</span><span class='const'><span class='object_link'><a href="JWA.html" title="JWT::JWA (module)">JWA</a></span></span><span class='period'>.</span><span class='id identifier rubyid_resolve_and_sort'><span class='object_link'><a href="JWA.html#resolve_and_sort-class_method" title="JWT::JWA.resolve_and_sort (method)">resolve_and_sort</a></span></span><span class='lparen'>(</span><span class='label'>algorithms:</span> <span class='id identifier rubyid_algorithm'>algorithm</span><span class='comma'>,</span> <span class='label'>preferred_algorithm:</span> <span class='id identifier rubyid_header'>header</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>alg</span><span class='tstring_end'>&#39;</span></span><span class='rbracket'>]</span><span class='rparen'>)</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_any?'>any?</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_algo'>algo</span><span class='op'>|</span>
@@ -1279,6 +1259,7 @@
       <pre class="lines">
 
 
+83
 84
 85
 86
@@ -1286,11 +1267,10 @@
 88
 89
 90
-91
-92</pre>
+91</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/jwt/encoded_token.rb', line 84</span>
+      <pre class="code"><span class="info file"># File 'lib/jwt/encoded_token.rb', line 83</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_verify_signature!'>verify_signature!</span><span class='lparen'>(</span><span class='label'>algorithm:</span><span class='comma'>,</span> <span class='label'>key:</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='label'>key_finder:</span> <span class='kw'>nil</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_raise'>raise</span> <span class='const'>ArgumentError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>Provide either key or key_finder, not both or neither</span><span class='tstring_end'>&#39;</span></span> <span class='kw'>if</span> <span class='id identifier rubyid_key'>key</span><span class='period'>.</span><span class='id identifier rubyid_nil?'>nil?</span> <span class='op'>==</span> <span class='id identifier rubyid_key_finder'>key_finder</span><span class='period'>.</span><span class='id identifier rubyid_nil?'>nil?</span>
@@ -1311,7 +1291,7 @@
 </div>
 
       <div id="footer">
-  Generated on Wed Dec 25 20:03:40 2024 by
+  Generated on Wed Dec 25 21:13:48 2024 by
   <a href="https://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.9.37 (ruby-3.3.6).
 </div>
