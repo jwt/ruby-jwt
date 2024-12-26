@@ -723,14 +723,14 @@
       <pre class="lines">
 
 
+29
+30
 31
 32
-33
-34
-35</pre>
+33</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/jwt/version.rb', line 31</span>
+      <pre class="code"><span class="info file"># File 'lib/jwt/version.rb', line 29</span>
 
 <span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_openssl_3?'>openssl_3?</span>
   <span class='kw'>return</span> <span class='kw'>false</span> <span class='kw'>if</span> <span class='const'>OpenSSL</span><span class='op'>::</span><span class='const'>OPENSSL_VERSION</span><span class='period'>.</span><span class='id identifier rubyid_include?'>include?</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>LibreSSL</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span>
@@ -790,12 +790,12 @@
       <pre class="lines">
 
 
-57
-58
-59</pre>
+55
+56
+57</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/jwt/version.rb', line 57</span>
+      <pre class="code"><span class="info file"># File 'lib/jwt/version.rb', line 55</span>
 
 <span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_openssl_3_hmac_empty_key_regression?'>openssl_3_hmac_empty_key_regression?</span>
   <span class='id identifier rubyid_openssl_3?'>openssl_3?</span> <span class='op'>&amp;&amp;</span> <span class='id identifier rubyid_openssl_version'>openssl_version</span> <span class='op'>&lt;=</span> <span class='op'>::</span><span class='const'>Gem</span><span class='op'>::</span><span class='const'>Version</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>3.0.0</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span>
@@ -853,12 +853,12 @@
       <pre class="lines">
 
 
-65
-66
-67</pre>
+63
+64
+65</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/jwt/version.rb', line 65</span>
+      <pre class="code"><span class="info file"># File 'lib/jwt/version.rb', line 63</span>
 
 <span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_openssl_version'>openssl_version</span>
   <span class='ivar'>@openssl_version</span> <span class='op'>||=</span> <span class='op'>::</span><span class='const'>Gem</span><span class='op'>::</span><span class='const'>Version</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='const'>OpenSSL</span><span class='op'>::</span><span class='const'>VERSION</span><span class='rparen'>)</span>
@@ -916,12 +916,12 @@
       <pre class="lines">
 
 
-41
-42
-43</pre>
+39
+40
+41</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/jwt/version.rb', line 41</span>
+      <pre class="code"><span class="info file"># File 'lib/jwt/version.rb', line 39</span>
 
 <span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_rbnacl?'>rbnacl?</span>
   <span class='kw'>defined?</span><span class='lparen'>(</span><span class='op'>::</span><span class='const'>RbNaCl</span><span class='rparen'>)</span>
@@ -979,12 +979,12 @@
       <pre class="lines">
 
 
-49
-50
-51</pre>
+47
+48
+49</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/jwt/version.rb', line 49</span>
+      <pre class="code"><span class="info file"># File 'lib/jwt/version.rb', line 47</span>
 
 <span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_rbnacl_6_or_greater?'>rbnacl_6_or_greater?</span>
   <span class='id identifier rubyid_rbnacl?'>rbnacl?</span> <span class='op'>&amp;&amp;</span> <span class='op'>::</span><span class='const'>Gem</span><span class='op'>::</span><span class='const'>Version</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='op'>::</span><span class='const'>RbNaCl</span><span class='op'>::</span><span class='const'>VERSION</span><span class='rparen'>)</span> <span class='op'>&gt;=</span> <span class='op'>::</span><span class='const'>Gem</span><span class='op'>::</span><span class='const'>Version</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>6.0.0</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span>
@@ -999,9 +999,9 @@
 </div>
 
       <div id="footer">
-  Generated on Wed Dec 25 21:56:01 2024 by
+  Generated on Thu Dec 26 20:47:56 2024 by
   <a href="https://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.37 (ruby-3.3.6).
+  0.9.37 (ruby-3.4.1).
 </div>
 
     </div>
