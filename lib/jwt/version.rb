@@ -14,14 +14,12 @@ module JWT
 
   # @api private
   module VERSION
-    MAJOR = 3
-    MINOR = 0
-    TINY  = 0
+    MAJOR = 2
+    MINOR = 10
+    TINY  = 1
     PRE   = nil
 
     STRING = [MAJOR, MINOR, TINY, PRE].compact.join('.')
-
-    private_constant(:MAJOR, :MINOR, :TINY, :PRE)
   end
 
   # Checks if the OpenSSL version is 3 or greater.

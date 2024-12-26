@@ -1,14 +1,10 @@
 # Changelog
 
-## [v3.0.0](https://github.com/jwt/ruby-jwt/tree/v3.0.0) (NEXT)
-
-**Features:**
-
-- Your contribution here
+## [v2.10.1](https://github.com/jwt/ruby-jwt/tree/v2.10.1) (2024-12-26)
 
 **Fixes and enhancements:**
 
-- Your contribution here
+- Make version constants public again [#646](https://github.com/jwt/ruby-jwt/pull/646) ([@anakinj]
 
 ## [v2.10.0](https://github.com/jwt/ruby-jwt/tree/v2.10.0) (2024-12-25)
 
