@@ -171,49 +171,18 @@ decoded_token = JWT.decode(token, ecdsa_key, true, { algorithm: 'ES256' })
 puts decoded_token
 ```
 
-### **EDDSA**
+### **EdDSA**
 
-In order to use this algorithm you need to add the `RbNaCl` gem to you `Gemfile`.
-
-```ruby
-gem 'rbnacl'
-```
-
-For more detailed installation instruction check the official [repository](https://github.com/RubyCrypto/rbnacl) on GitHub.
-
-* ED25519
-
-```ruby
-private_key = RbNaCl::Signatures::Ed25519::SigningKey.new('abcdefghijklmnopqrstuvwxyzABCDEF')
-public_key = private_key.verify_key
-token = JWT.encode payload, private_key, 'ED25519'
-
-# eyJhbGciOiJFRDI1NTE5In0.eyJkYXRhIjoidGVzdCJ9.6xIztXyOupskddGA_RvKU76V9b2dCQUYhoZEVFnRimJoPYIzZ2Fm47CWw8k2NTCNpgfAuxg9OXjaiVK7MvrbCQ
-puts token
-
-decoded_token = JWT.decode token, public_key, true, { algorithm: 'ED25519' }
-# Array
-# [
-#  {"test"=>"data"}, # payload
-#  {"alg"=>"ED25519"} # header
-# ]
-
-```
+This algorithm has since version 3.0 been moved to the [jwt-eddsa](https://rubygems.org/gems/jwt-eddsa) gem.
 
 ### **RSASSA-PSS**
-
-In order to use this algorithm you need to add the `openssl` gem to your `Gemfile` with a version greater or equal to `2.1`.
-
-```ruby
-gem 'openssl', '~> 2.1'
-```
 
 * PS256 - RSASSA-PSS using SHA-256 hash algorithm
 * PS384 - RSASSA-PSS using SHA-384 hash algorithm
 * PS512 - RSASSA-PSS using SHA-512 hash algorithm
 
 ```ruby
-rsa_private = OpenSSL::PKey::RSA.generate 2048
+rsa_private = OpenSSL::PKey::RSA.generate(2048)
 rsa_public = rsa_private.public_key
 
 token = JWT.encode(payload, rsa_private, 'PS256')
@@ -236,7 +205,7 @@ Ruby-jwt gem supports custom [header fields](https://tools.ietf.org/html/rfc7519
 To add custom header fields you need to pass `header_fields` parameter
 
 ```ruby
-token = JWT.encode(payload, key, algorithm='HS256', header_fields={})
+token = JWT.encode(payload, key, 'HS256', header_fields={})
 ```
 
 **Example:**
