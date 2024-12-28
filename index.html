@@ -240,41 +240,11 @@
 </span><span class='id identifier rubyid_puts'>puts</span> <span class='id identifier rubyid_decoded_token'>decoded_token</span>
 </code></pre>
 
-<h3 id="eddsa"><strong>EDDSA</strong></h3>
+<h3 id="eddsa"><strong>EdDSA</strong></h3>
 
-<p>In order to use this algorithm you need to add the <code>RbNaCl</code> gem to you <code>Gemfile</code>.</p>
-
-<pre class="code ruby"><code class="ruby"><span class='id identifier rubyid_gem'>gem</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>rbnacl</span><span class='tstring_end'>&#39;</span></span>
-</code></pre>
-
-<p>For more detailed installation instruction check the official <a href="https://github.com/RubyCrypto/rbnacl">repository</a> on GitHub.</p>
-
-<ul>
-<li>ED25519</li>
-</ul>
-
-<pre class="code ruby"><code class="ruby"><span class='id identifier rubyid_private_key'>private_key</span> <span class='op'>=</span> <span class='const'>RbNaCl</span><span class='op'>::</span><span class='const'>Signatures</span><span class='op'>::</span><span class='const'>Ed25519</span><span class='op'>::</span><span class='const'>SigningKey</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>abcdefghijklmnopqrstuvwxyzABCDEF</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span>
-<span class='id identifier rubyid_public_key'>public_key</span> <span class='op'>=</span> <span class='id identifier rubyid_private_key'>private_key</span><span class='period'>.</span><span class='id identifier rubyid_verify_key'>verify_key</span>
-<span class='id identifier rubyid_token'>token</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="JWT.html" title="JWT (module)">JWT</a></span></span><span class='period'>.</span><span class='id identifier rubyid_encode'><span class='object_link'><a href="JWT.html#encode-class_method" title="JWT.encode (method)">encode</a></span></span> <span class='id identifier rubyid_payload'>payload</span><span class='comma'>,</span> <span class='id identifier rubyid_private_key'>private_key</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>ED25519</span><span class='tstring_end'>&#39;</span></span>
-
-<span class='comment'># eyJhbGciOiJFRDI1NTE5In0.eyJkYXRhIjoidGVzdCJ9.6xIztXyOupskddGA_RvKU76V9b2dCQUYhoZEVFnRimJoPYIzZ2Fm47CWw8k2NTCNpgfAuxg9OXjaiVK7MvrbCQ
-</span><span class='id identifier rubyid_puts'>puts</span> <span class='id identifier rubyid_token'>token</span>
-
-<span class='id identifier rubyid_decoded_token'>decoded_token</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="JWT.html" title="JWT (module)">JWT</a></span></span><span class='period'>.</span><span class='id identifier rubyid_decode'><span class='object_link'><a href="JWT.html#decode-class_method" title="JWT.decode (method)">decode</a></span></span> <span class='id identifier rubyid_token'>token</span><span class='comma'>,</span> <span class='id identifier rubyid_public_key'>public_key</span><span class='comma'>,</span> <span class='kw'>true</span><span class='comma'>,</span> <span class='lbrace'>{</span> <span class='label'>algorithm:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>ED25519</span><span class='tstring_end'>&#39;</span></span> <span class='rbrace'>}</span>
-<span class='comment'># Array
-</span><span class='comment'># [
-</span><span class='comment'>#  {&quot;test&quot;=&gt;&quot;data&quot;}, # payload
-</span><span class='comment'>#  {&quot;alg&quot;=&gt;&quot;ED25519&quot;} # header
-</span><span class='comment'># ]
-</span>
-</code></pre>
+<p>This algorithm has since version 3.0 been moved to the <a href="https://rubygems.org/gems/jwt-eddsa">jwt-eddsa</a> gem.</p>
 
 <h3 id="rsassa-pss"><strong>RSASSA-PSS</strong></h3>
-
-<p>In order to use this algorithm you need to add the <code>openssl</code> gem to your <code>Gemfile</code> with a version greater or equal to <code>2.1</code>.</p>
-
-<pre class="code ruby"><code class="ruby"><span class='id identifier rubyid_gem'>gem</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>openssl</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>~&gt; 2.1</span><span class='tstring_end'>&#39;</span></span>
-</code></pre>
 
 <ul>
 <li>PS256 - RSASSA-PSS using SHA-256 hash algorithm</li>
@@ -282,7 +252,7 @@
 <li>PS512 - RSASSA-PSS using SHA-512 hash algorithm</li>
 </ul>
 
-<pre class="code ruby"><code class="ruby"><span class='id identifier rubyid_rsa_private'>rsa_private</span> <span class='op'>=</span> <span class='const'>OpenSSL</span><span class='op'>::</span><span class='const'>PKey</span><span class='op'>::</span><span class='const'>RSA</span><span class='period'>.</span><span class='id identifier rubyid_generate'>generate</span> <span class='int'>2048</span>
+<pre class="code ruby"><code class="ruby"><span class='id identifier rubyid_rsa_private'>rsa_private</span> <span class='op'>=</span> <span class='const'>OpenSSL</span><span class='op'>::</span><span class='const'>PKey</span><span class='op'>::</span><span class='const'>RSA</span><span class='period'>.</span><span class='id identifier rubyid_generate'>generate</span><span class='lparen'>(</span><span class='int'>2048</span><span class='rparen'>)</span>
 <span class='id identifier rubyid_rsa_public'>rsa_public</span> <span class='op'>=</span> <span class='id identifier rubyid_rsa_private'>rsa_private</span><span class='period'>.</span><span class='id identifier rubyid_public_key'>public_key</span>
 
 <span class='id identifier rubyid_token'>token</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="JWT.html" title="JWT (module)">JWT</a></span></span><span class='period'>.</span><span class='id identifier rubyid_encode'><span class='object_link'><a href="JWT.html#encode-class_method" title="JWT.encode (method)">encode</a></span></span><span class='lparen'>(</span><span class='id identifier rubyid_payload'>payload</span><span class='comma'>,</span> <span class='id identifier rubyid_rsa_private'>rsa_private</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>PS256</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span>
@@ -305,7 +275,7 @@
 <p>Ruby-jwt gem supports custom <a href="https://tools.ietf.org/html/rfc7519#section-5">header fields</a>
 To add custom header fields you need to pass <code>header_fields</code> parameter</p>
 
-<pre class="code ruby"><code class="ruby"><span class='id identifier rubyid_token'>token</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="JWT.html" title="JWT (module)">JWT</a></span></span><span class='period'>.</span><span class='id identifier rubyid_encode'><span class='object_link'><a href="JWT.html#encode-class_method" title="JWT.encode (method)">encode</a></span></span><span class='lparen'>(</span><span class='id identifier rubyid_payload'>payload</span><span class='comma'>,</span> <span class='id identifier rubyid_key'>key</span><span class='comma'>,</span> <span class='id identifier rubyid_algorithm'>algorithm</span><span class='op'>=</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>HS256</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='id identifier rubyid_header_fields'>header_fields</span><span class='op'>=</span><span class='lbrace'>{</span><span class='rbrace'>}</span><span class='rparen'>)</span>
+<pre class="code ruby"><code class="ruby"><span class='id identifier rubyid_token'>token</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="JWT.html" title="JWT (module)">JWT</a></span></span><span class='period'>.</span><span class='id identifier rubyid_encode'><span class='object_link'><a href="JWT.html#encode-class_method" title="JWT.encode (method)">encode</a></span></span><span class='lparen'>(</span><span class='id identifier rubyid_payload'>payload</span><span class='comma'>,</span> <span class='id identifier rubyid_key'>key</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>HS256</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='id identifier rubyid_header_fields'>header_fields</span><span class='op'>=</span><span class='lbrace'>{</span><span class='rbrace'>}</span><span class='rparen'>)</span>
 </code></pre>
 
 <p><strong>Example:</strong></p>
@@ -866,7 +836,7 @@ bundle exec appraisal rake test
 </div></div>
 
       <div id="footer">
-  Generated on Sat Dec 28 17:16:21 2024 by
+  Generated on Sat Dec 28 18:10:37 2024 by
   <a href="https://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.9.37 (ruby-3.4.1).
 </div>
