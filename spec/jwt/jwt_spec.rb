@@ -552,14 +552,14 @@ RSpec.describe JWT do
   end
 
   context 'a token with invalid Base64 segments' do
-    it 'raises JWT::DecodeError' do
-      expect { JWT.decode('hello.there.world') }.to raise_error(JWT::DecodeError, 'Invalid segment encoding')
+    it 'raises JWT::Base64DecodeError' do
+      expect { JWT.decode('hello.there.world') }.to raise_error(JWT::Base64DecodeError, 'Invalid base64 encoding')
     end
   end
 
   context 'a token with two segments but does not require verifying' do
     it 'raises something else than "Not enough or too many segments"' do
-      expect { JWT.decode('ThisIsNotAValidJWTToken.second', nil, false) }.to raise_error(JWT::DecodeError, 'Invalid segment encoding')
+      expect { JWT.decode('ThisIsNotAValidJWTToken.second', nil, false) }.to raise_error(JWT::Base64DecodeError, 'Invalid base64 encoding')
     end
   end
 
@@ -736,8 +736,8 @@ RSpec.describe JWT do
 
   context 'when token ends with a newline char' do
     let(:token) { "#{JWT.encode(payload, 'secret', 'HS256')}\n" }
-    it 'ignores the newline and decodes the token' do
-      expect(JWT.decode(token, 'secret', true, algorithm: 'HS256')).to include(payload)
+    it 'raises an error' do
+      expect { JWT.decode(token, 'secret', true, algorithm: 'HS256') }.to raise_error(JWT::Base64DecodeError, 'Invalid base64 encoding')
     end
   end
 
@@ -947,36 +947,6 @@ RSpec.describe JWT do
       it 'raises error on decoding' do
         expect { JWT.decode(expected_token, 'secret', true, algorithm: custom_algorithm.new) }.to raise_error(JWT::DecodeError, /missing the verify method/)
       end
-    end
-  end
-
-  context 'when invalid token is valid loose base64' do
-    it 'does not output deprecations warnings' do
-      expect do
-        JWT.decode("#{JWT.encode('a', 'b')} 9", 'b')
-      rescue JWT::VerificationError
-        nil
-      end.not_to output(/DEPRECATION/).to_stderr
-    end
-  end
-
-  context 'when valid token is invalid strict base64 and decoded with the correct key' do
-    it 'does outputs deprecation warning' do
-      expect { JWT.decode("#{JWT.encode('payload', 'key')} ", 'key') }.to output(/DEPRECATION/).to_stderr
-    end
-  end
-
-  context 'when valid token is invalid strict base64 and decoded with the incorrect key' do
-    it 'does not output deprecation warning, even when decoded with the correct key' do
-      token = JWT.encode('payload', 'key')
-      expect do
-        begin
-          JWT.decode("#{token} ", 'incorrect')
-        rescue JWT::VerificationError
-          nil
-        end
-        JWT.decode(token, 'key')
-      end.not_to output(/DEPRECATION/).to_stderr
     end
   end
 end
