@@ -2,7 +2,6 @@
 
 require 'openssl'
 
-require_relative 'jwa/compat'
 require_relative 'jwa/signing_algorithm'
 require_relative 'jwa/ecdsa'
 require_relative 'jwa/hmac'
@@ -10,7 +9,6 @@ require_relative 'jwa/none'
 require_relative 'jwa/ps'
 require_relative 'jwa/rsa'
 require_relative 'jwa/unsupported'
-require_relative 'jwa/wrapper'
 
 module JWT
   # The JWA module contains all supported algorithms.
@@ -20,10 +18,7 @@ module JWT
       def resolve(algorithm)
         return find(algorithm) if algorithm.is_a?(String) || algorithm.is_a?(Symbol)
 
-        unless algorithm.is_a?(SigningAlgorithm)
-          Deprecations.warning('Custom algorithms are required to include JWT::JWA::SigningAlgorithm. Custom algorithms that do not include this module may stop working in the next major version of ruby-jwt.')
-          return Wrapper.new(algorithm)
-        end
+        raise ArgumentError, 'Custom algorithms are required to include JWT::JWA::SigningAlgorithm' unless algorithm.is_a?(SigningAlgorithm)
 
         algorithm
       end

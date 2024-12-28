@@ -5,7 +5,6 @@ require 'jwt/base64'
 require 'jwt/json'
 require 'jwt/decode'
 require 'jwt/configuration'
-require 'jwt/deprecations'
 require 'jwt/encode'
 require 'jwt/error'
 require 'jwt/jwk'
@@ -44,8 +43,6 @@ module JWT
   # @param options [Hash] additional options for decoding.
   # @return [Array<Hash>] the decoded payload and headers.
   def decode(jwt, key = nil, verify = true, options = {}, &keyfinder) # rubocop:disable Style/OptionalBooleanParameter
-    Deprecations.context do
-      Decode.new(jwt, key, verify, configuration.decode.to_h.merge(options), &keyfinder).decode_segments
-    end
+    Decode.new(jwt, key, verify, configuration.decode.to_h.merge(options), &keyfinder).decode_segments
   end
 end

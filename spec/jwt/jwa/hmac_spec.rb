@@ -125,12 +125,4 @@ RSpec.describe JWT::JWA::Hmac do
       it { is_expected.to be(false) }
     end
   end
-
-  context 'backwards compatibility' do
-    it 'signs and verifies' do
-      signature = described_class.sign('HS256', 'data', 'key')
-      expect(signature).to be_a(String)
-      expect(described_class.verify('HS256', 'key', 'data', signature)).to be(true)
-    end
-  end
 end
