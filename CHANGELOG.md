@@ -8,6 +8,7 @@
 
 - JWT::EncodedToken#verify! method that bundles signature and claim validation [#647](https://github.com/jwt/ruby-jwt/pull/647) ([@anakinj](https://github.com/anakinj))
 - Require token signature to be verified before accessing payload (Breaking change!) [#648](https://github.com/jwt/ruby-jwt/pull/648) ([@anakinj](https://github.com/anakinj))
+- Drop support for the HS512256 algorithm (Breaking change!) [#650](https://github.com/jwt/ruby-jwt/pull/650) ([@anakinj](https://github.com/anakinj))
 - Your contribution here
 
 **Fixes and enhancements:**
