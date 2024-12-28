@@ -30,7 +30,6 @@ module JWT
       def reset!
         @decode                 = DecodeConfiguration.new
         @jwk                    = JwkConfiguration.new
-        @strict_base64_decoding = false
 
         self.deprecation_warnings = :once
       end

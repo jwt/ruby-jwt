@@ -899,9 +899,8 @@ RSpec.describe JWT do
         end
       end
 
-      it 'emits a deprecation warning' do
-        expect { token }.to output(/.*Custom algorithms are required to include JWT::JWA::SigningAlgorithm.*/).to_stderr
-        expect(JWT.decode(token, 'secret', true, algorithm: custom_algorithm.new)).to eq([payload, { 'alg' => 'custom', 'foo' => 'bar' }])
+      it 'raises an error' do
+        expect { token }.to raise_error(ArgumentError, 'Custom algorithms are required to include JWT::JWA::SigningAlgorithm')
       end
     end
 
