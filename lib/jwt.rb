@@ -13,9 +13,6 @@ require 'jwt/claims'
 require 'jwt/encoded_token'
 require 'jwt/token'
 
-require 'jwt/claims_validator'
-require 'jwt/verify'
-
 # JSON Web Token implementation
 #
 # Should be up to date with the latest spec:

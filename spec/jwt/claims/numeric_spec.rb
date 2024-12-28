@@ -91,23 +91,4 @@ RSpec.describe JWT::Claims::Numeric do
       it_should_behave_like 'a NumericDate claim', :nbf
     end
   end
-
-  context 'Legacy use' do
-    let(:validator) { described_class.new(claims) }
-    describe '#verify!' do
-      subject { validator.verify! }
-
-      context 'exp claim' do
-        it_should_behave_like 'a NumericDate claim', :exp
-      end
-
-      context 'iat claim' do
-        it_should_behave_like 'a NumericDate claim', :iat
-      end
-
-      context 'nbf claim' do
-        it_should_behave_like 'a NumericDate claim', :nbf
-      end
-    end
-  end
 end
