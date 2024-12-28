@@ -12,7 +12,21 @@ module JWT
   #   encoded_token.verify_signature!(algorithm: 'HS256', key: 'secret')
   #   encoded_token.payload # => {'pay' => 'load'}
   class EncodedToken
-    include Claims::VerificationMethods
+    # @private
+    # Allow access to the unverified payload for claim verification.
+    class ClaimsContext
+      extend Forwardable
+
+      def_delegators :@token, :header, :unverified_payload
+
+      def initialize(token)
+        @token = token
+      end
+
+      def payload
+        unverified_payload
+      end
+    end
 
     # Returns the original token provided to the class.
     # @return [String] The JWT token.
@@ -26,6 +40,7 @@ module JWT
       raise ArgumentError, 'Provided JWT must be a String' unless jwt.is_a?(String)
 
       @jwt = jwt
+      @signature_verified = false
       @encoded_header, @encoded_payload, @encoded_signature = jwt.split('.')
     end
 
@@ -53,11 +68,20 @@ module JWT
     # @return [String] the encoded header.
     attr_reader :encoded_header
 
-    # Returns the payload of the JWT token.
+    # Returns the payload of the JWT token. Access requires the signature to have been verified.
     #
     # @return [Hash] the payload.
+    # @raise [JWT::DecodeError] if the signature has not been verified.
     def payload
-      @payload ||= decode_payload
+      raise JWT::DecodeError, 'Verify the token signature before accessing the payload' unless @signature_verified
+
+      decoded_payload
+    end
+
+    # Returns the payload of the JWT token without requiring the signature to have been verified.
+    # @return [Hash] the payload.
+    def unverified_payload
+      decoded_payload
     end
 
     # Sets or returns the encoded payload of the JWT token.
@@ -101,8 +125,10 @@ module JWT
 
       key ||= key_finder.call(self)
 
-      return if valid_signature?(algorithm: algorithm, key: key)
-
+      if valid_signature?(algorithm: algorithm, key: key)
+        @signature_verified = true
+        return
+      end
       raise JWT::VerificationError, 'Signature verification failed'
     end
 
@@ -117,6 +143,27 @@ module JWT
           algo.verify(data: signing_input, signature: signature, verification_key: one_key)
         end
       end
+    end
+
+    # Verifies the claims of the token.
+    # @param options [Array<Symbol>, Hash] the claims to verify.
+    # @raise [JWT::DecodeError] if the claims are invalid.
+    def verify_claims!(*options)
+      Claims::Verifier.verify!(ClaimsContext.new(self), *options)
+    end
+
+    # Returns the errors of the claims of the token.
+    # @param options [Array<Symbol>, Hash] the claims to verify.
+    # @return [Array<Symbol>] the errors of the claims.
+    def claim_errors(*options)
+      Claims::Verifier.errors(ClaimsContext.new(self), *options)
+    end
+
+    # Returns whether the claims of the token are valid.
+    # @param options [Array<Symbol>, Hash] the claims to verify.
+    # @return [Boolean] whether the claims are valid.
+    def valid_claims?(*options)
+      claim_errors(*options).empty?
     end
 
     alias to_s jwt
@@ -150,6 +197,10 @@ module JWT
       JWT::JSON.parse(segment)
     rescue ::JSON::ParserError
       raise JWT::DecodeError, 'Invalid segment encoding'
+    end
+
+    def decoded_payload
+      @decoded_payload ||= decode_payload
     end
   end
 end
