@@ -14,25 +14,7 @@ See [CHANGELOG.md](CHANGELOG.md) for a complete set of changes.
 
 ## Upcoming breaking changes
 
-Notable changes in the upcoming **version 3.0**:
-
-- The indirect dependency to [rbnacl](https://github.com/RubyCrypto/rbnacl) will be removed:
-  - Support for the non-standard SHA512256 algorithm will be removed.
-  - Support for Ed25519 will be moved to a [separate gem](https://github.com/anakinj/jwt-eddsa) for better dependency handling.
-
-- Base64 decoding will no longer fallback on the looser RFC 2045.
-
-- Claim verification has been [split into separate classes](https://github.com/jwt/ruby-jwt/pull/605) and has [a new api](https://github.com/jwt/ruby-jwt/pull/626) and lead to the following deprecations:
-  - The `::JWT::ClaimsValidator` class will be removed in favor of the functionality provided by `::JWT::Claims`.
-  - The `::JWT::Claims::verify!` method will be removed in favor of `::JWT::Claims::verify_payload!`.
-  - The `::JWT::JWA.create` method will be removed.
-  - The `::JWT::Verify` class will be removed in favor of the functionality provided by `::JWT::Claims`.
-  - Calling `::JWT::Claims::Numeric.new` with a payload will be removed in favor of `::JWT::Claims::verify_payload!(payload, :numeric)`.
-  - Calling `::JWT::Claims::Numeric.verify!` with a payload will be removed in favor of `::JWT::Claims::verify_payload!(payload, :numeric)`.
-
-- The internal algorithms were [restructured](https://github.com/jwt/ruby-jwt/pull/607) to support extensions from separate libraries. The changes lead to a few deprecations and new requirements:
-  - The `sign` and `verify` static methods on all the algorithms (`::JWT::JWA`) will be removed.
-  - Custom algorithms are expected to include the `JWT::JWA::SigningAlgorithm` module.
+Check out breaking changes in the upcoming **version 3.0** from the [upgrade guide](UPGRADING.md)
 
 ## Sponsors
 
