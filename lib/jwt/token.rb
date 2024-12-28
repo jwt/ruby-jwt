@@ -95,7 +95,7 @@ module JWT
       raise ::JWT::EncodeError, 'Token already signed' if @signature
 
       JWA.resolve(algorithm).tap do |algo|
-        header.merge!(algo.header)
+        header.merge!(algo.header) { |_key, old, _new| old }
         @signature = algo.sign(data: signing_input, signing_key: key)
       end
 

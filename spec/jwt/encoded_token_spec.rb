@@ -103,6 +103,15 @@ RSpec.describe JWT::EncodedToken do
       end
     end
 
+    context 'when header has invalid alg value' do
+      let(:header) { { 'alg' => 'HS123' } }
+
+      it 'does not raise' do
+        expect(token.header).to eq(header)
+        expect(token.verify_signature!(algorithm: 'HS256', key: 'secret')).to eq(nil)
+      end
+    end
+
     context 'when payload is detached' do
       let(:encoded_token) { detached_payload_token.jwt }
 

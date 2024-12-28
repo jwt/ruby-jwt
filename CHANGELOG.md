@@ -14,6 +14,7 @@ Take a look at the [upgrade guide](UPGRADING.md) for more details.
 
 **Features:**
 - JWT::EncodedToken#verify! method that bundles signature and claim validation [#647](https://github.com/jwt/ruby-jwt/pull/647) ([@anakinj](https://github.com/anakinj))
+- Do not override the alg header if already given [#659](https://github.com/jwt/ruby-jwt/pull/659) ([@anakinj](https://github.com/anakinj))
 - Your contribution here
 
 **Fixes and enhancements:**
