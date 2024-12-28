@@ -74,7 +74,7 @@ jobs:
       - name: Upload test coverage folder for later reporting
         uses: actions/upload-artifact@v4
         with:
-          name: coverage-reports
+          name: coverage-reports-${{ matrix.os }}-${{ matrix.ruby }}-${{ matrix.gemfile }}
           path: ${{github.workspace}}/coverage-*/coverage.json
           retention-days: 1
 
@@ -82,16 +82,17 @@ jobs:
     name: Report coverage to Code Climate
     runs-on: ubuntu-latest
     needs: test
-    if: success() && github.ref == 'refs/heads/main'
+    if: success()
     env:
       CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Download coverage reports from the test job
         uses: actions/download-artifact@v4
         with:
-          name: coverage-reports
+          name: coverage-reports-*
+          merge-multiple: true
 
       - uses: paambaati/codeclimate-action@v3.2.0
         with:
