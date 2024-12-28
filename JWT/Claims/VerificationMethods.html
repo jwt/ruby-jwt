@@ -62,7 +62,7 @@
       <div id="content"><h1>Module: JWT::Claims::VerificationMethods
   
   
-  <span class="private note title">Private</span>
+  
 </h1>
 <div class="box_info">
   
@@ -88,12 +88,10 @@
   
 </div>
 
-<div class="docstring">
+<h2>Overview</h2><div class="docstring">
   <div class="discussion">
-    <p class="note private">
-  <strong>This module is part of a private API.</strong>
-  You should avoid using this module if possible, as it may be removed or be changed in the future.
-</p>
+    
+<p>Provides methods to verify the claims of a token.</p>
 
 
   </div>
@@ -119,7 +117,7 @@
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#claim_errors-instance_method" title="#claim_errors (instance method)">#<strong>claim_errors</strong>(*options)  &#x21d2; Object </a>
+      <a href="#claim_errors-instance_method" title="#claim_errors (instance method)">#<strong>claim_errors</strong>(*options)  &#x21d2; Array&lt;Symbol&gt; </a>
     
 
     
@@ -130,10 +128,12 @@
   
   
   
-  <span class="private note title">private</span>
+  
 
   
-    <span class="summary_desc"><div class='inline'></div></span>
+    <span class="summary_desc"><div class='inline'>
+<p>Returns the errors of the claims of the token.</p>
+</div></span>
   
 </li>
 
@@ -152,10 +152,12 @@
   
   
   
-  <span class="private note title">private</span>
+  
 
   
-    <span class="summary_desc"><div class='inline'></div></span>
+    <span class="summary_desc"><div class='inline'>
+<p>Returns whether the claims of the token are valid.</p>
+</div></span>
   
 </li>
 
@@ -174,10 +176,12 @@
   
   
   
-  <span class="private note title">private</span>
+  
 
   
-    <span class="summary_desc"><div class='inline'></div></span>
+    <span class="summary_desc"><div class='inline'>
+<p>Verifies the claims of the token.</p>
+</div></span>
   
 </li>
 
@@ -194,7 +198,7 @@
       <div class="method_details first">
   <h3 class="signature first" id="claim_errors-instance_method">
   
-    #<strong>claim_errors</strong>(*options)  &#x21d2; <tt>Object</tt> 
+    #<strong>claim_errors</strong>(*options)  &#x21d2; <tt>Array&lt;Symbol&gt;</tt> 
   
 
   
@@ -202,16 +206,52 @@
   
 </h3><div class="docstring">
   <div class="discussion">
-    <p class="note private">
-  <strong>This method is part of a private API.</strong>
-  You should avoid using this method if possible, as it may be removed or be changed in the future.
-</p>
+    
+<p>Returns the errors of the claims of the token.</p>
 
 
   </div>
 </div>
 <div class="tags">
+  <p class="tag_title">Parameters:</p>
+<ul class="param">
   
+    <li>
+      
+        <span class='name'>options</span>
+      
+      
+        <span class='type'>(<tt>Array&lt;Symbol&gt;</tt>, <tt>Hash</tt>)</span>
+      
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>the claims to verify.</p>
+</div>
+      
+    </li>
+  
+</ul>
+
+<p class="tag_title">Returns:</p>
+<ul class="return">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt>Array&lt;Symbol&gt;</tt>)</span>
+      
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>the errors of the claims.</p>
+</div>
+      
+    </li>
+  
+</ul>
 
 </div><table class="source_code">
   <tr>
@@ -219,12 +259,12 @@
       <pre class="lines">
 
 
-11
-12
-13</pre>
+17
+18
+19</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/jwt/claims/verification_methods.rb', line 11</span>
+      <pre class="code"><span class="info file"># File 'lib/jwt/claims/verification_methods.rb', line 17</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_claim_errors'>claim_errors</span><span class='lparen'>(</span><span class='op'>*</span><span class='id identifier rubyid_options'>options</span><span class='rparen'>)</span>
   <span class='const'><span class='object_link'><a href="Verifier.html" title="JWT::Claims::Verifier (module)">Verifier</a></span></span><span class='period'>.</span><span class='id identifier rubyid_errors'><span class='object_link'><a href="Verifier.html#errors-class_method" title="JWT::Claims::Verifier.errors (method)">errors</a></span></span><span class='lparen'>(</span><span class='kw'>self</span><span class='comma'>,</span> <span class='op'>*</span><span class='id identifier rubyid_options'>options</span><span class='rparen'>)</span>
@@ -245,16 +285,34 @@
   
 </h3><div class="docstring">
   <div class="discussion">
-    <p class="note private">
-  <strong>This method is part of a private API.</strong>
-  You should avoid using this method if possible, as it may be removed or be changed in the future.
-</p>
+    
+<p>Returns whether the claims of the token are valid.</p>
 
 
   </div>
 </div>
 <div class="tags">
+  <p class="tag_title">Parameters:</p>
+<ul class="param">
   
+    <li>
+      
+        <span class='name'>options</span>
+      
+      
+        <span class='type'>(<tt>Array&lt;Symbol&gt;</tt>, <tt>Hash</tt>)</span>
+      
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>the claims to verify.</p>
+</div>
+      
+    </li>
+  
+</ul>
+
 <p class="tag_title">Returns:</p>
 <ul class="return">
   
@@ -264,6 +322,11 @@
         <span class='type'>(<tt>Boolean</tt>)</span>
       
       
+      
+        &mdash;
+        <div class='inline'>
+<p>whether the claims are valid.</p>
+</div>
       
     </li>
   
@@ -275,12 +338,12 @@
       <pre class="lines">
 
 
-15
-16
-17</pre>
+24
+25
+26</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/jwt/claims/verification_methods.rb', line 15</span>
+      <pre class="code"><span class="info file"># File 'lib/jwt/claims/verification_methods.rb', line 24</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_valid_claims?'>valid_claims?</span><span class='lparen'>(</span><span class='op'>*</span><span class='id identifier rubyid_options'>options</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_claim_errors'>claim_errors</span><span class='lparen'>(</span><span class='op'>*</span><span class='id identifier rubyid_options'>options</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_empty?'>empty?</span>
@@ -301,16 +364,52 @@
   
 </h3><div class="docstring">
   <div class="discussion">
-    <p class="note private">
-  <strong>This method is part of a private API.</strong>
-  You should avoid using this method if possible, as it may be removed or be changed in the future.
-</p>
+    
+<p>Verifies the claims of the token.</p>
 
 
   </div>
 </div>
 <div class="tags">
+  <p class="tag_title">Parameters:</p>
+<ul class="param">
   
+    <li>
+      
+        <span class='name'>options</span>
+      
+      
+        <span class='type'>(<tt>Array&lt;Symbol&gt;</tt>, <tt>Hash</tt>)</span>
+      
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>the claims to verify.</p>
+</div>
+      
+    </li>
+  
+</ul>
+
+<p class="tag_title">Raises:</p>
+<ul class="raise">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt><span class='object_link'><a href="../DecodeError.html" title="JWT::DecodeError (class)">JWT::DecodeError</a></span></tt>)</span>
+      
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>if the claims are invalid.</p>
+</div>
+      
+    </li>
+  
+</ul>
 
 </div><table class="source_code">
   <tr>
@@ -318,12 +417,12 @@
       <pre class="lines">
 
 
-7
-8
-9</pre>
+10
+11
+12</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/jwt/claims/verification_methods.rb', line 7</span>
+      <pre class="code"><span class="info file"># File 'lib/jwt/claims/verification_methods.rb', line 10</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_verify_claims!'>verify_claims!</span><span class='lparen'>(</span><span class='op'>*</span><span class='id identifier rubyid_options'>options</span><span class='rparen'>)</span>
   <span class='const'><span class='object_link'><a href="Verifier.html" title="JWT::Claims::Verifier (module)">Verifier</a></span></span><span class='period'>.</span><span class='id identifier rubyid_verify!'><span class='object_link'><a href="Verifier.html#verify!-class_method" title="JWT::Claims::Verifier.verify! (method)">verify!</a></span></span><span class='lparen'>(</span><span class='kw'>self</span><span class='comma'>,</span> <span class='op'>*</span><span class='id identifier rubyid_options'>options</span><span class='rparen'>)</span>
@@ -338,7 +437,7 @@
 </div>
 
       <div id="footer">
-  Generated on Thu Dec 26 20:55:06 2024 by
+  Generated on Sat Dec 28 11:21:01 2024 by
   <a href="https://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.9.37 (ruby-3.4.1).
 </div>
