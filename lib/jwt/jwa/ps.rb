@@ -13,6 +13,7 @@ module JWT
 
       def sign(data:, signing_key:)
         raise_sign_error!("The given key is a #{signing_key.class}. It has to be an OpenSSL::PKey::RSA instance.") unless signing_key.is_a?(::OpenSSL::PKey::RSA)
+        raise_sign_error!('The key length must be greater than or equal to 2048 bits') if signing_key.n.num_bits < 2048
 
         signing_key.sign_pss(digest_algorithm, data, salt_length: :digest, mgf1_hash: digest_algorithm)
       end

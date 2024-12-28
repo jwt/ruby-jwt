@@ -10,7 +10,8 @@
 - Remove deprecated claim verification methods [#654](https://github.com/jwt/ruby-jwt/pull/654) ([@anakinj](https://github.com/anakinj))
 - Remove dependency to rbnacl [#655](https://github.com/jwt/ruby-jwt/pull/655) ([@anakinj](https://github.com/anakinj))
 - Support only stricter base64 decoding (RFC 4648) [#658](https://github.com/jwt/ruby-jwt/pull/658) ([@anakinj](https://github.com/anakinj))
-- Custom algorithms are required to include `JWT::JWA::SigningAlgorithm` [#660](https://github.com/jwt/ruby-jwt/pull/560) ([@anakinj](https://github.com/anakinj))
+- Custom algorithms are required to include `JWT::JWA::SigningAlgorithm` [#660](https://github.com/jwt/ruby-jwt/pull/660) ([@anakinj](https://github.com/anakinj))
+- Require RSA keys to be at least 2048 bits [#661](https://github.com/jwt/ruby-jwt/pull/661) ([@anakinj](https://github.com/anakinj))
 
 Take a look at the [upgrade guide](UPGRADING.md) for more details.
 
