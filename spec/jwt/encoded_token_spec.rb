@@ -207,6 +207,31 @@ RSpec.describe JWT::EncodedToken do
     end
   end
 
+  context '#verify!' do
+    context 'when key is valid' do
+      it 'does not raise' do
+        expect(token.verify!(signature: { algorithm: 'HS256', key: 'secret' })).to eq(nil)
+      end
+    end
+
+    context 'when key is invalid' do
+      it 'raises an error' do
+        expect { token.verify!(signature: { algorithm: 'HS256', key: 'wrong' }) }.to raise_error(JWT::VerificationError, 'Signature verification failed')
+      end
+    end
+
+    context 'when claims are invalid' do
+      let(:payload) { { 'pay' => 'load', exp: Time.now.to_i - 1000 } }
+
+      it 'raises an error' do
+        expect do
+          token.verify!(signature: { algorithm: 'HS256', key: 'secret' },
+                        claims: { exp: { leeway: 900 } })
+        end.to raise_error(JWT::ExpiredSignature, 'Signature has expired')
+      end
+    end
+  end
+
   describe '#valid_claims?' do
     context 'exp claim' do
       let(:payload) { { 'exp' => Time.now.to_i - 10, 'pay' => 'load' } }
