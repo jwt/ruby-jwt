@@ -408,10 +408,10 @@
     <span class='id identifier rubyid_verify_algo'>verify_algo</span>
     <span class='id identifier rubyid_set_key'>set_key</span>
     <span class='id identifier rubyid_verify_signature'>verify_signature</span>
-    <span class='const'><span class='object_link'><a href="Claims.html" title="JWT::Claims (module)">Claims</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="Claims/DecodeVerifier.html" title="JWT::Claims::DecodeVerifier (module)">DecodeVerifier</a></span></span><span class='period'>.</span><span class='id identifier rubyid_verify!'><span class='object_link'><a href="Claims/DecodeVerifier.html#verify!-class_method" title="JWT::Claims::DecodeVerifier.verify! (method)">verify!</a></span></span><span class='lparen'>(</span><span class='id identifier rubyid_token'>token</span><span class='period'>.</span><span class='id identifier rubyid_payload'>payload</span><span class='comma'>,</span> <span class='ivar'>@options</span><span class='rparen'>)</span>
+    <span class='const'><span class='object_link'><a href="Claims.html" title="JWT::Claims (module)">Claims</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="Claims/DecodeVerifier.html" title="JWT::Claims::DecodeVerifier (module)">DecodeVerifier</a></span></span><span class='period'>.</span><span class='id identifier rubyid_verify!'><span class='object_link'><a href="Claims/DecodeVerifier.html#verify!-class_method" title="JWT::Claims::DecodeVerifier.verify! (method)">verify!</a></span></span><span class='lparen'>(</span><span class='id identifier rubyid_token'>token</span><span class='period'>.</span><span class='id identifier rubyid_unverified_payload'>unverified_payload</span><span class='comma'>,</span> <span class='ivar'>@options</span><span class='rparen'>)</span>
   <span class='kw'>end</span>
 
-  <span class='lbracket'>[</span><span class='id identifier rubyid_token'>token</span><span class='period'>.</span><span class='id identifier rubyid_payload'>payload</span><span class='comma'>,</span> <span class='id identifier rubyid_token'>token</span><span class='period'>.</span><span class='id identifier rubyid_header'>header</span><span class='rbracket'>]</span>
+  <span class='lbracket'>[</span><span class='id identifier rubyid_token'>token</span><span class='period'>.</span><span class='id identifier rubyid_unverified_payload'>unverified_payload</span><span class='comma'>,</span> <span class='id identifier rubyid_token'>token</span><span class='period'>.</span><span class='id identifier rubyid_header'>header</span><span class='rbracket'>]</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -423,7 +423,7 @@
 </div>
 
       <div id="footer">
-  Generated on Sat Dec 28 11:21:01 2024 by
+  Generated on Sat Dec 28 12:38:25 2024 by
   <a href="https://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.9.37 (ruby-3.4.1).
 </div>
