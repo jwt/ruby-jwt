@@ -335,6 +335,16 @@ encoded_token.payload # => { 'exp'=>1234, 'jti'=>'1234", 'sub'=>'my-subject' }
 encoded_token.header # {'kid'=>'hmac', 'alg'=>'HS256'}
 ```
 
+The `JWT::EncodedToken#verify!` method can be used to verify signature and claim verification in one go. The `exp` claim is verified by default.
+
+```ruby
+encoded_token = JWT::EncodedToken.new(token.jwt)
+encoded_token.verify!(signature: {algorithm: 'HS256', key: "secret"})
+
+encoded_token.payload # => { 'exp'=>1234, 'jti'=>'1234", 'sub'=>'my-subject' }
+encoded_token.header # {'kid'=>'hmac', 'alg'=>'HS256'}
+```
+
 ### Detached payload
 
 The `::JWT::Token#detach_payload!` method can be use to detach the payload from the JWT.

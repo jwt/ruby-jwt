@@ -72,6 +72,22 @@ module JWT
       [encoded_header, encoded_payload].join('.')
     end
 
+    # Verifies the token signature and claims.
+    # By default it verifies the 'exp' claim.
+    #
+    # @example
+    #  encoded_token.verify!(signature: { algorithm: 'HS256', key: 'secret' }, claims: [:exp])
+    #
+    # @param signature [Hash] the parameters for signature verification (see {#verify_signature!}).
+    # @param claims [Array<Symbol>, Hash] the claims to verify (see {#verify_claims!}).
+    # @return [nil]
+    # @raise [JWT::DecodeError] if the signature or claim verification fails.
+    def verify!(signature:, claims: [:exp])
+      verify_signature!(**signature)
+      claims.is_a?(Array) ? verify_claims!(*claims) : verify_claims!(claims)
+      nil
+    end
+
     # Verifies the signature of the JWT token.
     #
     # @param algorithm [String, Array<String>, Object, Array<Object>] the algorithm(s) to use for verification.
