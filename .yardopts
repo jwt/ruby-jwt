@@ -1,0 +1,8 @@
+--protected
+--no-private
+-
+README.md
+CHANGELOG.md
+CONTRIBUTING.md
+UPGRADING.md
+LICENSE
