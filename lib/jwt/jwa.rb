@@ -20,12 +20,6 @@ require_relative 'jwa/wrapper'
 
 require_relative 'jwa/eddsa' if JWT.rbnacl?
 
-if JWT.rbnacl_6_or_greater?
-  require_relative 'jwa/hmac_rbnacl'
-elsif JWT.rbnacl?
-  require_relative 'jwa/hmac_rbnacl_fixed'
-end
-
 module JWT
   # The JWA module contains all supported algorithms.
   module JWA
