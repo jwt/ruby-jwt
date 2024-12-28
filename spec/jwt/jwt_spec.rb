@@ -3,8 +3,8 @@
 RSpec.describe JWT do
   let(:payload) { { 'user_id' => 'some@user.tld' } }
 
-  let :data do
-    data = {
+  let(:data) do
+    {
       :empty_token => 'e30K.e30K.e30K',
       :empty_token_2_segment => 'e30K.e30K.',
       :invalid_header_token => 'W10.e30K.e30K',
@@ -37,18 +37,6 @@ RSpec.describe JWT do
       'PS384' => '',
       'PS512' => ''
     }
-
-    if JWT.rbnacl?
-      ed25519_private = RbNaCl::Signatures::Ed25519::SigningKey.new('abcdefghijklmnopqrstuvwxyzABCDEF')
-      ed25519_public =  ed25519_private.verify_key
-      data.merge!(
-        'ED25519_private' => ed25519_private,
-        'ED25519_public' => ed25519_public,
-        'EdDSA_private' => ed25519_private,
-        'EdDSA_public' => ed25519_public
-      )
-    end
-    data
   end
 
   after(:each) do
@@ -170,44 +158,6 @@ RSpec.describe JWT do
         expect do
           JWT.decode data[alg], key, false
         end.not_to raise_error
-      end
-    end
-  end
-
-  if defined?(RbNaCl)
-    %w[ED25519 EdDSA].each do |alg|
-      context "alg: #{alg}" do
-        before(:each) do
-          data[alg] = JWT.encode payload, data["#{alg}_private"], alg
-        end
-
-        let(:wrong_key) { RbNaCl::Signatures::Ed25519::SigningKey.generate.verify_key }
-
-        it 'should generate a valid token' do
-          jwt_payload, header = JWT.decode data[alg], data["#{alg}_public"], true, algorithm: alg
-
-          expect(header['alg']).to eq alg
-          expect(jwt_payload).to eq payload
-        end
-
-        it 'should decode a valid token' do
-          jwt_payload, header = JWT.decode data[alg], data["#{alg}_public"], true, algorithm: alg
-
-          expect(header['alg']).to eq alg
-          expect(jwt_payload).to eq payload
-        end
-
-        it 'wrong key should raise JWT::DecodeError' do
-          expect do
-            JWT.decode data[alg], wrong_key, true, algorithm: alg
-          end.to raise_error JWT::DecodeError
-        end
-
-        it 'wrong key and verify = false should not raise JWT::DecodeError' do
-          expect do
-            JWT.decode data[alg], wrong_key, false
-          end.not_to raise_error
-        end
       end
     end
   end

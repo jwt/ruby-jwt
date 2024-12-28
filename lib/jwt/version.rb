@@ -32,22 +32,6 @@ module JWT
     true if 3 * 0x10000000 <= OpenSSL::OPENSSL_VERSION_NUMBER
   end
 
-  # Checks if the RbNaCl library is defined.
-  #
-  # @return [Boolean] true if RbNaCl is defined, false otherwise.
-  # @api private
-  def self.rbnacl?
-    defined?(::RbNaCl)
-  end
-
-  # Checks if the RbNaCl library version is 6.0.0 or greater.
-  #
-  # @return [Boolean] true if RbNaCl version is 6.0.0 or greater, false otherwise.
-  # @api private
-  def self.rbnacl_6_or_greater?
-    rbnacl? && ::Gem::Version.new(::RbNaCl::VERSION) >= ::Gem::Version.new('6.0.0')
-  end
-
   # Checks if there is an OpenSSL 3 HMAC empty key regression.
   #
   # @return [Boolean] true if there is an OpenSSL 3 HMAC empty key regression, false otherwise.
