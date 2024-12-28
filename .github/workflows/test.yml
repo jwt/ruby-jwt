@@ -13,11 +13,11 @@ jobs:
     timeout-minutes: 30
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1
         with:
-          ruby-version: "3.1"
+          ruby-version: ruby
           bundler-cache: true
       - name: Run RuboCop
         run: bundle exec rubocop
@@ -29,6 +29,7 @@ jobs:
       matrix:
         os:
           - ubuntu-20.04
+          - ubuntu-latest
         ruby:
           - "2.5"
           - "2.6"
@@ -37,6 +38,7 @@ jobs:
           - "3.1"
           - "3.2"
           - "3.3"
+          - "3.4"
         gemfile:
           - gemfiles/standalone.gemfile
           - gemfiles/openssl.gemfile
@@ -44,15 +46,11 @@ jobs:
           - gemfiles/rbnacl_pre_6.gemfile
         experimental: [false]
         include:
-          - os: ubuntu-22.04
-            ruby: "3.1"
-            gemfile: 'gemfiles/standalone.gemfile'
-            experimental: false
           - os: ubuntu-20.04
             ruby: "truffleruby-head"
             gemfile: 'gemfiles/standalone.gemfile'
             experimental: true
-          - os: ubuntu-22.04
+          - os: ubuntu-latest
             ruby: "head"
             gemfile: 'gemfiles/standalone.gemfile'
             experimental: true
@@ -61,7 +59,7 @@ jobs:
       BUNDLE_GEMFILE: ${{ matrix.gemfile }}
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Install libsodium
         run: |
@@ -86,7 +84,7 @@ jobs:
 
   coverage:
     name: Report coverage to Code Climate
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     needs: test
     if: success() && github.ref == 'refs/heads/main'
     env:
@@ -108,11 +106,11 @@ jobs:
     timeout-minutes: 30
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1
         with:
-          ruby-version: "3.1"
+          ruby-version: ruby
       - name: Build GEM
         run: gem build
       - name: Install built GEM
