@@ -42,6 +42,16 @@ RSpec.describe JWT::JWA::Ps do
         end.to raise_error(JWT::EncodeError, /The given key is a String. It has to be an OpenSSL::PKey::RSA instance./)
       end
     end
+
+    context 'with a key length less than 2048 bits' do
+      let(:rsa_key) { OpenSSL::PKey::RSA.generate(1024) }
+
+      it 'raises an error' do
+        expect do
+          ps256_instance.sign(data: data, signing_key: rsa_key)
+        end.to raise_error(JWT::EncodeError, 'The key length must be greater than or equal to 2048 bits')
+      end
+    end
   end
 
   describe '#verify' do

@@ -20,6 +20,16 @@ RSpec.describe JWT::JWA::Rsa do
       end
     end
 
+    context 'with a key length less than 2048 bits' do
+      let(:rsa_key) { OpenSSL::PKey::RSA.generate(1024) }
+
+      it 'raises an error' do
+        expect do
+          rsa_instance.sign(data: data, signing_key: rsa_key)
+        end.to raise_error(JWT::EncodeError, 'The key length must be greater than or equal to 2048 bits')
+      end
+    end
+
     context 'with an invalid key' do
       it 'raises an error' do
         expect do
