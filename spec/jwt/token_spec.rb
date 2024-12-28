@@ -41,6 +41,18 @@ RSpec.describe JWT::Token do
         expect { token.jwt }.to raise_error(JWT::EncodeError)
       end
     end
+
+    context 'when alg is given in header' do
+      let(:header) { { 'alg' => 'HS123' } }
+
+      before do
+        token.sign!(algorithm: 'HS256', key: 'secret')
+      end
+
+      it 'returns a signed and encoded token' do
+        expect(JWT::EncodedToken.new(token.jwt).header).to eq({ 'alg' => 'HS123' })
+      end
+    end
   end
 
   describe '#detach_payload!' do

@@ -586,9 +586,9 @@ RSpec.describe JWT do
   end
 
   context 'when the alg value is given as a header parameter' do
-    it 'does not override the actual algorithm used' do
+    it 'overrides the actual algorithm used' do
       headers = JSON.parse(JWT::Base64.url_decode(JWT.encode('Hello World', 'secret', 'HS256', { alg: 'HS123' }).split('.').first))
-      expect(headers['alg']).to eq('HS256')
+      expect(headers['alg']).to eq('HS123')
     end
 
     it 'should generate the same token' do
