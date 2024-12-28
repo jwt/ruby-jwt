@@ -173,30 +173,6 @@
 </li>
 
       
-        <li class="public deprecated">
-  <span class="summary_signature">
-    
-      <a href="#verify!-class_method" title="verify! (class method)">.<strong>verify!</strong>(payload, options)  &#x21d2; Object </a>
-    
-
-    
-  </span>
-  
-  
-  
-  
-  
-  <span class="deprecated note title">deprecated</span>
-  
-
-  
-    <span class="summary_desc"><strong>Deprecated.</strong> <div class='inline'>
-<p>Use <span class='object_link'><a href="#verify_payload!-class_method" title="JWT::Claims.verify_payload! (method)">Claims.verify_payload!</a></span> instead. Will be removed in the next major version of ruby-jwt.</p>
-</div></span>
-  
-</li>
-
-      
         <li class="public ">
   <span class="summary_signature">
     
@@ -294,12 +270,12 @@
       <pre class="lines">
 
 
-68
-69
-70</pre>
+62
+63
+64</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/jwt/claims.rb', line 68</span>
+      <pre class="code"><span class="info file"># File 'lib/jwt/claims.rb', line 62</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_payload_errors'>payload_errors</span><span class='lparen'>(</span><span class='id identifier rubyid_payload'>payload</span><span class='comma'>,</span> <span class='op'>*</span><span class='id identifier rubyid_options'>options</span><span class='rparen'>)</span>
   <span class='const'><span class='object_link'><a href="Claims/Verifier.html" title="JWT::Claims::Verifier (module)">Verifier</a></span></span><span class='period'>.</span><span class='id identifier rubyid_errors'><span class='object_link'><a href="Claims/Verifier.html#errors-class_method" title="JWT::Claims::Verifier.errors (method)">errors</a></span></span><span class='lparen'>(</span><span class='const'><span class='object_link'><a href="Claims/VerificationContext.html" title="JWT::Claims::VerificationContext (class)">VerificationContext</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='label'>payload:</span> <span class='id identifier rubyid_payload'>payload</span><span class='rparen'>)</span><span class='comma'>,</span> <span class='op'>*</span><span class='id identifier rubyid_options'>options</span><span class='rparen'>)</span>
@@ -389,59 +365,15 @@
       <pre class="lines">
 
 
-60
-61
-62</pre>
+54
+55
+56</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/jwt/claims.rb', line 60</span>
+      <pre class="code"><span class="info file"># File 'lib/jwt/claims.rb', line 54</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_valid_payload?'>valid_payload?</span><span class='lparen'>(</span><span class='id identifier rubyid_payload'>payload</span><span class='comma'>,</span> <span class='op'>*</span><span class='id identifier rubyid_options'>options</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_payload_errors'>payload_errors</span><span class='lparen'>(</span><span class='id identifier rubyid_payload'>payload</span><span class='comma'>,</span> <span class='op'>*</span><span class='id identifier rubyid_options'>options</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_empty?'>empty?</span>
-<span class='kw'>end</span></pre>
-    </td>
-  </tr>
-</table>
-</div>
-    
-      <div class="method_details ">
-  <h3 class="signature " id="verify!-class_method">
-  
-    .<strong>verify!</strong>(payload, options)  &#x21d2; <tt>Object</tt> 
-  
-
-  
-
-  
-</h3><div class="docstring">
-  <div class="discussion">
-    <div class="note deprecated"><strong>Deprecated.</strong> <div class='inline'>
-<p>Use <span class='object_link'><a href="#verify_payload!-class_method" title="JWT::Claims.verify_payload! (method)">verify_payload!</a></span> instead. Will be removed in the next major version of ruby-jwt.</p>
-</div></div>
-
-
-  </div>
-</div>
-<div class="tags">
-  
-
-</div><table class="source_code">
-  <tr>
-    <td>
-      <pre class="lines">
-
-
-36
-37
-38
-39</pre>
-    </td>
-    <td>
-      <pre class="code"><span class="info file"># File 'lib/jwt/claims.rb', line 36</span>
-
-<span class='kw'>def</span> <span class='id identifier rubyid_verify!'>verify!</span><span class='lparen'>(</span><span class='id identifier rubyid_payload'>payload</span><span class='comma'>,</span> <span class='id identifier rubyid_options'>options</span><span class='rparen'>)</span>
-  <span class='const'><span class='object_link'><a href="Deprecations.html" title="JWT::Deprecations (module)">Deprecations</a></span></span><span class='period'>.</span><span class='id identifier rubyid_warning'><span class='object_link'><a href="Deprecations.html#warning-class_method" title="JWT::Deprecations.warning (method)">warning</a></span></span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>The ::JWT::Claims.verify! method is deprecated will be removed in the next major version of ruby-jwt</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span>
-  <span class='const'><span class='object_link'><a href="Claims/DecodeVerifier.html" title="JWT::Claims::DecodeVerifier (module)">DecodeVerifier</a></span></span><span class='period'>.</span><span class='id identifier rubyid_verify!'><span class='object_link'><a href="Claims/DecodeVerifier.html#verify!-class_method" title="JWT::Claims::DecodeVerifier.verify! (method)">verify!</a></span></span><span class='lparen'>(</span><span class='id identifier rubyid_payload'>payload</span><span class='comma'>,</span> <span class='id identifier rubyid_options'>options</span><span class='rparen'>)</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -538,12 +470,12 @@
       <pre class="lines">
 
 
-51
-52
-53</pre>
+45
+46
+47</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/jwt/claims.rb', line 51</span>
+      <pre class="code"><span class="info file"># File 'lib/jwt/claims.rb', line 45</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_verify_payload!'>verify_payload!</span><span class='lparen'>(</span><span class='id identifier rubyid_payload'>payload</span><span class='comma'>,</span> <span class='op'>*</span><span class='id identifier rubyid_options'>options</span><span class='rparen'>)</span>
   <span class='const'><span class='object_link'><a href="Claims/Verifier.html" title="JWT::Claims::Verifier (module)">Verifier</a></span></span><span class='period'>.</span><span class='id identifier rubyid_verify!'><span class='object_link'><a href="Claims/Verifier.html#verify!-class_method" title="JWT::Claims::Verifier.verify! (method)">verify!</a></span></span><span class='lparen'>(</span><span class='const'><span class='object_link'><a href="Claims/VerificationContext.html" title="JWT::Claims::VerificationContext (class)">VerificationContext</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='label'>payload:</span> <span class='id identifier rubyid_payload'>payload</span><span class='rparen'>)</span><span class='comma'>,</span> <span class='op'>*</span><span class='id identifier rubyid_options'>options</span><span class='rparen'>)</span>
@@ -558,7 +490,7 @@
 </div>
 
       <div id="footer">
-  Generated on Sat Dec 28 15:56:39 2024 by
+  Generated on Sat Dec 28 16:15:06 2024 by
   <a href="https://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.9.37 (ruby-3.4.1).
 </div>
