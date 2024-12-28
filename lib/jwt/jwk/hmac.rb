@@ -70,7 +70,7 @@ module JWT
       private
 
       def secret
-        self[:k]
+        @secret ||= ::JWT::Base64.url_decode(self[:k])
       end
 
       def extract_key_params(key)
@@ -78,7 +78,7 @@ module JWT
         when JWT::JWK::HMAC
           key.export(include_private: true)
         when String # Accept String key as input
-          { kty: KTY, k: key }
+          { kty: KTY, k: ::JWT::Base64.url_encode(key) }
         when Hash
           key.transform_keys(&:to_sym)
         else
