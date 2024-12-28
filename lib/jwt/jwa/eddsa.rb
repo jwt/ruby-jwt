@@ -13,7 +13,7 @@ module JWT
       def sign(data:, signing_key:)
         raise_sign_error!("Key given is a #{signing_key.class} but has to be an RbNaCl::Signatures::Ed25519::SigningKey") unless signing_key.is_a?(RbNaCl::Signatures::Ed25519::SigningKey)
 
-        Deprecations.warning('Using Ed25519 keys is deprecated and will be removed in a future version of ruby-jwt. Please use the ruby-eddsa gem instead.')
+        Deprecations.warning('Using the EdDSA algorithm is deprecated and will be removed in a future version of ruby-jwt. In the future the algorithm will be provided by the jwt-eddsa gem.')
 
         signing_key.sign(data)
       end
@@ -21,7 +21,7 @@ module JWT
       def verify(data:, signature:, verification_key:)
         raise_verify_error!("key given is a #{verification_key.class} but has to be a RbNaCl::Signatures::Ed25519::VerifyKey") unless verification_key.is_a?(RbNaCl::Signatures::Ed25519::VerifyKey)
 
-        Deprecations.warning('Using Ed25519 keys is deprecated and will be removed in a future version of ruby-jwt. Please use the ruby-eddsa gem instead.')
+        Deprecations.warning('Using the EdDSA algorithm is deprecated and will be removed in a future version of ruby-jwt. In the future the algorithm will be provided by the jwt-eddsa gem.')
 
         verification_key.verify(signature, data)
       rescue RbNaCl::CryptoError
