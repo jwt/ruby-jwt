@@ -33,10 +33,10 @@ module JWT
         verify_algo
         set_key
         verify_signature
-        Claims::DecodeVerifier.verify!(token.payload, @options)
+        Claims::DecodeVerifier.verify!(token.unverified_payload, @options)
       end
 
-      [token.payload, token.header]
+      [token.unverified_payload, token.header]
     end
 
     private
@@ -93,7 +93,7 @@ module JWT
     end
 
     def find_key(&keyfinder)
-      key = (keyfinder.arity == 2 ? yield(token.header, token.payload) : yield(token.header))
+      key = (keyfinder.arity == 2 ? yield(token.header, token.unverified_payload) : yield(token.header))
       # key can be of type [string, nil, OpenSSL::PKey, Array]
       return key if key && !Array(key).empty?
 

@@ -13,20 +13,20 @@ RSpec.describe JWT::EncodedToken do
 
   subject(:token) { described_class.new(encoded_token) }
 
-  describe '#payload' do
-    it { expect(token.payload).to eq(payload) }
+  describe '#unverified_payload' do
+    it { expect(token.unverified_payload).to eq(payload) }
 
     context 'when payload is detached' do
       let(:encoded_token) { detached_payload_token.jwt }
 
       context 'when payload provided in separate' do
         before { token.encoded_payload = detached_payload_token.encoded_payload }
-        it { expect(token.payload).to eq(payload) }
+        it { expect(token.unverified_payload).to eq(payload) }
       end
 
       context 'when payload is not provided' do
         it 'raises decode error' do
-          expect { token.payload }.to raise_error(JWT::DecodeError, 'Encoded payload is empty')
+          expect { token.unverified_payload }.to raise_error(JWT::DecodeError, 'Encoded payload is empty')
         end
       end
     end
@@ -37,7 +37,7 @@ RSpec.describe JWT::EncodedToken do
       before { token.encoded_payload = '{"foo": "bar"}' }
 
       it 'handles the payload encoding' do
-        expect(token.payload).to eq({ 'foo' => 'bar' })
+        expect(token.unverified_payload).to eq({ 'foo' => 'bar' })
       end
     end
 
@@ -45,7 +45,21 @@ RSpec.describe JWT::EncodedToken do
       let(:encoded_token) { '' }
 
       it 'raises decode error' do
-        expect { token.payload }.to raise_error(JWT::DecodeError, 'Invalid segment encoding')
+        expect { token.unverified_payload }.to raise_error(JWT::DecodeError, 'Invalid segment encoding')
+      end
+    end
+  end
+
+  describe '#payload' do
+    context 'when token is verified' do
+      before { token.verify_signature!(algorithm: 'HS256', key: 'secret') }
+
+      it { expect(token.payload).to eq(payload) }
+    end
+
+    context 'when token is not verified' do
+      it 'raises an error' do
+        expect { token.payload }.to raise_error(JWT::DecodeError, 'Verify the token signature before accessing the payload')
       end
     end
   end

@@ -11,7 +11,6 @@ require_relative 'claims/not_before'
 require_relative 'claims/numeric'
 require_relative 'claims/required'
 require_relative 'claims/subject'
-require_relative 'claims/verification_methods'
 require_relative 'claims/verifier'
 
 module JWT
