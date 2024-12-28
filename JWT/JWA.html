@@ -79,7 +79,7 @@
   <dl>
     <dt>Defined in:</dt>
     <dd>lib/jwt/jwa.rb<span class="defines">,<br />
-  lib/jwt/jwa/ps.rb,<br /> lib/jwt/jwa/rsa.rb,<br /> lib/jwt/jwa/hmac.rb,<br /> lib/jwt/jwa/none.rb,<br /> lib/jwt/jwa/ecdsa.rb,<br /> lib/jwt/jwa/eddsa.rb,<br /> lib/jwt/jwa/compat.rb,<br /> lib/jwt/jwa/wrapper.rb,<br /> lib/jwt/jwa/hmac_rbnacl.rb,<br /> lib/jwt/jwa/unsupported.rb,<br /> lib/jwt/jwa/hmac_rbnacl_fixed.rb,<br /> lib/jwt/jwa/signing_algorithm.rb</span>
+  lib/jwt/jwa/ps.rb,<br /> lib/jwt/jwa/rsa.rb,<br /> lib/jwt/jwa/hmac.rb,<br /> lib/jwt/jwa/none.rb,<br /> lib/jwt/jwa/ecdsa.rb,<br /> lib/jwt/jwa/eddsa.rb,<br /> lib/jwt/jwa/compat.rb,<br /> lib/jwt/jwa/wrapper.rb,<br /> lib/jwt/jwa/unsupported.rb,<br /> lib/jwt/jwa/signing_algorithm.rb</span>
 </dd>
   </dl>
   
@@ -104,7 +104,7 @@
     
   
     
-      <strong class="classes">Classes:</strong> <span class='object_link'><a href="JWA/Ecdsa.html" title="JWT::JWA::Ecdsa (class)">Ecdsa</a></span>, <span class='object_link'><a href="JWA/Eddsa.html" title="JWT::JWA::Eddsa (class)">Eddsa</a></span>, <span class='object_link'><a href="JWA/Hmac.html" title="JWT::JWA::Hmac (class)">Hmac</a></span>, <span class='object_link'><a href="JWA/HmacRbNaCl.html" title="JWT::JWA::HmacRbNaCl (class)">HmacRbNaCl</a></span>, <span class='object_link'><a href="JWA/HmacRbNaClFixed.html" title="JWT::JWA::HmacRbNaClFixed (class)">HmacRbNaClFixed</a></span>, <span class='object_link'><a href="JWA/None.html" title="JWT::JWA::None (class)">None</a></span>, <span class='object_link'><a href="JWA/Ps.html" title="JWT::JWA::Ps (class)">Ps</a></span>, <span class='object_link'><a href="JWA/Rsa.html" title="JWT::JWA::Rsa (class)">Rsa</a></span>, <span class='object_link'><a href="JWA/Wrapper.html" title="JWT::JWA::Wrapper (class)">Wrapper</a></span>
+      <strong class="classes">Classes:</strong> <span class='object_link'><a href="JWA/Ecdsa.html" title="JWT::JWA::Ecdsa (class)">Ecdsa</a></span>, <span class='object_link'><a href="JWA/Eddsa.html" title="JWT::JWA::Eddsa (class)">Eddsa</a></span>, <span class='object_link'><a href="JWA/Hmac.html" title="JWT::JWA::Hmac (class)">Hmac</a></span>, <span class='object_link'><a href="JWA/None.html" title="JWT::JWA::None (class)">None</a></span>, <span class='object_link'><a href="JWA/Ps.html" title="JWT::JWA::Ps (class)">Ps</a></span>, <span class='object_link'><a href="JWA/Rsa.html" title="JWT::JWA::Rsa (class)">Rsa</a></span>, <span class='object_link'><a href="JWA/Wrapper.html" title="JWT::JWA::Wrapper (class)">Wrapper</a></span>
     
   
 </p>
@@ -271,13 +271,13 @@
       <pre class="lines">
 
 
-52
-53
-54
-55</pre>
+46
+47
+48
+49</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/jwt/jwa.rb', line 52</span>
+      <pre class="code"><span class="info file"># File 'lib/jwt/jwa.rb', line 46</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_create'>create</span><span class='lparen'>(</span><span class='id identifier rubyid_algorithm'>algorithm</span><span class='rparen'>)</span>
   <span class='const'><span class='object_link'><a href="Deprecations.html" title="JWT::Deprecations (module)">Deprecations</a></span></span><span class='period'>.</span><span class='id identifier rubyid_warning'><span class='object_link'><a href="Deprecations.html#warning-class_method" title="JWT::Deprecations.warning (method)">warning</a></span></span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>The ::JWT::JWA.create method is deprecated and will be removed in the next major version of ruby-jwt.</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span>
@@ -376,19 +376,19 @@
       <pre class="lines">
 
 
+28
+29
+30
+31
+32
+33
 34
 35
 36
-37
-38
-39
-40
-41
-42
-43</pre>
+37</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/jwt/jwa.rb', line 34</span>
+      <pre class="code"><span class="info file"># File 'lib/jwt/jwa.rb', line 28</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_resolve'>resolve</span><span class='lparen'>(</span><span class='id identifier rubyid_algorithm'>algorithm</span><span class='rparen'>)</span>
   <span class='kw'>return</span> <span class='id identifier rubyid_find'>find</span><span class='lparen'>(</span><span class='id identifier rubyid_algorithm'>algorithm</span><span class='rparen'>)</span> <span class='kw'>if</span> <span class='id identifier rubyid_algorithm'>algorithm</span><span class='period'>.</span><span class='id identifier rubyid_is_a?'>is_a?</span><span class='lparen'>(</span><span class='const'>String</span><span class='rparen'>)</span> <span class='op'>||</span> <span class='id identifier rubyid_algorithm'>algorithm</span><span class='period'>.</span><span class='id identifier rubyid_is_a?'>is_a?</span><span class='lparen'>(</span><span class='const'>Symbol</span><span class='rparen'>)</span>
@@ -433,13 +433,13 @@
       <pre class="lines">
 
 
-46
-47
-48
-49</pre>
+40
+41
+42
+43</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/jwt/jwa.rb', line 46</span>
+      <pre class="code"><span class="info file"># File 'lib/jwt/jwa.rb', line 40</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_resolve_and_sort'>resolve_and_sort</span><span class='lparen'>(</span><span class='label'>algorithms:</span><span class='comma'>,</span> <span class='label'>preferred_algorithm:</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_algs'>algs</span> <span class='op'>=</span> <span class='const'>Array</span><span class='lparen'>(</span><span class='id identifier rubyid_algorithms'>algorithms</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_map'>map</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_alg'>alg</span><span class='op'>|</span> <span class='const'><span class='object_link'><a href="" title="JWT::JWA (module)">JWA</a></span></span><span class='period'>.</span><span class='id identifier rubyid_resolve'><span class='object_link'><a href="#resolve-class_method" title="JWT::JWA.resolve (method)">resolve</a></span></span><span class='lparen'>(</span><span class='id identifier rubyid_alg'>alg</span><span class='rparen'>)</span> <span class='rbrace'>}</span>
@@ -455,7 +455,7 @@
 </div>
 
       <div id="footer">
-  Generated on Sat Dec 28 13:00:13 2024 by
+  Generated on Sat Dec 28 13:18:20 2024 by
   <a href="https://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.9.37 (ruby-3.4.1).
 </div>
