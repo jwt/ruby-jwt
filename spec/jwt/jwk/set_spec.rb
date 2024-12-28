@@ -13,14 +13,14 @@ RSpec.describe JWT::JWK::Set do
       end
 
       it 'from a JWKS hash with symbol keys' do
-        jwks = { keys: [{ kty: 'oct', k: 'testkey' }] }
-        jwk = JWT::JWK.new({ kty: 'oct', k: 'testkey' })
+        jwks = { keys: [{ kty: 'oct', k: Base64.strict_encode64('testkey') }] }
+        jwk = JWT::JWK.new({ kty: 'oct', k: Base64.strict_encode64('testkey') })
         expect(described_class.new(jwks).keys).to eql([jwk])
       end
 
       it 'from a JWKS hash with string keys' do
-        jwks = { 'keys' => [{ 'kty' => 'oct', 'k' => 'testkey' }] }
-        jwk = JWT::JWK.new({ kty: 'oct', k: 'testkey' })
+        jwks = { 'keys' => [{ 'kty' => 'oct', 'k' => Base64.strict_encode64('testkey') }] }
+        jwk = JWT::JWK.new({ kty: 'oct', k: Base64.strict_encode64('testkey') })
         expect(described_class.new(jwks).keys).to eql([jwk])
       end
 
@@ -30,7 +30,7 @@ RSpec.describe JWT::JWK::Set do
       end
 
       it 'from an existing JWT::JWK::Set' do
-        jwk = JWT::JWK.new({ kty: 'oct', k: 'testkey' })
+        jwk = JWT::JWK.new({ kty: 'oct', k: Base64.strict_encode64('testkey') })
         jwks = described_class.new(jwk)
         expect(described_class.new(jwks)).to eql(jwks)
       end
@@ -43,7 +43,7 @@ RSpec.describe JWT::JWK::Set do
 
   describe '.export' do
     it 'exports the JWKS to Hash' do
-      jwk = JWT::JWK.new({ kty: 'oct', k: 'testkey' })
+      jwk = JWT::JWK.new({ kty: 'oct', k: Base64.strict_encode64('testkey') })
       jwks = described_class.new(jwk)
       exported = jwks.export
       expect(exported[:keys].size).to eql(1)
@@ -53,15 +53,15 @@ RSpec.describe JWT::JWK::Set do
 
   describe '.eql?' do
     it 'correctly classifies equal sets' do
-      jwk = JWT::JWK.new({ kty: 'oct', k: 'testkey' })
+      jwk = JWT::JWK.new({ kty: 'oct', k: Base64.strict_encode64('testkey') })
       jwks1 = described_class.new(jwk)
       jwks2 = described_class.new(jwk)
       expect(jwks1).to eql(jwks2)
     end
 
     it 'correctly classifies different sets' do
-      jwk1 = JWT::JWK.new({ kty: 'oct', k: 'testkey' })
-      jwk2 = JWT::JWK.new({ kty: 'oct', k: 'testkex' })
+      jwk1 = JWT::JWK.new({ kty: 'oct', k: Base64.strict_encode64('testkey') })
+      jwk2 = JWT::JWK.new({ kty: 'oct', k: Base64.strict_encode64('testkex') })
       jwks1 = described_class.new(jwk1)
       jwks2 = described_class.new(jwk2)
       expect(jwks1).not_to eql(jwks2)
@@ -72,8 +72,8 @@ RSpec.describe JWT::JWK::Set do
   #       but Array#uniq! doesn't recognize this, despite the documentation saying otherwise
   describe '.uniq!' do
     it 'filters out equal keys' do
-      jwk = JWT::JWK.new({ kty: 'oct', k: 'testkey' })
-      jwk2 = JWT::JWK.new({ kty: 'oct', k: 'testkey' })
+      jwk = JWT::JWK.new({ kty: 'oct', k: Base64.strict_encode64('testkey') })
+      jwk2 = JWT::JWK.new({ kty: 'oct', k: Base64.strict_encode64('testkey') })
       jwks = described_class.new([jwk, jwk2])
       jwks.uniq!
       expect(jwks.keys.size).to eql(1)

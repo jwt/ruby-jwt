@@ -40,3 +40,7 @@ Claim verification has been [split into separate classes](https://github.com/jwt
 The internal algorithms were [restructured](https://github.com/jwt/ruby-jwt/pull/607) to support extensions from separate libraries. The changes led to a few deprecations and new requirements:
 - The `sign` and `verify` static methods on all the algorithms (`::JWT::JWA`) will be removed.
 - Custom algorithms are expected to include the `JWT::JWA::SigningAlgorithm` module.
+
+## Base64 the `k´ value for HMAC JWKs
+
+The gem was missing the Base64 encoding and decoding when representing and parsing a HMAC key as a JWK. This issue is now addressed. The added encoding will break compatibility with JWKs produced by older versions of the gem.

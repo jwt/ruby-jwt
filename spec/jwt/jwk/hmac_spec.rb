@@ -73,6 +73,15 @@ RSpec.describe JWT::JWK::HMAC do
         end
       end
     end
+
+    context 'when example from RFC' do
+      let(:params) { { kty: 'oct', k: 'AyM1SysPpbyDfgZld3umj1qzKObwVMkoqQ-EstJQLr_T-1qS0gZH75aKtMN3Yj0iPS4hcgUuTwjAzZr1Z9CAow' } }
+
+      it 'decodes the k' do
+        expected_key = "\x03#5K+\x0F\xA5\xBC\x83~\x06ew{\xA6\x8FZ\xB3(\xE6\xF0T\xC9(\xA9\x0F\x84\xB2\xD2P.\xBF\xD3\xFBZ\x92\xD2\x06G\xEF\x96\x8A\xB4\xC3wb=\"=.!r\x05.O\b\xC0\xCD\x9A\xF5g\xD0\x80\xA3".dup.force_encoding('ASCII-8BIT')
+        expect(subject.verify_key).to eq(expected_key)
+      end
+    end
   end
 
   describe '#[]=' do
