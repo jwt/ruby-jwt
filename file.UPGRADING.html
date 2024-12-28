@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>
+  File: UPGRADING
+  
+    &mdash; Documentation by YARD 0.9.37
+  
+</title>
+
+  <link rel="stylesheet" href="css/style.css" type="text/css" />
+
+  <link rel="stylesheet" href="css/common.css" type="text/css" />
+
+<script type="text/javascript">
+  pathId = "UPGRADING";
+  relpath = '';
+</script>
+
+
+  <script type="text/javascript" charset="utf-8" src="js/jquery.js"></script>
+
+  <script type="text/javascript" charset="utf-8" src="js/app.js"></script>
+
+
+  </head>
+  <body>
+    <div class="nav_wrap">
+      <iframe id="nav" src="file_list.html?1"></iframe>
+      <div id="resizer"></div>
+    </div>
+
+    <div id="main" tabindex="-1">
+      <div id="header">
+        <div id="menu">
+  
+    <a href="_index.html">Index</a> &raquo; 
+    <span class="title">File: UPGRADING</span>
+  
+</div>
+
+        <div id="search">
+  
+    <a class="full_list_link" id="class_list_link"
+        href="class_list.html">
+
+        <svg width="24" height="24">
+          <rect x="0" y="4" width="24" height="4" rx="1" ry="1"></rect>
+          <rect x="0" y="12" width="24" height="4" rx="1" ry="1"></rect>
+          <rect x="0" y="20" width="24" height="4" rx="1" ry="1"></rect>
+        </svg>
+    </a>
+  
+</div>
+        <div class="clear"></div>
+      </div>
+
+      <div id="content"><div id='filecontents'><h1 id="upgrading-ruby-jwt-to-3-0-0">Upgrading ruby-jwt to &gt;= 3.0.0</h1>
+
+<h2 id="removal-of-the-indirect-rbnacl-dependency">Removal of the indirect <a href="https://github.com/RubyCrypto/rbnacl">RbNaCl</a> dependency</h2>
+
+<p>Historically, the set of supported algorithms was extended by including the <code>rbnacl</code> gem in the application&#39;s Gemfile. On load, ruby-jwt tried to load the gem and, if available, extend the algorithms to those provided by the <code>rbnacl/libsodium</code> libraries. This indirect dependency has caused some maintenance pain and confusion about which versions of the gem are supported.</p>
+
+<p>Some work to ease the way alternative algorithms can be implemented has been done. This enables the extraction of the algorithm provided by <code>rbnacl</code>.</p>
+
+<p>The extracted algorithms now live in the <a href="https://rubygems.org/gems/jwt-eddsa">jwt-eddsa</a> gem.</p>
+
+<h3 id="dropped-support-for-hs512256">Dropped support for HS512256</h3>
+
+<p>The algorithm HS512256 (HMAC-SHA-512 truncated to 256-bits) is not part of any JWA/JWT RFC and therefore will not be supported anymore. It was part of the HMAC algorithms provided by the indirect <a href="https://github.com/RubyCrypto/rbnacl">RbNaCl</a> dependency. Currently, there are no direct substitutes for the algorithm.</p>
+
+<h3 id="jwt-encodedtoken-payload-will-raise-before-token-is-verified"><code>JWT::EncodedToken#payload</code> will raise before token is verified</h3>
+
+<p>To avoid accidental use of unverified tokens, the <code>JWT::EncodedToken#payload</code> method will raise an error if accessed before the token signature has been verified.</p>
+
+<p>To access the payload before verification, use the method <code>JWT::EncodedToken#unverified_payload</code>.</p>
+
+<h2 id="stricter-requirements-on-base64-encoded-data">Stricter requirements on Base64 encoded data</h2>
+
+<p>Base64 decoding will no longer fallback on the looser RFC 2045. The biggest difference is that the looser version was ignoring whitespaces and newlines, whereas the stricter version raises errors in such cases.</p>
+
+<p>If you, for example, read tokens from files, there could be problems with trailing newlines. Make sure you trim your input before passing it to the decoding mechanisms.</p>
+
+<h2 id="claim-verification-revamp">Claim verification revamp</h2>
+
+<p>Claim verification has been <a href="https://github.com/jwt/ruby-jwt/pull/605">split into separate classes</a> and has <a href="https://github.com/jwt/ruby-jwt/pull/626">a new API</a>, leading to the following deprecations:</p>
+
+<ul>
+<li>The <code>::JWT::ClaimsValidator</code> class will be removed in favor of the functionality provided by <code>::JWT::Claims</code>.</li>
+<li>The <code>::JWT::Claims::verify!</code> method will be removed in favor of <code>::JWT::Claims::verify_payload!</code>.</li>
+<li>The <code>::JWT::JWA.create</code> method will be removed.</li>
+<li>The <code>::JWT::Verify</code> class will be removed in favor of the functionality provided by <code>::JWT::Claims</code>.</li>
+<li>Calling <code>::JWT::Claims::Numeric.new</code> with a payload will be removed in favor of <code>::JWT::Claims::verify_payload!(payload, :numeric)</code>.</li>
+<li>Calling <code>::JWT::Claims::Numeric.verify!</code> with a payload will be removed in favor of <code>::JWT::Claims::verify_payload!(payload, :numeric)</code>.</li>
+</ul>
+
+<h2 id="algorithm-restructuring">Algorithm restructuring</h2>
+
+<p>The internal algorithms were <a href="https://github.com/jwt/ruby-jwt/pull/607">restructured</a> to support extensions from separate libraries. The changes led to a few deprecations and new requirements:</p>
+
+<ul>
+<li>The <code>sign</code> and <code>verify</code> static methods on all the algorithms (<code>::JWT::JWA</code>) will be removed.</li>
+<li>Custom algorithms are expected to include the <code>JWT::JWA::SigningAlgorithm</code> module.</li>
+</ul>
+</div></div>
+
+      <div id="footer">
+  Generated on Sat Dec 28 14:04:11 2024 by
+  <a href="https://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
+  0.9.37 (ruby-3.4.1).
+</div>
+
+    </div>
+  </body>
+</html>

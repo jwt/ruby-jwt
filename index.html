@@ -73,33 +73,7 @@
 
 <h2 id="upcoming-breaking-changes">Upcoming breaking changes</h2>
 
-<p>Notable changes in the upcoming <strong>version 3.0</strong>:</p>
-
-<ul>
-<li><p>The indirect dependency to <a href="https://github.com/RubyCrypto/rbnacl">rbnacl</a> will be removed:</p>
-
-<ul>
-<li>Support for the non-standard SHA512256 algorithm will be removed.</li>
-<li>Support for Ed25519 will be moved to a <a href="https://github.com/anakinj/jwt-eddsa">separate gem</a> for better dependency handling.</li>
-</ul></li>
-<li><p>Base64 decoding will no longer fallback on the looser RFC 2045.</p></li>
-<li><p>Claim verification has been <a href="https://github.com/jwt/ruby-jwt/pull/605">split into separate classes</a> and has <a href="https://github.com/jwt/ruby-jwt/pull/626">a new api</a> and lead to the following deprecations:</p>
-
-<ul>
-<li>The <code>::JWT::ClaimsValidator</code> class will be removed in favor of the functionality provided by <code>::JWT::Claims</code>.</li>
-<li>The <code>::JWT::Claims::verify!</code> method will be removed in favor of <code>::JWT::Claims::verify_payload!</code>.</li>
-<li>The <code>::JWT::JWA.create</code> method will be removed.</li>
-<li>The <code>::JWT::Verify</code> class will be removed in favor of the functionality provided by <code>::JWT::Claims</code>.</li>
-<li>Calling <code>::JWT::Claims::Numeric.new</code> with a payload will be removed in favor of <code>::JWT::Claims::verify_payload!(payload, :numeric)</code>.</li>
-<li>Calling <code>::JWT::Claims::Numeric.verify!</code> with a payload will be removed in favor of <code>::JWT::Claims::verify_payload!(payload, :numeric)</code>.</li>
-</ul></li>
-<li><p>The internal algorithms were <a href="https://github.com/jwt/ruby-jwt/pull/607">restructured</a> to support extensions from separate libraries. The changes lead to a few deprecations and new requirements:</p>
-
-<ul>
-<li>The <code>sign</code> and <code>verify</code> static methods on all the algorithms (<code>::JWT::JWA</code>) will be removed.</li>
-<li>Custom algorithms are expected to include the <code>JWT::JWA::SigningAlgorithm</code> module.</li>
-</ul></li>
-</ul>
+<p>Check out breaking changes in the upcoming <strong>version 3.0</strong> from the <a href="UPGRADING.md">upgrade guide</a></p>
 
 <h2 id="sponsors">Sponsors</h2>
 
@@ -892,7 +866,7 @@ bundle exec appraisal rake test
 </div></div>
 
       <div id="footer">
-  Generated on Sat Dec 28 13:18:20 2024 by
+  Generated on Sat Dec 28 14:04:11 2024 by
   <a href="https://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.9.37 (ruby-3.4.1).
 </div>

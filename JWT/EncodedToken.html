@@ -120,17 +120,7 @@
 <div class="tags">
   
 
-</div><h2>Defined Under Namespace</h2>
-<p class="children">
-  
-    
-  
-    
-      <strong class="classes">Classes:</strong> <span class='object_link'><a href="EncodedToken/ClaimsContext.html" title="JWT::EncodedToken::ClaimsContext (class)">ClaimsContext</a></span>
-    
-  
-</p>
-
+</div>
 
 
 
@@ -981,7 +971,7 @@
       <pre class="code"><span class="info file"># File 'lib/jwt/encoded_token.rb', line 158</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_claim_errors'>claim_errors</span><span class='lparen'>(</span><span class='op'>*</span><span class='id identifier rubyid_options'>options</span><span class='rparen'>)</span>
-  <span class='const'><span class='object_link'><a href="Claims.html" title="JWT::Claims (module)">Claims</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="Claims/Verifier.html" title="JWT::Claims::Verifier (module)">Verifier</a></span></span><span class='period'>.</span><span class='id identifier rubyid_errors'><span class='object_link'><a href="Claims/Verifier.html#errors-class_method" title="JWT::Claims::Verifier.errors (method)">errors</a></span></span><span class='lparen'>(</span><span class='const'><span class='object_link'><a href="EncodedToken/ClaimsContext.html" title="JWT::EncodedToken::ClaimsContext (class)">ClaimsContext</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="EncodedToken/ClaimsContext.html#initialize-instance_method" title="JWT::EncodedToken::ClaimsContext#initialize (method)">new</a></span></span><span class='lparen'>(</span><span class='kw'>self</span><span class='rparen'>)</span><span class='comma'>,</span> <span class='op'>*</span><span class='id identifier rubyid_options'>options</span><span class='rparen'>)</span>
+  <span class='const'><span class='object_link'><a href="Claims.html" title="JWT::Claims (module)">Claims</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="Claims/Verifier.html" title="JWT::Claims::Verifier (module)">Verifier</a></span></span><span class='period'>.</span><span class='id identifier rubyid_errors'><span class='object_link'><a href="Claims/Verifier.html#errors-class_method" title="JWT::Claims::Verifier.errors (method)">errors</a></span></span><span class='lparen'>(</span><span class='const'>ClaimsContext</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='kw'>self</span><span class='rparen'>)</span><span class='comma'>,</span> <span class='op'>*</span><span class='id identifier rubyid_options'>options</span><span class='rparen'>)</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -1681,7 +1671,7 @@
       <pre class="code"><span class="info file"># File 'lib/jwt/encoded_token.rb', line 151</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_verify_claims!'>verify_claims!</span><span class='lparen'>(</span><span class='op'>*</span><span class='id identifier rubyid_options'>options</span><span class='rparen'>)</span>
-  <span class='const'><span class='object_link'><a href="Claims.html" title="JWT::Claims (module)">Claims</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="Claims/Verifier.html" title="JWT::Claims::Verifier (module)">Verifier</a></span></span><span class='period'>.</span><span class='id identifier rubyid_verify!'><span class='object_link'><a href="Claims/Verifier.html#verify!-class_method" title="JWT::Claims::Verifier.verify! (method)">verify!</a></span></span><span class='lparen'>(</span><span class='const'><span class='object_link'><a href="EncodedToken/ClaimsContext.html" title="JWT::EncodedToken::ClaimsContext (class)">ClaimsContext</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="EncodedToken/ClaimsContext.html#initialize-instance_method" title="JWT::EncodedToken::ClaimsContext#initialize (method)">new</a></span></span><span class='lparen'>(</span><span class='kw'>self</span><span class='rparen'>)</span><span class='comma'>,</span> <span class='op'>*</span><span class='id identifier rubyid_options'>options</span><span class='rparen'>)</span>
+  <span class='const'><span class='object_link'><a href="Claims.html" title="JWT::Claims (module)">Claims</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="Claims/Verifier.html" title="JWT::Claims::Verifier (module)">Verifier</a></span></span><span class='period'>.</span><span class='id identifier rubyid_verify!'><span class='object_link'><a href="Claims/Verifier.html#verify!-class_method" title="JWT::Claims::Verifier.verify! (method)">verify!</a></span></span><span class='lparen'>(</span><span class='const'>ClaimsContext</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='kw'>self</span><span class='rparen'>)</span><span class='comma'>,</span> <span class='op'>*</span><span class='id identifier rubyid_options'>options</span><span class='rparen'>)</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -1851,7 +1841,7 @@
 </div>
 
       <div id="footer">
-  Generated on Sat Dec 28 13:18:21 2024 by
+  Generated on Sat Dec 28 14:04:12 2024 by
   <a href="https://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.9.37 (ruby-3.4.1).
 </div>
