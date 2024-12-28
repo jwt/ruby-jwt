@@ -84,7 +84,7 @@
   <dl>
     <dt>Defined in:</dt>
     <dd>lib/jwt.rb<span class="defines">,<br />
-  lib/jwt/jwa.rb,<br /> lib/jwt/jwk.rb,<br /> lib/jwt/json.rb,<br /> lib/jwt/error.rb,<br /> lib/jwt/token.rb,<br /> lib/jwt/base64.rb,<br /> lib/jwt/claims.rb,<br /> lib/jwt/decode.rb,<br /> lib/jwt/encode.rb,<br /> lib/jwt/jwa/ps.rb,<br /> lib/jwt/jwk/ec.rb,<br /> lib/jwt/jwa/rsa.rb,<br /> lib/jwt/jwk/rsa.rb,<br /> lib/jwt/jwk/set.rb,<br /> lib/jwt/version.rb,<br /> lib/jwt/jwa/hmac.rb,<br /> lib/jwt/jwa/none.rb,<br /> lib/jwt/jwk/hmac.rb,<br /> lib/jwt/jwa/ecdsa.rb,<br /> lib/jwt/jwa/eddsa.rb,<br /> lib/jwt/jwa/compat.rb,<br /> lib/jwt/claims/crit.rb,<br /> lib/jwt/jwa/wrapper.rb,<br /> lib/jwt/deprecations.rb,<br /> lib/jwt/jwk/key_base.rb,<br /> lib/jwt/claims/issuer.rb,<br /> lib/jwt/claims/jwt_id.rb,<br /> lib/jwt/configuration.rb,<br /> lib/jwt/encoded_token.rb,<br /> lib/jwt/claims/numeric.rb,<br /> lib/jwt/claims/subject.rb,<br /> lib/jwt/jwk/key_finder.rb,<br /> lib/jwt/jwk/okp_rbnacl.rb,<br /> lib/jwt/jwk/thumbprint.rb,<br /> lib/jwt/x5c_key_finder.rb,<br /> lib/jwt/claims/audience.rb,<br /> lib/jwt/claims/required.rb,<br /> lib/jwt/claims/verifier.rb,<br /> lib/jwt/jwa/unsupported.rb,<br /> lib/jwt/claims/issued_at.rb,<br /> lib/jwt/claims/expiration.rb,<br /> lib/jwt/claims/not_before.rb,<br /> lib/jwt/jwa/signing_algorithm.rb,<br /> lib/jwt/jwk/kid_as_key_digest.rb,<br /> lib/jwt/claims/decode_verifier.rb,<br /> lib/jwt/configuration/container.rb,<br /> lib/jwt/configuration/jwk_configuration.rb,<br /> lib/jwt/configuration/decode_configuration.rb</span>
+  lib/jwt/jwa.rb,<br /> lib/jwt/jwk.rb,<br /> lib/jwt/json.rb,<br /> lib/jwt/error.rb,<br /> lib/jwt/token.rb,<br /> lib/jwt/base64.rb,<br /> lib/jwt/claims.rb,<br /> lib/jwt/decode.rb,<br /> lib/jwt/encode.rb,<br /> lib/jwt/jwa/ps.rb,<br /> lib/jwt/jwk/ec.rb,<br /> lib/jwt/jwa/rsa.rb,<br /> lib/jwt/jwk/rsa.rb,<br /> lib/jwt/jwk/set.rb,<br /> lib/jwt/version.rb,<br /> lib/jwt/jwa/hmac.rb,<br /> lib/jwt/jwa/none.rb,<br /> lib/jwt/jwk/hmac.rb,<br /> lib/jwt/jwa/ecdsa.rb,<br /> lib/jwt/jwa/compat.rb,<br /> lib/jwt/claims/crit.rb,<br /> lib/jwt/jwa/wrapper.rb,<br /> lib/jwt/deprecations.rb,<br /> lib/jwt/jwk/key_base.rb,<br /> lib/jwt/claims/issuer.rb,<br /> lib/jwt/claims/jwt_id.rb,<br /> lib/jwt/configuration.rb,<br /> lib/jwt/encoded_token.rb,<br /> lib/jwt/claims/numeric.rb,<br /> lib/jwt/claims/subject.rb,<br /> lib/jwt/jwk/key_finder.rb,<br /> lib/jwt/jwk/thumbprint.rb,<br /> lib/jwt/x5c_key_finder.rb,<br /> lib/jwt/claims/audience.rb,<br /> lib/jwt/claims/required.rb,<br /> lib/jwt/claims/verifier.rb,<br /> lib/jwt/jwa/unsupported.rb,<br /> lib/jwt/claims/issued_at.rb,<br /> lib/jwt/claims/expiration.rb,<br /> lib/jwt/claims/not_before.rb,<br /> lib/jwt/jwa/signing_algorithm.rb,<br /> lib/jwt/jwk/kid_as_key_digest.rb,<br /> lib/jwt/claims/decode_verifier.rb,<br /> lib/jwt/configuration/container.rb,<br /> lib/jwt/configuration/jwk_configuration.rb,<br /> lib/jwt/configuration/decode_configuration.rb</span>
 </dd>
   </dl>
   
@@ -269,54 +269,6 @@
   
     <span class="summary_desc"><div class='inline'>
 <p>Returns the OpenSSL version.</p>
-</div></span>
-  
-</li>
-
-      
-        <li class="public ">
-  <span class="summary_signature">
-    
-      <a href="#rbnacl%3F-class_method" title="rbnacl? (class method)">.<strong>rbnacl?</strong>  &#x21d2; Boolean </a>
-    
-
-    
-  </span>
-  
-  
-  
-  
-  
-  
-  <span class="private note title">private</span>
-
-  
-    <span class="summary_desc"><div class='inline'>
-<p>Checks if the RbNaCl library is defined.</p>
-</div></span>
-  
-</li>
-
-      
-        <li class="public ">
-  <span class="summary_signature">
-    
-      <a href="#rbnacl_6_or_greater%3F-class_method" title="rbnacl_6_or_greater? (class method)">.<strong>rbnacl_6_or_greater?</strong>  &#x21d2; Boolean </a>
-    
-
-    
-  </span>
-  
-  
-  
-  
-  
-  
-  <span class="private note title">private</span>
-
-  
-    <span class="summary_desc"><div class='inline'>
-<p>Checks if the RbNaCl library version is 6.0.0 or greater.</p>
 </div></span>
   
 </li>
@@ -790,12 +742,12 @@
       <pre class="lines">
 
 
-55
-56
-57</pre>
+39
+40
+41</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/jwt/version.rb', line 55</span>
+      <pre class="code"><span class="info file"># File 'lib/jwt/version.rb', line 39</span>
 
 <span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_openssl_3_hmac_empty_key_regression?'>openssl_3_hmac_empty_key_regression?</span>
   <span class='id identifier rubyid_openssl_3?'>openssl_3?</span> <span class='op'>&amp;&amp;</span> <span class='id identifier rubyid_openssl_version'>openssl_version</span> <span class='op'>&lt;=</span> <span class='op'>::</span><span class='const'>Gem</span><span class='op'>::</span><span class='const'>Version</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>3.0.0</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span>
@@ -853,132 +805,6 @@
       <pre class="lines">
 
 
-63
-64
-65</pre>
-    </td>
-    <td>
-      <pre class="code"><span class="info file"># File 'lib/jwt/version.rb', line 63</span>
-
-<span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_openssl_version'>openssl_version</span>
-  <span class='ivar'>@openssl_version</span> <span class='op'>||=</span> <span class='op'>::</span><span class='const'>Gem</span><span class='op'>::</span><span class='const'>Version</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='const'>OpenSSL</span><span class='op'>::</span><span class='const'>VERSION</span><span class='rparen'>)</span>
-<span class='kw'>end</span></pre>
-    </td>
-  </tr>
-</table>
-</div>
-    
-      <div class="method_details ">
-  <h3 class="signature " id="rbnacl?-class_method">
-  
-    .<strong>rbnacl?</strong>  &#x21d2; <tt>Boolean</tt> 
-  
-
-  
-
-  
-</h3><div class="docstring">
-  <div class="discussion">
-    <p class="note private">
-  <strong>This method is part of a private API.</strong>
-  You should avoid using this method if possible, as it may be removed or be changed in the future.
-</p>
-
-<p>Checks if the RbNaCl library is defined.</p>
-
-
-  </div>
-</div>
-<div class="tags">
-  
-<p class="tag_title">Returns:</p>
-<ul class="return">
-  
-    <li>
-      
-      
-        <span class='type'>(<tt>Boolean</tt>)</span>
-      
-      
-      
-        &mdash;
-        <div class='inline'>
-<p>true if RbNaCl is defined, false otherwise.</p>
-</div>
-      
-    </li>
-  
-</ul>
-
-</div><table class="source_code">
-  <tr>
-    <td>
-      <pre class="lines">
-
-
-39
-40
-41</pre>
-    </td>
-    <td>
-      <pre class="code"><span class="info file"># File 'lib/jwt/version.rb', line 39</span>
-
-<span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_rbnacl?'>rbnacl?</span>
-  <span class='kw'>defined?</span><span class='lparen'>(</span><span class='op'>::</span><span class='const'>RbNaCl</span><span class='rparen'>)</span>
-<span class='kw'>end</span></pre>
-    </td>
-  </tr>
-</table>
-</div>
-    
-      <div class="method_details ">
-  <h3 class="signature " id="rbnacl_6_or_greater?-class_method">
-  
-    .<strong>rbnacl_6_or_greater?</strong>  &#x21d2; <tt>Boolean</tt> 
-  
-
-  
-
-  
-</h3><div class="docstring">
-  <div class="discussion">
-    <p class="note private">
-  <strong>This method is part of a private API.</strong>
-  You should avoid using this method if possible, as it may be removed or be changed in the future.
-</p>
-
-<p>Checks if the RbNaCl library version is 6.0.0 or greater.</p>
-
-
-  </div>
-</div>
-<div class="tags">
-  
-<p class="tag_title">Returns:</p>
-<ul class="return">
-  
-    <li>
-      
-      
-        <span class='type'>(<tt>Boolean</tt>)</span>
-      
-      
-      
-        &mdash;
-        <div class='inline'>
-<p>true if RbNaCl version is 6.0.0 or greater, false otherwise.</p>
-</div>
-      
-    </li>
-  
-</ul>
-
-</div><table class="source_code">
-  <tr>
-    <td>
-      <pre class="lines">
-
-
 47
 48
 49</pre>
@@ -986,8 +812,8 @@
     <td>
       <pre class="code"><span class="info file"># File 'lib/jwt/version.rb', line 47</span>
 
-<span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_rbnacl_6_or_greater?'>rbnacl_6_or_greater?</span>
-  <span class='id identifier rubyid_rbnacl?'>rbnacl?</span> <span class='op'>&amp;&amp;</span> <span class='op'>::</span><span class='const'>Gem</span><span class='op'>::</span><span class='const'>Version</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='op'>::</span><span class='const'>RbNaCl</span><span class='op'>::</span><span class='const'>VERSION</span><span class='rparen'>)</span> <span class='op'>&gt;=</span> <span class='op'>::</span><span class='const'>Gem</span><span class='op'>::</span><span class='const'>Version</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>6.0.0</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span>
+<span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_openssl_version'>openssl_version</span>
+  <span class='ivar'>@openssl_version</span> <span class='op'>||=</span> <span class='op'>::</span><span class='const'>Gem</span><span class='op'>::</span><span class='const'>Version</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='const'>OpenSSL</span><span class='op'>::</span><span class='const'>VERSION</span><span class='rparen'>)</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -999,7 +825,7 @@
 </div>
 
       <div id="footer">
-  Generated on Sat Dec 28 16:15:05 2024 by
+  Generated on Sat Dec 28 16:52:00 2024 by
   <a href="https://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.9.37 (ruby-3.4.1).
 </div>
