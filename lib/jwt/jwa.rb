@@ -2,12 +2,6 @@
 
 require 'openssl'
 
-begin
-  require 'rbnacl'
-rescue LoadError
-  raise if defined?(RbNaCl)
-end
-
 require_relative 'jwa/compat'
 require_relative 'jwa/signing_algorithm'
 require_relative 'jwa/ecdsa'
@@ -17,8 +11,6 @@ require_relative 'jwa/ps'
 require_relative 'jwa/rsa'
 require_relative 'jwa/unsupported'
 require_relative 'jwa/wrapper'
-
-require_relative 'jwa/eddsa' if JWT.rbnacl?
 
 module JWT
   # The JWA module contains all supported algorithms.

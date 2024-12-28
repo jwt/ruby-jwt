@@ -41,8 +41,6 @@ jobs:
           - "3.4"
         gemfile:
           - gemfiles/standalone.gemfile
-          - gemfiles/rbnacl.gemfile
-          - gemfiles/rbnacl_pre_6.gemfile
         experimental: [false]
         include:
           - os: ubuntu-20.04
@@ -63,11 +61,6 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
-
-      - name: Install libsodium
-        run: |
-          sudo apt-get update -q
-          sudo apt-get install libsodium-dev -y
 
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1
@@ -96,7 +89,7 @@ jobs:
       - uses: actions/checkout@v3
 
       - name: Download coverage reports from the test job
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: coverage-reports
 
