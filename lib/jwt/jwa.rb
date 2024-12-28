@@ -41,12 +41,6 @@ module JWT
         algs = Array(algorithms).map { |alg| JWA.resolve(alg) }
         algs.partition { |alg| alg.valid_alg?(preferred_algorithm) }.flatten
       end
-
-      # @deprecated The `::JWT::JWA.create` method is deprecated and will be removed in the next major version of ruby-jwt.
-      def create(algorithm)
-        Deprecations.warning('The ::JWT::JWA.create method is deprecated and will be removed in the next major version of ruby-jwt.')
-        resolve(algorithm)
-      end
     end
   end
 end
