@@ -12,6 +12,7 @@
 
 **Fixes and enhancements:**
 
+- Ruby 3.4 to CI matrix [#649](https://github.com/jwt/ruby-jwt/pull/649) ([@anakinj](https://github.com/anakinj))
 - Your contribution here
 
 ## [v2.10.1](https://github.com/jwt/ruby-jwt/tree/v2.10.1) (2024-12-26)
