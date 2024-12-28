@@ -104,10 +104,14 @@
 <li>The <code>sign</code> and <code>verify</code> static methods on all the algorithms (<code>::JWT::JWA</code>) will be removed.</li>
 <li>Custom algorithms are expected to include the <code>JWT::JWA::SigningAlgorithm</code> module.</li>
 </ul>
+
+<h2 id="base64-the-k-value-for-hmac-jwks">Base64 the `k´ value for HMAC JWKs</h2>
+
+<p>The gem was missing the Base64 encoding and decoding when representing and parsing a HMAC key as a JWK. This issue is now addressed. The added encoding will break compatibility with JWKs produced by older versions of the gem.</p>
 </div></div>
 
       <div id="footer">
-  Generated on Sat Dec 28 21:02:59 2024 by
+  Generated on Sat Dec 28 21:42:31 2024 by
   <a href="https://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.9.37 (ruby-3.4.1).
 </div>
