@@ -218,7 +218,7 @@
 
   
     <span class="summary_desc"><div class='inline'>
-<p>rubocop:disable Metrics/AbcSize.</p>
+<p>:nocov: Before openssl 2.0, we need to use the accessors to set the key.</p>
 </div></span>
   
 </li>
@@ -329,7 +329,9 @@
   
 
   
-    <span class="summary_desc"><div class='inline'></div></span>
+    <span class="summary_desc"><div class='inline'>
+<p>:nocov:.</p>
+</div></span>
   
 </li>
 
@@ -664,7 +666,7 @@
 </h3><div class="docstring">
   <div class="discussion">
     
-<p>rubocop:disable Metrics/AbcSize</p>
+<p>:nocov: Before openssl 2.0, we need to use the accessors to set the key</p>
 
 
   </div>
@@ -678,8 +680,6 @@
       <pre class="lines">
 
 
-168
-169
 170
 171
 172
@@ -691,10 +691,12 @@
 178
 179
 180
-181</pre>
+181
+182
+183</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/jwt/jwk/rsa.rb', line 168</span>
+      <pre class="code"><span class="info file"># File 'lib/jwt/jwk/rsa.rb', line 170</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_create_rsa_key_using_accessors'>create_rsa_key_using_accessors</span><span class='lparen'>(</span><span class='id identifier rubyid_rsa_parameters'>rsa_parameters</span><span class='rparen'>)</span> <span class='comment'># rubocop:disable Metrics/AbcSize
 </span>  <span class='id identifier rubyid_validate_rsa_parameters!'>validate_rsa_parameters!</span><span class='lparen'>(</span><span class='id identifier rubyid_rsa_parameters'>rsa_parameters</span><span class='rparen'>)</span>
@@ -891,6 +893,8 @@
 </h3><div class="docstring">
   <div class="discussion">
     
+<p>:nocov:</p>
+
 
   </div>
 </div>
@@ -916,17 +920,17 @@
       <pre class="lines">
 
 
-183
-184
-185
 186
 187
 188
 189
-190</pre>
+190
+191
+192
+193</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/jwt/jwk/rsa.rb', line 183</span>
+      <pre class="code"><span class="info file"># File 'lib/jwt/jwk/rsa.rb', line 186</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_validate_rsa_parameters!'>validate_rsa_parameters!</span><span class='lparen'>(</span><span class='id identifier rubyid_rsa_parameters'>rsa_parameters</span><span class='rparen'>)</span>
   <span class='kw'>return</span> <span class='kw'>unless</span> <span class='id identifier rubyid_rsa_parameters'>rsa_parameters</span><span class='period'>.</span><span class='id identifier rubyid_key?'>key?</span><span class='lparen'>(</span><span class='symbol'>:d</span><span class='rparen'>)</span>
@@ -1278,7 +1282,7 @@
 </div>
 
       <div id="footer">
-  Generated on Sun Dec 29 17:02:38 2024 by
+  Generated on Sun Dec 29 18:33:21 2024 by
   <a href="https://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.9.37 (ruby-3.4.1).
 </div>
