@@ -83,8 +83,8 @@ RSpec.describe JWT::JWK::Set do
   describe '.select!' do
     it 'filters the keyset' do
       jwks = described_class.new([])
-      jwks << JWT::JWK.new(OpenSSL::PKey::RSA.new(2048))
-      jwks << JWT::JWK.new(OpenSSL::PKey::EC.generate('secp384r1'))
+      jwks << JWT::JWK.new(test_pkey('rsa-2048-private.pem'))
+      jwks << JWT::JWK.new(test_pkey('ec384-private.pem'))
       jwks.select! { |k| k[:kty] == 'RSA' }
       expect(jwks.size).to eql(1)
       expect(jwks.keys[0][:kty]).to eql('RSA')
@@ -94,8 +94,8 @@ RSpec.describe JWT::JWK::Set do
   describe '.reject!' do
     it 'filters the keyset' do
       jwks = described_class.new([])
-      jwks << JWT::JWK.new(OpenSSL::PKey::RSA.new(2048))
-      jwks << JWT::JWK.new(OpenSSL::PKey::EC.generate('secp384r1'))
+      jwks << JWT::JWK.new(test_pkey('rsa-2048-private.pem'))
+      jwks << JWT::JWK.new(test_pkey('ec384-private.pem'))
       jwks.reject! { |k| k[:kty] == 'RSA' }
       expect(jwks.size).to eql(1)
       expect(jwks.keys[0][:kty]).to eql('EC')
@@ -105,8 +105,8 @@ RSpec.describe JWT::JWK::Set do
   describe '.merge' do
     context 'merges two JWKSs' do
       it 'when called via .union' do
-        jwks1 = described_class.new(JWT::JWK.new(OpenSSL::PKey::RSA.new(2048)))
-        jwks2 = described_class.new(JWT::JWK.new(OpenSSL::PKey::EC.generate('secp384r1')))
+        jwks1 = described_class.new(JWT::JWK.new(test_pkey('rsa-2048-private.pem')))
+        jwks2 = described_class.new(JWT::JWK.new(test_pkey('ec384-private.pem')))
         jwks3 = jwks1.union(jwks2)
         expect(jwks1.size).to eql(1)
         expect(jwks2.size).to eql(1)
@@ -116,8 +116,8 @@ RSpec.describe JWT::JWK::Set do
       end
 
       it 'when called via "|" operator' do
-        jwks1 = described_class.new(JWT::JWK.new(OpenSSL::PKey::RSA.new(2048)))
-        jwks2 = described_class.new(JWT::JWK.new(OpenSSL::PKey::EC.generate('secp384r1')))
+        jwks1 = described_class.new(JWT::JWK.new(test_pkey('rsa-2048-private.pem')))
+        jwks2 = described_class.new(JWT::JWK.new(test_pkey('ec384-private.pem')))
         jwks3 = jwks1 | jwks2
         expect(jwks1.size).to eql(1)
         expect(jwks2.size).to eql(1)
@@ -127,8 +127,8 @@ RSpec.describe JWT::JWK::Set do
       end
 
       it 'when called directly' do
-        jwks1 = described_class.new(JWT::JWK.new(OpenSSL::PKey::RSA.new(2048)))
-        jwks2 = described_class.new(JWT::JWK.new(OpenSSL::PKey::EC.generate('secp384r1')))
+        jwks1 = described_class.new(JWT::JWK.new(test_pkey('rsa-2048-private.pem')))
+        jwks2 = described_class.new(JWT::JWK.new(test_pkey('ec384-private.pem')))
         jwks3 = jwks1.merge(jwks2)
         expect(jwks1.size).to eql(2)
         expect(jwks2.size).to eql(1)

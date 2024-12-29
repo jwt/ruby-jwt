@@ -2,7 +2,7 @@
 
 RSpec.describe JWT do
   describe '.decode for JWK usecase' do
-    let(:keypair)       { OpenSSL::PKey::RSA.new(2048) }
+    let(:keypair)       { test_pkey('rsa-2048-private.pem') }
     let(:jwk)           { JWT::JWK.new(keypair) }
     let(:public_jwks) { { keys: [jwk.export, { kid: 'not_the_correct_one', kty: 'oct', k: 'secret' }] } }
     let(:token_payload) { { 'data' => 'something' } }
@@ -102,9 +102,9 @@ RSpec.describe JWT do
 
     context 'mixing algorithms using kid header' do
       let(:hmac_jwk)           { JWT::JWK.new('secret') }
-      let(:rsa_jwk)            { JWT::JWK.new(OpenSSL::PKey::RSA.new(2048)) }
-      let(:ec_jwk_secp384r1)   { JWT::JWK.new(OpenSSL::PKey::EC.generate('secp384r1')) }
-      let(:ec_jwk_secp521r1)   { JWT::JWK.new(OpenSSL::PKey::EC.generate('secp521r1')) }
+      let(:rsa_jwk)            { JWT::JWK.new(test_pkey('rsa-2048-private.pem')) }
+      let(:ec_jwk_secp384r1)   { JWT::JWK.new(test_pkey('ec384-private.pem')) }
+      let(:ec_jwk_secp521r1)   { JWT::JWK.new(test_pkey('ec384-private.pem')) }
       let(:jwks)               { { keys: [hmac_jwk.export(include_private: true), rsa_jwk.export, ec_jwk_secp384r1.export, ec_jwk_secp521r1.export] } }
 
       context 'when RSA key is pointed to as HMAC secret' do

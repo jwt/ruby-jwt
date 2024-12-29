@@ -429,6 +429,16 @@ RSpec.describe JWT do
         end.to raise_error JWT::IncorrectAlgorithm
       end
 
+      it 'raises error when keyfinder does not find anything' do
+        token = JWT.encode(payload, 'secret', 'HS256')
+
+        expect do
+          JWT.decode(token, nil, true, algorithm: 'HS256') do
+            nil
+          end
+        end.to raise_error JWT::DecodeError, 'No verification key available'
+      end
+
       it 'should raise JWT::IncorrectAlgorithm when algorithms array does not contain algorithm' do
         token = JWT.encode payload, data[:secret], 'HS512'
 

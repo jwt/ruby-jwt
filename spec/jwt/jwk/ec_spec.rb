@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.describe JWT::JWK::EC do
-  let(:ec_key) { OpenSSL::PKey::EC.generate('secp384r1') }
+  let(:ec_key) { test_pkey('ec384-private.pem') }
 
   describe '.new' do
     subject { described_class.new(keypair) }
@@ -21,13 +21,35 @@ RSpec.describe JWT::JWK::EC do
         expect(subject.private?).to eq false
       end
     end
+
+    context 'when a number is given' do
+      let(:keypair) { 1234 }
+      it 'raises an argument error' do
+        expect { subject }.to raise_error(ArgumentError, 'key must be of type OpenSSL::PKey::EC or Hash with key parameters')
+      end
+    end
+
+    context 'when EC with unsupported curve is given' do
+      let(:keypair) { OpenSSL::PKey::EC.generate('prime239v2') }
+      it 'raises an error' do
+        expect { subject }.to raise_error(JWT::JWKError, "Unsupported curve 'prime239v2'")
+      end
+    end
   end
 
   describe '#keypair' do
     subject(:jwk) { described_class.new(ec_key) }
 
-    it 'warns to stderr' do
+    it 'returns the key' do
       expect(jwk.keypair).to eq(ec_key)
+    end
+  end
+
+  describe '#public_key' do
+    subject(:jwk) { described_class.new(ec_key) }
+
+    it 'returns the key' do
+      expect(jwk.public_key).to eq(ec_key)
     end
   end
 

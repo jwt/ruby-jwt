@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 RSpec.describe JWT::JWK do
-  let(:rsa_key) { OpenSSL::PKey::RSA.new(2048) }
-  let(:ec_key) { OpenSSL::PKey::EC.generate('secp384r1') }
+  let(:rsa_key) { test_pkey('rsa-2048-private.pem') }
+  let(:ec_key) { test_pkey('ec256k-private.pem') }
 
   describe '.import' do
     let(:keypair) { rsa_key.public_key }
@@ -14,6 +14,13 @@ RSpec.describe JWT::JWK do
     it 'creates a ::JWT::JWK::RSA instance' do
       expect(subject).to be_a JWT::JWK::RSA
       expect(subject.export).to eq(exported_key)
+    end
+
+    context 'when number is given' do
+      let(:params) { 1234 }
+      it 'raises an error' do
+        expect { subject }.to raise_error(JWT::JWKError, 'Cannot create JWK from a Integer')
+      end
     end
 
     context 'parsed from JSON' do

@@ -165,6 +165,8 @@ module JWT
           end
         end
 
+        # :nocov:
+        # Before openssl 2.0, we need to use the accessors to set the key
         def create_rsa_key_using_accessors(rsa_parameters) # rubocop:disable Metrics/AbcSize
           validate_rsa_parameters!(rsa_parameters)
 
@@ -179,6 +181,7 @@ module JWT
             rsa_key.iqmp = rsa_parameters[:qi] if rsa_parameters[:qi]
           end
         end
+        # :nocov:
 
         def validate_rsa_parameters!(rsa_parameters)
           return unless rsa_parameters.key?(:d)

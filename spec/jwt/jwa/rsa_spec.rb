@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.describe JWT::JWA::Rsa do
-  let(:rsa_key) { OpenSSL::PKey::RSA.generate(2048) }
+  let(:rsa_key) { test_pkey('rsa-2048-private.pem') }
   let(:data) { 'test data' }
   let(:rsa_instance) { described_class.new('RS256') }
 
@@ -21,7 +21,7 @@ RSpec.describe JWT::JWA::Rsa do
     end
 
     context 'with a key length less than 2048 bits' do
-      let(:rsa_key) { OpenSSL::PKey::RSA.generate(1024) }
+      let(:rsa_key) { OpenSSL::PKey::RSA.generate(2047) }
 
       it 'raises an error' do
         expect do
