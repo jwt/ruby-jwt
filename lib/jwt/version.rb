@@ -12,12 +12,12 @@ module JWT
     Gem::Version.new(VERSION::STRING)
   end
 
-  # @api private
+  # Version constants
   module VERSION
-    MAJOR = 2
-    MINOR = 10
-    TINY  = 1
-    PRE   = nil
+    MAJOR = 3
+    MINOR = 0
+    TINY  = 0
+    PRE   = 'beta1'
 
     STRING = [MAJOR, MINOR, TINY, PRE].compact.join('.')
   end
