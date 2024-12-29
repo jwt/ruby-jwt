@@ -77,11 +77,8 @@ module JWT
                       :algorithms].freeze
 
     def given_algorithms
-      ALGORITHM_KEYS.each do |alg_key|
-        alg = @options[alg_key]
-        return Array(alg) if alg
-      end
-      []
+      alg_key = ALGORITHM_KEYS.find { |key| @options[key] }
+      Array(@options[alg_key])
     end
 
     def allowed_algorithms

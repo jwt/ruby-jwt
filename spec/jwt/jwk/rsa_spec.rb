@@ -228,7 +228,7 @@ RSpec.describe JWT::JWK::RSA do
 
   describe '.create_rsa_key_using_accessors' do
     before do
-      skip 'OpenSSL if RSA#set_key is available there is no accessors anymore' if OpenSSL::PKey::RSA.new.respond_to?(:set_key)
+      skip 'OpenSSL if RSA#d= is not available there is no accessors anymore' unless OpenSSL::PKey::RSA.new.respond_to?(:d=)
     end
 
     subject(:rsa) { described_class.create_rsa_key_using_accessors(rsa_parameters) }

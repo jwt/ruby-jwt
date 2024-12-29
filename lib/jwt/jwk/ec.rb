@@ -124,10 +124,6 @@ module JWT
         ::JWT::Base64.url_encode(octets)
       end
 
-      def encode_open_ssl_bn(key_part)
-        ::JWT::Base64.url_encode(key_part.to_s(BINARY))
-      end
-
       def parse_ec_key(key)
         crv, x_octets, y_octets = keypair_components(key)
         octets = key.private_key&.to_bn&.to_s(BINARY)

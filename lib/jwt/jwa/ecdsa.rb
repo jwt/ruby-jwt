@@ -56,10 +56,6 @@ module JWT
         register_algorithm(new(v[:algorithm], v[:digest]))
       end
 
-      def self.from_algorithm(algorithm)
-        new(algorithm, algorithm.downcase.gsub('es', 'sha'))
-      end
-
       def self.curve_by_name(name)
         NAMED_CURVES.fetch(name) do
           raise UnsupportedEcdsaCurve, "The ECDSA curve '#{name}' is not supported"

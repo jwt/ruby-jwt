@@ -12,6 +12,13 @@ RSpec.describe JWT::JWK::HMAC do
         expect(jwk.private?).to eq true
       end
     end
+
+    context 'when key is a number' do
+      let(:key) { 123 }
+      it 'raises an ArgumentError' do
+        expect { jwk }.to raise_error(ArgumentError, 'key must be of type String or Hash with key parameters')
+      end
+    end
   end
 
   describe '#keypair' do

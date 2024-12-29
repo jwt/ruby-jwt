@@ -64,4 +64,48 @@ RSpec.describe JWT::Token do
       end
     end
   end
+
+  describe '#verify_claims!' do
+    context 'when required_claims is passed' do
+      it 'raises error' do
+        expect { token.verify_claims!(required: ['exp']) }.to raise_error(JWT::MissingRequiredClaim, 'Missing required claim exp')
+      end
+    end
+  end
+
+  describe '#valid_claims?' do
+    context 'exp claim' do
+      let(:payload) { { 'exp' => Time.now.to_i - 10, 'pay' => 'load' } }
+
+      context 'when claim is valid' do
+        it 'returns true' do
+          expect(token.valid_claims?(exp: { leeway: 1000 })).to be(true)
+        end
+      end
+
+      context 'when claim is invalid' do
+        it 'returns true' do
+          expect(token.valid_claims?(:exp)).to be(false)
+        end
+      end
+    end
+  end
+
+  describe '#claim_errors' do
+    context 'exp claim' do
+      let(:payload) { { 'exp' => Time.now.to_i - 10, 'pay' => 'load' } }
+
+      context 'when claim is valid' do
+        it 'returns empty array' do
+          expect(token.claim_errors(exp: { leeway: 1000 })).to be_empty
+        end
+      end
+
+      context 'when claim is invalid' do
+        it 'returns array with error objects' do
+          expect(token.claim_errors(:exp).map(&:message)).to eq(['Signature has expired'])
+        end
+      end
+    end
+  end
 end
