@@ -51,10 +51,24 @@ RSpec.describe JWT::EncodedToken do
   end
 
   describe '#payload' do
-    context 'when token is verified' do
+    context 'when token is verified using #verify_signature!' do
       before { token.verify_signature!(algorithm: 'HS256', key: 'secret') }
 
       it { expect(token.payload).to eq(payload) }
+    end
+
+    context 'when token is checked using #valid_signature?' do
+      before { token.valid_signature?(algorithm: 'HS256', key: 'secret') }
+
+      it { expect(token.payload).to eq(payload) }
+    end
+
+    context 'when token is verified using #valid_signature? but is not valid' do
+      before { token.valid_signature?(algorithm: 'HS256', key: 'wrong') }
+
+      it 'raises an error' do
+        expect { token.payload }.to raise_error(JWT::DecodeError, 'Verify the token signature before accessing the payload')
+      end
     end
 
     context 'when token is not verified' do

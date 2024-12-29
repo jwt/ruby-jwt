@@ -125,10 +125,8 @@ module JWT
 
       key ||= key_finder.call(self)
 
-      if valid_signature?(algorithm: algorithm, key: key)
-        @signature_verified = true
-        return
-      end
+      return if valid_signature?(algorithm: algorithm, key: key)
+
       raise JWT::VerificationError, 'Signature verification failed'
     end
 
@@ -138,11 +136,13 @@ module JWT
     # @param key [String, Array<String>] the key(s) to use for verification.
     # @return [Boolean] true if the signature is valid, false otherwise.
     def valid_signature?(algorithm:, key:)
-      Array(JWA.resolve_and_sort(algorithms: algorithm, preferred_algorithm: header['alg'])).any? do |algo|
+      valid = Array(JWA.resolve_and_sort(algorithms: algorithm, preferred_algorithm: header['alg'])).any? do |algo|
         Array(key).any? do |one_key|
           algo.verify(data: signing_input, signature: signature, verification_key: one_key)
         end
       end
+
+      valid.tap { |verified| @signature_verified = verified }
     end
 
     # Verifies the claims of the token.
