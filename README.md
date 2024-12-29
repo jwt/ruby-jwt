@@ -48,28 +48,11 @@ require 'jwt'
 
 The jwt gem natively supports the NONE, HMAC, RSASSA, ECDSA and RSASSA-PSS algorithms via the openssl library. The gem can be extended with additional or alternative implementations of the algorithms via extensions.
 
-Additionally the EdDSA algorithm is supported via a [separate gem](https://rubygems.org/gems/jwt-eddsa).
+Additionally the EdDSA algorithm is supported via a the [jwt-eddsa gem](https://rubygems.org/gems/jwt-eddsa).
 
 For safe cryptographic signing, you need to specify the algorithm in the options hash whenever you call `JWT.decode` to ensure that an attacker [cannot bypass the algorithm verification step](https://auth0.com/blog/critical-vulnerabilities-in-json-web-token-libraries/). **It is strongly recommended that you hard code the algorithm, as you may leave yourself vulnerable by dynamically picking the algorithm**
 
 See: [ JSON Web Algorithms (JWA) 3.1. "alg" (Algorithm) Header Parameter Values for JWS](https://tools.ietf.org/html/rfc7518#section-3.1)
-
-### Deprecation warnings
-
-Deprecation warnings are logged once (`:once` option) by default to avoid spam in logs. Other options are `:silent` to completely silence warnings and `:warn` to log every time a deprecated path is executed.
-
-```ruby
-  JWT.configuration.deprecation_warnings = :warn # default is :once
-```
-
-### Base64 decoding
-
-In the past the gem has been supporting the Base64 decoding specified in [RFC2045](https://www.rfc-editor.org/rfc/rfc2045) allowing newlines and blanks in the base64 encoded payload. In future versions base64 decoding will be stricter and only comply to [RFC4648](https://www.rfc-editor.org/rfc/rfc4648).
-
-The stricter base64 decoding when processing tokens can be done via the `strict_base64_decoding` configuration accessor.
-```ruby
-  JWT.configuration.strict_base64_decoding = true # default is false
-```
 
 ### **NONE**
 
@@ -173,7 +156,7 @@ puts decoded_token
 
 ### **EdDSA**
 
-This algorithm has since version 3.0 been moved to the [jwt-eddsa](https://rubygems.org/gems/jwt-eddsa) gem.
+This algorithm has since version 3.0 been moved to the [jwt-eddsa gem](https://rubygems.org/gems/jwt-eddsa).
 
 ### **RSASSA-PSS**
 
@@ -196,37 +179,6 @@ decoded_token = JWT.decode(token, rsa_public, true, { algorithm: 'PS256' })
 # [
 #   {"data"=>"test"}, # payload
 #   {"alg"=>"PS256"} # header
-# ]
-puts decoded_token
-```
-
-### Add custom header fields
-Ruby-jwt gem supports custom [header fields](https://tools.ietf.org/html/rfc7519#section-5)
-To add custom header fields you need to pass `header_fields` parameter
-
-```ruby
-token = JWT.encode(payload, key, 'HS256', header_fields={})
-```
-
-**Example:**
-
-```ruby
-
-payload = { data: 'test' }
-
-# IMPORTANT: set nil as password parameter
-token = JWT.encode(payload, nil, 'none', { typ: 'JWT' })
-
-# eyJhbGciOiJub25lIiwidHlwIjoiSldUIn0.eyJkYXRhIjoidGVzdCJ9.
-puts token
-
-# Set password to nil and validation to false otherwise this won't work
-decoded_token = JWT.decode(token, nil, false)
-
-# Array
-# [
-#   {"data"=>"test"}, # payload
-#   {"typ"=>"JWT", "alg"=>"none"} # header
 # ]
 puts decoded_token
 ```
@@ -262,10 +214,42 @@ token = ::JWT.encode({'pay' => 'load'}, 'secret', CustomHS512Algorithm)
 payload, header = ::JWT.decode(token, 'secret', true, algorithm: CustomHS512Algorithm)
 ```
 
+### Add custom header fields
+Ruby-jwt gem supports custom [header fields](https://tools.ietf.org/html/rfc7519#section-5)
+To add custom header fields you need to pass `header_fields` parameter
+
+```ruby
+token = JWT.encode(payload, key, 'HS256', {})
+```
+
+**Example:**
+
+```ruby
+
+payload = { data: 'test' }
+
+# IMPORTANT: set nil as password parameter
+token = JWT.encode(payload, nil, 'none', { typ: 'JWT' })
+
+# eyJhbGciOiJub25lIiwidHlwIjoiSldUIn0.eyJkYXRhIjoidGVzdCJ9.
+puts token
+
+# Set password to nil and validation to false otherwise this won't work
+decoded_token = JWT.decode(token, nil, false)
+
+# Array
+# [
+#   {"data"=>"test"}, # payload
+#   {"typ"=>"JWT", "alg"=>"none"} # header
+# ]
+puts decoded_token
+```
+
 ## `JWT::Token` and `JWT::EncodedToken`
 
 The `JWT::Token` and `JWT::EncodedToken` classes can be used to manage your JWTs.
 
+### Signing and encoding a token
 ```ruby
 token = JWT::Token.new(payload: { exp: Time.now.to_i + 60, jti: '1234', sub: "my-subject" }, header: { kid: 'hmac' })
 token.sign!(algorithm: 'HS256', key: "secret")
@@ -273,7 +257,10 @@ token.sign!(algorithm: 'HS256', key: "secret")
 token.jwt # => "eyJhbGciOiJIUzI1N..."
 ```
 
-The `JWT::EncodedToken` can be used to create a token object that allows verification of signatures and claims
+### Verifying and decoding a token
+
+The `JWT::EncodedToken` can be used as a token object that allows verification of signatures and claims.
+
 ```ruby
 encoded_token = JWT::EncodedToken.new(token.jwt)
 
@@ -291,14 +278,14 @@ The `JWT::EncodedToken#verify!` method can be used to verify signature and claim
 ```ruby
 encoded_token = JWT::EncodedToken.new(token.jwt)
 encoded_token.verify!(signature: {algorithm: 'HS256', key: "secret"})
-
 encoded_token.payload # => { 'exp'=>1234, 'jti'=>'1234", 'sub'=>'my-subject' }
 encoded_token.header # {'kid'=>'hmac', 'alg'=>'HS256'}
 ```
 
+#### Keyfinders
 A keyfinder can be used to verify a signature. A keyfinder is an object responding to the `#call` method. The method expects to receive one argument, which is the token to be verified.
 
-An example on using the built-in JWK keyfinder:
+An example on using the built-in JWK keyfinder.
 ```ruby
 # Create and sign a token
 jwk = JWT::JWK.new(OpenSSL::PKey::RSA.generate(2048))
@@ -312,7 +299,7 @@ encoded_token.verify!(signature: { algorithm: 'RS256', key_finder: key_finder})
 encoded_token.payload # => { 'pay' => 'load' }
 ```
 
-Using a custom keyfinder proc:
+Using a custom keyfinder proc.
 ```ruby
 # Create and sign a token
 key = OpenSSL::PKey::RSA.generate(2048)
