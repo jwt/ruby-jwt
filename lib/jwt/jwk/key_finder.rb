@@ -2,8 +2,13 @@
 
 module JWT
   module JWK
-    # @api private
+    # JSON Web Key keyfinder
+    # To find the key for a given kid
     class KeyFinder
+      # Initializes a new KeyFinder instance.
+      # @param [Hash] options the options to create a KeyFinder with
+      # @option options [Proc, JWT::JWK::Set] :jwks the jwks or a loader proc
+      # @option options [Boolean] :allow_nil_kid whether to allow nil kid
       def initialize(options)
         @allow_nil_kid = options[:allow_nil_kid]
         jwks_or_loader = options[:jwks]
@@ -15,6 +20,8 @@ module JWT
                        end
       end
 
+      # Returns the verification key for the given kid
+      # @param [String] kid the key id
       def key_for(kid)
         raise ::JWT::DecodeError, 'No key id (kid) found from token headers' unless kid || @allow_nil_kid
         raise ::JWT::DecodeError, 'Invalid type for kid header parameter' unless kid.nil? || kid.is_a?(String)
@@ -25,6 +32,12 @@ module JWT
         raise ::JWT::DecodeError, "Could not find public key for kid #{kid}" unless jwk
 
         jwk.verify_key
+      end
+
+      # Returns the key for the given token
+      # @param [JWT::EncodedToken] token the token
+      def call(token)
+        key_for(token.header['kid'])
       end
 
       private
