@@ -296,6 +296,35 @@ encoded_token.payload # => { 'exp'=>1234, 'jti'=>'1234", 'sub'=>'my-subject' }
 encoded_token.header # {'kid'=>'hmac', 'alg'=>'HS256'}
 ```
 
+A keyfinder can be used to verify a signature. A keyfinder is an object responding to the `#call` method. The method expects to receive one argument, which is the token to be verified.
+
+An example on using the built-in JWK keyfinder:
+```ruby
+# Create and sign a token
+jwk = JWT::JWK.new(OpenSSL::PKey::RSA.generate(2048))
+token = JWT::Token.new(payload: { pay: 'load' }, header: { kid: jwk.kid })
+token.sign!(algorithm: 'RS256', key: jwk.signing_key)
+
+# Create keyfinder object, verify and decode token
+key_finder = JWT::JWK::KeyFinder.new(jwks: JWT::JWK::Set.new(jwk))
+encoded_token = JWT::EncodedToken.new(token.jwt)
+encoded_token.verify!(signature: { algorithm: 'RS256', key_finder: key_finder})
+encoded_token.payload # => { 'pay' => 'load' }
+```
+
+Using a custom keyfinder proc:
+```ruby
+# Create and sign a token
+key = OpenSSL::PKey::RSA.generate(2048)
+token = JWT::Token.new(payload: { pay: 'load' })
+token.sign!(algorithm: 'RS256', key: key)
+
+# Verify and decode token
+encoded_token = JWT::EncodedToken.new(token.jwt)
+encoded_token.verify!(signature: { algorithm: 'RS256', key_finder: ->(_token){ key.public_key }})
+encoded_token.payload # => { 'pay' => 'load' }
+```
+
 ### Detached payload
 
 The `::JWT::Token#detach_payload!` method can be use to detach the payload from the JWT.

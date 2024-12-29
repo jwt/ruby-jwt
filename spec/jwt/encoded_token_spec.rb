@@ -161,6 +161,20 @@ RSpec.describe JWT::EncodedToken do
         expect(token.verify_signature!(algorithm: 'HS256', key: key)).to eq(nil)
       end
     end
+
+    context 'when JWT::KeyFinder is used as a key_finder' do
+      let(:jwk) { JWT::JWK.new(test_pkey('rsa-2048-private.pem')) }
+      let(:encoded_token) do
+        JWT::Token.new(payload: payload, header: { kid: jwk.kid })
+                  .tap { |t| t.sign!(algorithm: 'RS256', key: jwk.signing_key) }
+                  .jwt
+      end
+
+      it 'uses the keys provided by the JWK key finder' do
+        key_finder = JWT::JWK::KeyFinder.new(jwks: JWT::JWK::Set.new(jwk))
+        expect(token.verify_signature!(algorithm: 'RS256', key_finder: key_finder)).to eq(nil)
+      end
+    end
   end
 
   describe '#verify_claims!' do
