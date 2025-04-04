@@ -72,10 +72,10 @@ jobs:
         run: bundle exec rspec
 
       - name: Upload test coverage folder for later reporting
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: coverage-reports
-          path: ${{github.workspace}}/coverage-*/coverage.json
+          path: ${{github.workspace}}/coverage-*/coverage-${{ matrix.os }}-${{ matrix.ruby }}.json
           retention-days: 1
 
   coverage:
