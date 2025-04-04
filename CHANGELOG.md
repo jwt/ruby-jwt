@@ -25,6 +25,7 @@ Take a look at the [upgrade guide](UPGRADING.md) for more details.
 **Fixes and enhancements:**
 
 - Ruby 3.4 to CI matrix [#649](https://github.com/jwt/ruby-jwt/pull/649) ([@anakinj](https://github.com/anakinj))
+- Add logger as development dependency [#670](https://github.com/jwt/ruby-jwt/pull/670) ([@hieuk09](https://github.com/hieuk09))
 - Your contribution here
 
 ## [v2.10.1](https://github.com/jwt/ruby-jwt/tree/v2.10.1) (2024-12-26)
