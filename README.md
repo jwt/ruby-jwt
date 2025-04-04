@@ -647,6 +647,24 @@ rescue JWT::DecodeError
 end
 ```
 
+### X.509 certificate thumbprint in x5t header
+
+A JWT signature can be verified using a certificate thumbprint given in the `x5t` or `x5t#S256` header.
+The thumbprint is a base64url-encoded SHA-1 (or SHA256) hash of the DER encoding of an X.509 certificate.
+The verification process involves matching this thumbprint against a set of trusted certificates.
+
+```ruby
+# Load your trusted certificates
+certificates = [OpenSSL::X509::Certificate.new(File.read('cert.pem'))]
+
+# Decode a JWT with x5t verification
+begin
+  JWT.decode(token, nil, true, { x5t: { certificates: certificates } })
+rescue JWT::DecodeError
+  # Handle error, e.g. no certificate matches the x5t thumbprint
+end
+```
+
 ## JSON Web Key (JWK)
 
 JWK is a JSON structure representing a cryptographic key. This gem currently supports RSA, EC, OKP and HMAC keys. OKP support requires [RbNaCl](https://github.com/RubyCrypto/rbnacl) and currently only supports the Ed25519 curve.
