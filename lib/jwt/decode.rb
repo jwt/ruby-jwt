@@ -2,7 +2,6 @@
 
 require 'json'
 require 'jwt/x5c_key_finder'
-require 'jwt/x5t_key_finder'
 
 module JWT
   # The Decode class is responsible for decoding and verifying JWT tokens.
@@ -61,13 +60,11 @@ module JWT
 
     def set_key
       @key = find_key(&@keyfinder) if @keyfinder
-      @key = ::JWT::JWK::KeyFinder.new(jwks: @options[:jwks], allow_nil_kid: @options[:allow_nil_kid]).key_for(token.header['kid']) if @options[:jwks]
+      @key = ::JWT::JWK::KeyFinder.new(jwks: @options[:jwks], allow_nil_kid: @options[:allow_nil_kid]).call(token) if @options[:jwks]
 
-      if (x5c_options = @options[:x5c])
-        @key = X5cKeyFinder.new(x5c_options[:root_certificates], x5c_options[:crls]).from(token.header['x5c'])
-      elsif (x5t_options = @options[:x5t])
-        @key = X5tKeyFinder.new(x5t_options[:certificates]).from(token.header)
-      end
+      return unless (x5c_options = @options[:x5c])
+
+      @key = X5cKeyFinder.new(x5c_options[:root_certificates], x5c_options[:crls]).from(token.header['x5c'])
     end
 
     def allowed_and_valid_algorithms

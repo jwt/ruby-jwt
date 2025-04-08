@@ -51,6 +51,10 @@ module JWT
       def export(options = {})
         exported = parameters.clone
         exported.reject! { |k, _| RSA_PRIVATE_KEY_ELEMENTS.include? k } unless private? && options[:include_private] == true
+
+        exported[:x5c] = Base64.strict_encode(rsa_key.to_der) if options[:x5c]
+        exported[:x5t] = Base64.url_encode(OpenSSL::Digest::SHA1.new(rsa_key.to_der).digest) if options[:x5t]
+
         exported
       end
 
@@ -67,7 +71,7 @@ module JWT
       def []=(key, value)
         raise ArgumentError, 'cannot overwrite cryptographic key attributes' if RSA_KEY_ELEMENTS.include?(key.to_sym)
 
-        super(key, value)
+        super
       end
 
       private

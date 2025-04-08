@@ -13,6 +13,12 @@ module JWT
         ::Base64.urlsafe_encode64(str, padding: false)
       end
 
+      # Encode a string with Base64 complying with RFC 4648 (padded).
+      # @api private
+      def strict_encode(str)
+        ::Base64.strict_encode64(str)
+      end
+
       # Decode a string with URL-safe Base64 complying with RFC 4648.
       # @api private
       def url_decode(str)

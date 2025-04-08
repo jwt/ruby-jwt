@@ -22,11 +22,10 @@ module JWT
 
       # Returns the verification key for the given kid
       # @param [String] kid the key id
-      def key_for(kid)
-        raise ::JWT::DecodeError, 'No key id (kid) found from token headers' unless kid || @allow_nil_kid
-        raise ::JWT::DecodeError, 'Invalid type for kid header parameter' unless kid.nil? || kid.is_a?(String)
+      def key_for(kid, key_field = :kid)
+        raise ::JWT::DecodeError, "Invalid type for #{key_field} header parameter" unless kid.nil? || kid.is_a?(String)
 
-        jwk = resolve_key(kid)
+        jwk = resolve_key(kid, key_field)
 
         raise ::JWT::DecodeError, 'No keys found in jwks' unless @jwks.any?
         raise ::JWT::DecodeError, "Could not find public key for kid #{kid}" unless jwk
@@ -37,22 +36,36 @@ module JWT
       # Returns the key for the given token
       # @param [JWT::EncodedToken] token the token
       def call(token)
-        key_for(token.header['kid'])
+        kid = token.header['kid']
+        x5t = token.header['x5t']
+        x5c = token.header['x5c']
+
+        if kid
+          key_for(kid, :kid)
+        elsif x5t
+          key_for(x5t, :x5t)
+        elsif x5c
+          key_for(x5c, :x5c)
+        elsif @allow_nil_kid
+          key_for(kid)
+        else
+          raise ::JWT::DecodeError, 'No key id (kid) or x5t found from token headers'
+        end
       end
 
       private
 
-      def resolve_key(kid)
-        key_matcher = ->(key) { (kid.nil? && @allow_nil_kid) || key[:kid] == kid }
+      def resolve_key(kid, key_field)
+        key_matcher = ->(key) { (kid.nil? && @allow_nil_kid) || key[key_field] == kid }
 
         # First try without invalidation to facilitate application caching
-        @jwks ||= JWT::JWK::Set.new(@jwks_loader.call(kid: kid))
+        @jwks ||= JWT::JWK::Set.new(@jwks_loader.call(key_field => kid))
         jwk = @jwks.find { |key| key_matcher.call(key) }
 
         return jwk if jwk
 
         # Second try, invalidate for backwards compatibility
-        @jwks = JWT::JWK::Set.new(@jwks_loader.call(invalidate: true, kid_not_found: true, kid: kid))
+        @jwks = JWT::JWK::Set.new(@jwks_loader.call(invalidate: true, kid_not_found: true, key_field => kid))
         @jwks.find { |key| key_matcher.call(key) }
       end
     end
