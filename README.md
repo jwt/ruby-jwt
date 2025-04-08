@@ -647,24 +647,6 @@ rescue JWT::DecodeError
 end
 ```
 
-### X.509 certificate thumbprint in x5t header
-
-A JWT signature can be verified using a certificate thumbprint given in the `x5t` or `x5t#S256` header.
-The thumbprint is a base64url-encoded SHA-1 (or SHA256) hash of the DER encoding of an X.509 certificate.
-The verification process involves matching this thumbprint against a set of trusted certificates.
-
-```ruby
-# Load your trusted certificates
-certificates = [OpenSSL::X509::Certificate.new(File.read('cert.pem'))]
-
-# Decode a JWT with x5t verification
-begin
-  JWT.decode(token, nil, true, { x5t: { certificates: certificates } })
-rescue JWT::DecodeError
-  # Handle error, e.g. no certificate matches the x5t thumbprint
-end
-```
-
 ## JSON Web Key (JWK)
 
 JWK is a JSON structure representing a cryptographic key. This gem currently supports RSA, EC, OKP and HMAC keys. OKP support requires [RbNaCl](https://github.com/RubyCrypto/rbnacl) and currently only supports the Ed25519 curve.
@@ -692,13 +674,14 @@ algorithms = jwks.map { |key| key[:alg] }.compact.uniq
 JWT.decode(token, nil, true, algorithms: algorithms, jwks: jwks)
 ```
 
-The `jwks` option can also be given as a lambda that evaluates every time a kid is resolved.
+The `jwks` option can also be given as a lambda that evaluates every time a key identifier is resolved.
 This can be used to implement caching of remotely fetched JWK Sets.
 
-If the requested `kid` is not found from the given set the loader will be called a second time with the `kid_not_found` option set to `true`.
+Key identifiers can be specified using `kid`, `x5t` or `x5c` header parameters.
+If the requested identifier is not found from the given set the loader will be called a second time with the `kid_not_found` option set to `true`.
 The application can choose to implement some kind of JWK cache invalidation or other mechanism to handle such cases.
 
-Tokens without a specified `kid` are rejected by default.
+Tokens without a specified key identifier (`kid`, `x5t` or `x5c`) are rejected by default.
 This behaviour may be overwritten by setting the `allow_nil_kid` option for `decode` to `true`.
 
 ```ruby

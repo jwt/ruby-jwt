@@ -67,6 +67,26 @@ RSpec.describe JWT::JWK::RSA do
         expect(subject).to include(:kty, :n, :e, :kid, :d, :p, :q, :dp, :dq, :qi)
       end
     end
+
+    context 'when x5c option is requested' do
+      subject { described_class.new(keypair).export(x5c: true) }
+      let(:keypair) { rsa_key }
+      it 'returns a hash with x5c certificate chain' do
+        expect(subject).to be_a Hash
+        expect(subject).to include(:kty, :n, :e, :kid, :x5c)
+        expect(subject[:x5c]).to be_a String
+      end
+    end
+
+    context 'when x5t option is requested' do
+      subject { described_class.new(keypair).export(x5t: true) }
+      let(:keypair) { rsa_key }
+      it 'returns a hash with x5t thumbprint' do
+        expect(subject).to be_a Hash
+        expect(subject).to include(:kty, :n, :e, :kid, :x5t)
+        expect(subject[:x5t]).to be_a String
+      end
+    end
   end
 
   describe '.kid' do
