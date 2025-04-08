@@ -60,7 +60,8 @@ module JWT
 
     def set_key
       @key = find_key(&@keyfinder) if @keyfinder
-      @key = ::JWT::JWK::KeyFinder.new(jwks: @options[:jwks], allow_nil_kid: @options[:allow_nil_kid]).key_for(token.header['kid']) if @options[:jwks]
+      @key = ::JWT::JWK::KeyFinder.new(jwks: @options[:jwks], allow_nil_kid: @options[:allow_nil_kid]).call(token) if @options[:jwks]
+
       return unless (x5c_options = @options[:x5c])
 
       @key = X5cKeyFinder.new(x5c_options[:root_certificates], x5c_options[:crls]).from(token.header['x5c'])

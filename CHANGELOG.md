@@ -20,6 +20,7 @@ Take a look at the [upgrade guide](UPGRADING.md) for more details.
 - JWT::EncodedToken#verify! method that bundles signature and claim validation [#647](https://github.com/jwt/ruby-jwt/pull/647) ([@anakinj](https://github.com/anakinj))
 - Do not override the alg header if already given [#659](https://github.com/jwt/ruby-jwt/pull/659) ([@anakinj](https://github.com/anakinj))
 - Make `JWK::KeyFinder` compatible with `JWT::EncodedToken` [#663](https://github.com/jwt/ruby-jwt/pull/663) ([@anakinj](https://github.com/anakinj))
+- Add support for x5t header parameter for X.509 certificate thumbprint verification [#669](https://github.com/jwt/ruby-jwt/pull/669) ([@hieuk09](https://github.com/hieuk09))
 - Your contribution here
 
 **Fixes and enhancements:**
