@@ -81,7 +81,7 @@ jobs:
           retention-days: 1
 
   coverage:
-    name: Report coverage to Code Climate
+    name: Report coverage to Qlty
     runs-on: ubuntu-latest
     needs: test
     if: success()
