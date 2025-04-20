@@ -111,6 +111,36 @@
   
 
 </div>
+  
+    <h2>
+      Constant Summary
+      <small><a href="#" class="constants_summary_toggle">collapse</a></small>
+    </h2>
+
+    <dl class="constants">
+      
+        <dt id="ALGORITHM_KEYS-constant" class="">ALGORITHM_KEYS =
+          <div class="docstring">
+  <div class="discussion">
+    
+<p>Order is very important - first check for string keys, next for symbols</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div>
+        </dt>
+        <dd><pre class="code"><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>algorithm</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span>
+<span class='symbol'>:algorithm</span><span class='comma'>,</span>
+<span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>algorithms</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span>
+<span class='symbol'>:algorithms</span><span class='rbracket'>]</span><span class='period'>.</span><span class='id identifier rubyid_freeze'>freeze</span></pre></dd>
+      
+    </dl>
+  
+
 
 
 
@@ -309,18 +339,18 @@
       <pre class="lines">
 
 
-17
-18
-19
-20
-21
 22
 23
 24
-25</pre>
+25
+26
+27
+28
+29
+30</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/jwt/decode.rb', line 17</span>
+      <pre class="code"><span class="info file"># File 'lib/jwt/decode.rb', line 22</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_initialize'>initialize</span><span class='lparen'>(</span><span class='id identifier rubyid_jwt'>jwt</span><span class='comma'>,</span> <span class='id identifier rubyid_key'>key</span><span class='comma'>,</span> <span class='id identifier rubyid_verify'>verify</span><span class='comma'>,</span> <span class='id identifier rubyid_options'>options</span><span class='comma'>,</span> <span class='op'>&amp;</span><span class='id identifier rubyid_keyfinder'>keyfinder</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_raise'>raise</span> <span class='const'><span class='object_link'><a href="../JWT.html" title="JWT (module)">JWT</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="DecodeError.html" title="JWT::DecodeError (class)">DecodeError</a></span></span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>Nil JSON web token</span><span class='tstring_end'>&#39;</span></span> <span class='kw'>unless</span> <span class='id identifier rubyid_jwt'>jwt</span>
@@ -387,20 +417,20 @@
       <pre class="lines">
 
 
-30
-31
-32
-33
-34
 35
 36
 37
 38
 39
-40</pre>
+40
+41
+42
+43
+44
+45</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/jwt/decode.rb', line 30</span>
+      <pre class="code"><span class="info file"># File 'lib/jwt/decode.rb', line 35</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_decode_segments'>decode_segments</span>
   <span class='id identifier rubyid_validate_segment_count!'>validate_segment_count!</span>
@@ -423,7 +453,7 @@
 </div>
 
       <div id="footer">
-  Generated on Sun Apr 20 14:14:32 2025 by
+  Generated on Sun Apr 20 19:12:49 2025 by
   <a href="https://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.9.37 (ruby-3.4.3).
 </div>
