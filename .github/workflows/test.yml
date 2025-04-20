@@ -8,7 +8,7 @@ on:
     branches:
       - "*"
 jobs:
-  lint:
+  rubocop:
     name: RuboCop
     timeout-minutes: 30
     runs-on: ubuntu-latest
@@ -21,6 +21,13 @@ jobs:
           bundler-cache: true
       - name: Run RuboCop
         run: bundle exec rubocop
+  markdown:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Lint Markdown
+        uses: actionshub/markdownlint@v3.1.4
   test:
     name: ${{ matrix.os }} - Ruby ${{ matrix.ruby }} - ${{ matrix.gemfile }}
     runs-on: ${{ matrix.os }}
@@ -44,15 +51,15 @@ jobs:
         include:
           - os: ubuntu-latest
             ruby: "3.0"
-            gemfile: 'gemfiles/openssl.gemfile'
+            gemfile: "gemfiles/openssl.gemfile"
             experimental: false
           - os: ubuntu-latest
             ruby: "truffleruby-head"
-            gemfile: 'gemfiles/standalone.gemfile'
+            gemfile: "gemfiles/standalone.gemfile"
             experimental: true
           - os: ubuntu-latest
             ruby: "head"
-            gemfile: 'gemfiles/standalone.gemfile'
+            gemfile: "gemfiles/standalone.gemfile"
             experimental: true
     continue-on-error: ${{ matrix.experimental }}
     env:
