@@ -28,7 +28,6 @@ jobs:
       fail-fast: false
       matrix:
         os:
-          - ubuntu-20.04
           - ubuntu-latest
         ruby:
           - "2.5"
@@ -43,7 +42,7 @@ jobs:
           - gemfiles/standalone.gemfile
         experimental: [false]
         include:
-          - os: ubuntu-20.04
+          - os: ubuntu-latest
             ruby: "3.0"
             gemfile: 'gemfiles/openssl.gemfile'
             experimental: false
@@ -75,7 +74,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: coverage-reports
-          path: ${{github.workspace}}/coverage-*/coverage-${{ matrix.os }}-${{ matrix.ruby }}.json
+          path: ${{github.workspace}}/coverage-*/coverage-${{ github.run_id }}.json
           retention-days: 1
 
   coverage:
@@ -86,16 +85,16 @@ jobs:
     env:
       CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Download coverage reports from the test job
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: coverage-reports
 
       - uses: paambaati/codeclimate-action@v3.2.0
         with:
-          coverageLocations: "coverage-*/coverage.json:simplecov"
+          coverageLocations: "coverage-*/coverage-*.json:simplecov"
 
   smoke:
     name: Built GEM smoke test
