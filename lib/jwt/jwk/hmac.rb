@@ -64,7 +64,7 @@ module JWT
       def []=(key, value)
         raise ArgumentError, 'cannot overwrite cryptographic key attributes' if HMAC_KEY_ELEMENTS.include?(key.to_sym)
 
-        super(key, value)
+        super
       end
 
       private
