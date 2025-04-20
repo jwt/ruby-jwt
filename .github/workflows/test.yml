@@ -77,7 +77,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: coverage-${{ matrix.os }}-${{ matrix.ruby }}-${{ env.SANITIZED_GEMFILE }}
-          path: coverage-*/*.json
+          path: coverage/*.json
           retention-days: 1
 
   coverage:
@@ -96,7 +96,7 @@ jobs:
       - uses: qltysh/qlty-action/coverage@main
         with:
           token: ${{ secrets.QLTY_COVERAGE_TOKEN }}
-          files: coverage-*/*.json
+          files: coverage/*.json
 
   smoke:
     name: Built GEM smoke test
