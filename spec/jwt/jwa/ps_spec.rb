@@ -8,7 +8,7 @@ RSpec.describe JWT::JWA::Ps do
   let(:ps512_instance) { described_class.new('PS512') }
 
   before do
-    skip 'OpenSSL gem missing RSA-PSS support' unless OpenSSL::PKey::RSA.new.respond_to?(:sign_pss=)
+    skip 'OpenSSL gem missing RSA-PSS support' unless OpenSSL::PKey::RSA.new.respond_to?(:sign_pss)
   end
 
   describe '#initialize' do

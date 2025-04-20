@@ -164,7 +164,7 @@ RSpec.describe JWT do
 
   %w[ES256 ES384 ES512 ES256K].each do |alg|
     before do
-      skip 'OpenSSL gem missing RSA-PSS support' unless OpenSSL::PKey::RSA.new.respond_to?(:sign_pss=)
+      skip 'OpenSSL gem missing RSA-PSS support' unless OpenSSL::PKey::RSA.new.respond_to?(:sign_pss)
     end
 
     context "alg: #{alg}" do
