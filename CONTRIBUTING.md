@@ -44,6 +44,7 @@ Implement tests and your change. Don't be shy adding a little something in the [
 Add a short description of the change in either the `Features` or `Fixes` section in the [CHANGELOG](CHANGELOG.md) file.
 
 The form of the row (You need to return to the row when you know the pull request id)
+
 ```
 - Fix a little problem [#123](https://github.com/jwt/ruby-jwt/pull/123) - [@you](https://github.com/you).
 ```
@@ -87,7 +88,7 @@ git rebase upstream/main
 git push origin fix-a-little-problem -f
 ```
 
-# Releasing a new version
+## Releasing a new version
 
 The version is using the [Semantic Versioning](http://semver.org/) and the version is located in the [version.rb](lib/jwt/version.rb) file.
 Also update the [CHANGELOG](CHANGELOG.md) to reflect the upcoming version release.
