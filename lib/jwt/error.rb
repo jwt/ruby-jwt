@@ -7,9 +7,6 @@ module JWT
   # The DecodeError class is raised when there is an error decoding a JWT.
   class DecodeError < StandardError; end
 
-  # The RequiredDependencyError class is raised when a required dependency is missing.
-  class RequiredDependencyError < StandardError; end
-
   # The VerificationError class is raised when there is an error verifying a JWT.
   class VerificationError < DecodeError; end
 

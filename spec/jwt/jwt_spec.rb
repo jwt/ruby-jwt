@@ -198,64 +198,51 @@ RSpec.describe JWT do
     end
   end
 
-  if Gem::Version.new(OpenSSL::VERSION) >= Gem::Version.new('2.1')
-    %w[PS256 PS384 PS512].each do |alg|
-      context "alg: #{alg}" do
-        before(:each) do
-          data[alg] = JWT.encode payload, data[:rsa_private], alg
-        end
-
-        let(:wrong_key) { data[:wrong_rsa_public] }
-
-        it 'should generate a valid token' do
-          token = data[alg]
-
-          header, body, signature = token.split('.')
-
-          expect(header).to eql(Base64.strict_encode64({ alg: alg }.to_json))
-          expect(body).to   eql(Base64.strict_encode64(payload.to_json))
-
-          # Validate signature is made of up header and body of JWT
-          translated_alg  = alg.gsub('PS', 'sha')
-          valid_signature = data[:rsa_public].verify_pss(
-            translated_alg,
-            JWT::Base64.url_decode(signature),
-            [header, body].join('.'),
-            salt_length: :auto,
-            mgf1_hash: translated_alg
-          )
-          expect(valid_signature).to be true
-        end
-
-        it 'should decode a valid token' do
-          jwt_payload, header = JWT.decode data[alg], data[:rsa_public], true, algorithm: alg
-
-          expect(header['alg']).to eq alg
-          expect(jwt_payload).to eq payload
-        end
-
-        it 'wrong key should raise JWT::DecodeError' do
-          expect do
-            JWT.decode data[alg], wrong_key
-          end.to raise_error JWT::DecodeError
-        end
-
-        it 'wrong key and verify = false should not raise JWT::DecodeError' do
-          expect do
-            JWT.decode data[alg], wrong_key, false
-          end.not_to raise_error
-        end
+  %w[PS256 PS384 PS512].each do |alg|
+    context "alg: #{alg}" do
+      before(:each) do
+        data[alg] = JWT.encode payload, data[:rsa_private], alg
       end
-    end
-  else
-    %w[PS256 PS384 PS512].each do |alg|
-      context "alg: #{alg}" do
-        it 'raises error about OpenSSL version' do
-          expect { JWT.encode payload, data[:rsa_private], alg }.to raise_error(
-            JWT::RequiredDependencyError,
-            /You currently have OpenSSL .*. PS support requires >= 2.1/
-          )
-        end
+
+      let(:wrong_key) { data[:wrong_rsa_public] }
+
+      it 'should generate a valid token' do
+        token = data[alg]
+
+        header, body, signature = token.split('.')
+
+        expect(header).to eql(Base64.strict_encode64({ alg: alg }.to_json))
+        expect(body).to   eql(Base64.strict_encode64(payload.to_json))
+
+        # Validate signature is made of up header and body of JWT
+        translated_alg  = alg.gsub('PS', 'sha')
+        valid_signature = data[:rsa_public].verify_pss(
+          translated_alg,
+          JWT::Base64.url_decode(signature),
+          [header, body].join('.'),
+          salt_length: :auto,
+          mgf1_hash: translated_alg
+        )
+        expect(valid_signature).to be true
+      end
+
+      it 'should decode a valid token' do
+        jwt_payload, header = JWT.decode data[alg], data[:rsa_public], true, algorithm: alg
+
+        expect(header['alg']).to eq alg
+        expect(jwt_payload).to eq payload
+      end
+
+      it 'wrong key should raise JWT::DecodeError' do
+        expect do
+          JWT.decode data[alg], wrong_key
+        end.to raise_error JWT::DecodeError
+      end
+
+      it 'wrong key and verify = false should not raise JWT::DecodeError' do
+        expect do
+          JWT.decode data[alg], wrong_key, false
+        end.not_to raise_error
       end
     end
   end
