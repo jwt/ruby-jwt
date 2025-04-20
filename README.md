@@ -2,8 +2,6 @@
 
 [![Gem Version](https://badge.fury.io/rb/jwt.svg)](https://badge.fury.io/rb/jwt)
 [![Build Status](https://github.com/jwt/ruby-jwt/actions/workflows/test.yml/badge.svg?branch=main)](https://github.com/jwt/ruby-jwt/actions)
-[![Maintainability](https://qlty.sh/badges/eefe957e-cf90-41f6-b78b-909837542c5f/maintainability.svg)](https://qlty.sh/gh/anakinj/projects/ruby-jwt)
-[![Code Coverage](https://qlty.sh/badges/eefe957e-cf90-41f6-b78b-909837542c5f/test_coverage.svg)](https://qlty.sh/gh/anakinj/projects/ruby-jwt)
 
 A ruby implementation of the [RFC 7519 OAuth JSON Web Token (JWT)](https://tools.ietf.org/html/rfc7519) standard.
 
