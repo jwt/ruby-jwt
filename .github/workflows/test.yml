@@ -64,7 +64,6 @@ jobs:
     continue-on-error: ${{ matrix.experimental }}
     env:
       BUNDLE_GEMFILE: ${{ matrix.gemfile }}
-
     steps:
       - uses: actions/checkout@v4
 

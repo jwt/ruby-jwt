@@ -2,6 +2,6 @@
 
 source "https://rubygems.org"
 
-gem "openssl", "~> 2.0.0"
+gem "openssl", "< 2.1"
 
 gemspec path: "../"
