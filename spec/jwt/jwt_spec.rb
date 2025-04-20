@@ -163,6 +163,10 @@ RSpec.describe JWT do
   end
 
   %w[ES256 ES384 ES512 ES256K].each do |alg|
+    before do
+      skip 'OpenSSL gem missing RSA-PSS support' unless OpenSSL::PKey::RSA.new.respond_to?(:sign_pss=)
+    end
+
     context "alg: #{alg}" do
       before(:each) do
         data[alg] = JWT.encode(payload, data["#{alg}_private"], alg)
