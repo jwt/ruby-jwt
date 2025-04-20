@@ -88,12 +88,12 @@
 
 <h2 id="installing">Installing</h2>
 
-<h3 id="using-rubygems">Using Rubygems:</h3>
+<h3 id="using-rubygems">Using Rubygems</h3>
 
 <pre class="code bash"><code class="bash">gem install jwt
 </code></pre>
 
-<h3 id="using-bundler">Using Bundler:</h3>
+<h3 id="using-bundler">Using Bundler</h3>
 
 <p>Add the following to your Gemfile</p>
 
@@ -115,7 +115,7 @@
 
 <p>For safe cryptographic signing, you need to specify the algorithm in the options hash whenever you call <code>JWT.decode</code> to ensure that an attacker <a href="https://auth0.com/blog/critical-vulnerabilities-in-json-web-token-libraries/">cannot bypass the algorithm verification step</a>. <strong>It is strongly recommended that you hard code the algorithm, as you may leave yourself vulnerable by dynamically picking the algorithm</strong></p>
 
-<p>See: <a href="https://tools.ietf.org/html/rfc7518#section-3.1"> JSON Web Algorithms (JWA) 3.1. &quot;alg&quot; (Algorithm) Header Parameter Values for JWS</a></p>
+<p>See <a href="https://tools.ietf.org/html/rfc7518#section-3.1">JSON Web Algorithms (JWA) 3.1. &quot;alg&quot; (Algorithm) Header Parameter Values for JWS</a></p>
 
 <h3 id="none"><strong>NONE</strong></h3>
 
@@ -284,7 +284,7 @@
 
 <h3 id="add-custom-header-fields">Add custom header fields</h3>
 
-<p>Ruby-jwt gem supports custom <a href="https://tools.ietf.org/html/rfc7519#section-5">header fields</a>
+<p>The ruby-jwt gem supports custom <a href="https://tools.ietf.org/html/rfc7519#section-5">header fields</a>
 To add custom header fields you need to pass <code>header_fields</code> parameter</p>
 
 <pre class="code ruby"><code class="ruby"><span class='id identifier rubyid_token'>token</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="JWT.html" title="JWT (module)">JWT</a></span></span><span class='period'>.</span><span class='id identifier rubyid_encode'><span class='object_link'><a href="JWT.html#encode-class_method" title="JWT.encode (method)">encode</a></span></span><span class='lparen'>(</span><span class='id identifier rubyid_payload'>payload</span><span class='comma'>,</span> <span class='id identifier rubyid_key'>key</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>HS256</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='rparen'>)</span>
@@ -420,8 +420,6 @@ used. JWT supports these reserved claim names:</p>
 <p>The <code>exp</code> (expiration time) claim identifies the expiration time on or after which the JWT MUST NOT be accepted for processing. The processing of the <code>exp</code> claim requires that the current date/time MUST be before the expiration date/time listed in the <code>exp</code> claim. Implementers MAY provide for some small <code>leeway</code>, usually no more than a few minutes, to account for clock skew. Its value MUST be a number containing a <strong><em>NumericDate</em></strong> value. Use of this claim is OPTIONAL.</p>
 </blockquote>
 
-<p><strong>Handle Expiration Claim</strong></p>
-
 <pre class="code ruby"><code class="ruby"><span class='id identifier rubyid_exp'>exp</span> <span class='op'>=</span> <span class='const'>Time</span><span class='period'>.</span><span class='id identifier rubyid_now'>now</span><span class='period'>.</span><span class='id identifier rubyid_to_i'>to_i</span> <span class='op'>+</span> <span class='int'>4</span> <span class='op'>*</span> <span class='int'>3600</span>
 <span class='id identifier rubyid_exp_payload'>exp_payload</span> <span class='op'>=</span> <span class='lbrace'>{</span> <span class='label'>data:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>data</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>exp:</span> <span class='id identifier rubyid_exp'>exp</span> <span class='rbrace'>}</span>
 
@@ -440,7 +438,7 @@ used. JWT supports these reserved claim names:</p>
 </span><span class='const'><span class='object_link'><a href="JWT.html" title="JWT (module)">JWT</a></span></span><span class='period'>.</span><span class='id identifier rubyid_decode'><span class='object_link'><a href="JWT.html#decode-class_method" title="JWT.decode (method)">decode</a></span></span><span class='lparen'>(</span><span class='id identifier rubyid_token'>token</span><span class='comma'>,</span> <span class='id identifier rubyid_hmac_secret'>hmac_secret</span><span class='comma'>,</span> <span class='kw'>true</span><span class='comma'>,</span> <span class='lbrace'>{</span> <span class='label'>verify_expiration:</span> <span class='kw'>false</span><span class='comma'>,</span> <span class='label'>algorithm:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>HS256</span><span class='tstring_end'>&#39;</span></span> <span class='rbrace'>}</span><span class='rparen'>)</span>
 </code></pre>
 
-<p><strong>Adding Leeway</strong></p>
+<p>Leeway and the exp claim.</p>
 
 <pre class="code ruby"><code class="ruby"><span class='id identifier rubyid_exp'>exp</span> <span class='op'>=</span> <span class='const'>Time</span><span class='period'>.</span><span class='id identifier rubyid_now'>now</span><span class='period'>.</span><span class='id identifier rubyid_to_i'>to_i</span> <span class='op'>-</span> <span class='int'>10</span>
 <span class='id identifier rubyid_leeway'>leeway</span> <span class='op'>=</span> <span class='int'>30</span> <span class='comment'># seconds
@@ -466,8 +464,6 @@ used. JWT supports these reserved claim names:</p>
 <p>The <code>nbf</code> (not before) claim identifies the time before which the JWT MUST NOT be accepted for processing. The processing of the <code>nbf</code> claim requires that the current date/time MUST be after or equal to the not-before date/time listed in the <code>nbf</code> claim. Implementers MAY provide for some small <code>leeway</code>, usually no more than a few minutes, to account for clock skew. Its value MUST be a number containing a <strong><em>NumericDate</em></strong> value. Use of this claim is OPTIONAL.</p>
 </blockquote>
 
-<p><strong>Handle Not Before Claim</strong></p>
-
 <pre class="code ruby"><code class="ruby"><span class='id identifier rubyid_nbf'>nbf</span> <span class='op'>=</span> <span class='const'>Time</span><span class='period'>.</span><span class='id identifier rubyid_now'>now</span><span class='period'>.</span><span class='id identifier rubyid_to_i'>to_i</span> <span class='op'>-</span> <span class='int'>3600</span>
 <span class='id identifier rubyid_nbf_payload'>nbf_payload</span> <span class='op'>=</span> <span class='lbrace'>{</span> <span class='label'>data:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>data</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>nbf:</span> <span class='id identifier rubyid_nbf'>nbf</span> <span class='rbrace'>}</span>
 
@@ -486,7 +482,7 @@ used. JWT supports these reserved claim names:</p>
 </span><span class='const'><span class='object_link'><a href="JWT.html" title="JWT (module)">JWT</a></span></span><span class='period'>.</span><span class='id identifier rubyid_decode'><span class='object_link'><a href="JWT.html#decode-class_method" title="JWT.decode (method)">decode</a></span></span><span class='lparen'>(</span><span class='id identifier rubyid_token'>token</span><span class='comma'>,</span> <span class='id identifier rubyid_hmac_secret'>hmac_secret</span><span class='comma'>,</span> <span class='kw'>true</span><span class='comma'>,</span> <span class='lbrace'>{</span> <span class='label'>verify_not_before:</span> <span class='kw'>false</span><span class='comma'>,</span> <span class='label'>algorithm:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>HS256</span><span class='tstring_end'>&#39;</span></span> <span class='rbrace'>}</span><span class='rparen'>)</span>
 </code></pre>
 
-<p><strong>Adding Leeway</strong></p>
+<p>Leeway and the nbf claim.</p>
 
 <pre class="code ruby"><code class="ruby"><span class='id identifier rubyid_nbf'>nbf</span> <span class='op'>=</span> <span class='const'>Time</span><span class='period'>.</span><span class='id identifier rubyid_now'>now</span><span class='period'>.</span><span class='id identifier rubyid_to_i'>to_i</span> <span class='op'>+</span> <span class='int'>10</span>
 <span class='id identifier rubyid_leeway'>leeway</span> <span class='op'>=</span> <span class='int'>30</span>
@@ -611,8 +607,6 @@ to convert them to proc (using <code>to_proc</code>)</p>
 <blockquote>
 <p>The <code>iat</code> (issued at) claim identifies the time at which the JWT was issued. This claim can be used to determine the age of the JWT. The <code>leeway</code> option is not taken into account when verifying this claim. The <code>iat_leeway</code> option was removed in version 2.2.0. Its value MUST be a number containing a <strong><em>NumericDate</em></strong> value. Use of this claim is OPTIONAL.</p>
 </blockquote>
-
-<p><strong>Handle Issued At Claim</strong></p>
 
 <pre class="code ruby"><code class="ruby"><span class='id identifier rubyid_iat'>iat</span> <span class='op'>=</span> <span class='const'>Time</span><span class='period'>.</span><span class='id identifier rubyid_now'>now</span><span class='period'>.</span><span class='id identifier rubyid_to_i'>to_i</span>
 <span class='id identifier rubyid_iat_payload'>iat_payload</span> <span class='op'>=</span> <span class='lbrace'>{</span> <span class='label'>data:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>data</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>iat:</span> <span class='id identifier rubyid_iat'>iat</span> <span class='rbrace'>}</span>
@@ -820,7 +814,7 @@ or can be given to the JWK instance on initialization.</p>
 <span class='id identifier rubyid_thumbprint_as_the_kid'>thumbprint_as_the_kid</span> <span class='op'>=</span> <span class='id identifier rubyid_jwk_hash'>jwk_hash</span><span class='lbracket'>[</span><span class='symbol'>:kid</span><span class='rbracket'>]</span>
 </code></pre>
 
-<h1 id="development-and-testing">Development and testing</h1>
+<h2 id="development-and-testing">Development and testing</h2>
 
 <p>The tests are written with rspec. <a href="https://github.com/thoughtbot/appraisal">Appraisal</a> is used to ensure compatibility with 3rd party dependencies providing cryptographic features.</p>
 
@@ -828,7 +822,7 @@ or can be given to the JWK instance on initialization.</p>
 bundle exec appraisal rake test
 </code></pre>
 
-<h1 id="releasing">Releasing</h1>
+<h2 id="releasing">Releasing</h2>
 
 <p>To cut a new release adjust the <a href="lib/jwt/version.rb">version.rb</a> and <a href="CHANGELOG.md">CHANGELOG</a> with desired version numbers and dates and commit the changes. Tag the release with the version number using the following command:</p>
 
@@ -851,7 +845,7 @@ bundle exec appraisal rake test
 </div></div>
 
       <div id="footer">
-  Generated on Sun Apr 20 19:16:19 2025 by
+  Generated on Sun Apr 20 20:22:35 2025 by
   <a href="https://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.9.37 (ruby-3.4.3).
 </div>
