@@ -1,16 +1,16 @@
 ---
-  'on':
-    push:
-      tags:
+"on":
+  push:
+    tags:
       - v*
-  name: Push Gem
-  jobs:
-    push:
-      runs-on: ubuntu-latest
-      permissions:
-        contents: write
-        id-token: write
-      steps:
+name: Push Gem
+jobs:
+  push:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      id-token: write
+    steps:
       - uses: rubygems/configure-rubygems-credentials@main
         with:
           role-to-assume: ${{ secrets.RUBYGEMS_PUSH_ROLE }}
