@@ -1,8 +1,0 @@
-plugins:
-  fixme:
-    enabled: true
-  shellcheck:
-    enabled: true
-  rubocop:
-    enabled: true
-    channel: rubocop-1-56-3
