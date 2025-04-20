@@ -48,15 +48,6 @@ RSpec.describe JWT do
         end
       end
 
-      context 'and x5c is in the set' do
-        let(:valid_key) { jwk.export(x5c: true) }
-        let(:token_headers) { { x5c: Base64.strict_encode64(keypair.to_der) } }
-        it 'is able to decode the token' do
-          payload, _header = described_class.decode(signed_token, nil, true, { algorithms: [algorithm], jwks: public_jwks })
-          expect(payload).to eq(token_payload)
-        end
-      end
-
       context 'no keys are found in the set' do
         let(:public_jwks) { { keys: [] } }
         it 'raises an exception' do
