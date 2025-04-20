@@ -79,7 +79,7 @@ RSpec.describe JWT::JWK::RSA do
     end
 
     context 'when x5t option is requested' do
-      subject { described_class.new(keypair).export(x5t: true) }
+      subject { described_class.new(keypair).export(include_x5t: true) }
       let(:keypair) { rsa_key }
       it 'returns a hash with x5t thumbprint' do
         expect(subject).to be_a Hash

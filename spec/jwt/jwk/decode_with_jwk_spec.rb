@@ -40,7 +40,7 @@ RSpec.describe JWT do
       end
 
       context 'and x5t is in the set' do
-        let(:valid_key) { jwk.export(x5t: true) }
+        let(:valid_key) { jwk.export(include_x5t: true) }
         let(:token_headers) { { x5t: Base64.urlsafe_encode64(OpenSSL::Digest::SHA1.new(keypair.to_der).digest, padding: false) } }
         it 'is able to decode the token' do
           payload, _header = described_class.decode(signed_token, nil, true, { algorithms: [algorithm], jwks: public_jwks })
