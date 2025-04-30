@@ -52,8 +52,6 @@ module JWT
         exported = parameters.clone
         exported.reject! { |k, _| RSA_PRIVATE_KEY_ELEMENTS.include? k } unless private? && options[:include_private] == true
 
-        exported[:x5t] = Base64.url_encode(OpenSSL::Digest::SHA1.new(rsa_key.to_der).digest) if options[:include_x5t]
-
         exported
       end
 
