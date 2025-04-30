@@ -44,7 +44,17 @@ RSpec.describe JWT do
         let(:valid_key) { jwk.export.merge({ x5t: x5t }) }
         let(:token_headers) { { x5t: x5t } }
         it 'is able to decode the token' do
-          payload, _header = described_class.decode(signed_token, nil, true, { algorithms: [algorithm], jwks: public_jwks })
+          payload, _header = described_class.decode(signed_token, nil, true, { algorithms: [algorithm], jwks: public_jwks, key_fields: [:x5t] })
+          expect(payload).to eq(token_payload)
+        end
+      end
+
+      context 'and both kid and x5t is in the set' do
+        let(:x5t) { Base64.urlsafe_encode64(OpenSSL::Digest::SHA1.new(keypair.to_der).digest, padding: false) }
+        let(:valid_key) { jwk.export.merge({ x5t: x5t }) }
+        let(:token_headers) { { x5t: x5t, kid: 'NOT_A_MATCH' } }
+        it 'is able to decode the token based on the priority of the key defined in key_fields' do
+          payload, _header = described_class.decode(signed_token, nil, true, { algorithms: [algorithm], jwks: public_jwks, key_fields: %i[x5t kid] })
           expect(payload).to eq(token_payload)
         end
       end

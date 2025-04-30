@@ -9,6 +9,9 @@ module JWT
       # @param [Hash] options the options to create a KeyFinder with
       # @option options [Proc, JWT::JWK::Set] :jwks the jwks or a loader proc
       # @option options [Boolean] :allow_nil_kid whether to allow nil kid
+      # @option options [Array] :key_fields the fields to use for key matching,
+      #                         the order of the fields are used to determine
+      #                         the priority of the keys.
       def initialize(options)
         @allow_nil_kid = options[:allow_nil_kid]
         jwks_or_loader = options[:jwks]
@@ -18,6 +21,8 @@ module JWT
                        else
                          ->(_options) { jwks_or_loader }
                        end
+
+        @key_fields = options[:key_fields] || %i[kid]
       end
 
       # Returns the verification key for the given kid
@@ -36,21 +41,16 @@ module JWT
       # Returns the key for the given token
       # @param [JWT::EncodedToken] token the token
       def call(token)
-        kid = token.header['kid']
-        x5t = token.header['x5t']
-        x5c = token.header['x5c']
+        @key_fields.each do |key_field|
+          field_value = token.header[key_field.to_s]
 
-        if kid
-          key_for(kid, :kid)
-        elsif x5t
-          key_for(x5t, :x5t)
-        elsif x5c
-          key_for(x5c, :x5c)
-        elsif @allow_nil_kid
-          key_for(kid)
-        else
-          raise ::JWT::DecodeError, 'No key id (kid) or x5t found from token headers'
+          return key_for(field_value, key_field) if field_value
         end
+
+        raise ::JWT::DecodeError, 'No key id (kid) or x5t found from token headers' unless @allow_nil_kid
+
+        kid = token.header['kid']
+        key_for(kid)
       end
 
       private

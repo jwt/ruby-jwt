@@ -60,7 +60,13 @@ module JWT
 
     def set_key
       @key = find_key(&@keyfinder) if @keyfinder
-      @key = ::JWT::JWK::KeyFinder.new(jwks: @options[:jwks], allow_nil_kid: @options[:allow_nil_kid]).call(token) if @options[:jwks]
+      if @options[:jwks]
+        @key = ::JWT::JWK::KeyFinder.new(
+          jwks: @options[:jwks],
+          allow_nil_kid: @options[:allow_nil_kid],
+          key_fields: @options[:key_fields]
+        ).call(token)
+      end
 
       return unless (x5c_options = @options[:x5c])
 
