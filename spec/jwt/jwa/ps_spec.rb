@@ -7,6 +7,10 @@ RSpec.describe JWT::JWA::Ps do
   let(:ps384_instance) { described_class.new('PS384') }
   let(:ps512_instance) { described_class.new('PS512') }
 
+  before do
+    skip 'OpenSSL gem missing RSA-PSS support' unless OpenSSL::PKey::RSA.method_defined?(:sign_pss)
+  end
+
   describe '#initialize' do
     it 'initializes with the correct algorithm and digest' do
       expect(ps256_instance.instance_variable_get(:@alg)).to eq('PS256')

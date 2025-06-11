@@ -50,7 +50,7 @@ jobs:
         experimental: [false]
         include:
           - os: ubuntu-latest
-            ruby: "3.0"
+            ruby: "2.5"
             gemfile: "gemfiles/openssl.gemfile"
             experimental: false
           - os: ubuntu-latest
@@ -64,7 +64,6 @@ jobs:
     continue-on-error: ${{ matrix.experimental }}
     env:
       BUNDLE_GEMFILE: ${{ matrix.gemfile }}
-
     steps:
       - uses: actions/checkout@v4
 
