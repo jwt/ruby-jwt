@@ -757,8 +757,9 @@ RSpec.describe JWT do
     let(:token) { JWT.encode(payload, 'secret', 'HS256') }
 
     it 'starts trying with the algorithm referred in the header' do
-      expect(JWT::JWA::Rsa).not_to receive(:verify)
+      allow(JWT::JWA::Rsa).to receive(:verify)
       JWT.decode(token, 'secret', true, algorithm: %w[RS512 HS256])
+      expect(JWT::JWA::Rsa).not_to have_received(:verify)
     end
   end
 
