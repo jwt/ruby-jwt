@@ -22,3 +22,6 @@ Layout/LineLength:
 
 Gemspec/DevelopmentDependencies:
   EnforcedStyle: gemspec
+
+Naming/PredicateMethod:
+  Enabled: false
