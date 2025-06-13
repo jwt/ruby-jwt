@@ -98,12 +98,9 @@ jobs:
       - name: Download coverage reports from the test job
         uses: actions/download-artifact@v4
 
-      - name: Display structure of downloaded files
-        run: ls -R
-
       - uses: qltysh/qlty-action/coverage@main
         with:
-          token: ${{ secrets.QLTY_COVERAGE_TOKEN }}
+          token: ${{ env.QLTY_COVERAGE_TOKEN }}
           files: coverage-*/*.json
 
   smoke:
