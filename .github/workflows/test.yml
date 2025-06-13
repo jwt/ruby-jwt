@@ -100,7 +100,7 @@ jobs:
 
       - uses: qltysh/qlty-action/coverage@main
         with:
-          token: ${{ env.QLTY_COVERAGE_TOKEN }}
+          oidc: true
           files: coverage-*/*.json
 
   smoke:
