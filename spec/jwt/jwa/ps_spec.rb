@@ -82,5 +82,14 @@ RSpec.describe JWT::JWA::Ps do
         expect(ps256_instance.verify(data: data, signature: 'invalid_signature', verification_key: rsa_key)).to be(false)
       end
     end
+
+    context 'when verification results in a OpenSSL::PKey::PKeyError error' do
+      it 'raises a JWT::VerificationError' do
+        allow(rsa_key).to receive(:verify_pss).and_raise(OpenSSL::PKey::PKeyError.new('Error'))
+        expect do
+          ps256_instance.verify(data: data, signature: ps256_signature, verification_key: rsa_key)
+        end.to raise_error(JWT::VerificationError, 'Signature verification raised')
+      end
+    end
   end
 end
