@@ -99,6 +99,9 @@ jobs:
         with:
           merge-multiple: true
 
+      - name: Display structure of downloaded files
+        run: ls -R
+
       - uses: qltysh/qlty-action/coverage@main
         with:
           token: ${{ secrets.QLTY_COVERAGE_TOKEN }}
