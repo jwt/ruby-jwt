@@ -4,7 +4,8 @@ RSpec.describe JWT do
   describe '.decode for JWK usecase' do
     let(:keypair)       { test_pkey('rsa-2048-private.pem') }
     let(:jwk)           { JWT::JWK.new(keypair) }
-    let(:public_jwks) { { keys: [jwk.export, { kid: 'not_the_correct_one', kty: 'oct', k: 'secret' }] } }
+    let(:valid_key)     { jwk.export }
+    let(:public_jwks) { { keys: [valid_key, { kid: 'not_the_correct_one', kty: 'oct', k: 'secret' }] } }
     let(:token_payload) { { 'data' => 'something' } }
     let(:token_headers) { { kid: jwk.kid } }
     let(:algorithm)     { 'RS512' }
@@ -38,6 +39,26 @@ RSpec.describe JWT do
         end
       end
 
+      context 'and x5t is in the set' do
+        let(:x5t) { Base64.urlsafe_encode64(OpenSSL::Digest::SHA1.new(keypair.to_der).digest, padding: false) }
+        let(:valid_key) { jwk.export.merge({ x5t: x5t }) }
+        let(:token_headers) { { x5t: x5t } }
+        it 'is able to decode the token' do
+          payload, _header = described_class.decode(signed_token, nil, true, { algorithms: [algorithm], jwks: public_jwks, key_fields: [:x5t] })
+          expect(payload).to eq(token_payload)
+        end
+      end
+
+      context 'and both kid and x5t is in the set' do
+        let(:x5t) { Base64.urlsafe_encode64(OpenSSL::Digest::SHA1.new(keypair.to_der).digest, padding: false) }
+        let(:valid_key) { jwk.export.merge({ x5t: x5t }) }
+        let(:token_headers) { { x5t: x5t, kid: 'NOT_A_MATCH' } }
+        it 'is able to decode the token based on the priority of the key defined in key_fields' do
+          payload, _header = described_class.decode(signed_token, nil, true, { algorithms: [algorithm], jwks: public_jwks, key_fields: %i[x5t kid] })
+          expect(payload).to eq(token_payload)
+        end
+      end
+
       context 'no keys are found in the set' do
         let(:public_jwks) { { keys: [] } }
         it 'raises an exception' do
@@ -51,7 +72,7 @@ RSpec.describe JWT do
         let(:token_headers) { {} }
         it 'raises an exception' do
           expect { described_class.decode(signed_token, nil, true, { algorithms: [algorithm], jwks: public_jwks }) }.to raise_error(
-            JWT::DecodeError, 'No key id (kid) found from token headers'
+            JWT::DecodeError, 'No key id (kid) or x5t found from token headers'
           )
         end
       end
