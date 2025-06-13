@@ -53,7 +53,7 @@ The form of the row (You need to return to the row when you know the pull reques
 
 Before pushing make sure the tests pass and RuboCop is happy.
 
-```
+```bash
 bundle exec appraisal rake test
 bundle exec rubocop
 git push origin fix-a-little-problem
@@ -67,7 +67,7 @@ Update the [CHANGELOG](CHANGELOG.md) with the pull request id from the previous 
 
 You can amend the previous commit with the updated changelog change and force push your branch. The PR will get automatically updated.
 
-```
+```bash
 git add CHANGELOG.md
 git commit --amend --no-edit
 git push origin fix-a-little-problem -f
@@ -81,7 +81,7 @@ A maintainer will review and probably merge you changes when time allows, be pat
 
 It's recommended that you keep your branch up-to-date by rebasing to the upstream main.
 
-```
+```bash
 git fetch upstream
 git checkout fix-a-little-problem
 git rebase upstream/main
@@ -97,4 +97,4 @@ Also update the [CHANGELOG](CHANGELOG.md) to reflect the upcoming version releas
 rake release
 ```
 
-**If you want a release cut with your PR, please include a version bump according to **
+**If you want a release cut with your PR, please include a version bump according to**
