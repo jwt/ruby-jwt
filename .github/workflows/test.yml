@@ -102,7 +102,7 @@ jobs:
       - uses: qltysh/qlty-action/coverage@main
         with:
           token: ${{ secrets.QLTY_COVERAGE_TOKEN }}
-          files: coverage/*.json
+          files: coverage-*/*.json
 
   smoke:
     name: Built GEM smoke test
