@@ -63,7 +63,7 @@
 
 <p>Fork the project on GitHub and clone your own fork. Instuctions on forking can be found from the <a href="https://docs.github.com/en/get-started/quickstart/fork-a-repo">GitHub Docs</a></p>
 
-<pre class="code ruby"><code class="ruby">git clone git@github.com:you/ruby-jwt.git
+<pre class="code bash"><code class="bash">git clone git@github.com:you/ruby-jwt.git
 cd ruby-jwt
 git remote add upstream https://github.com/jwt/ruby-jwt
 </code></pre>
@@ -72,7 +72,7 @@ git remote add upstream https://github.com/jwt/ruby-jwt
 
 <p>Make sure you have the latest upstream main branch of the project.</p>
 
-<pre class="code ruby"><code class="ruby">git fetch --all
+<pre class="code bash"><code class="bash">git fetch --all
 git checkout main
 git rebase upstream/main
 git push origin main
@@ -101,16 +101,16 @@ Add a short description of the change in either the <code>Features</code> or <co
 
 <p>The form of the row (You need to return to the row when you know the pull request id)</p>
 
-<pre class="code ruby"><code class="ruby">- Fix a little problem [#123](https://github.com/jwt/ruby-jwt/pull/123) - [@you](https://github.com/you).
+<pre class="code markdown"><code class="markdown">- Fix a little problem [#123](https://github.com/jwt/ruby-jwt/pull/123) - [@you](https://github.com/you).
 </code></pre>
 
 <h2 id="push-your-branch-and-create-a-pull-request">Push your branch and create a pull request</h2>
 
 <p>Before pushing make sure the tests pass and RuboCop is happy.</p>
 
-<pre class="code ruby"><code class="ruby"><span class='id identifier rubyid_bundle'>bundle</span> <span class='id identifier rubyid_exec'>exec</span> <span class='id identifier rubyid_appraisal'>appraisal</span> <span class='id identifier rubyid_rake'>rake</span> <span class='id identifier rubyid_test'>test</span>
-<span class='id identifier rubyid_bundle'>bundle</span> <span class='id identifier rubyid_exec'>exec</span> <span class='id identifier rubyid_rubocop'>rubocop</span>
-<span class='id identifier rubyid_git'>git</span> <span class='id identifier rubyid_push'>push</span> <span class='id identifier rubyid_origin'>origin</span> <span class='id identifier rubyid_fix'>fix</span><span class='op'>-</span><span class='id identifier rubyid_a'>a</span><span class='op'>-</span><span class='id identifier rubyid_little'>little</span><span class='op'>-</span><span class='id identifier rubyid_problem'>problem</span>
+<pre class="code bash"><code class="bash">bundle exec appraisal rake test
+bundle exec rubocop
+git push origin fix-a-little-problem
 </code></pre>
 
 <p>Make a new pull request on the <a href="https://github.com/jwt/ruby-jwt/pulls">ruby-jwt project</a> with a description what the change is about.</p>
@@ -121,7 +121,7 @@ Add a short description of the change in either the <code>Features</code> or <co
 
 <p>You can amend the previous commit with the updated changelog change and force push your branch. The PR will get automatically updated.</p>
 
-<pre class="code ruby"><code class="ruby">git add CHANGELOG.md
+<pre class="code bash"><code class="bash">git add CHANGELOG.md
 git commit --amend --no-edit
 git push origin fix-a-little-problem -f
 </code></pre>
@@ -134,7 +134,7 @@ git push origin fix-a-little-problem -f
 
 <p>It&#39;s recommended that you keep your branch up-to-date by rebasing to the upstream main.</p>
 
-<pre class="code ruby"><code class="ruby">git fetch upstream
+<pre class="code bash"><code class="bash">git fetch upstream
 git checkout fix-a-little-problem
 git rebase upstream/main
 git push origin fix-a-little-problem -f
@@ -147,12 +147,10 @@ Also update the <a href="CHANGELOG.md">CHANGELOG</a> to reflect the upcoming ver
 
 <pre class="code bash"><code class="bash">rake release
 </code></pre>
-
-<p>*<em>If you want a release cut with your PR, please include a version bump according to *</em></p>
 </div></div>
 
       <div id="footer">
-  Generated on Fri Jun 13 18:46:06 2025 by
+  Generated on Fri Jun 13 19:14:53 2025 by
   <a href="https://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.9.37 (ruby-3.4.4).
 </div>
