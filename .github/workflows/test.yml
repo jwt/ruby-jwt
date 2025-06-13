@@ -85,7 +85,7 @@ jobs:
     name: Report coverage to Qlty
     runs-on: ubuntu-latest
     needs: test
-    if: success()
+    if: success() && (github.event_name == 'push' || github.event.pull_request.head.repo.full_name == github.repository)
     steps:
       - uses: actions/checkout@v4
 
