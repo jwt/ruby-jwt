@@ -28,10 +28,9 @@ module JWT
   # @param algorithm [String] the algorithm used to sign the JWT.
   # @param header_fields [Hash] additional headers to include in the JWT.
   # @return [String] the encoded JWT.
-  def encode(payload, key, algorithm =  'HS256',  header_fields = {})
+  def encode(payload, key, algorithm = 'HS256', header_fields = {})
     Encode.new(payload: payload,
                key: key,
-  
                algorithm: algorithm,
                headers: header_fields).segments
   end
