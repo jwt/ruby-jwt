@@ -33,7 +33,7 @@ gem install jwt
 
 Add the following to your Gemfile
 
-```
+```bash
 gem 'jwt'
 ```
 
