@@ -65,7 +65,7 @@ Make a new pull request on the [ruby-jwt project](https://github.com/jwt/ruby-jw
 
 Update the [CHANGELOG](CHANGELOG.md) with the pull request id from the previous step.
 
-You can ammend the previous commit with the updated changelog change and force push your branch. The PR will get automatically updated.
+You can amend the previous commit with the updated changelog change and force push your branch. The PR will get automatically updated.
 
 ```
 git add CHANGELOG.md

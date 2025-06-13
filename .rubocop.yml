@@ -3,8 +3,8 @@ AllCops:
   NewCops: enable
   SuggestExtensions: false
   Exclude:
-    - 'gemfiles/*.gemfile'
-    - 'vendor/**/*'
+    - "gemfiles/*.gemfile"
+    - "vendor/**/*"
 
 Metrics/AbcSize:
   Max: 25
@@ -15,7 +15,7 @@ Metrics/MethodLength:
 Metrics/BlockLength:
   Exclude:
     - spec/**/*_spec.rb
-    - '*.gemspec'
+    - "*.gemspec"
 
 Layout/LineLength:
   Enabled: false
