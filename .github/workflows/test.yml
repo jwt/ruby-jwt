@@ -44,7 +44,7 @@ jobs:
         include:
           - os: ubuntu-latest
             ruby: "2.5"
-            gemfile: "gemfiles/openssl.gemfile"
+            gemfile: gemfiles/openssl.gemfile
             experimental: false
           # Disable temporarily due to `ArgumentError: circular causes` error
           # - os: ubuntu-latest
@@ -52,8 +52,8 @@ jobs:
           #   gemfile: "gemfiles/standalone.gemfile"
           #   experimental: true
           - os: ubuntu-latest
-            ruby: "head"
-            gemfile: "gemfiles/standalone.gemfile"
+            ruby: head
+            gemfile: gemfiles/standalone.gemfile
             experimental: true
     continue-on-error: ${{ matrix.experimental }}
     env:

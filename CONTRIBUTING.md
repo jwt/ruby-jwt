@@ -4,7 +4,7 @@
 
 Fork the project on GitHub and clone your own fork. Instuctions on forking can be found from the [GitHub Docs](https://docs.github.com/en/get-started/quickstart/fork-a-repo)
 
-```
+```bash
 git clone git@github.com:you/ruby-jwt.git
 cd ruby-jwt
 git remote add upstream https://github.com/jwt/ruby-jwt
@@ -14,7 +14,7 @@ git remote add upstream https://github.com/jwt/ruby-jwt
 
 Make sure you have the latest upstream main branch of the project.
 
-```
+```bash
 git fetch --all
 git checkout main
 git rebase upstream/main
@@ -45,7 +45,7 @@ Add a short description of the change in either the `Features` or `Fixes` sectio
 
 The form of the row (You need to return to the row when you know the pull request id)
 
-```
+```markdown
 - Fix a little problem [#123](https://github.com/jwt/ruby-jwt/pull/123) - [@you](https://github.com/you).
 ```
 
@@ -96,5 +96,3 @@ Also update the [CHANGELOG](CHANGELOG.md) to reflect the upcoming version releas
 ```bash
 rake release
 ```
-
-**If you want a release cut with your PR, please include a version bump according to**
