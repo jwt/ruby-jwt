@@ -31,4 +31,29 @@ RSpec.describe JWT::JWA::Ecdsa do
       end
     end
   end
+
+  let(:ecdsa_key) { test_pkey('ec256-private.pem') }
+  let(:data) { 'test data' }
+  let(:instance) { described_class.new('ES256', 'sha256') }
+
+  describe '#verify' do
+    context 'when the verification key is valid' do
+      it 'returns true for a valid signature' do
+        signature = instance.sign(data: data, signing_key: ecdsa_key)
+        expect(instance.verify(data: data, signature: signature, verification_key: ecdsa_key)).to be true
+      end
+
+      it 'returns false for an invalid signature' do
+        expect(instance.verify(data: data, signature: 'invalid_signature', verification_key: ecdsa_key)).to be false
+      end
+    end
+    context 'when verification results in a OpenSSL::PKey::PKeyError error' do
+      it 'raises a JWT::VerificationError' do
+        allow(ecdsa_key).to receive(:dsa_verify_asn1).and_raise(OpenSSL::PKey::PKeyError.new('Error'))
+        expect do
+          instance.verify(data: data, signature: '', verification_key: ecdsa_key)
+        end.to raise_error(JWT::VerificationError, 'Signature verification raised')
+      end
+    end
+  end
 end

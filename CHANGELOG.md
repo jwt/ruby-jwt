@@ -5,6 +5,7 @@
 [Full Changelog](https://github.com/jwt/ruby-jwt/compare/v2.10.1...main)
 
 **Breaking changes:**
+
 - Require token signature to be verified before accessing payload [#648](https://github.com/jwt/ruby-jwt/pull/648) ([@anakinj](https://github.com/anakinj))
 - Drop support for the HS512256 algorithm [#650](https://github.com/jwt/ruby-jwt/pull/650) ([@anakinj](https://github.com/anakinj))
 - Remove deprecated claim verification methods [#654](https://github.com/jwt/ruby-jwt/pull/654) ([@anakinj](https://github.com/anakinj))
@@ -17,6 +18,7 @@
 Take a look at the [upgrade guide](UPGRADING.md) for more details.
 
 **Features:**
+
 - JWT::EncodedToken#verify! method that bundles signature and claim validation [#647](https://github.com/jwt/ruby-jwt/pull/647) ([@anakinj](https://github.com/anakinj))
 - Do not override the alg header if already given [#659](https://github.com/jwt/ruby-jwt/pull/659) ([@anakinj](https://github.com/anakinj))
 - Make `JWK::KeyFinder` compatible with `JWT::EncodedToken` [#663](https://github.com/jwt/ruby-jwt/pull/663) ([@anakinj](https://github.com/anakinj))
@@ -191,6 +193,7 @@ Take a look at the [upgrade guide](UPGRADING.md) for more details.
 - Support OpenSSL >= 3.0 [#496](https://github.com/jwt/ruby-jwt/pull/496) ([@anakinj](https://github.com/anakinj))
 
 **Fixes and enhancements:**
+
 - Bring back the old Base64 (RFC2045) deocode mechanisms [#488](https://github.com/jwt/ruby-jwt/pull/488) ([@anakinj](https://github.com/anakinj))
 - Rescue RbNaCl exception for EdDSA wrong key [#491](https://github.com/jwt/ruby-jwt/pull/491) ([@n-studio](https://github.com/n-studio))
 - New parameter name for cases when kid is not found using JWK key loader proc [#501](https://github.com/jwt/ruby-jwt/pull/501) ([@anakinj](https://github.com/anakinj))
@@ -201,6 +204,7 @@ Take a look at the [upgrade guide](UPGRADING.md) for more details.
 [Full Changelog](https://github.com/jwt/ruby-jwt/compare/v2.4.0...v2.4.1)
 
 **Fixes and enhancements:**
+
 - Raise JWT::DecodeError on invalid signature [\#484](https://github.com/jwt/ruby-jwt/pull/484) ([@freakyfelt!](https://github.com/freakyfelt!))
 
 ## [v2.4.0](https://github.com/jwt/ruby-jwt/tree/v2.4.0) (2022-06-06)
@@ -218,11 +222,12 @@ Take a look at the [upgrade guide](UPGRADING.md) for more details.
 - Add Support to be able to verify from multiple keys [\#425](https://github.com/jwt/ruby-jwt/pull/425) ([ritikesh](https://github.com/ritikesh))
 
 **Fixes and enhancements:**
+
 - Readme: Typo fix re MissingRequiredClaim [\#451](https://github.com/jwt/ruby-jwt/pull/451) ([antonmorant](https://github.com/antonmorant))
 - Fix RuboCop TODOs [\#476](https://github.com/jwt/ruby-jwt/pull/476) ([typhoon2099](https://github.com/typhoon2099))
 - Make specific algorithms in README linkable [\#472](https://github.com/jwt/ruby-jwt/pull/472) ([milieu](https://github.com/milieu))
 - Update note about supported JWK types [\#475](https://github.com/jwt/ruby-jwt/pull/475) ([dpashkevich](https://github.com/dpashkevich))
-- Create CODE\_OF\_CONDUCT.md [\#449](https://github.com/jwt/ruby-jwt/pull/449) ([loic5](https://github.com/loic5))
+- Create CODE_OF_CONDUCT.md [\#449](https://github.com/jwt/ruby-jwt/pull/449) ([loic5](https://github.com/loic5))
 
 ## [v2.3.0](https://github.com/jwt/ruby-jwt/tree/v2.3.0) (2021-10-03)
 
@@ -243,19 +248,19 @@ Take a look at the [upgrade guide](UPGRADING.md) for more details.
 - Release 2.3.0 [\#448](https://github.com/jwt/ruby-jwt/pull/448) ([excpt](https://github.com/excpt))
 - Fix Style/MultilineIfModifier issues [\#447](https://github.com/jwt/ruby-jwt/pull/447) ([anakinj](https://github.com/anakinj))
 - feat\(EdDSA\): Accept EdDSA as algorithm header [\#446](https://github.com/jwt/ruby-jwt/pull/446) ([Pierre-Michard](https://github.com/Pierre-Michard))
-- Pass kid param through JWT::JWK.create\_from [\#445](https://github.com/jwt/ruby-jwt/pull/445) ([shaun-guth-allscripts](https://github.com/shaun-guth-allscripts))
+- Pass kid param through JWT::JWK.create_from [\#445](https://github.com/jwt/ruby-jwt/pull/445) ([shaun-guth-allscripts](https://github.com/shaun-guth-allscripts))
 - fix document about passing JWKs as a simple Hash [\#443](https://github.com/jwt/ruby-jwt/pull/443) ([takayamaki](https://github.com/takayamaki))
 - Tests for mixing JWK keys with mismatching algorithms [\#441](https://github.com/jwt/ruby-jwt/pull/441) ([anakinj](https://github.com/anakinj))
-- verify\_claims test shouldnt be within the verify\_sub test [\#431](https://github.com/jwt/ruby-jwt/pull/431) ([andyjdavis](https://github.com/andyjdavis))
+- verify_claims test shouldnt be within the verify_sub test [\#431](https://github.com/jwt/ruby-jwt/pull/431) ([andyjdavis](https://github.com/andyjdavis))
 - Allow decode options to specify required claims [\#430](https://github.com/jwt/ruby-jwt/pull/430) ([andyjdavis](https://github.com/andyjdavis))
-- Fix OpenSSL::PKey::EC public\_key handing in tests [\#427](https://github.com/jwt/ruby-jwt/pull/427) ([anakinj](https://github.com/anakinj))
-- Add documentation for find\_key [\#426](https://github.com/jwt/ruby-jwt/pull/426) ([ritikesh](https://github.com/ritikesh))
+- Fix OpenSSL::PKey::EC public_key handing in tests [\#427](https://github.com/jwt/ruby-jwt/pull/427) ([anakinj](https://github.com/anakinj))
+- Add documentation for find_key [\#426](https://github.com/jwt/ruby-jwt/pull/426) ([ritikesh](https://github.com/ritikesh))
 - Give ruby 3.0 as a string to avoid number formatting issues [\#424](https://github.com/jwt/ruby-jwt/pull/424) ([anakinj](https://github.com/anakinj))
 - Tests for iat verification behaviour [\#423](https://github.com/jwt/ruby-jwt/pull/423) ([anakinj](https://github.com/anakinj))
 - Remove HMAC with nil secret from documentation [\#422](https://github.com/jwt/ruby-jwt/pull/422) ([boardfish](https://github.com/boardfish))
 - Update broken link in README [\#420](https://github.com/jwt/ruby-jwt/pull/420) ([severin](https://github.com/severin))
 - Add metadata for RubyGems [\#418](https://github.com/jwt/ruby-jwt/pull/418) ([nickhammond](https://github.com/nickhammond))
-- Fixed a typo about class name  [\#417](https://github.com/jwt/ruby-jwt/pull/417) ([mai-f](https://github.com/mai-f))
+- Fixed a typo about class name [\#417](https://github.com/jwt/ruby-jwt/pull/417) ([mai-f](https://github.com/mai-f))
 - Fix references for v2.2.3 on CHANGELOG [\#416](https://github.com/jwt/ruby-jwt/pull/416) ([vyper](https://github.com/vyper))
 - Raise IncorrectAlgorithm if token has no alg header [\#411](https://github.com/jwt/ruby-jwt/pull/411) ([bouk](https://github.com/bouk))
 
@@ -265,9 +270,9 @@ Take a look at the [upgrade guide](UPGRADING.md) for more details.
 
 **Implemented enhancements:**
 
-- Verify algorithm before evaluating keyfinder  [\#343](https://github.com/jwt/ruby-jwt/issues/343)
+- Verify algorithm before evaluating keyfinder [\#343](https://github.com/jwt/ruby-jwt/issues/343)
 - Why jwt depends on json \< 2.0 ? [\#179](https://github.com/jwt/ruby-jwt/issues/179)
-- Support for JWK in-lieu of rsa\_public [\#158](https://github.com/jwt/ruby-jwt/issues/158)
+- Support for JWK in-lieu of rsa_public [\#158](https://github.com/jwt/ruby-jwt/issues/158)
 - Fix rspec `raise_error` warning [\#413](https://github.com/jwt/ruby-jwt/pull/413) ([excpt](https://github.com/excpt))
 - Add support for JWKs with HMAC key type. [\#372](https://github.com/jwt/ruby-jwt/pull/372) ([phlegx](https://github.com/phlegx))
 - Improve 'none' algorithm handling [\#365](https://github.com/jwt/ruby-jwt/pull/365) ([danleyden](https://github.com/danleyden))
@@ -295,7 +300,7 @@ Take a look at the [upgrade guide](UPGRADING.md) for more details.
 - Add forwardable dependency [\#408](https://github.com/jwt/ruby-jwt/pull/408) ([anakinj](https://github.com/anakinj))
 - Ignore casing of algorithm [\#405](https://github.com/jwt/ruby-jwt/pull/405) ([johnnyshields](https://github.com/johnnyshields))
 - Document function and add tests for verify claims method [\#404](https://github.com/jwt/ruby-jwt/pull/404) ([yasonk](https://github.com/yasonk))
-- documenting calling verify\_jti callback with 2 arguments in the readme [\#402](https://github.com/jwt/ruby-jwt/pull/402) ([HoneyryderChuck](https://github.com/HoneyryderChuck))
+- documenting calling verify_jti callback with 2 arguments in the readme [\#402](https://github.com/jwt/ruby-jwt/pull/402) ([HoneyryderChuck](https://github.com/HoneyryderChuck))
 - Target the master branch on the build status badge [\#399](https://github.com/jwt/ruby-jwt/pull/399) ([anakinj](https://github.com/anakinj))
 - Improving the local development experience [\#397](https://github.com/jwt/ruby-jwt/pull/397) ([anakinj](https://github.com/anakinj))
 - Fix sourcelevel broken links [\#395](https://github.com/jwt/ruby-jwt/pull/395) ([anakinj](https://github.com/anakinj))
@@ -343,7 +348,7 @@ Take a look at the [upgrade guide](UPGRADING.md) for more details.
 - Decode any token [\#360](https://github.com/jwt/ruby-jwt/issues/360)
 - \[question\] example of using a pub/priv keys for signing? [\#351](https://github.com/jwt/ruby-jwt/issues/351)
 - JWT::ExpiredSignature raised for non-JSON payloads [\#350](https://github.com/jwt/ruby-jwt/issues/350)
-- verify\_aud only verifies that at least one aud is expected [\#345](https://github.com/jwt/ruby-jwt/issues/345)
+- verify_aud only verifies that at least one aud is expected [\#345](https://github.com/jwt/ruby-jwt/issues/345)
 - Sinatra 4.90s TTFB [\#344](https://github.com/jwt/ruby-jwt/issues/344)
 - How to Logout [\#342](https://github.com/jwt/ruby-jwt/issues/342)
 - jwt token decoding even when wrong token is provided for some letters [\#337](https://github.com/jwt/ruby-jwt/issues/337)
@@ -395,9 +400,9 @@ Take a look at the [upgrade guide](UPGRADING.md) for more details.
 
 **Implemented enhancements:**
 
-- Use iat\_leeway option [\#273](https://github.com/jwt/ruby-jwt/issues/273)
+- Use iat_leeway option [\#273](https://github.com/jwt/ruby-jwt/issues/273)
 - Use of global state in latest version breaks thread safety of JWT.decode [\#268](https://github.com/jwt/ruby-jwt/issues/268)
-- JSON support  [\#246](https://github.com/jwt/ruby-jwt/issues/246)
+- JSON support [\#246](https://github.com/jwt/ruby-jwt/issues/246)
 - Change the Github homepage URL to https [\#301](https://github.com/jwt/ruby-jwt/pull/301) ([ekohl](https://github.com/ekohl))
 - Fix Salt length for conformance with PS family specification. [\#300](https://github.com/jwt/ruby-jwt/pull/300) ([tobypinder](https://github.com/tobypinder))
 - Add support for Ruby 2.6 [\#299](https://github.com/jwt/ruby-jwt/pull/299) ([bustikiller](https://github.com/bustikiller))
@@ -410,7 +415,7 @@ Take a look at the [upgrade guide](UPGRADING.md) for more details.
 - Add note about using a hard coded algorithm in README [\#280](https://github.com/jwt/ruby-jwt/pull/280) ([revodoge](https://github.com/revodoge))
 - Add Appraisal support [\#278](https://github.com/jwt/ruby-jwt/pull/278) ([olbrich](https://github.com/olbrich))
 - Fix decode threading issue [\#269](https://github.com/jwt/ruby-jwt/pull/269) ([ab320012](https://github.com/ab320012))
-- Removed leeway from verify\_iat [\#257](https://github.com/jwt/ruby-jwt/pull/257) ([ab320012](https://github.com/ab320012))
+- Removed leeway from verify_iat [\#257](https://github.com/jwt/ruby-jwt/pull/257) ([ab320012](https://github.com/ab320012))
 
 **Fixed bugs:**
 
@@ -440,7 +445,7 @@ Take a look at the [upgrade guide](UPGRADING.md) for more details.
 - Infer algorithm from header [\#254](https://github.com/jwt/ruby-jwt/issues/254)
 - Why is the result of decode is an array? [\#252](https://github.com/jwt/ruby-jwt/issues/252)
 - Add support for headless token [\#251](https://github.com/jwt/ruby-jwt/issues/251)
-- Leeway or exp\_leeway [\#215](https://github.com/jwt/ruby-jwt/issues/215)
+- Leeway or exp_leeway [\#215](https://github.com/jwt/ruby-jwt/issues/215)
 - Could you describe purpose of cert fixtures and their cryptokey lengths. [\#185](https://github.com/jwt/ruby-jwt/issues/185)
 
 **Merged pull requests:**
@@ -451,7 +456,7 @@ Take a look at the [upgrade guide](UPGRADING.md) for more details.
 - Drop Ruby 2.2 from test matrix [\#290](https://github.com/jwt/ruby-jwt/pull/290) ([anakinj](https://github.com/anakinj))
 - Remove broken reek config [\#283](https://github.com/jwt/ruby-jwt/pull/283) ([excpt](https://github.com/excpt))
 - Add missing test, Update common files [\#275](https://github.com/jwt/ruby-jwt/pull/275) ([excpt](https://github.com/excpt))
-- Remove iat\_leeway option [\#274](https://github.com/jwt/ruby-jwt/pull/274) ([wohlgejm](https://github.com/wohlgejm))
+- Remove iat_leeway option [\#274](https://github.com/jwt/ruby-jwt/pull/274) ([wohlgejm](https://github.com/wohlgejm))
 - improving code quality of jwt module [\#266](https://github.com/jwt/ruby-jwt/pull/266) ([ab320012](https://github.com/ab320012))
 - fixed ECDSA supported versions const [\#263](https://github.com/jwt/ruby-jwt/pull/263) ([starbeast](https://github.com/starbeast))
 - Added my name to contributor list [\#262](https://github.com/jwt/ruby-jwt/pull/262) ([ab320012](https://github.com/ab320012))
@@ -541,14 +546,14 @@ Take a look at the [upgrade guide](UPGRADING.md) for more details.
 - Move signature logic to its own module [\#195](https://github.com/jwt/ruby-jwt/pull/195) ([EmilioCristalli](https://github.com/EmilioCristalli))
 - Add options for claim-specific leeway [\#187](https://github.com/jwt/ruby-jwt/pull/187) ([EmilioCristalli](https://github.com/EmilioCristalli))
 - Add user friendly encode error if private key is a String, \#171 [\#176](https://github.com/jwt/ruby-jwt/pull/176) ([ogonki-vetochki](https://github.com/ogonki-vetochki))
-- Return empty string if signature less than byte\_size \#155 [\#175](https://github.com/jwt/ruby-jwt/pull/175) ([ogonki-vetochki](https://github.com/ogonki-vetochki))
+- Return empty string if signature less than byte_size \#155 [\#175](https://github.com/jwt/ruby-jwt/pull/175) ([ogonki-vetochki](https://github.com/ogonki-vetochki))
 - Remove 'typ' optional parameter [\#174](https://github.com/jwt/ruby-jwt/pull/174) ([ogonki-vetochki](https://github.com/ogonki-vetochki))
 - Pass payload to keyfinder [\#172](https://github.com/jwt/ruby-jwt/pull/172) ([CodeMonkeySteve](https://github.com/CodeMonkeySteve))
 - Use RbNaCl for HMAC if available with fallback to OpenSSL [\#149](https://github.com/jwt/ruby-jwt/pull/149) ([mwpastore](https://github.com/mwpastore))
 
 **Fixed bugs:**
 
-- ruby-jwt::raw\_to\_asn1: Fails for signatures less than byte\_size [\#155](https://github.com/jwt/ruby-jwt/issues/155)
+- ruby-jwt::raw_to_asn1: Fails for signatures less than byte_size [\#155](https://github.com/jwt/ruby-jwt/issues/155)
 - The leeway parameter is applies to all time based verifications [\#129](https://github.com/jwt/ruby-jwt/issues/129)
 - Make algorithm option required to verify signature [\#184](https://github.com/jwt/ruby-jwt/pull/184) ([EmilioCristalli](https://github.com/EmilioCristalli))
 - Validate audience when payload is a scalar and options is an array [\#183](https://github.com/jwt/ruby-jwt/pull/183) ([steti](https://github.com/steti))
@@ -560,7 +565,7 @@ Take a look at the [upgrade guide](UPGRADING.md) for more details.
 - Include custom headers with password [\#189](https://github.com/jwt/ruby-jwt/issues/189)
 - can't create token - 'NotImplementedError: Unsupported signing method' [\#186](https://github.com/jwt/ruby-jwt/issues/186)
 - Cannot verify JWT at all?? [\#177](https://github.com/jwt/ruby-jwt/issues/177)
-- verify\_iss: true is raising JWT::DecodeError instead of JWT::InvalidIssuerError [\#170](https://github.com/jwt/ruby-jwt/issues/170)
+- verify_iss: true is raising JWT::DecodeError instead of JWT::InvalidIssuerError [\#170](https://github.com/jwt/ruby-jwt/issues/170)
 
 **Merged pull requests:**
 
@@ -631,7 +636,7 @@ Take a look at the [upgrade guide](UPGRADING.md) for more details.
 - Added test execution to Rakefile [\#147](https://github.com/jwt/ruby-jwt/pull/147) ([jabbrwcky](https://github.com/jabbrwcky))
 - Bump version [\#145](https://github.com/jwt/ruby-jwt/pull/145) ([excpt](https://github.com/excpt))
 - Add a changelog file [\#142](https://github.com/jwt/ruby-jwt/pull/142) ([excpt](https://github.com/excpt))
-- Return decoded\_segments [\#139](https://github.com/jwt/ruby-jwt/pull/139) ([akostrikov](https://github.com/akostrikov))
+- Return decoded_segments [\#139](https://github.com/jwt/ruby-jwt/pull/139) ([akostrikov](https://github.com/akostrikov))
 
 ## [v1.5.4](https://github.com/jwt/ruby-jwt/tree/v1.5.4) (2016-03-24)
 
@@ -639,12 +644,12 @@ Take a look at the [upgrade guide](UPGRADING.md) for more details.
 
 **Closed issues:**
 
-- 404 at https://rubygems.global.ssl.fastly.net/gems/jwt-1.5.3.gem [\#137](https://github.com/jwt/ruby-jwt/issues/137)
+- 404 at [https://rubygems.global.ssl.fastly.net/gems/jwt-1.5.3.gem](https://rubygems.global.ssl.fastly.net/gems/jwt-1.5.3.gem) [\#137](https://github.com/jwt/ruby-jwt/issues/137)
 
 **Merged pull requests:**
 
 - Update README.md [\#138](https://github.com/jwt/ruby-jwt/pull/138) ([excpt](https://github.com/excpt))
-- Fix base64url\_decode [\#136](https://github.com/jwt/ruby-jwt/pull/136) ([excpt](https://github.com/excpt))
+- Fix base64url_decode [\#136](https://github.com/jwt/ruby-jwt/pull/136) ([excpt](https://github.com/excpt))
 - Fix ruby 1.9.3 compatibility [\#135](https://github.com/jwt/ruby-jwt/pull/135) ([excpt](https://github.com/excpt))
 - iat can be a float value [\#134](https://github.com/jwt/ruby-jwt/pull/134) ([llimllib](https://github.com/llimllib))
 
@@ -665,7 +670,7 @@ Take a look at the [upgrade guide](UPGRADING.md) for more details.
 - Verifications not functioning in latest release [\#128](https://github.com/jwt/ruby-jwt/issues/128)
 - Base64 is generating invalid length base64 strings - cross language interop [\#127](https://github.com/jwt/ruby-jwt/issues/127)
 - Digest::Digest is deprecated; use Digest [\#119](https://github.com/jwt/ruby-jwt/issues/119)
-- verify\_rsa no method 'verify' for class String [\#115](https://github.com/jwt/ruby-jwt/issues/115)
+- verify_rsa no method 'verify' for class String [\#115](https://github.com/jwt/ruby-jwt/issues/115)
 - Add a changelog [\#111](https://github.com/jwt/ruby-jwt/issues/111)
 
 **Merged pull requests:**
@@ -783,14 +788,14 @@ Take a look at the [upgrade guide](UPGRADING.md) for more details.
 
 **Closed issues:**
 
-- The behavior using 'json' differs from 'multi\_json' [\#41](https://github.com/jwt/ruby-jwt/issues/41)
+- The behavior using 'json' differs from 'multi_json' [\#41](https://github.com/jwt/ruby-jwt/issues/41)
 
 **Merged pull requests:**
 
 - Release 1.4.0 [\#64](https://github.com/jwt/ruby-jwt/pull/64) ([excpt](https://github.com/excpt))
 - Update README.md and remove dead code [\#63](https://github.com/jwt/ruby-jwt/pull/63) ([excpt](https://github.com/excpt))
-- Add  'iat/ aud/ sub/ jti'  support for ruby-jwt [\#62](https://github.com/jwt/ruby-jwt/pull/62) ([ZhangHanDong](https://github.com/ZhangHanDong))
-- Add  'iss'  support for ruby-jwt [\#61](https://github.com/jwt/ruby-jwt/pull/61) ([ZhangHanDong](https://github.com/ZhangHanDong))
+- Add 'iat/ aud/ sub/ jti' support for ruby-jwt [\#62](https://github.com/jwt/ruby-jwt/pull/62) ([ZhangHanDong](https://github.com/ZhangHanDong))
+- Add 'iss' support for ruby-jwt [\#61](https://github.com/jwt/ruby-jwt/pull/61) ([ZhangHanDong](https://github.com/ZhangHanDong))
 - Clarify .encode API in README [\#60](https://github.com/jwt/ruby-jwt/pull/60) ([jbodah](https://github.com/jbodah))
 
 ## [jwt-1.3.0](https://github.com/jwt/ruby-jwt/tree/jwt-1.3.0) (2015-02-24)
@@ -853,7 +858,7 @@ Take a look at the [upgrade guide](UPGRADING.md) for more details.
 
 **Closed issues:**
 
-- API request - JWT::decoded\_header\(\) [\#26](https://github.com/jwt/ruby-jwt/issues/26)
+- API request - JWT::decoded_header\(\) [\#26](https://github.com/jwt/ruby-jwt/issues/26)
 
 **Merged pull requests:**
 
@@ -956,9 +961,5 @@ Take a look at the [upgrade guide](UPGRADING.md) for more details.
 
 **Merged pull requests:**
 
-- Bumped a version and added a .gemspec using rake build\_gemspec [\#3](https://github.com/jwt/ruby-jwt/pull/3) ([zhitomirskiyi](https://github.com/zhitomirskiyi))
+- Bumped a version and added a .gemspec using rake build_gemspec [\#3](https://github.com/jwt/ruby-jwt/pull/3) ([zhitomirskiyi](https://github.com/zhitomirskiyi))
 - Added RSA support [\#2](https://github.com/jwt/ruby-jwt/pull/2) ([zhitomirskiyi](https://github.com/zhitomirskiyi))
-
-
-
-\* *This Changelog was automatically generated by [github_changelog_generator](https://github.com/github-changelog-generator/github-changelog-generator)*

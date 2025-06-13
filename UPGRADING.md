@@ -38,6 +38,7 @@ Claim verification has been [split into separate classes](https://github.com/jwt
 ## Algorithm restructuring
 
 The internal algorithms were [restructured](https://github.com/jwt/ruby-jwt/pull/607) to support extensions from separate libraries. The changes led to a few deprecations and new requirements:
+
 - The `sign` and `verify` static methods on all the algorithms (`::JWT::JWA`) will be removed.
 - Custom algorithms are expected to include the `JWT::JWA::SigningAlgorithm` module.
 

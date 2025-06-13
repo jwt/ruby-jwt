@@ -6,6 +6,11 @@ require 'jwt/x5c_key_finder'
 module JWT
   # The Decode class is responsible for decoding and verifying JWT tokens.
   class Decode
+    # Order is very important - first check for string keys, next for symbols
+    ALGORITHM_KEYS = ['algorithm',
+                      :algorithm,
+                      'algorithms',
+                      :algorithms].freeze
     # Initializes a new Decode instance.
     #
     # @param jwt [String] the JWT to decode.
@@ -76,12 +81,6 @@ module JWT
     def allowed_and_valid_algorithms
       @allowed_and_valid_algorithms ||= allowed_algorithms.select { |alg| alg.valid_alg?(alg_in_header) }
     end
-
-    # Order is very important - first check for string keys, next for symbols
-    ALGORITHM_KEYS = ['algorithm',
-                      :algorithm,
-                      'algorithms',
-                      :algorithms].freeze
 
     def given_algorithms
       alg_key = ALGORITHM_KEYS.find { |key| @options[key] }
