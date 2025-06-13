@@ -53,10 +53,11 @@ jobs:
             ruby: "2.5"
             gemfile: "gemfiles/openssl.gemfile"
             experimental: false
-          - os: ubuntu-latest
-            ruby: "truffleruby-head"
-            gemfile: "gemfiles/standalone.gemfile"
-            experimental: true
+          # Disable temporarily due to `ArgumentError: circular causes` error
+          # - os: ubuntu-latest
+          #   ruby: "truffleruby-head"
+          #   gemfile: "gemfiles/standalone.gemfile"
+          #   experimental: true
           - os: ubuntu-latest
             ruby: "head"
             gemfile: "gemfiles/standalone.gemfile"
