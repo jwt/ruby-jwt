@@ -41,7 +41,7 @@ And run `bundle install`
 
 Finally require the gem in your application
 
-```ruby
+```
 require 'jwt'
 ```
 

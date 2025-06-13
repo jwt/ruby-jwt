@@ -10,7 +10,7 @@ RSpec.describe JWT do
     it 'has a MAJOR version' do
       expect(JWT::VERSION::MAJOR).to be_a(Integer)
     end
-
+    # TODO: Need to do something here
     it 'has a MINOR version' do
       expect(JWT::VERSION::MINOR).to be_a(Integer)
     end
