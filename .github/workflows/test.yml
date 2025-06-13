@@ -53,10 +53,11 @@ jobs:
             ruby: "2.5"
             gemfile: "gemfiles/openssl.gemfile"
             experimental: false
-          - os: ubuntu-latest
-            ruby: "truffleruby-head"
-            gemfile: "gemfiles/standalone.gemfile"
-            experimental: true
+          # Disable temporarily due to `ArgumentError: circular causes` error
+          # - os: ubuntu-latest
+          #   ruby: "truffleruby-head"
+          #   gemfile: "gemfiles/standalone.gemfile"
+          #   experimental: true
           - os: ubuntu-latest
             ruby: "head"
             gemfile: "gemfiles/standalone.gemfile"
@@ -96,13 +97,11 @@ jobs:
 
       - name: Download coverage reports from the test job
         uses: actions/download-artifact@v4
-        with:
-          merge-multiple: true
 
       - uses: qltysh/qlty-action/coverage@main
         with:
           token: ${{ secrets.QLTY_COVERAGE_TOKEN }}
-          files: coverage/*.json
+          files: coverage-*/*.json
 
   smoke:
     name: Built GEM smoke test
