@@ -1,8 +1,8 @@
 # Changelog
 
-## [v3.0.0](https://github.com/jwt/ruby-jwt/tree/v3.0.0) (NEXT)
+## [v3.0.0](https://github.com/jwt/ruby-jwt/tree/v3.0.0) (2025-06-14)
 
-[Full Changelog](https://github.com/jwt/ruby-jwt/compare/v2.10.1...main)
+[Full Changelog](https://github.com/jwt/ruby-jwt/compare/v2.10.1...v3.0.0)
 
 **Breaking changes:**
 
@@ -22,13 +22,11 @@ Take a look at the [upgrade guide](UPGRADING.md) for more details.
 - JWT::EncodedToken#verify! method that bundles signature and claim validation [#647](https://github.com/jwt/ruby-jwt/pull/647) ([@anakinj](https://github.com/anakinj))
 - Do not override the alg header if already given [#659](https://github.com/jwt/ruby-jwt/pull/659) ([@anakinj](https://github.com/anakinj))
 - Make `JWK::KeyFinder` compatible with `JWT::EncodedToken` [#663](https://github.com/jwt/ruby-jwt/pull/663) ([@anakinj](https://github.com/anakinj))
-- Your contribution here
 
 **Fixes and enhancements:**
 
 - Ruby 3.4 to CI matrix [#649](https://github.com/jwt/ruby-jwt/pull/649) ([@anakinj](https://github.com/anakinj))
 - Add logger as development dependency [#670](https://github.com/jwt/ruby-jwt/pull/670) ([@hieuk09](https://github.com/hieuk09))
-- Your contribution here
 
 ## [v2.10.1](https://github.com/jwt/ruby-jwt/tree/v2.10.1) (2024-12-26)
 
