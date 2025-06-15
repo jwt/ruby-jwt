@@ -7,6 +7,7 @@
 **Features:**
 
 - Add support for x5t header parameter for X.509 certificate thumbprint verification [#669](https://github.com/jwt/ruby-jwt/pull/669) ([@hieuk09](https://github.com/hieuk09))
+- Raise an error if the ECDSA signing or verification key is not an instance of `OpenSSL::PKey::EC` [#688](https://github.com/jwt/ruby-jwt/pull/688) ([@anakinj](https://github.com/anakinj))
 - Your contribution here
 
 **Fixes and enhancements:**

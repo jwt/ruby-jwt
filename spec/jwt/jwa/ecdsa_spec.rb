@@ -55,5 +55,40 @@ RSpec.describe JWT::JWA::Ecdsa do
         end.to raise_error(JWT::VerificationError, 'Signature verification raised')
       end
     end
+
+    context 'when the verification key is not an OpenSSL::PKey::EC instance' do
+      it 'raises a JWT::DecodeError' do
+        expect do
+          instance.verify(data: data, signature: '', verification_key: 'not_a_key')
+        end.to raise_error(JWT::DecodeError, 'The given key is a String. It has to be an OpenSSL::PKey::EC instance.')
+      end
+    end
+  end
+
+  describe '#sign' do
+    context 'when the signing key is valid' do
+      it 'returns a valid signature' do
+        signature = instance.sign(data: data, signing_key: ecdsa_key)
+        expect(signature).to be_a(String)
+        expect(signature.length).to be > 0
+      end
+    end
+
+    context 'when the signing key is not an OpenSSL::PKey::EC instance' do
+      it 'raises a JWT::DecodeError' do
+        expect do
+          instance.sign(data: data, signing_key: 'not_a_key')
+        end.to raise_error(JWT::EncodeError, 'The given key is a String. It has to be an OpenSSL::PKey::EC instance.')
+      end
+    end
+
+    context 'when the signing key is invalid' do
+      it 'raises a JWT::DecodeError' do
+        invalid_key = OpenSSL::PKey::EC.generate('sect571r1')
+        expect do
+          instance.sign(data: data, signing_key: invalid_key)
+        end.to raise_error(JWT::DecodeError, "The ECDSA curve 'sect571r1' is not supported")
+      end
+    end
   end
 end
