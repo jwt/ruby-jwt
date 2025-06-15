@@ -70,12 +70,20 @@ module JWT
         end
       end
 
-      def self.create_public_key_from_point(point)
-        sequence = OpenSSL::ASN1::Sequence([
-                                             OpenSSL::ASN1::Sequence([OpenSSL::ASN1::ObjectId('id-ecPublicKey'), OpenSSL::ASN1::ObjectId(point.group.curve_name)]),
-                                             OpenSSL::ASN1::BitString(point.to_octet_string(:uncompressed))
-                                           ])
-        OpenSSL::PKey::EC.new(sequence.to_der)
+      if ::JWT.openssl_3?
+        def self.create_public_key_from_point(point)
+          sequence = OpenSSL::ASN1::Sequence([
+                                               OpenSSL::ASN1::Sequence([OpenSSL::ASN1::ObjectId('id-ecPublicKey'), OpenSSL::ASN1::ObjectId(point.group.curve_name)]),
+                                               OpenSSL::ASN1::BitString(point.to_octet_string(:uncompressed))
+                                             ])
+          OpenSSL::PKey::EC.new(sequence.to_der)
+        end
+      else
+        def self.create_public_key_from_point(point)
+          OpenSSL::PKey::EC.new(point.group.curve_name).tap do |key|
+            key.public_key = point
+          end
+        end
       end
 
       private
