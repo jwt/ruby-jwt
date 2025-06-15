@@ -68,11 +68,7 @@
 
 <p>If you have further questions related to development or usage, join us: <a href="https://groups.google.com/forum/#!forum/ruby-jwt">ruby-jwt google group</a>.</p>
 
-<p>See <a href="CHANGELOG.md">CHANGELOG.md</a> for a complete set of changes.</p>
-
-<h2 id="upcoming-breaking-changes">Upcoming breaking changes</h2>
-
-<p>Check out breaking changes in the upcoming <strong>version 3.0</strong> from the <a href="UPGRADING.md">upgrade guide</a></p>
+<p>See <a href="CHANGELOG.md">CHANGELOG.md</a> for a complete set of changes and <a href="UPGRADING.md">upgrade guide</a> for upgrading between major versions.</p>
 
 <h2 id="sponsors">Sponsors</h2>
 
@@ -125,25 +121,16 @@
 <li>none - unsigned token</li>
 </ul>
 
-<pre class="code ruby"><code class="ruby">
-<span class='id identifier rubyid_payload'>payload</span> <span class='op'>=</span> <span class='lbrace'>{</span> <span class='label'>data:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>test</span><span class='tstring_end'>&#39;</span></span> <span class='rbrace'>}</span>
-
-<span class='comment'># IMPORTANT: set nil as password parameter
-</span><span class='id identifier rubyid_token'>token</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="JWT.html" title="JWT (module)">JWT</a></span></span><span class='period'>.</span><span class='id identifier rubyid_encode'><span class='object_link'><a href="JWT.html#encode-class_method" title="JWT.encode (method)">encode</a></span></span><span class='lparen'>(</span><span class='id identifier rubyid_payload'>payload</span><span class='comma'>,</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>none</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span>
-
-<span class='comment'># eyJhbGciOiJub25lIn0.eyJkYXRhIjoidGVzdCJ9.
-</span><span class='id identifier rubyid_puts'>puts</span> <span class='id identifier rubyid_token'>token</span>
-
-<span class='comment'># Set password to nil and validation to false otherwise this won&#39;t work
-</span><span class='id identifier rubyid_decoded_token'>decoded_token</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="JWT.html" title="JWT (module)">JWT</a></span></span><span class='period'>.</span><span class='id identifier rubyid_decode'><span class='object_link'><a href="JWT.html#decode-class_method" title="JWT.decode (method)">decode</a></span></span><span class='lparen'>(</span><span class='id identifier rubyid_token'>token</span><span class='comma'>,</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='kw'>false</span><span class='rparen'>)</span>
-
-<span class='comment'># Array
-</span><span class='comment'># [
-</span><span class='comment'>#   {&quot;data&quot;=&gt;&quot;test&quot;}, # payload
-</span><span class='comment'>#   {&quot;alg&quot;=&gt;&quot;none&quot;} # header
-</span><span class='comment'># ]
-</span><span class='id identifier rubyid_puts'>puts</span> <span class='id identifier rubyid_decoded_token'>decoded_token</span>
-</code></pre>
+<pre class="code ruby"><code class="ruby"><span class='id identifier rubyid_payload'>payload</span> <span class='op'>=</span> <span class='lbrace'>{</span> <span class='label'>data:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>test</span><span class='tstring_end'>&#39;</span></span> <span class='rbrace'>}</span>
+<span class='id identifier rubyid_token'>token</span>   <span class='op'>=</span> <span class='const'><span class='object_link'><a href="JWT.html" title="JWT (module)">JWT</a></span></span><span class='period'>.</span><span class='id identifier rubyid_encode'><span class='object_link'><a href="JWT.html#encode-class_method" title="JWT.encode (method)">encode</a></span></span><span class='lparen'>(</span><span class='id identifier rubyid_payload'>payload</span><span class='comma'>,</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>none</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span>
+<span class='comment'># =&gt; &quot;eyJhbGciOiJub25lIn0.eyJkYXRhIjoidGVzdCJ9.&quot;
+</span>
+<span class='id identifier rubyid_decoded_token'>decoded_token</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="JWT.html" title="JWT (module)">JWT</a></span></span><span class='period'>.</span><span class='id identifier rubyid_decode'><span class='object_link'><a href="JWT.html#decode-class_method" title="JWT.decode (method)">decode</a></span></span><span class='lparen'>(</span><span class='id identifier rubyid_token'>token</span><span class='comma'>,</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='kw'>true</span><span class='comma'>,</span> <span class='lbrace'>{</span> <span class='label'>algorithm:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>none</span><span class='tstring_end'>&#39;</span></span> <span class='rbrace'>}</span><span class='rparen'>)</span>
+<span class='comment'>#  =&gt; [
+</span><span class='comment'>#       {&quot;data&quot;=&gt;&quot;test&quot;}, # payload
+</span><span class='comment'>#       {&quot;alg&quot;=&gt;&quot;none&quot;} # header
+</span><span class='comment'>#     ]
+</span></code></pre>
 
 <h3 id="hmac"><strong>HMAC</strong></h3>
 
@@ -153,23 +140,18 @@
 <li>HS512 - HMAC using SHA-512 hash algorithm</li>
 </ul>
 
-<pre class="code ruby"><code class="ruby"><span class='comment'># The secret must be a string. With OpenSSL 3.0/openssl gem `&lt;3.0.1`, JWT::DecodeError will be raised if it isn&#39;t provided.
-</span><span class='id identifier rubyid_hmac_secret'>hmac_secret</span> <span class='op'>=</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>my$ecretK3y</span><span class='tstring_end'>&#39;</span></span>
+<pre class="code ruby"><code class="ruby"><span class='id identifier rubyid_payload'>payload</span>     <span class='op'>=</span> <span class='lbrace'>{</span> <span class='label'>data:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>test</span><span class='tstring_end'>&#39;</span></span> <span class='rbrace'>}</span>
+<span class='id identifier rubyid_hmac_secret'>hmac_secret</span> <span class='op'>=</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>my$ecretK3y</span><span class='tstring_end'>&#39;</span></span>
 
 <span class='id identifier rubyid_token'>token</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="JWT.html" title="JWT (module)">JWT</a></span></span><span class='period'>.</span><span class='id identifier rubyid_encode'><span class='object_link'><a href="JWT.html#encode-class_method" title="JWT.encode (method)">encode</a></span></span><span class='lparen'>(</span><span class='id identifier rubyid_payload'>payload</span><span class='comma'>,</span> <span class='id identifier rubyid_hmac_secret'>hmac_secret</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>HS256</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span>
-
-<span class='comment'># eyJhbGciOiJIUzI1NiJ9.eyJkYXRhIjoidGVzdCJ9.pNIWIL34Jo13LViZAJACzK6Yf0qnvT_BuwOxiMCPE-Y
-</span><span class='id identifier rubyid_puts'>puts</span> <span class='id identifier rubyid_token'>token</span>
-
+<span class='comment'># =&gt; &quot;eyJhbGciOiJIUzI1NiJ9.eyJkYXRhIjoidGVzdCJ9.pNIWIL34Jo13LViZAJACzK6Yf0qnvT_BuwOxiMCPE-Y&quot;
+</span>
 <span class='id identifier rubyid_decoded_token'>decoded_token</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="JWT.html" title="JWT (module)">JWT</a></span></span><span class='period'>.</span><span class='id identifier rubyid_decode'><span class='object_link'><a href="JWT.html#decode-class_method" title="JWT.decode (method)">decode</a></span></span><span class='lparen'>(</span><span class='id identifier rubyid_token'>token</span><span class='comma'>,</span> <span class='id identifier rubyid_hmac_secret'>hmac_secret</span><span class='comma'>,</span> <span class='kw'>true</span><span class='comma'>,</span> <span class='lbrace'>{</span> <span class='label'>algorithm:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>HS256</span><span class='tstring_end'>&#39;</span></span> <span class='rbrace'>}</span><span class='rparen'>)</span>
-
-<span class='comment'># Array
-</span><span class='comment'># [
-</span><span class='comment'>#   {&quot;data&quot;=&gt;&quot;test&quot;}, # payload
-</span><span class='comment'>#   {&quot;alg&quot;=&gt;&quot;HS256&quot;} # header
-</span><span class='comment'># ]
-</span><span class='id identifier rubyid_puts'>puts</span> <span class='id identifier rubyid_decoded_token'>decoded_token</span>
-</code></pre>
+<span class='comment'># =&gt; [
+</span><span class='comment'>#      {&quot;data&quot;=&gt;&quot;test&quot;}, # payload
+</span><span class='comment'>#      {&quot;alg&quot;=&gt;&quot;HS256&quot;} # header
+</span><span class='comment'>#    ]
+</span></code></pre>
 
 <h3 id="rsa"><strong>RSA</strong></h3>
 
@@ -179,23 +161,19 @@
 <li>RS512 - RSA using SHA-512 hash algorithm</li>
 </ul>
 
-<pre class="code ruby"><code class="ruby"><span class='id identifier rubyid_rsa_private'>rsa_private</span> <span class='op'>=</span> <span class='const'>OpenSSL</span><span class='op'>::</span><span class='const'>PKey</span><span class='op'>::</span><span class='const'>RSA</span><span class='period'>.</span><span class='id identifier rubyid_generate'>generate</span><span class='lparen'>(</span><span class='int'>2048</span><span class='rparen'>)</span>
-<span class='id identifier rubyid_rsa_public'>rsa_public</span> <span class='op'>=</span> <span class='id identifier rubyid_rsa_private'>rsa_private</span><span class='period'>.</span><span class='id identifier rubyid_public_key'>public_key</span>
+<pre class="code ruby"><code class="ruby"><span class='id identifier rubyid_payload'>payload</span>     <span class='op'>=</span> <span class='lbrace'>{</span> <span class='label'>data:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>test</span><span class='tstring_end'>&#39;</span></span> <span class='rbrace'>}</span>
+<span class='id identifier rubyid_rsa_private'>rsa_private</span> <span class='op'>=</span> <span class='const'>OpenSSL</span><span class='op'>::</span><span class='const'>PKey</span><span class='op'>::</span><span class='const'>RSA</span><span class='period'>.</span><span class='id identifier rubyid_generate'>generate</span><span class='lparen'>(</span><span class='int'>2048</span><span class='rparen'>)</span>
+<span class='id identifier rubyid_rsa_public'>rsa_public</span>  <span class='op'>=</span> <span class='id identifier rubyid_rsa_private'>rsa_private</span><span class='period'>.</span><span class='id identifier rubyid_public_key'>public_key</span>
 
 <span class='id identifier rubyid_token'>token</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="JWT.html" title="JWT (module)">JWT</a></span></span><span class='period'>.</span><span class='id identifier rubyid_encode'><span class='object_link'><a href="JWT.html#encode-class_method" title="JWT.encode (method)">encode</a></span></span><span class='lparen'>(</span><span class='id identifier rubyid_payload'>payload</span><span class='comma'>,</span> <span class='id identifier rubyid_rsa_private'>rsa_private</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>RS256</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span>
-
-<span class='comment'># eyJhbGciOiJSUzI1NiJ9.eyJkYXRhIjoidGVzdCJ9.GplO4w1spRgvEJQ3-FOtZr-uC8L45Jt7SN0J4woBnEXG_OZBSNcZjAJWpjadVYEe2ev3oUBFDYM1N_-0BTVeFGGYvMewu8E6aMjSZvOpf1cZBew-Vt4poSq7goG2YRI_zNPt3af2lkPqXD796IKC5URrEvcgF5xFQ-6h07XRDpSRx1ECrNsUOt7UM3l1IB4doY11GzwQA5sHDTmUZ0-kBT76ZMf12Srg_N3hZwphxBtudYtN5VGZn420sVrQMdPE_7Ni3EiWT88j7WCr1xrF60l8sZT3yKCVleG7D2BEXacTntB7GktBv4Xo8OKnpwpqTpIlC05dMowMkz3rEAAYbQ
-</span><span class='id identifier rubyid_puts'>puts</span> <span class='id identifier rubyid_token'>token</span>
-
+<span class='comment'># =&gt; &quot;eyJhbGciOiJSUzI1NiJ9.eyJkYXRhIjoidGVzdCJ9.CCkO35qFPijW8Gwhbt8a80PB9fc9FJ19hCMnXSgoDF6Mlvlt0A4G-ah...&quot;
+</span>
 <span class='id identifier rubyid_decoded_token'>decoded_token</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="JWT.html" title="JWT (module)">JWT</a></span></span><span class='period'>.</span><span class='id identifier rubyid_decode'><span class='object_link'><a href="JWT.html#decode-class_method" title="JWT.decode (method)">decode</a></span></span><span class='lparen'>(</span><span class='id identifier rubyid_token'>token</span><span class='comma'>,</span> <span class='id identifier rubyid_rsa_public'>rsa_public</span><span class='comma'>,</span> <span class='kw'>true</span><span class='comma'>,</span> <span class='lbrace'>{</span> <span class='label'>algorithm:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>RS256</span><span class='tstring_end'>&#39;</span></span> <span class='rbrace'>}</span><span class='rparen'>)</span>
-
-<span class='comment'># Array
-</span><span class='comment'># [
-</span><span class='comment'>#   {&quot;data&quot;=&gt;&quot;test&quot;}, # payload
-</span><span class='comment'>#   {&quot;alg&quot;=&gt;&quot;RS256&quot;} # header
-</span><span class='comment'># ]
-</span><span class='id identifier rubyid_puts'>puts</span> <span class='id identifier rubyid_decoded_token'>decoded_token</span>
-</code></pre>
+<span class='comment'># =&gt; [
+</span><span class='comment'>#      {&quot;data&quot;=&gt;&quot;test&quot;}, # payload
+</span><span class='comment'>#      {&quot;alg&quot;=&gt;&quot;RS256&quot;} # header
+</span><span class='comment'>#    ]
+</span></code></pre>
 
 <h3 id="ecdsa"><strong>ECDSA</strong></h3>
 
@@ -206,26 +184,22 @@
 <li>ES256K - ECDSA using P-256K and SHA-256</li>
 </ul>
 
-<pre class="code ruby"><code class="ruby"><span class='id identifier rubyid_ecdsa_key'>ecdsa_key</span> <span class='op'>=</span> <span class='const'>OpenSSL</span><span class='op'>::</span><span class='const'>PKey</span><span class='op'>::</span><span class='const'>EC</span><span class='period'>.</span><span class='id identifier rubyid_generate'>generate</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>prime256v1</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span>
+<pre class="code ruby"><code class="ruby"><span class='id identifier rubyid_payload'>payload</span>   <span class='op'>=</span> <span class='lbrace'>{</span> <span class='label'>data:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>test</span><span class='tstring_end'>&#39;</span></span> <span class='rbrace'>}</span>
+<span class='id identifier rubyid_ecdsa_key'>ecdsa_key</span> <span class='op'>=</span> <span class='const'>OpenSSL</span><span class='op'>::</span><span class='const'>PKey</span><span class='op'>::</span><span class='const'>EC</span><span class='period'>.</span><span class='id identifier rubyid_generate'>generate</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>prime256v1</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span>
 
 <span class='id identifier rubyid_token'>token</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="JWT.html" title="JWT (module)">JWT</a></span></span><span class='period'>.</span><span class='id identifier rubyid_encode'><span class='object_link'><a href="JWT.html#encode-class_method" title="JWT.encode (method)">encode</a></span></span><span class='lparen'>(</span><span class='id identifier rubyid_payload'>payload</span><span class='comma'>,</span> <span class='id identifier rubyid_ecdsa_key'>ecdsa_key</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>ES256</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span>
-
-<span class='comment'># eyJhbGciOiJFUzI1NiJ9.eyJkYXRhIjoidGVzdCJ9.AlLW--kaF7EX1NMX9WJRuIW8NeRJbn2BLXHns7Q5TZr7Hy3lF6MOpMlp7GoxBFRLISQ6KrD0CJOrR8aogEsPeg
-</span><span class='id identifier rubyid_puts'>puts</span> <span class='id identifier rubyid_token'>token</span>
-
+<span class='comment'># =&gt; &quot;eyJhbGciOiJFUzI1NiJ9.eyJkYXRhIjoidGVzdCJ9.AlLW--kaF7EX1NMX9WJRuIW8NeRJbn2BLXHns7Q5TZr7Hy3lF6MOpMlp7GoxBFRLISQ6KrD0CJOrR8aogEsPeg&quot;
+</span>
 <span class='id identifier rubyid_decoded_token'>decoded_token</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="JWT.html" title="JWT (module)">JWT</a></span></span><span class='period'>.</span><span class='id identifier rubyid_decode'><span class='object_link'><a href="JWT.html#decode-class_method" title="JWT.decode (method)">decode</a></span></span><span class='lparen'>(</span><span class='id identifier rubyid_token'>token</span><span class='comma'>,</span> <span class='id identifier rubyid_ecdsa_key'>ecdsa_key</span><span class='comma'>,</span> <span class='kw'>true</span><span class='comma'>,</span> <span class='lbrace'>{</span> <span class='label'>algorithm:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>ES256</span><span class='tstring_end'>&#39;</span></span> <span class='rbrace'>}</span><span class='rparen'>)</span>
-
-<span class='comment'># Array
-</span><span class='comment'># [
-</span><span class='comment'>#    {&quot;test&quot;=&gt;&quot;data&quot;}, # payload
-</span><span class='comment'>#    {&quot;alg&quot;=&gt;&quot;ES256&quot;} # header
-</span><span class='comment'># ]
-</span><span class='id identifier rubyid_puts'>puts</span> <span class='id identifier rubyid_decoded_token'>decoded_token</span>
-</code></pre>
+<span class='comment'># =&gt; [
+</span><span class='comment'>#      {&quot;test&quot;=&gt;&quot;data&quot;}, # payload
+</span><span class='comment'>#      {&quot;alg&quot;=&gt;&quot;ES256&quot;} # header
+</span><span class='comment'>#    ]
+</span></code></pre>
 
 <h3 id="eddsa"><strong>EdDSA</strong></h3>
 
-<p>This algorithm has since version 3.0 been moved to the <a href="https://rubygems.org/gems/jwt-eddsa">jwt-eddsa gem</a>.</p>
+<p>Since version 3.0, the EdDSA algorithm has been moved to the <a href="https://rubygems.org/gems/jwt-eddsa">jwt-eddsa gem</a>.</p>
 
 <h3 id="rsassa-pss"><strong>RSASSA-PSS</strong></h3>
 
@@ -235,23 +209,19 @@
 <li>PS512 - RSASSA-PSS using SHA-512 hash algorithm</li>
 </ul>
 
-<pre class="code ruby"><code class="ruby"><span class='id identifier rubyid_rsa_private'>rsa_private</span> <span class='op'>=</span> <span class='const'>OpenSSL</span><span class='op'>::</span><span class='const'>PKey</span><span class='op'>::</span><span class='const'>RSA</span><span class='period'>.</span><span class='id identifier rubyid_generate'>generate</span><span class='lparen'>(</span><span class='int'>2048</span><span class='rparen'>)</span>
-<span class='id identifier rubyid_rsa_public'>rsa_public</span> <span class='op'>=</span> <span class='id identifier rubyid_rsa_private'>rsa_private</span><span class='period'>.</span><span class='id identifier rubyid_public_key'>public_key</span>
+<pre class="code ruby"><code class="ruby"><span class='id identifier rubyid_payload'>payload</span>     <span class='op'>=</span> <span class='lbrace'>{</span> <span class='label'>data:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>test</span><span class='tstring_end'>&#39;</span></span> <span class='rbrace'>}</span>
+<span class='id identifier rubyid_rsa_private'>rsa_private</span> <span class='op'>=</span> <span class='const'>OpenSSL</span><span class='op'>::</span><span class='const'>PKey</span><span class='op'>::</span><span class='const'>RSA</span><span class='period'>.</span><span class='id identifier rubyid_generate'>generate</span><span class='lparen'>(</span><span class='int'>2048</span><span class='rparen'>)</span>
+<span class='id identifier rubyid_rsa_public'>rsa_public</span>  <span class='op'>=</span> <span class='id identifier rubyid_rsa_private'>rsa_private</span><span class='period'>.</span><span class='id identifier rubyid_public_key'>public_key</span>
 
 <span class='id identifier rubyid_token'>token</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="JWT.html" title="JWT (module)">JWT</a></span></span><span class='period'>.</span><span class='id identifier rubyid_encode'><span class='object_link'><a href="JWT.html#encode-class_method" title="JWT.encode (method)">encode</a></span></span><span class='lparen'>(</span><span class='id identifier rubyid_payload'>payload</span><span class='comma'>,</span> <span class='id identifier rubyid_rsa_private'>rsa_private</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>PS256</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span>
-
-<span class='comment'># eyJhbGciOiJQUzI1NiJ9.eyJkYXRhIjoidGVzdCJ9.KEmqagMUHM-NcmXo6818ZazVTIAkn9qU9KQFT1c5Iq91n0KRpAI84jj4ZCdkysDlWokFs3Dmn4MhcXP03oJKLFgnoPL40_Wgg9iFr0jnIVvnMUp1kp2RFUbL0jqExGTRA3LdAhuvw6ZByGD1bkcWjDXygjQw-hxILrT1bENjdr0JhFd-cB0-ps5SB0mwhFNcUw-OM3Uu30B1-mlFaelUY8jHJYKwLTZPNxHzndt8RGXF8iZLp7dGb06HSCKMcVzhASGMH4ZdFystRe2hh31cwcvnl-Eo_D4cdwmpN3Abhk_8rkxawQJR3duh8HNKc4AyFPo7SabEaSu2gLnLfN3yfg
-</span><span class='id identifier rubyid_puts'>puts</span> <span class='id identifier rubyid_token'>token</span>
-
+<span class='comment'># =&gt; &quot;eyJhbGciOiJQUzI1NiJ9.eyJkYXRhIjoidGVzdCJ9.BRWizdUjD5zAWw-EDBcrl3dDpQDAePz9Ol3XKC43SggU47G8OWwveA_...&quot;
+</span>
 <span class='id identifier rubyid_decoded_token'>decoded_token</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="JWT.html" title="JWT (module)">JWT</a></span></span><span class='period'>.</span><span class='id identifier rubyid_decode'><span class='object_link'><a href="JWT.html#decode-class_method" title="JWT.decode (method)">decode</a></span></span><span class='lparen'>(</span><span class='id identifier rubyid_token'>token</span><span class='comma'>,</span> <span class='id identifier rubyid_rsa_public'>rsa_public</span><span class='comma'>,</span> <span class='kw'>true</span><span class='comma'>,</span> <span class='lbrace'>{</span> <span class='label'>algorithm:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>PS256</span><span class='tstring_end'>&#39;</span></span> <span class='rbrace'>}</span><span class='rparen'>)</span>
-
-<span class='comment'># Array
-</span><span class='comment'># [
-</span><span class='comment'>#   {&quot;data&quot;=&gt;&quot;test&quot;}, # payload
-</span><span class='comment'>#   {&quot;alg&quot;=&gt;&quot;PS256&quot;} # header
-</span><span class='comment'># ]
-</span><span class='id identifier rubyid_puts'>puts</span> <span class='id identifier rubyid_decoded_token'>decoded_token</span>
-</code></pre>
+<span class='comment'># =&gt; [
+</span><span class='comment'>#      {&quot;data&quot;=&gt;&quot;test&quot;}, # payload
+</span><span class='comment'>#      {&quot;alg&quot;=&gt;&quot;PS256&quot;} # header
+</span><span class='comment'>#    ]
+</span></code></pre>
 
 <h3 id="custom-algorithms"><strong>Custom algorithms</strong></h3>
 
@@ -280,39 +250,33 @@
   <span class='kw'>end</span>
 <span class='kw'>end</span>
 
-<span class='id identifier rubyid_token'>token</span> <span class='op'>=</span> <span class='op'>::</span><span class='const'><span class='object_link'><a href="JWT.html" title="JWT (module)">JWT</a></span></span><span class='period'>.</span><span class='id identifier rubyid_encode'><span class='object_link'><a href="JWT.html#encode-class_method" title="JWT.encode (method)">encode</a></span></span><span class='lparen'>(</span><span class='lbrace'>{</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>pay</span><span class='tstring_end'>&#39;</span></span> <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>load</span><span class='tstring_end'>&#39;</span></span><span class='rbrace'>}</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>secret</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='const'>CustomHS512Algorithm</span><span class='rparen'>)</span>
-<span class='id identifier rubyid_payload'>payload</span><span class='comma'>,</span> <span class='id identifier rubyid_header'>header</span> <span class='op'>=</span> <span class='op'>::</span><span class='const'><span class='object_link'><a href="JWT.html" title="JWT (module)">JWT</a></span></span><span class='period'>.</span><span class='id identifier rubyid_decode'><span class='object_link'><a href="JWT.html#decode-class_method" title="JWT.decode (method)">decode</a></span></span><span class='lparen'>(</span><span class='id identifier rubyid_token'>token</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>secret</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='kw'>true</span><span class='comma'>,</span> <span class='label'>algorithm:</span> <span class='const'>CustomHS512Algorithm</span><span class='rparen'>)</span>
-</code></pre>
+<span class='id identifier rubyid_payload'>payload</span>  <span class='op'>=</span> <span class='lbrace'>{</span> <span class='label'>data:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>test</span><span class='tstring_end'>&#39;</span></span> <span class='rbrace'>}</span>
+<span class='id identifier rubyid_token'>token</span>    <span class='op'>=</span> <span class='const'><span class='object_link'><a href="JWT.html" title="JWT (module)">JWT</a></span></span><span class='period'>.</span><span class='id identifier rubyid_encode'><span class='object_link'><a href="JWT.html#encode-class_method" title="JWT.encode (method)">encode</a></span></span><span class='lparen'>(</span><span class='id identifier rubyid_payload'>payload</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>secret</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='const'>CustomHS512Algorithm</span><span class='rparen'>)</span>
+<span class='comment'># =&gt; &quot;eyJhbGciOiJIUzUxMiJ9.eyJkYXRhIjoidGVzdCJ9.aBNoejLEM2WMF3TxzRDKlehYdG2ATvFpGNauTI4GSD2VJseS_sC8covrVMlgslf0aJM4SKb3EIeORJBFPtZ33w&quot;
+</span>
+<span class='id identifier rubyid_decoded_token'>decoded_token</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="JWT.html" title="JWT (module)">JWT</a></span></span><span class='period'>.</span><span class='id identifier rubyid_decode'><span class='object_link'><a href="JWT.html#decode-class_method" title="JWT.decode (method)">decode</a></span></span><span class='lparen'>(</span><span class='id identifier rubyid_token'>token</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>secret</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='kw'>true</span><span class='comma'>,</span> <span class='label'>algorithm:</span> <span class='const'>CustomHS512Algorithm</span><span class='rparen'>)</span>
+<span class='comment'># =&gt; [
+</span><span class='comment'>#      {&quot;data&quot;=&gt;&quot;test&quot;}, # payload
+</span><span class='comment'>#      {&quot;alg&quot;=&gt;&quot;HS512&quot;} # header
+</span><span class='comment'>#    ]
+</span></code></pre>
 
 <h3 id="add-custom-header-fields">Add custom header fields</h3>
 
 <p>The ruby-jwt gem supports custom <a href="https://tools.ietf.org/html/rfc7519#section-5">header fields</a>
 To add custom header fields you need to pass <code>header_fields</code> parameter</p>
 
-<pre class="code ruby"><code class="ruby"><span class='id identifier rubyid_token'>token</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="JWT.html" title="JWT (module)">JWT</a></span></span><span class='period'>.</span><span class='id identifier rubyid_encode'><span class='object_link'><a href="JWT.html#encode-class_method" title="JWT.encode (method)">encode</a></span></span><span class='lparen'>(</span><span class='id identifier rubyid_payload'>payload</span><span class='comma'>,</span> <span class='id identifier rubyid_key'>key</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>HS256</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='rparen'>)</span>
-</code></pre>
+<pre class="code ruby"><code class="ruby"><span class='id identifier rubyid_payload'>payload</span> <span class='op'>=</span> <span class='lbrace'>{</span> <span class='label'>data:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>test</span><span class='tstring_end'>&#39;</span></span> <span class='rbrace'>}</span>
 
-<p><strong>Example:</strong></p>
-
-<pre class="code ruby"><code class="ruby">
-<span class='id identifier rubyid_payload'>payload</span> <span class='op'>=</span> <span class='lbrace'>{</span> <span class='label'>data:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>test</span><span class='tstring_end'>&#39;</span></span> <span class='rbrace'>}</span>
-
-<span class='comment'># IMPORTANT: set nil as password parameter
-</span><span class='id identifier rubyid_token'>token</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="JWT.html" title="JWT (module)">JWT</a></span></span><span class='period'>.</span><span class='id identifier rubyid_encode'><span class='object_link'><a href="JWT.html#encode-class_method" title="JWT.encode (method)">encode</a></span></span><span class='lparen'>(</span><span class='id identifier rubyid_payload'>payload</span><span class='comma'>,</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>none</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='lbrace'>{</span> <span class='label'>typ:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>JWT</span><span class='tstring_end'>&#39;</span></span> <span class='rbrace'>}</span><span class='rparen'>)</span>
-
-<span class='comment'># eyJhbGciOiJub25lIiwidHlwIjoiSldUIn0.eyJkYXRhIjoidGVzdCJ9.
-</span><span class='id identifier rubyid_puts'>puts</span> <span class='id identifier rubyid_token'>token</span>
-
-<span class='comment'># Set password to nil and validation to false otherwise this won&#39;t work
-</span><span class='id identifier rubyid_decoded_token'>decoded_token</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="JWT.html" title="JWT (module)">JWT</a></span></span><span class='period'>.</span><span class='id identifier rubyid_decode'><span class='object_link'><a href="JWT.html#decode-class_method" title="JWT.decode (method)">decode</a></span></span><span class='lparen'>(</span><span class='id identifier rubyid_token'>token</span><span class='comma'>,</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='kw'>false</span><span class='rparen'>)</span>
-
-<span class='comment'># Array
-</span><span class='comment'># [
-</span><span class='comment'>#   {&quot;data&quot;=&gt;&quot;test&quot;}, # payload
-</span><span class='comment'>#   {&quot;typ&quot;=&gt;&quot;JWT&quot;, &quot;alg&quot;=&gt;&quot;none&quot;} # header
-</span><span class='comment'># ]
-</span><span class='id identifier rubyid_puts'>puts</span> <span class='id identifier rubyid_decoded_token'>decoded_token</span>
-</code></pre>
+<span class='id identifier rubyid_token'>token</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="JWT.html" title="JWT (module)">JWT</a></span></span><span class='period'>.</span><span class='id identifier rubyid_encode'><span class='object_link'><a href="JWT.html#encode-class_method" title="JWT.encode (method)">encode</a></span></span><span class='lparen'>(</span><span class='id identifier rubyid_payload'>payload</span><span class='comma'>,</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>none</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='lbrace'>{</span> <span class='label'>typ:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>JWT</span><span class='tstring_end'>&#39;</span></span> <span class='rbrace'>}</span><span class='rparen'>)</span>
+<span class='comment'># =&gt; &quot;eyJ0eXAiOiJKV1QiLCJhbGciOiJub25lIn0.eyJkYXRhIjoidGVzdCJ9.&quot;
+</span>
+<span class='id identifier rubyid_decoded_token'>decoded_token</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="JWT.html" title="JWT (module)">JWT</a></span></span><span class='period'>.</span><span class='id identifier rubyid_decode'><span class='object_link'><a href="JWT.html#decode-class_method" title="JWT.decode (method)">decode</a></span></span><span class='lparen'>(</span><span class='id identifier rubyid_token'>token</span><span class='comma'>,</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='kw'>true</span><span class='comma'>,</span> <span class='lbrace'>{</span> <span class='label'>algorithm:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>none</span><span class='tstring_end'>&#39;</span></span> <span class='rbrace'>}</span><span class='rparen'>)</span>
+<span class='comment'>#  =&gt; [
+</span><span class='comment'>#       {&quot;data&quot;=&gt;&quot;test&quot;}, # payload
+</span><span class='comment'>#       {&quot;typ&quot;=&gt;&quot;JWT&quot;, &quot;alg&quot;=&gt;&quot;none&quot;} # header
+</span><span class='comment'>#     ]
+</span></code></pre>
 
 <h2 id="jwt-token-and-jwt-encodedtoken"><code>JWT::Token</code> and <code>JWT::EncodedToken</code></h2>
 
@@ -320,10 +284,14 @@ To add custom header fields you need to pass <code>header_fields</code> paramete
 
 <h3 id="signing-and-encoding-a-token">Signing and encoding a token</h3>
 
-<pre class="code ruby"><code class="ruby"><span class='id identifier rubyid_token'>token</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="JWT.html" title="JWT (module)">JWT</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="JWT/Token.html" title="JWT::Token (class)">Token</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="JWT/Token.html#initialize-instance_method" title="JWT::Token#initialize (method)">new</a></span></span><span class='lparen'>(</span><span class='label'>payload:</span> <span class='lbrace'>{</span> <span class='label'>exp:</span> <span class='const'>Time</span><span class='period'>.</span><span class='id identifier rubyid_now'>now</span><span class='period'>.</span><span class='id identifier rubyid_to_i'>to_i</span> <span class='op'>+</span> <span class='int'>60</span><span class='comma'>,</span> <span class='label'>jti:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>1234</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>sub:</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>my-subject</span><span class='tstring_end'>&quot;</span></span> <span class='rbrace'>}</span><span class='comma'>,</span> <span class='label'>header:</span> <span class='lbrace'>{</span> <span class='label'>kid:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>hmac</span><span class='tstring_end'>&#39;</span></span> <span class='rbrace'>}</span><span class='rparen'>)</span>
+<pre class="code ruby"><code class="ruby"><span class='id identifier rubyid_payload'>payload</span> <span class='op'>=</span> <span class='lbrace'>{</span> <span class='label'>exp:</span> <span class='const'>Time</span><span class='period'>.</span><span class='id identifier rubyid_now'>now</span><span class='period'>.</span><span class='id identifier rubyid_to_i'>to_i</span> <span class='op'>+</span> <span class='int'>60</span><span class='comma'>,</span> <span class='label'>jti:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>1234</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>sub:</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>my-subject</span><span class='tstring_end'>&quot;</span></span> <span class='rbrace'>}</span>
+<span class='id identifier rubyid_header'>header</span> <span class='op'>=</span>  <span class='lbrace'>{</span> <span class='label'>kid:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>hmac</span><span class='tstring_end'>&#39;</span></span> <span class='rbrace'>}</span>
+
+<span class='id identifier rubyid_token'>token</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="JWT.html" title="JWT (module)">JWT</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="JWT/Token.html" title="JWT::Token (class)">Token</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="JWT/Token.html#initialize-instance_method" title="JWT::Token#initialize (method)">new</a></span></span><span class='lparen'>(</span><span class='label'>payload:</span> <span class='id identifier rubyid_payload'>payload</span><span class='comma'>,</span> <span class='label'>header:</span> <span class='id identifier rubyid_header'>header</span><span class='rparen'>)</span>
 <span class='id identifier rubyid_token'>token</span><span class='period'>.</span><span class='id identifier rubyid_sign!'>sign!</span><span class='lparen'>(</span><span class='label'>algorithm:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>HS256</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>key:</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>secret</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span>
 
-<span class='id identifier rubyid_token'>token</span><span class='period'>.</span><span class='id identifier rubyid_jwt'>jwt</span> <span class='comment'># =&gt; &quot;eyJhbGciOiJIUzI1N...&quot;
+<span class='id identifier rubyid_token'>token</span><span class='period'>.</span><span class='id identifier rubyid_jwt'>jwt</span>
+<span class='comment'># =&gt; &quot;eyJraWQiOiJobWFjIiwiYWxnIjoiSFMyNTYifQ.eyJleHAiOjE3NTAwMDU0NzksImp0aSI6IjEyMzQiLCJzdWIiOiJteS1zdWJqZWN0In0.NRLcK6fYr3IdNfmncJePMWLQ34M4n14EgqSYrQIjL9w&quot;
 </span></code></pre>
 
 <h3 id="verifying-and-decoding-a-token">Verifying and decoding a token</h3>
@@ -349,7 +317,7 @@ To add custom header fields you need to pass <code>header_fields</code> paramete
 </span><span class='id identifier rubyid_encoded_token'>encoded_token</span><span class='period'>.</span><span class='id identifier rubyid_header'>header</span> <span class='comment'># {&#39;kid&#39;=&gt;&#39;hmac&#39;, &#39;alg&#39;=&gt;&#39;HS256&#39;}
 </span></code></pre>
 
-<h4 id="keyfinders">Keyfinders</h4>
+<h4 id="using-a-keyfinder">Using a keyfinder</h4>
 
 <p>A keyfinder can be used to verify a signature. A keyfinder is an object responding to the <code>#call</code> method. The method expects to receive one argument, which is the token to be verified.</p>
 
@@ -847,7 +815,7 @@ bundle exec appraisal rake test
 </div></div>
 
       <div id="footer">
-  Generated on Sat Jun 14 17:36:23 2025 by
+  Generated on Sun Jun 15 17:03:03 2025 by
   <a href="https://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.9.37 (ruby-3.4.4).
 </div>
