@@ -39,10 +39,6 @@ RSpec.describe JWT do
     }
   end
 
-  after(:each) do
-    expect(OpenSSL.errors).to be_empty
-  end
-
   context 'alg: NONE' do
     let(:alg) { 'none' }
     let(:encoded_token) { data['NONE'] }

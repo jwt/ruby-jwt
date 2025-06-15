@@ -110,6 +110,22 @@ RSpec.describe JWT::JWK::EC do
     end
   end
 
+  describe '.to_openssl_curve' do
+    context 'when a valid curve name is given' do
+      it 'returns the corresponding OpenSSL curve name' do
+        expect(JWT::JWK::EC.to_openssl_curve('P-256')).to eq('prime256v1')
+        expect(JWT::JWK::EC.to_openssl_curve('P-384')).to eq('secp384r1')
+        expect(JWT::JWK::EC.to_openssl_curve('P-521')).to eq('secp521r1')
+        expect(JWT::JWK::EC.to_openssl_curve('P-256K')).to eq('secp256k1')
+      end
+    end
+    context 'when an invalid curve name is given' do
+      it 'raises an error' do
+        expect { JWT::JWK::EC.to_openssl_curve('invalid-curve') }.to raise_error(JWT::JWKError, 'Invalid curve provided')
+      end
+    end
+  end
+
   describe '.import' do
     subject { described_class.import(params) }
     let(:include_private) { false }
