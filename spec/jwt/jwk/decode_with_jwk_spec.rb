@@ -169,7 +169,7 @@ RSpec.describe JWT do
 
         it 'fails in some way' do
           expect { described_class.decode(signed_token, nil, true, algorithms: ['ES384'], jwks: jwks) }.to(
-            raise_error(JWT::DecodeError, 'The given key is a String. It has to be an OpenSSL::PKey::EC instance.')
+            raise_error(JWT::DecodeError, 'The given key is a String. It has to be an OpenSSL::PKey::EC instance')
           )
         end
       end

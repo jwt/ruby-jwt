@@ -12,7 +12,8 @@ module JWT
       end
 
       def sign(data:, signing_key:)
-        raise_sign_error!("The given key is a #{signing_key.class}. It has to be an OpenSSL::PKey::EC instance.") unless signing_key.is_a?(::OpenSSL::PKey::EC)
+        raise_sign_error!("The given key is a #{signing_key.class}. It has to be an OpenSSL::PKey::EC instance") unless signing_key.is_a?(::OpenSSL::PKey::EC)
+        raise_sign_error!('The given key is not a private key') unless signing_key.private?
 
         curve_definition = curve_by_name(signing_key.group.curve_name)
         key_algorithm = curve_definition[:algorithm]
@@ -23,7 +24,9 @@ module JWT
       end
 
       def verify(data:, signature:, verification_key:)
-        raise_verify_error!("The given key is a #{verification_key.class}. It has to be an OpenSSL::PKey::EC instance.") unless verification_key.is_a?(::OpenSSL::PKey::EC)
+        verification_key = self.class.create_public_key_from_point(verification_key) if verification_key.is_a?(::OpenSSL::PKey::EC::Point)
+
+        raise_verify_error!("The given key is a #{verification_key.class}. It has to be an OpenSSL::PKey::EC instance") unless verification_key.is_a?(::OpenSSL::PKey::EC)
 
         curve_definition = curve_by_name(verification_key.group.curve_name)
         key_algorithm = curve_definition[:algorithm]
@@ -65,6 +68,14 @@ module JWT
         NAMED_CURVES.fetch(name) do
           raise UnsupportedEcdsaCurve, "The ECDSA curve '#{name}' is not supported"
         end
+      end
+
+      def self.create_public_key_from_point(point)
+        sequence = OpenSSL::ASN1::Sequence([
+                                             OpenSSL::ASN1::Sequence([OpenSSL::ASN1::ObjectId('id-ecPublicKey'), OpenSSL::ASN1::ObjectId(point.group.curve_name)]),
+                                             OpenSSL::ASN1::BitString(point.to_octet_string(:uncompressed))
+                                           ])
+        OpenSSL::PKey::EC.new(sequence.to_der)
       end
 
       private

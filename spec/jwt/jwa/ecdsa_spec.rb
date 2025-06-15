@@ -35,11 +35,11 @@ RSpec.describe JWT::JWA::Ecdsa do
   let(:ecdsa_key) { test_pkey('ec256-private.pem') }
   let(:data) { 'test data' }
   let(:instance) { described_class.new('ES256', 'sha256') }
+  let(:signature) { instance.sign(data: data, signing_key: ecdsa_key) }
 
   describe '#verify' do
     context 'when the verification key is valid' do
       it 'returns true for a valid signature' do
-        signature = instance.sign(data: data, signing_key: ecdsa_key)
         expect(instance.verify(data: data, signature: signature, verification_key: ecdsa_key)).to be true
       end
 
@@ -47,6 +47,7 @@ RSpec.describe JWT::JWA::Ecdsa do
         expect(instance.verify(data: data, signature: 'invalid_signature', verification_key: ecdsa_key)).to be false
       end
     end
+
     context 'when verification results in a OpenSSL::PKey::PKeyError error' do
       it 'raises a JWT::VerificationError' do
         allow(ecdsa_key).to receive(:dsa_verify_asn1).and_raise(OpenSSL::PKey::PKeyError.new('Error'))
@@ -60,7 +61,14 @@ RSpec.describe JWT::JWA::Ecdsa do
       it 'raises a JWT::DecodeError' do
         expect do
           instance.verify(data: data, signature: '', verification_key: 'not_a_key')
-        end.to raise_error(JWT::DecodeError, 'The given key is a String. It has to be an OpenSSL::PKey::EC instance.')
+        end.to raise_error(JWT::DecodeError, 'The given key is a String. It has to be an OpenSSL::PKey::EC instance')
+      end
+    end
+
+    context 'when the verification key is a point' do
+      it 'verifies the signature' do
+        expect(ecdsa_key.public_key).to be_a(OpenSSL::PKey::EC::Point)
+        expect(instance.verify(data: data, signature: signature, verification_key: ecdsa_key.public_key)).to be(true)
       end
     end
   end
@@ -68,9 +76,17 @@ RSpec.describe JWT::JWA::Ecdsa do
   describe '#sign' do
     context 'when the signing key is valid' do
       it 'returns a valid signature' do
-        signature = instance.sign(data: data, signing_key: ecdsa_key)
         expect(signature).to be_a(String)
         expect(signature.length).to be > 0
+      end
+    end
+
+    context 'when the signing key is a public key' do
+      it 'raises a JWT::DecodeError' do
+        public_key = test_pkey('ec256-public.pem')
+        expect do
+          instance.sign(data: data, signing_key: public_key)
+        end.to raise_error(JWT::EncodeError, 'The given key is not a private key')
       end
     end
 
@@ -78,7 +94,7 @@ RSpec.describe JWT::JWA::Ecdsa do
       it 'raises a JWT::DecodeError' do
         expect do
           instance.sign(data: data, signing_key: 'not_a_key')
-        end.to raise_error(JWT::EncodeError, 'The given key is a String. It has to be an OpenSSL::PKey::EC instance.')
+        end.to raise_error(JWT::EncodeError, 'The given key is a String. It has to be an OpenSSL::PKey::EC instance')
       end
     end
 
