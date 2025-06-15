@@ -9,17 +9,13 @@ A ruby implementation of the [RFC 7519 OAuth JSON Web Token (JWT)](https://tools
 
 If you have further questions related to development or usage, join us: [ruby-jwt google group](https://groups.google.com/forum/#!forum/ruby-jwt).
 
-See [CHANGELOG.md](CHANGELOG.md) for a complete set of changes.
-
-## Upcoming breaking changes
-
-Check out breaking changes in the upcoming **version 3.0** from the [upgrade guide](UPGRADING.md)
+See [CHANGELOG.md](CHANGELOG.md) for a complete set of changes and [upgrade guide](UPGRADING.md) for upgrading between major versions.
 
 ## Sponsors
 
-| Logo                                                                                                             | Message                                                                                                                                                                                                                                                                  |
-| ---------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| ![auth0 logo](https://user-images.githubusercontent.com/83319/31722733-de95bbde-b3ea-11e7-96bf-4f4e8f915588.png) | If you want to quickly add secure token-based authentication to Ruby projects, feel free to check Auth0's Ruby SDK and free plan at [auth0.com/developers](https://auth0.com/developers?utm_source=GHsponsor&utm_medium=GHsponsor&utm_campaign=rubyjwt&utm_content=auth) |
+|Logo|Message|
+|----|-------|
+|![auth0 logo](https://user-images.githubusercontent.com/83319/31722733-de95bbde-b3ea-11e7-96bf-4f4e8f915588.png)|If you want to quickly add secure token-based authentication to Ruby projects, feel free to check Auth0's Ruby SDK and free plan at [auth0.com/developers](https://auth0.com/developers?utm_source=GHsponsor&utm_medium=GHsponsor&utm_campaign=rubyjwt&utm_content=auth)|
 
 ## Installing
 
@@ -60,24 +56,15 @@ See [JSON Web Algorithms (JWA) 3.1. "alg" (Algorithm) Header Parameter Values fo
 - none - unsigned token
 
 ```ruby
-
 payload = { data: 'test' }
+token   = JWT.encode(payload, nil, 'none')
+# => "eyJhbGciOiJub25lIn0.eyJkYXRhIjoidGVzdCJ9."
 
-# IMPORTANT: set nil as password parameter
-token = JWT.encode(payload, nil, 'none')
-
-# eyJhbGciOiJub25lIn0.eyJkYXRhIjoidGVzdCJ9.
-puts token
-
-# Set password to nil and validation to false otherwise this won't work
-decoded_token = JWT.decode(token, nil, false)
-
-# Array
-# [
-#   {"data"=>"test"}, # payload
-#   {"alg"=>"none"} # header
-# ]
-puts decoded_token
+decoded_token = JWT.decode(token, nil, true, { algorithm: 'none' })
+#  => [
+#       {"data"=>"test"}, # payload
+#       {"alg"=>"none"} # header
+#     ]
 ```
 
 ### **HMAC**
@@ -87,22 +74,17 @@ puts decoded_token
 - HS512 - HMAC using SHA-512 hash algorithm
 
 ```ruby
-# The secret must be a string. With OpenSSL 3.0/openssl gem `<3.0.1`, JWT::DecodeError will be raised if it isn't provided.
+payload     = { data: 'test' }
 hmac_secret = 'my$ecretK3y'
 
 token = JWT.encode(payload, hmac_secret, 'HS256')
-
-# eyJhbGciOiJIUzI1NiJ9.eyJkYXRhIjoidGVzdCJ9.pNIWIL34Jo13LViZAJACzK6Yf0qnvT_BuwOxiMCPE-Y
-puts token
+# => "eyJhbGciOiJIUzI1NiJ9.eyJkYXRhIjoidGVzdCJ9.pNIWIL34Jo13LViZAJACzK6Yf0qnvT_BuwOxiMCPE-Y"
 
 decoded_token = JWT.decode(token, hmac_secret, true, { algorithm: 'HS256' })
-
-# Array
-# [
-#   {"data"=>"test"}, # payload
-#   {"alg"=>"HS256"} # header
-# ]
-puts decoded_token
+# => [
+#      {"data"=>"test"}, # payload
+#      {"alg"=>"HS256"} # header
+#    ]
 ```
 
 ### **RSA**
@@ -112,22 +94,18 @@ puts decoded_token
 - RS512 - RSA using SHA-512 hash algorithm
 
 ```ruby
+payload     = { data: 'test' }
 rsa_private = OpenSSL::PKey::RSA.generate(2048)
-rsa_public = rsa_private.public_key
+rsa_public  = rsa_private.public_key
 
 token = JWT.encode(payload, rsa_private, 'RS256')
-
-# eyJhbGciOiJSUzI1NiJ9.eyJkYXRhIjoidGVzdCJ9.GplO4w1spRgvEJQ3-FOtZr-uC8L45Jt7SN0J4woBnEXG_OZBSNcZjAJWpjadVYEe2ev3oUBFDYM1N_-0BTVeFGGYvMewu8E6aMjSZvOpf1cZBew-Vt4poSq7goG2YRI_zNPt3af2lkPqXD796IKC5URrEvcgF5xFQ-6h07XRDpSRx1ECrNsUOt7UM3l1IB4doY11GzwQA5sHDTmUZ0-kBT76ZMf12Srg_N3hZwphxBtudYtN5VGZn420sVrQMdPE_7Ni3EiWT88j7WCr1xrF60l8sZT3yKCVleG7D2BEXacTntB7GktBv4Xo8OKnpwpqTpIlC05dMowMkz3rEAAYbQ
-puts token
+# => "eyJhbGciOiJSUzI1NiJ9.eyJkYXRhIjoidGVzdCJ9.CCkO35qFPijW8Gwhbt8a80PB9fc9FJ19hCMnXSgoDF6Mlvlt0A4G-ah..."
 
 decoded_token = JWT.decode(token, rsa_public, true, { algorithm: 'RS256' })
-
-# Array
-# [
-#   {"data"=>"test"}, # payload
-#   {"alg"=>"RS256"} # header
-# ]
-puts decoded_token
+# => [
+#      {"data"=>"test"}, # payload
+#      {"alg"=>"RS256"} # header
+#    ]
 ```
 
 ### **ECDSA**
@@ -138,26 +116,22 @@ puts decoded_token
 - ES256K - ECDSA using P-256K and SHA-256
 
 ```ruby
+payload   = { data: 'test' }
 ecdsa_key = OpenSSL::PKey::EC.generate('prime256v1')
 
 token = JWT.encode(payload, ecdsa_key, 'ES256')
-
-# eyJhbGciOiJFUzI1NiJ9.eyJkYXRhIjoidGVzdCJ9.AlLW--kaF7EX1NMX9WJRuIW8NeRJbn2BLXHns7Q5TZr7Hy3lF6MOpMlp7GoxBFRLISQ6KrD0CJOrR8aogEsPeg
-puts token
+# => "eyJhbGciOiJFUzI1NiJ9.eyJkYXRhIjoidGVzdCJ9.AlLW--kaF7EX1NMX9WJRuIW8NeRJbn2BLXHns7Q5TZr7Hy3lF6MOpMlp7GoxBFRLISQ6KrD0CJOrR8aogEsPeg"
 
 decoded_token = JWT.decode(token, ecdsa_key, true, { algorithm: 'ES256' })
-
-# Array
-# [
-#    {"test"=>"data"}, # payload
-#    {"alg"=>"ES256"} # header
-# ]
-puts decoded_token
+# => [
+#      {"test"=>"data"}, # payload
+#      {"alg"=>"ES256"} # header
+#    ]
 ```
 
 ### **EdDSA**
 
-This algorithm has since version 3.0 been moved to the [jwt-eddsa gem](https://rubygems.org/gems/jwt-eddsa).
+Since version 3.0, the EdDSA algorithm has been moved to the [jwt-eddsa gem](https://rubygems.org/gems/jwt-eddsa).
 
 ### **RSASSA-PSS**
 
@@ -166,22 +140,18 @@ This algorithm has since version 3.0 been moved to the [jwt-eddsa gem](https://r
 - PS512 - RSASSA-PSS using SHA-512 hash algorithm
 
 ```ruby
+payload     = { data: 'test' }
 rsa_private = OpenSSL::PKey::RSA.generate(2048)
-rsa_public = rsa_private.public_key
+rsa_public  = rsa_private.public_key
 
 token = JWT.encode(payload, rsa_private, 'PS256')
-
-# eyJhbGciOiJQUzI1NiJ9.eyJkYXRhIjoidGVzdCJ9.KEmqagMUHM-NcmXo6818ZazVTIAkn9qU9KQFT1c5Iq91n0KRpAI84jj4ZCdkysDlWokFs3Dmn4MhcXP03oJKLFgnoPL40_Wgg9iFr0jnIVvnMUp1kp2RFUbL0jqExGTRA3LdAhuvw6ZByGD1bkcWjDXygjQw-hxILrT1bENjdr0JhFd-cB0-ps5SB0mwhFNcUw-OM3Uu30B1-mlFaelUY8jHJYKwLTZPNxHzndt8RGXF8iZLp7dGb06HSCKMcVzhASGMH4ZdFystRe2hh31cwcvnl-Eo_D4cdwmpN3Abhk_8rkxawQJR3duh8HNKc4AyFPo7SabEaSu2gLnLfN3yfg
-puts token
+# => "eyJhbGciOiJQUzI1NiJ9.eyJkYXRhIjoidGVzdCJ9.BRWizdUjD5zAWw-EDBcrl3dDpQDAePz9Ol3XKC43SggU47G8OWwveA_..."
 
 decoded_token = JWT.decode(token, rsa_public, true, { algorithm: 'PS256' })
-
-# Array
-# [
-#   {"data"=>"test"}, # payload
-#   {"alg"=>"PS256"} # header
-# ]
-puts decoded_token
+# => [
+#      {"data"=>"test"}, # payload
+#      {"alg"=>"PS256"} # header
+#    ]
 ```
 
 ### **Custom algorithms**
@@ -210,8 +180,15 @@ module CustomHS512Algorithm
   end
 end
 
-token = ::JWT.encode({'pay' => 'load'}, 'secret', CustomHS512Algorithm)
-payload, header = ::JWT.decode(token, 'secret', true, algorithm: CustomHS512Algorithm)
+payload  = { data: 'test' }
+token    = JWT.encode(payload, 'secret', CustomHS512Algorithm)
+# => "eyJhbGciOiJIUzUxMiJ9.eyJkYXRhIjoidGVzdCJ9.aBNoejLEM2WMF3TxzRDKlehYdG2ATvFpGNauTI4GSD2VJseS_sC8covrVMlgslf0aJM4SKb3EIeORJBFPtZ33w"
+
+decoded_token = JWT.decode(token, 'secret', true, algorithm: CustomHS512Algorithm)
+# => [
+#      {"data"=>"test"}, # payload
+#      {"alg"=>"HS512"} # header
+#    ]
 ```
 
 ### Add custom header fields
@@ -220,30 +197,16 @@ The ruby-jwt gem supports custom [header fields](https://tools.ietf.org/html/rfc
 To add custom header fields you need to pass `header_fields` parameter
 
 ```ruby
-token = JWT.encode(payload, key, 'HS256', {})
-```
-
-**Example:**
-
-```ruby
-
 payload = { data: 'test' }
 
-# IMPORTANT: set nil as password parameter
 token = JWT.encode(payload, nil, 'none', { typ: 'JWT' })
+# => "eyJ0eXAiOiJKV1QiLCJhbGciOiJub25lIn0.eyJkYXRhIjoidGVzdCJ9."
 
-# eyJhbGciOiJub25lIiwidHlwIjoiSldUIn0.eyJkYXRhIjoidGVzdCJ9.
-puts token
-
-# Set password to nil and validation to false otherwise this won't work
-decoded_token = JWT.decode(token, nil, false)
-
-# Array
-# [
-#   {"data"=>"test"}, # payload
-#   {"typ"=>"JWT", "alg"=>"none"} # header
-# ]
-puts decoded_token
+decoded_token = JWT.decode(token, nil, true, { algorithm: 'none' })
+#  => [
+#       {"data"=>"test"}, # payload
+#       {"typ"=>"JWT", "alg"=>"none"} # header
+#     ]
 ```
 
 ## `JWT::Token` and `JWT::EncodedToken`
@@ -253,10 +216,14 @@ The `JWT::Token` and `JWT::EncodedToken` classes can be used to manage your JWTs
 ### Signing and encoding a token
 
 ```ruby
-token = JWT::Token.new(payload: { exp: Time.now.to_i + 60, jti: '1234', sub: "my-subject" }, header: { kid: 'hmac' })
+payload = { exp: Time.now.to_i + 60, jti: '1234', sub: "my-subject" }
+header =  { kid: 'hmac' }
+
+token = JWT::Token.new(payload: payload, header: header)
 token.sign!(algorithm: 'HS256', key: "secret")
 
-token.jwt # => "eyJhbGciOiJIUzI1N..."
+token.jwt
+# => "eyJraWQiOiJobWFjIiwiYWxnIjoiSFMyNTYifQ.eyJleHAiOjE3NTAwMDU0NzksImp0aSI6IjEyMzQiLCJzdWIiOiJteS1zdWJqZWN0In0.NRLcK6fYr3IdNfmncJePMWLQ34M4n14EgqSYrQIjL9w"
 ```
 
 ### Verifying and decoding a token
@@ -284,7 +251,7 @@ encoded_token.payload # => { 'exp'=>1234, 'jti'=>'1234", 'sub'=>'my-subject' }
 encoded_token.header # {'kid'=>'hmac', 'alg'=>'HS256'}
 ```
 
-#### Keyfinders
+#### Using a keyfinder
 
 A keyfinder can be used to verify a signature. A keyfinder is an object responding to the `#call` method. The method expects to receive one argument, which is the token to be verified.
 
