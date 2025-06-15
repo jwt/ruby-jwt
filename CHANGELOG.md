@@ -6,6 +6,7 @@
 
 **Features:**
 
+- Add support for x5t header parameter for X.509 certificate thumbprint verification [#669](https://github.com/jwt/ruby-jwt/pull/669) ([@hieuk09](https://github.com/hieuk09))
 - Your contribution here
 
 **Fixes and enhancements:**

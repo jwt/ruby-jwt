@@ -644,13 +644,14 @@ algorithms = jwks.map { |key| key[:alg] }.compact.uniq
 JWT.decode(token, nil, true, algorithms: algorithms, jwks: jwks)
 ```
 
-The `jwks` option can also be given as a lambda that evaluates every time a kid is resolved.
+The `jwks` option can also be given as a lambda that evaluates every time a key identifier is resolved.
 This can be used to implement caching of remotely fetched JWK Sets.
 
-If the requested `kid` is not found from the given set the loader will be called a second time with the `kid_not_found` option set to `true`.
+Key identifiers can be specified using `kid`, `x5t` header parameters.
+If the requested identifier is not found from the given set the loader will be called a second time with the `kid_not_found` option set to `true`.
 The application can choose to implement some kind of JWK cache invalidation or other mechanism to handle such cases.
 
-Tokens without a specified `kid` are rejected by default.
+Tokens without a specified key identifier (`kid` or `x5t`) are rejected by default.
 This behaviour may be overwritten by setting the `allow_nil_kid` option for `decode` to `true`.
 
 ```ruby
