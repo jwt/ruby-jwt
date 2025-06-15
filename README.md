@@ -179,6 +179,7 @@ module CustomHS512Algorithm
     ::OpenSSL.secure_compare(sign(data: data, signing_key: verification_key), signature)
   end
 end
+
 payload  = { data: 'test' }
 token    = JWT.encode(payload, 'secret', CustomHS512Algorithm)
 # => "eyJhbGciOiJIUzUxMiJ9.eyJkYXRhIjoidGVzdCJ9.aBNoejLEM2WMF3TxzRDKlehYdG2ATvFpGNauTI4GSD2VJseS_sC8covrVMlgslf0aJM4SKb3EIeORJBFPtZ33w"
