@@ -137,7 +137,7 @@ module JWT
       end
 
       if ::JWT.openssl_3?
-        def create_ec_key(jwk_crv, jwk_x, jwk_y, jwk_d) # rubocop:disable Metrics/MethodLength
+        def create_ec_key(jwk_crv, jwk_x, jwk_y, jwk_d)
           curve = EC.to_openssl_curve(jwk_crv)
           x_octets = decode_octets(jwk_x)
           y_octets = decode_octets(jwk_y)
@@ -147,29 +147,25 @@ module JWT
             OpenSSL::BN.new([0x04, x_octets, y_octets].pack('Ca*a*'), 2)
           )
 
-          sequence = if jwk_d
-                       # https://datatracker.ietf.org/doc/html/rfc5915.html
-                       # ECPrivateKey ::= SEQUENCE {
-                       #   version        INTEGER { ecPrivkeyVer1(1) } (ecPrivkeyVer1),
-                       #   privateKey     OCTET STRING,
-                       #   parameters [0] ECParameters {{ NamedCurve }} OPTIONAL,
-                       #   publicKey  [1] BIT STRING OPTIONAL
-                       # }
+          if jwk_d
+            # https://datatracker.ietf.org/doc/html/rfc5915.html
+            # ECPrivateKey ::= SEQUENCE {
+            #   version        INTEGER { ecPrivkeyVer1(1) } (ecPrivkeyVer1),
+            #   privateKey     OCTET STRING,
+            #   parameters [0] ECParameters {{ NamedCurve }} OPTIONAL,
+            #   publicKey  [1] BIT STRING OPTIONAL
+            # }
 
-                       OpenSSL::ASN1::Sequence([
+            sequence = OpenSSL::ASN1::Sequence([
                                                  OpenSSL::ASN1::Integer(1),
                                                  OpenSSL::ASN1::OctetString(OpenSSL::BN.new(decode_octets(jwk_d), 2).to_s(2)),
                                                  OpenSSL::ASN1::ObjectId(curve, 0, :EXPLICIT),
                                                  OpenSSL::ASN1::BitString(point.to_octet_string(:uncompressed), 1, :EXPLICIT)
                                                ])
-                     else
-                       OpenSSL::ASN1::Sequence([
-                                                 OpenSSL::ASN1::Sequence([OpenSSL::ASN1::ObjectId('id-ecPublicKey'), OpenSSL::ASN1::ObjectId(curve)]),
-                                                 OpenSSL::ASN1::BitString(point.to_octet_string(:uncompressed))
-                                               ])
-                     end
-
-          OpenSSL::PKey::EC.new(sequence.to_der)
+            OpenSSL::PKey::EC.new(sequence.to_der)
+          else
+            ::JWT::JWA::Ecdsa.create_public_key_from_point(point)
+          end
         end
       else
         def create_ec_key(jwk_crv, jwk_x, jwk_y, jwk_d)
