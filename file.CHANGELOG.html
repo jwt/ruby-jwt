@@ -69,6 +69,7 @@
 <li>Add support for x5t header parameter for X.509 certificate thumbprint verification <a href="https://github.com/jwt/ruby-jwt/pull/669">#669</a> (<a href="https://github.com/hieuk09">@hieuk09</a>)</li>
 <li>Raise an error if the ECDSA signing or verification key is not an instance of <code>OpenSSL::PKey::EC</code> <a href="https://github.com/jwt/ruby-jwt/pull/688">#688</a> (<a href="https://github.com/anakinj">@anakinj</a>)</li>
 <li>Allow <code>OpenSSL::PKey::EC::Point</code> to be used as the verification key in ECDSA <a href="https://github.com/jwt/ruby-jwt/pull/689">#689</a> (<a href="https://github.com/anakinj">@anakinj</a>)</li>
+<li>Require claims to have been verified before accessing the <code>JWT::EncodedToken#payload</code></li>
 <li>Your contribution here</li>
 </ul>
 
@@ -1251,7 +1252,7 @@
 </div></div>
 
       <div id="footer">
-  Generated on Sun Jun 15 20:51:38 2025 by
+  Generated on Thu Jun 19 17:19:50 2025 by
   <a href="https://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.9.37 (ruby-3.4.4).
 </div>
