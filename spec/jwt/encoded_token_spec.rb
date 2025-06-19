@@ -51,16 +51,38 @@ RSpec.describe JWT::EncodedToken do
   end
 
   describe '#payload' do
-    context 'when token is verified using #verify_signature!' do
-      before { token.verify_signature!(algorithm: 'HS256', key: 'secret') }
+    context 'when token is verified using #valid?' do
+      before do
+        token.valid?(signature: { algorithm: 'HS256', key: 'secret' })
+      end
 
       it { expect(token.payload).to eq(payload) }
     end
 
-    context 'when token is checked using #valid_signature?' do
-      before { token.valid_signature?(algorithm: 'HS256', key: 'secret') }
+    context 'when token is verified using #verify_signature! and #verify_claims!' do
+      before do
+        token.verify_signature!(algorithm: 'HS256', key: 'secret')
+        token.verify_claims!
+      end
 
       it { expect(token.payload).to eq(payload) }
+    end
+
+    context 'when token is checked using #valid_signature? and #valid_claims?' do
+      before do
+        token.valid_signature?(algorithm: 'HS256', key: 'secret')
+        token.valid_claims?
+      end
+
+      it { expect(token.payload).to eq(payload) }
+    end
+
+    context 'when token is verified using #verify_signature!' do
+      before { token.verify_signature!(algorithm: 'HS256', key: 'secret') }
+
+      it 'raises an error' do
+        expect { token.payload }.to raise_error(JWT::DecodeError, 'Verify the token claims before accessing the payload')
+      end
     end
 
     context 'when token is verified using #valid_signature? but is not valid' do
@@ -207,6 +229,18 @@ RSpec.describe JWT::EncodedToken do
         token.verify_claims!(exp: { leeway: 1000 })
       end
 
+      context 'when no claims are provided' do
+        it 'raises ExpiredSignature error' do
+          expect { token.verify_claims! }.to raise_error(JWT::ExpiredSignature, 'Signature has expired')
+        end
+      end
+
+      context 'when claim validation skips verifying the exp claim' do
+        it 'does not raise' do
+          expect { token.verify_claims!({}) }.not_to raise_error
+        end
+      end
+
       context 'when claims given as symbol' do
         it 'validates the claim' do
           expect { token.verify_claims!(:exp) }.to raise_error(JWT::ExpiredSignature, 'Signature has expired')
@@ -283,6 +317,39 @@ RSpec.describe JWT::EncodedToken do
     end
   end
 
+  context '#valid?' do
+    context 'when key is valid' do
+      it 'returns true' do
+        expect(token.valid?(signature: { algorithm: 'HS256', key: 'secret' })).to be(true)
+      end
+    end
+
+    context 'when key is invalid' do
+      it 'returns false' do
+        expect(token.valid?(signature: { algorithm: 'HS256', key: 'wrong' })).to be(false)
+      end
+    end
+
+    context 'when claims are provided as an array' do
+      it 'returns true' do
+        expect(
+          token.valid?(signature: { algorithm: 'HS256', key: 'secret' }, claims: [:exp])
+        ).to be(true)
+      end
+    end
+
+    context 'when claims are invalid' do
+      let(:payload) { { 'pay' => 'load', exp: Time.now.to_i - 1000 } }
+
+      it 'returns false' do
+        expect(
+          token.valid?(signature: { algorithm: 'HS256', key: 'secret' },
+                       claims: { exp: { leeway: 900 } })
+        ).to be(false)
+      end
+    end
+  end
+
   describe '#valid_claims?' do
     context 'exp claim' do
       let(:payload) { { 'exp' => Time.now.to_i - 10, 'pay' => 'load' } }
@@ -296,6 +363,18 @@ RSpec.describe JWT::EncodedToken do
       context 'when claim is invalid' do
         it 'returns true' do
           expect(token.valid_claims?(:exp)).to be(false)
+        end
+      end
+
+      context 'when no claims are provided' do
+        it 'validates the exp claim and returns false' do
+          expect(token.valid_claims?).to be(false)
+        end
+      end
+
+      context 'when claim validation skips verifying the exp claim' do
+        it 'returns true' do
+          expect(token.valid_claims?({})).to be(true)
         end
       end
     end

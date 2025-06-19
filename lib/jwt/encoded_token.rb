@@ -28,6 +28,10 @@ module JWT
       end
     end
 
+    DEFAULT_CLAIMS = [:exp].freeze
+
+    private_constant(:DEFAULT_CLAIMS)
+
     # Returns the original token provided to the class.
     # @return [String] The JWT token.
     attr_reader :jwt
@@ -41,6 +45,8 @@ module JWT
 
       @jwt = jwt
       @signature_verified = false
+      @claims_verified    = false
+
       @encoded_header, @encoded_payload, @encoded_signature = jwt.split('.')
     end
 
@@ -68,12 +74,13 @@ module JWT
     # @return [String] the encoded header.
     attr_reader :encoded_header
 
-    # Returns the payload of the JWT token. Access requires the signature to have been verified.
+    # Returns the payload of the JWT token. Access requires the signature and claims to have been verified.
     #
     # @return [Hash] the payload.
     # @raise [JWT::DecodeError] if the signature has not been verified.
     def payload
       raise JWT::DecodeError, 'Verify the token signature before accessing the payload' unless @signature_verified
+      raise JWT::DecodeError, 'Verify the token claims before accessing the payload' unless @claims_verified
 
       decoded_payload
     end
@@ -106,10 +113,21 @@ module JWT
     # @param claims [Array<Symbol>, Hash] the claims to verify (see {#verify_claims!}).
     # @return [nil]
     # @raise [JWT::DecodeError] if the signature or claim verification fails.
-    def verify!(signature:, claims: [:exp])
+    def verify!(signature:, claims: nil)
       verify_signature!(**signature)
       claims.is_a?(Array) ? verify_claims!(*claims) : verify_claims!(claims)
       nil
+    end
+
+    # Verifies the token signature and claims.
+    # By default it verifies the 'exp' claim.
+
+    # @param signature [Hash] the parameters for signature verification (see {#verify_signature!}).
+    # @param claims [Array<Symbol>, Hash] the claims to verify (see {#verify_claims!}).
+    # @return [Boolean] true if the signature and claims are valid, false otherwise.
+    def valid?(signature:, claims: nil)
+      valid_signature?(**signature) &&
+        (claims.is_a?(Array) ? valid_claims?(*claims) : valid_claims?(claims))
     end
 
     # Verifies the signature of the JWT token.
@@ -146,29 +164,40 @@ module JWT
     end
 
     # Verifies the claims of the token.
-    # @param options [Array<Symbol>, Hash] the claims to verify.
+    # @param options [Array<Symbol>, Hash] the claims to verify. By default, it checks the 'exp' claim.
     # @raise [JWT::DecodeError] if the claims are invalid.
     def verify_claims!(*options)
-      Claims::Verifier.verify!(ClaimsContext.new(self), *options)
+      Claims::Verifier.verify!(ClaimsContext.new(self), *claims_options(options)).tap do
+        @claims_verified = true
+      end
+    rescue StandardError
+      @claims_verified = false
+      raise
     end
 
     # Returns the errors of the claims of the token.
-    # @param options [Array<Symbol>, Hash] the claims to verify.
+    # @param options [Array<Symbol>, Hash] the claims to verify. By default, it checks the 'exp' claim.
     # @return [Array<Symbol>] the errors of the claims.
     def claim_errors(*options)
-      Claims::Verifier.errors(ClaimsContext.new(self), *options)
+      Claims::Verifier.errors(ClaimsContext.new(self), *claims_options(options))
     end
 
     # Returns whether the claims of the token are valid.
-    # @param options [Array<Symbol>, Hash] the claims to verify.
+    # @param options [Array<Symbol>, Hash] the claims to verify. By default, it checks the 'exp' claim.
     # @return [Boolean] whether the claims are valid.
     def valid_claims?(*options)
-      claim_errors(*options).empty?
+      claim_errors(*claims_options(options)).empty?.tap { |verified| @claims_verified = verified }
     end
 
     alias to_s jwt
 
     private
+
+    def claims_options(options)
+      return DEFAULT_CLAIMS if options.first.nil?
+
+      options
+    end
 
     def decode_payload
       raise JWT::DecodeError, 'Encoded payload is empty' if encoded_payload == ''
