@@ -397,4 +397,43 @@ RSpec.describe JWT::EncodedToken do
       end
     end
   end
+
+  describe 'integration use-cases' do
+    context 'simple verify HS256 with defaults' do
+      let(:encoded_token) do
+        JWT::Token.new(payload: { 'pay' => 'load' })
+                  .tap { |t| t.sign!(algorithm: 'HS256', key: 'secret_signing_key') }
+                  .jwt
+      end
+
+      it 'protects the user from unverified payload access' do
+        token = described_class.new(encoded_token)
+
+        expect(token.unverified_payload).to eq({ 'pay' => 'load' })
+        expect(token.header).to eq({ 'alg' => 'HS256' })
+
+        expect { token.payload }.to raise_error(JWT::DecodeError, 'Verify the token signature before accessing the payload')
+
+        expect(token.valid_signature?(algorithm: 'HS256', key: 'invalid_signing_key')).to be(false)
+        expect { token.payload }.to raise_error(JWT::DecodeError, 'Verify the token signature before accessing the payload')
+
+        expect(token.valid_signature?(algorithm: 'HS256', key: 'secret_signing_key')).to be(true)
+        expect { token.payload }.to raise_error(JWT::DecodeError, 'Verify the token claims before accessing the payload')
+
+        expect(token.valid_claims?(iss: 'issuer')).to be(false)
+        expect { token.payload }.to raise_error(JWT::DecodeError, 'Verify the token claims before accessing the payload')
+
+        expect(token.valid_claims?).to be(true)
+        expect(token.payload).to eq({ 'pay' => 'load' })
+
+        token = described_class.new(encoded_token)
+
+        expect(token.valid?(signature: { algorithm: 'HS256', key: 'invalid_signing_key' })).to be(false)
+        expect { token.payload }.to raise_error(JWT::DecodeError, 'Verify the token signature before accessing the payload')
+
+        expect(token.valid?(signature: { algorithm: 'HS256', key: 'secret_signing_key' })).to be(true)
+        expect(token.payload).to eq({ 'pay' => 'load' })
+      end
+    end
+  end
 end
