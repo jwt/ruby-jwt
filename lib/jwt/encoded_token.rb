@@ -138,12 +138,8 @@ module JWT
     # @return [nil]
     # @raise [JWT::VerificationError] if the signature verification fails.
     # @raise [ArgumentError] if neither key nor key_finder is provided, or if both are provided.
-    def verify_signature!(algorithm:, key: nil, key_finder: nil)
-      raise ArgumentError, 'Provide either key or key_finder, not both or neither' if key.nil? == key_finder.nil?
-
-      key ||= key_finder.call(self)
-
-      return if valid_signature?(algorithm: algorithm, key: key)
+    def verify_signature!(algorithm: nil, key: nil, key_finder: nil)
+      return if valid_signature?(algorithm: algorithm, key: key, key_finder: key_finder)
 
       raise JWT::VerificationError, 'Signature verification failed'
     end
@@ -152,10 +148,15 @@ module JWT
     #
     # @param algorithm [String, Array<String>, Object, Array<Object>] the algorithm(s) to use for verification.
     # @param key [String, Array<String>] the key(s) to use for verification.
+    # @param key_finder [#call] an object responding to `call` to find the key for verification.
     # @return [Boolean] true if the signature is valid, false otherwise.
-    def valid_signature?(algorithm:, key:)
+    def valid_signature?(algorithm: nil, key: nil, key_finder: nil)
+      raise ArgumentError, 'Provide either key or key_finder, not both or neither' if key.nil? == key_finder.nil?
+
+      keys = Array(key || key_finder.call(self))
+
       valid = Array(JWA.resolve_and_sort(algorithms: algorithm, preferred_algorithm: header['alg'])).any? do |algo|
-        Array(key).any? do |one_key|
+        keys.any? do |one_key|
           algo.verify(data: signing_input, signature: signature, verification_key: one_key)
         end
       end
