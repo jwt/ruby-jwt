@@ -211,6 +211,19 @@ RSpec.describe JWT::EncodedToken do
         expect(token.verify_signature!(algorithm: 'RS256', key_finder: key_finder)).to eq(nil)
       end
     end
+
+    context 'when JWK is given as a key' do
+      let(:jwk) { JWT::JWK.new(test_pkey('rsa-2048-private.pem'), alg: 'RS256') }
+      let(:encoded_token) do
+        JWT::Token.new(payload: payload)
+                  .tap { |t| t.sign!(algorithm: 'RS256', key: jwk.signing_key) }
+                  .jwt
+      end
+
+      it 'uses the JWK for verification' do
+        expect(token.verify_signature!(key: jwk)).to eq(nil)
+      end
+    end
   end
 
   describe '#verify_claims!' do

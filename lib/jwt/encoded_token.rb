@@ -153,14 +153,12 @@ module JWT
     def valid_signature?(algorithm: nil, key: nil, key_finder: nil)
       raise ArgumentError, 'Provide either key or key_finder, not both or neither' if key.nil? == key_finder.nil?
 
-      keys = Array(key || key_finder.call(self))
+      keys      = Array(key || key_finder.call(self))
+      verifiers = JWA.create_verifiers(algorithms: algorithm, keys: keys, preferred_algorithm: header['alg'])
 
-      valid = Array(JWA.resolve_and_sort(algorithms: algorithm, preferred_algorithm: header['alg'])).any? do |algo|
-        keys.any? do |one_key|
-          algo.verify(data: signing_input, signature: signature, verification_key: one_key)
-        end
+      valid = verifiers.any? do |jwa|
+        jwa.verify(data: signing_input, signature: signature)
       end
-
       valid.tap { |verified| @signature_verified = verified }
     end
 
