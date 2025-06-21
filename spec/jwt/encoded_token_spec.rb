@@ -139,6 +139,12 @@ RSpec.describe JWT::EncodedToken do
       end
     end
 
+    context 'when algorithm is not given' do
+      it 'raises an error' do
+        expect { token.verify_signature!(key: 'secret') }.to raise_error(JWT::VerificationError, 'No algorithm provided')
+      end
+    end
+
     context 'when header has invalid alg value' do
       let(:header) { { 'alg' => 'HS123' } }
 

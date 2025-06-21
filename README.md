@@ -13,9 +13,9 @@ See [CHANGELOG.md](CHANGELOG.md) for a complete set of changes and [upgrade guid
 
 ## Sponsors
 
-|Logo|Message|
-|----|-------|
-|![auth0 logo](https://user-images.githubusercontent.com/83319/31722733-de95bbde-b3ea-11e7-96bf-4f4e8f915588.png)|If you want to quickly add secure token-based authentication to Ruby projects, feel free to check Auth0's Ruby SDK and free plan at [auth0.com/developers](https://auth0.com/developers?utm_source=GHsponsor&utm_medium=GHsponsor&utm_campaign=rubyjwt&utm_content=auth)|
+| Logo                                                                                                             | Message                                                                                                                                                                                                                                                                  |
+| ---------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| ![auth0 logo](https://user-images.githubusercontent.com/83319/31722733-de95bbde-b3ea-11e7-96bf-4f4e8f915588.png) | If you want to quickly add secure token-based authentication to Ruby projects, feel free to check Auth0's Ruby SDK and free plan at [auth0.com/developers](https://auth0.com/developers?utm_source=GHsponsor&utm_medium=GHsponsor&utm_campaign=rubyjwt&utm_content=auth) |
 
 ## Installing
 
@@ -249,6 +249,21 @@ encoded_token = JWT::EncodedToken.new(token.jwt)
 encoded_token.verify!(signature: {algorithm: 'HS256', key: "secret"})
 encoded_token.payload # => { 'exp'=>1234, 'jti'=>'1234", 'sub'=>'my-subject' }
 encoded_token.header # {'kid'=>'hmac', 'alg'=>'HS256'}
+```
+
+A JWK can be used to verify the token, the alg parameter is used to resolve the JWA to be used.
+
+```ruby
+jwk_json = '{
+ "kty": "oct",
+ "k": "c2VjcmV0",
+ "alg": "HS256",
+ "kid": "hmac"
+}'
+
+jwk = JWT::JWK.import(JSON.parse(jwk_json))
+encoded_token = JWT::EncodedToken.new(token.jwt)
+encoded_token.verify!(signature: { key: jwk})
 ```
 
 #### Using a keyfinder

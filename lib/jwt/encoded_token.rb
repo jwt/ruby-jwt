@@ -156,6 +156,8 @@ module JWT
       keys      = Array(key || key_finder.call(self))
       verifiers = JWA.create_verifiers(algorithms: algorithm, keys: keys, preferred_algorithm: header['alg'])
 
+      raise JWT::VerificationError, 'No algorithm provided' if verifiers.empty?
+
       valid = verifiers.any? do |jwa|
         jwa.verify(data: signing_input, signature: signature)
       end
