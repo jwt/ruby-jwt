@@ -251,7 +251,7 @@ encoded_token.payload # => { 'exp'=>1234, 'jti'=>'1234", 'sub'=>'my-subject' }
 encoded_token.header # {'kid'=>'hmac', 'alg'=>'HS256'}
 ```
 
-A JWK can be used to verify the token, the alg parameter is used to resolve the JWA to be used.
+A JWK can be used to verify the token if it's possible to derive the signing algorithm from the key.
 
 ```ruby
 jwk_json = '{
