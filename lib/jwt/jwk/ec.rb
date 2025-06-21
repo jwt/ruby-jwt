@@ -73,6 +73,13 @@ module JWT
 
       private
 
+      def resolve_algorithm
+        return super if self[:alg]
+
+        curve_name = self.class.to_openssl_curve(self[:crv])
+        JWA.resolve(JWA::Ecdsa.curve_by_name(curve_name)[:algorithm])
+      end
+
       def ec_key
         @ec_key ||= create_ec_key(self[:crv], self[:x], self[:y], self[:d])
       end
