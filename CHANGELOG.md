@@ -1,8 +1,8 @@
 # Changelog
 
-## [v3.0.1](https://github.com/jwt/ruby-jwt/tree/v3.0.1) (NEXT)
+## [v3.1.0](https://github.com/jwt/ruby-jwt/tree/v3.1.0) (NEXT)
 
-[Full Changelog](https://github.com/jwt/ruby-jwt/compare/v3.0.0...main)
+[Full Changelog](https://github.com/jwt/ruby-jwt/compare/v3.0.0...v3.1.0)
 
 **Features:**
 
