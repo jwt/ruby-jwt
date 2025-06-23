@@ -317,6 +317,25 @@ To add custom header fields you need to pass <code>header_fields</code> paramete
 </span><span class='id identifier rubyid_encoded_token'>encoded_token</span><span class='period'>.</span><span class='id identifier rubyid_header'>header</span> <span class='comment'># {&#39;kid&#39;=&gt;&#39;hmac&#39;, &#39;alg&#39;=&gt;&#39;HS256&#39;}
 </span></code></pre>
 
+<p>A JWK can be used to sign and verify the token if it&#39;s possible to derive the signing algorithm from the key.</p>
+
+<pre class="code ruby"><code class="ruby"><span class='id identifier rubyid_jwk_json'>jwk_json</span> <span class='op'>=</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>{
+ &quot;kty&quot;: &quot;oct&quot;,
+ &quot;k&quot;: &quot;c2VjcmV0&quot;,
+ &quot;alg&quot;: &quot;HS256&quot;,
+ &quot;kid&quot;: &quot;hmac&quot;
+}</span><span class='tstring_end'>&#39;</span></span>
+
+<span class='id identifier rubyid_jwk'>jwk</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="JWT.html" title="JWT (module)">JWT</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="JWT/JWK.html" title="JWT::JWK (module)">JWK</a></span></span><span class='period'>.</span><span class='id identifier rubyid_import'>import</span><span class='lparen'>(</span><span class='const'>JSON</span><span class='period'>.</span><span class='id identifier rubyid_parse'>parse</span><span class='lparen'>(</span><span class='id identifier rubyid_jwk_json'>jwk_json</span><span class='rparen'>)</span><span class='rparen'>)</span>
+
+<span class='id identifier rubyid_token'>token</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="JWT.html" title="JWT (module)">JWT</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="JWT/Token.html" title="JWT::Token (class)">Token</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="JWT/Token.html#initialize-instance_method" title="JWT::Token#initialize (method)">new</a></span></span><span class='lparen'>(</span><span class='label'>payload:</span> <span class='id identifier rubyid_payload'>payload</span><span class='comma'>,</span> <span class='label'>header:</span> <span class='id identifier rubyid_header'>header</span><span class='rparen'>)</span>
+
+<span class='id identifier rubyid_token'>token</span><span class='period'>.</span><span class='id identifier rubyid_sign!'>sign!</span><span class='lparen'>(</span><span class='label'>key:</span> <span class='id identifier rubyid_jwk'>jwk</span><span class='rparen'>)</span>
+
+<span class='id identifier rubyid_encoded_token'>encoded_token</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="JWT.html" title="JWT (module)">JWT</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="JWT/EncodedToken.html" title="JWT::EncodedToken (class)">EncodedToken</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="JWT/EncodedToken.html#initialize-instance_method" title="JWT::EncodedToken#initialize (method)">new</a></span></span><span class='lparen'>(</span><span class='id identifier rubyid_token'>token</span><span class='period'>.</span><span class='id identifier rubyid_jwt'>jwt</span><span class='rparen'>)</span>
+<span class='id identifier rubyid_encoded_token'>encoded_token</span><span class='period'>.</span><span class='id identifier rubyid_verify!'>verify!</span><span class='lparen'>(</span><span class='label'>signature:</span> <span class='lbrace'>{</span> <span class='label'>key:</span> <span class='id identifier rubyid_jwk'>jwk</span><span class='rbrace'>}</span><span class='rparen'>)</span>
+</code></pre>
+
 <h4 id="using-a-keyfinder">Using a keyfinder</h4>
 
 <p>A keyfinder can be used to verify a signature. A keyfinder is an object responding to the <code>#call</code> method. The method expects to receive one argument, which is the token to be verified.</p>
@@ -816,7 +835,7 @@ bundle exec appraisal rake test
 </div></div>
 
       <div id="footer">
-  Generated on Sat Jun 21 20:13:26 2025 by
+  Generated on Mon Jun 23 17:51:30 2025 by
   <a href="https://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.9.37 (ruby-3.4.4).
 </div>

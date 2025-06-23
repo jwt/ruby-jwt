@@ -477,7 +477,7 @@
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#valid_signature%3F-instance_method" title="#valid_signature? (instance method)">#<strong>valid_signature?</strong>(algorithm:, key:)  &#x21d2; Boolean </a>
+      <a href="#valid_signature%3F-instance_method" title="#valid_signature? (instance method)">#<strong>valid_signature?</strong>(algorithm: nil, key: nil, key_finder: nil)  &#x21d2; Boolean </a>
     
 
     
@@ -549,7 +549,7 @@
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#verify_signature!-instance_method" title="#verify_signature! (instance method)">#<strong>verify_signature!</strong>(algorithm:, key: nil, key_finder: nil)  &#x21d2; nil </a>
+      <a href="#verify_signature!-instance_method" title="#verify_signature! (instance method)">#<strong>verify_signature!</strong>(algorithm: nil, key: nil, key_finder: nil)  &#x21d2; nil </a>
     
 
     
@@ -991,12 +991,12 @@
       <pre class="lines">
 
 
-181
 182
-183</pre>
+183
+184</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/jwt/encoded_token.rb', line 181</span>
+      <pre class="code"><span class="info file"># File 'lib/jwt/encoded_token.rb', line 182</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_claim_errors'>claim_errors</span><span class='lparen'>(</span><span class='op'>*</span><span class='id identifier rubyid_options'>options</span><span class='rparen'>)</span>
   <span class='const'><span class='object_link'><a href="Claims.html" title="JWT::Claims (module)">Claims</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="Claims/Verifier.html" title="JWT::Claims::Verifier (module)">Verifier</a></span></span><span class='period'>.</span><span class='id identifier rubyid_errors'><span class='object_link'><a href="Claims/Verifier.html#errors-class_method" title="JWT::Claims::Verifier.errors (method)">errors</a></span></span><span class='lparen'>(</span><span class='const'>ClaimsContext</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='kw'>self</span><span class='rparen'>)</span><span class='comma'>,</span> <span class='op'>*</span><span class='id identifier rubyid_claims_options'>claims_options</span><span class='lparen'>(</span><span class='id identifier rubyid_options'>options</span><span class='rparen'>)</span><span class='rparen'>)</span>
@@ -1488,12 +1488,12 @@
       <pre class="lines">
 
 
-188
 189
-190</pre>
+190
+191</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/jwt/encoded_token.rb', line 188</span>
+      <pre class="code"><span class="info file"># File 'lib/jwt/encoded_token.rb', line 189</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_valid_claims?'>valid_claims?</span><span class='lparen'>(</span><span class='op'>*</span><span class='id identifier rubyid_options'>options</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_claim_errors'>claim_errors</span><span class='lparen'>(</span><span class='op'>*</span><span class='id identifier rubyid_claims_options'>claims_options</span><span class='lparen'>(</span><span class='id identifier rubyid_options'>options</span><span class='rparen'>)</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_empty?'>empty?</span><span class='period'>.</span><span class='id identifier rubyid_tap'>tap</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_verified'>verified</span><span class='op'>|</span> <span class='ivar'>@claims_verified</span> <span class='op'>=</span> <span class='id identifier rubyid_verified'>verified</span> <span class='rbrace'>}</span>
@@ -1506,7 +1506,7 @@
       <div class="method_details ">
   <h3 class="signature " id="valid_signature?-instance_method">
   
-    #<strong>valid_signature?</strong>(algorithm:, key:)  &#x21d2; <tt>Boolean</tt> 
+    #<strong>valid_signature?</strong>(algorithm: nil, key: nil, key_finder: nil)  &#x21d2; <tt>Boolean</tt> 
   
 
   
@@ -1532,6 +1532,8 @@
         <span class='type'>(<tt>String</tt>, <tt>Array&lt;String&gt;</tt>, <tt>Object</tt>, <tt>Array&lt;Object&gt;</tt>)</span>
       
       
+        <em class="default">(defaults to: <tt>nil</tt>)</em>
+      
       
         &mdash;
         <div class='inline'>
@@ -1545,13 +1547,33 @@
         <span class='name'>key</span>
       
       
-        <span class='type'>(<tt>String</tt>, <tt>Array&lt;String&gt;</tt>)</span>
+        <span class='type'>(<tt>String</tt>, <tt>Array&lt;String&gt;</tt>, <tt><span class='object_link'><a href="JWK/KeyBase.html" title="JWT::JWK::KeyBase (class)">JWT::JWK::KeyBase</a></span></tt>, <tt>Array&lt;<span class='object_link'><a href="JWK/KeyBase.html" title="JWT::JWK::KeyBase (class)">JWT::JWK::KeyBase</a></span>&gt;</tt>)</span>
       
+      
+        <em class="default">(defaults to: <tt>nil</tt>)</em>
       
       
         &mdash;
         <div class='inline'>
 <p>the key(s) to use for verification.</p>
+</div>
+      
+    </li>
+  
+    <li>
+      
+        <span class='name'>key_finder</span>
+      
+      
+        <span class='type'>(<tt>#call</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>nil</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>an object responding to ‘call` to find the key for verification.</p>
 </div>
       
     </li>
@@ -1576,6 +1598,19 @@
     </li>
   
 </ul>
+<p class="tag_title">Raises:</p>
+<ul class="raise">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt>ArgumentError</tt>)</span>
+      
+      
+      
+    </li>
+  
+</ul>
 
 </div><table class="source_code">
   <tr>
@@ -1583,6 +1618,9 @@
       <pre class="lines">
 
 
+153
+154
+155
 156
 157
 158
@@ -1591,18 +1629,23 @@
 161
 162
 163
-164</pre>
+164
+165</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/jwt/encoded_token.rb', line 156</span>
+      <pre class="code"><span class="info file"># File 'lib/jwt/encoded_token.rb', line 153</span>
 
-<span class='kw'>def</span> <span class='id identifier rubyid_valid_signature?'>valid_signature?</span><span class='lparen'>(</span><span class='label'>algorithm:</span><span class='comma'>,</span> <span class='label'>key:</span><span class='rparen'>)</span>
-  <span class='id identifier rubyid_valid'>valid</span> <span class='op'>=</span> <span class='const'>Array</span><span class='lparen'>(</span><span class='const'><span class='object_link'><a href="JWA.html" title="JWT::JWA (module)">JWA</a></span></span><span class='period'>.</span><span class='id identifier rubyid_resolve_and_sort'><span class='object_link'><a href="JWA.html#resolve_and_sort-class_method" title="JWT::JWA.resolve_and_sort (method)">resolve_and_sort</a></span></span><span class='lparen'>(</span><span class='label'>algorithms:</span> <span class='id identifier rubyid_algorithm'>algorithm</span><span class='comma'>,</span> <span class='label'>preferred_algorithm:</span> <span class='id identifier rubyid_header'>header</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>alg</span><span class='tstring_end'>&#39;</span></span><span class='rbracket'>]</span><span class='rparen'>)</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_any?'>any?</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_algo'>algo</span><span class='op'>|</span>
-    <span class='const'>Array</span><span class='lparen'>(</span><span class='id identifier rubyid_key'>key</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_any?'>any?</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_one_key'>one_key</span><span class='op'>|</span>
-      <span class='id identifier rubyid_algo'>algo</span><span class='period'>.</span><span class='id identifier rubyid_verify'>verify</span><span class='lparen'>(</span><span class='label'>data:</span> <span class='id identifier rubyid_signing_input'>signing_input</span><span class='comma'>,</span> <span class='label'>signature:</span> <span class='id identifier rubyid_signature'>signature</span><span class='comma'>,</span> <span class='label'>verification_key:</span> <span class='id identifier rubyid_one_key'>one_key</span><span class='rparen'>)</span>
-    <span class='kw'>end</span>
+<span class='kw'>def</span> <span class='id identifier rubyid_valid_signature?'>valid_signature?</span><span class='lparen'>(</span><span class='label'>algorithm:</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='label'>key:</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='label'>key_finder:</span> <span class='kw'>nil</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_raise'>raise</span> <span class='const'>ArgumentError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>Provide either key or key_finder, not both or neither</span><span class='tstring_end'>&#39;</span></span> <span class='kw'>if</span> <span class='id identifier rubyid_key'>key</span><span class='period'>.</span><span class='id identifier rubyid_nil?'>nil?</span> <span class='op'>==</span> <span class='id identifier rubyid_key_finder'>key_finder</span><span class='period'>.</span><span class='id identifier rubyid_nil?'>nil?</span>
+
+  <span class='id identifier rubyid_keys'>keys</span>      <span class='op'>=</span> <span class='const'>Array</span><span class='lparen'>(</span><span class='id identifier rubyid_key'>key</span> <span class='op'>||</span> <span class='id identifier rubyid_key_finder'>key_finder</span><span class='period'>.</span><span class='id identifier rubyid_call'>call</span><span class='lparen'>(</span><span class='kw'>self</span><span class='rparen'>)</span><span class='rparen'>)</span>
+  <span class='id identifier rubyid_verifiers'>verifiers</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="JWA.html" title="JWT::JWA (module)">JWA</a></span></span><span class='period'>.</span><span class='id identifier rubyid_create_verifiers'><span class='object_link'><a href="JWA.html#create_verifiers-class_method" title="JWT::JWA.create_verifiers (method)">create_verifiers</a></span></span><span class='lparen'>(</span><span class='label'>algorithms:</span> <span class='id identifier rubyid_algorithm'>algorithm</span><span class='comma'>,</span> <span class='label'>keys:</span> <span class='id identifier rubyid_keys'>keys</span><span class='comma'>,</span> <span class='label'>preferred_algorithm:</span> <span class='id identifier rubyid_header'>header</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>alg</span><span class='tstring_end'>&#39;</span></span><span class='rbracket'>]</span><span class='rparen'>)</span>
+
+  <span class='id identifier rubyid_raise'>raise</span> <span class='const'><span class='object_link'><a href="../JWT.html" title="JWT (module)">JWT</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="VerificationError.html" title="JWT::VerificationError (class)">VerificationError</a></span></span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>No algorithm provided</span><span class='tstring_end'>&#39;</span></span> <span class='kw'>if</span> <span class='id identifier rubyid_verifiers'>verifiers</span><span class='period'>.</span><span class='id identifier rubyid_empty?'>empty?</span>
+
+  <span class='id identifier rubyid_valid'>valid</span> <span class='op'>=</span> <span class='id identifier rubyid_verifiers'>verifiers</span><span class='period'>.</span><span class='id identifier rubyid_any?'>any?</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_jwa'>jwa</span><span class='op'>|</span>
+    <span class='id identifier rubyid_jwa'>jwa</span><span class='period'>.</span><span class='id identifier rubyid_verify'>verify</span><span class='lparen'>(</span><span class='label'>data:</span> <span class='id identifier rubyid_signing_input'>signing_input</span><span class='comma'>,</span> <span class='label'>signature:</span> <span class='id identifier rubyid_signature'>signature</span><span class='rparen'>)</span>
   <span class='kw'>end</span>
-
   <span class='id identifier rubyid_valid'>valid</span><span class='period'>.</span><span class='id identifier rubyid_tap'>tap</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_verified'>verified</span><span class='op'>|</span> <span class='ivar'>@signature_verified</span> <span class='op'>=</span> <span class='id identifier rubyid_verified'>verified</span> <span class='rbrace'>}</span>
 <span class='kw'>end</span></pre>
     </td>
@@ -1796,17 +1839,17 @@
       <pre class="lines">
 
 
-169
 170
 171
 172
 173
 174
 175
-176</pre>
+176
+177</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/jwt/encoded_token.rb', line 169</span>
+      <pre class="code"><span class="info file"># File 'lib/jwt/encoded_token.rb', line 170</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_verify_claims!'>verify_claims!</span><span class='lparen'>(</span><span class='op'>*</span><span class='id identifier rubyid_options'>options</span><span class='rparen'>)</span>
   <span class='const'><span class='object_link'><a href="Claims.html" title="JWT::Claims (module)">Claims</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="Claims/Verifier.html" title="JWT::Claims::Verifier (module)">Verifier</a></span></span><span class='period'>.</span><span class='id identifier rubyid_verify!'><span class='object_link'><a href="Claims/Verifier.html#verify!-class_method" title="JWT::Claims::Verifier.verify! (method)">verify!</a></span></span><span class='lparen'>(</span><span class='const'>ClaimsContext</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='kw'>self</span><span class='rparen'>)</span><span class='comma'>,</span> <span class='op'>*</span><span class='id identifier rubyid_claims_options'>claims_options</span><span class='lparen'>(</span><span class='id identifier rubyid_options'>options</span><span class='rparen'>)</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_tap'>tap</span> <span class='kw'>do</span>
@@ -1824,7 +1867,7 @@
       <div class="method_details ">
   <h3 class="signature " id="verify_signature!-instance_method">
   
-    #<strong>verify_signature!</strong>(algorithm:, key: nil, key_finder: nil)  &#x21d2; <tt>nil</tt> 
+    #<strong>verify_signature!</strong>(algorithm: nil, key: nil, key_finder: nil)  &#x21d2; <tt>nil</tt> 
   
 
   
@@ -1849,6 +1892,8 @@
       
         <span class='type'>(<tt>String</tt>, <tt>Array&lt;String&gt;</tt>, <tt>Object</tt>, <tt>Array&lt;Object&gt;</tt>)</span>
       
+      
+        <em class="default">(defaults to: <tt>nil</tt>)</em>
       
       
         &mdash;
@@ -1952,21 +1997,13 @@
 142
 143
 144
-145
-146
-147
-148
-149</pre>
+145</pre>
     </td>
     <td>
       <pre class="code"><span class="info file"># File 'lib/jwt/encoded_token.rb', line 141</span>
 
-<span class='kw'>def</span> <span class='id identifier rubyid_verify_signature!'>verify_signature!</span><span class='lparen'>(</span><span class='label'>algorithm:</span><span class='comma'>,</span> <span class='label'>key:</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='label'>key_finder:</span> <span class='kw'>nil</span><span class='rparen'>)</span>
-  <span class='id identifier rubyid_raise'>raise</span> <span class='const'>ArgumentError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>Provide either key or key_finder, not both or neither</span><span class='tstring_end'>&#39;</span></span> <span class='kw'>if</span> <span class='id identifier rubyid_key'>key</span><span class='period'>.</span><span class='id identifier rubyid_nil?'>nil?</span> <span class='op'>==</span> <span class='id identifier rubyid_key_finder'>key_finder</span><span class='period'>.</span><span class='id identifier rubyid_nil?'>nil?</span>
-
-  <span class='id identifier rubyid_key'>key</span> <span class='op'>||=</span> <span class='id identifier rubyid_key_finder'>key_finder</span><span class='period'>.</span><span class='id identifier rubyid_call'>call</span><span class='lparen'>(</span><span class='kw'>self</span><span class='rparen'>)</span>
-
-  <span class='kw'>return</span> <span class='kw'>if</span> <span class='id identifier rubyid_valid_signature?'>valid_signature?</span><span class='lparen'>(</span><span class='label'>algorithm:</span> <span class='id identifier rubyid_algorithm'>algorithm</span><span class='comma'>,</span> <span class='label'>key:</span> <span class='id identifier rubyid_key'>key</span><span class='rparen'>)</span>
+<span class='kw'>def</span> <span class='id identifier rubyid_verify_signature!'>verify_signature!</span><span class='lparen'>(</span><span class='label'>algorithm:</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='label'>key:</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='label'>key_finder:</span> <span class='kw'>nil</span><span class='rparen'>)</span>
+  <span class='kw'>return</span> <span class='kw'>if</span> <span class='id identifier rubyid_valid_signature?'>valid_signature?</span><span class='lparen'>(</span><span class='label'>algorithm:</span> <span class='id identifier rubyid_algorithm'>algorithm</span><span class='comma'>,</span> <span class='label'>key:</span> <span class='id identifier rubyid_key'>key</span><span class='comma'>,</span> <span class='label'>key_finder:</span> <span class='id identifier rubyid_key_finder'>key_finder</span><span class='rparen'>)</span>
 
   <span class='id identifier rubyid_raise'>raise</span> <span class='const'><span class='object_link'><a href="../JWT.html" title="JWT (module)">JWT</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="VerificationError.html" title="JWT::VerificationError (class)">VerificationError</a></span></span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>Signature verification failed</span><span class='tstring_end'>&#39;</span></span>
 <span class='kw'>end</span></pre>
@@ -1980,7 +2017,7 @@
 </div>
 
       <div id="footer">
-  Generated on Sat Jun 21 20:13:27 2025 by
+  Generated on Mon Jun 23 17:51:31 2025 by
   <a href="https://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.9.37 (ruby-3.4.4).
 </div>
