@@ -134,7 +134,7 @@ RSpec.describe JWT::JWK::EC do
       end
 
       context 'when the signature is invalid' do
-        it 'returns true' do
+        it 'returns false' do
           expect(jwk.verify(data: data, signature: 'invalid')).to be(false)
         end
       end

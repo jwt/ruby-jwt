@@ -474,7 +474,7 @@ RSpec.describe 'README.md code test' do
 
       jwk = JWT::JWK.import(JSON.parse(jwk_json))
       encoded_token = JWT::EncodedToken.new(token.jwt)
-      encoded_token.verify!(signature: { key: jwk })
+      expect { encoded_token.verify!(signature: { key: jwk }) }.not_to raise_error
     end
   end
 end
