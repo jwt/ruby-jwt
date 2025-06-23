@@ -42,6 +42,19 @@ module JWT
         other.is_a?(::JWT::JWK::KeyBase) && self[:kid] == other[:kid]
       end
 
+      def verify(**kwargs)
+        jwa.verify(**kwargs, verification_key: verify_key)
+      end
+
+      def sign(**kwargs)
+        jwa.sign(**kwargs, signing_key: signing_key)
+      end
+
+      # @api private
+      def jwa_header
+        jwa.header
+      end
+
       alias eql? ==
 
       def <=>(other)
@@ -51,6 +64,12 @@ module JWT
       end
 
       private
+
+      def jwa
+        raise JWT::JWKError, 'Could not resolve the JWA, the "alg" parameter is missing' unless self[:alg]
+
+        JWA.resolve(self[:alg])
+      end
 
       attr_reader :parameters
     end

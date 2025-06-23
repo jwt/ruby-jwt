@@ -93,6 +93,38 @@ RSpec.describe JWT::JWK::RSA do
     end
   end
 
+  describe '#verify' do
+    let(:rsa) { described_class.new(rsa_key, alg: 'RS256') }
+    let(:data) { 'data_to_sign' }
+    let(:signature) { rsa.sign(data: data) }
+
+    context 'when the signature is valid' do
+      it 'returns true' do
+        expect(rsa.verify(data: data, signature: signature)).to be(true)
+      end
+    end
+
+    context 'when the signature is invalid' do
+      it 'returns false' do
+        expect(rsa.verify(data: data, signature: 'invalid_signature')).to be(false)
+      end
+    end
+
+    context 'when the jwk is missing the alg header' do
+      let(:rsa) { described_class.new(rsa_key) }
+      it 'raises JWT::JWKError' do
+        expect { rsa.verify(data: data, signature: 'signature') }.to raise_error(JWT::JWKError, 'Could not resolve the JWA, the "alg" parameter is missing')
+      end
+    end
+
+    context 'when the jwk has an invalid alg header' do
+      let(:rsa) { described_class.new(rsa_key, alg: 'INVALID') }
+      it 'raises JWT::JWKError' do
+        expect { rsa.verify(data: data, signature: 'signature') }.to raise_error(JWT::VerificationError, 'Algorithm not supported')
+      end
+    end
+  end
+
   describe '.common_parameters' do
     context 'when a common parameters hash is given' do
       it 'imports the common parameter' do

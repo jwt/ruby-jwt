@@ -110,6 +110,37 @@ RSpec.describe JWT::JWK::EC do
     end
   end
 
+  describe '#verify' do
+    let(:data) { 'data_to_sign' }
+    let(:signature) { jwk.sign(data: data) }
+
+    context 'when jwk is missing the alg parameter' do
+      let(:jwk) { described_class.new(ec_key) }
+
+      context 'when the signature is valid' do
+        it 'returns true' do
+          expect(jwk.verify(data: data, signature: signature)).to be(true)
+        end
+      end
+    end
+
+    context 'when jwk has alg parameter' do
+      let(:jwk) { described_class.new(ec_key, alg: 'ES384') }
+
+      context 'when the signature is valid' do
+        it 'returns true' do
+          expect(jwk.verify(data: data, signature: signature)).to be(true)
+        end
+      end
+
+      context 'when the signature is invalid' do
+        it 'returns false' do
+          expect(jwk.verify(data: data, signature: 'invalid')).to be(false)
+        end
+      end
+    end
+  end
+
   describe '.to_openssl_curve' do
     context 'when a valid curve name is given' do
       it 'returns the corresponding OpenSSL curve name' do

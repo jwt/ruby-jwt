@@ -139,6 +139,12 @@ RSpec.describe JWT::EncodedToken do
       end
     end
 
+    context 'when algorithm is not given' do
+      it 'raises an error' do
+        expect { token.verify_signature!(key: 'secret') }.to raise_error(JWT::VerificationError, 'No algorithm provided')
+      end
+    end
+
     context 'when header has invalid alg value' do
       let(:header) { { 'alg' => 'HS123' } }
 
@@ -209,6 +215,19 @@ RSpec.describe JWT::EncodedToken do
       it 'uses the keys provided by the JWK key finder' do
         key_finder = JWT::JWK::KeyFinder.new(jwks: JWT::JWK::Set.new(jwk))
         expect(token.verify_signature!(algorithm: 'RS256', key_finder: key_finder)).to eq(nil)
+      end
+    end
+
+    context 'when JWK is given as a key' do
+      let(:jwk) { JWT::JWK.new(test_pkey('rsa-2048-private.pem'), alg: 'RS256') }
+      let(:encoded_token) do
+        JWT::Token.new(payload: payload)
+                  .tap { |t| t.sign!(algorithm: 'RS256', key: jwk.signing_key) }
+                  .jwt
+      end
+
+      it 'uses the JWK for verification' do
+        expect(token.verify_signature!(key: jwk)).to eq(nil)
       end
     end
   end

@@ -22,6 +22,22 @@ RSpec.describe JWT::Token do
         expect { token.sign!(algorithm: 'HS256', key: 'secret') }.to raise_error(JWT::EncodeError)
       end
     end
+
+    context 'when JWK is given as key' do
+      let(:jwk) { JWT::JWK::RSA.new(OpenSSL::PKey::RSA.new(2048), alg: 'RS256') }
+
+      it 'signs the token' do
+        token.sign!(key: jwk)
+
+        expect(JWT::EncodedToken.new(token.jwt).valid_signature?(algorithm: 'RS256', key: jwk.verify_key)).to be(true)
+      end
+    end
+
+    context 'when string key is given but not algorithm' do
+      it 'raises an error' do
+        expect { token.sign!(key: 'secret') }.to raise_error(ArgumentError, 'Algorithm must be provided')
+      end
+    end
   end
 
   describe '#jwt' do

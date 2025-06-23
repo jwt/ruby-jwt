@@ -456,4 +456,26 @@ RSpec.describe 'README.md code test' do
       expect(header).to include('alg' => 'HS512')
     end
   end
+
+  context 'JWK to verify a signature' do
+    it 'allows to verify a signature with a JWK' do
+      payload = { exp: Time.now.to_i + 60, jti: '1234', sub: 'my-subject' }
+      header = { kid: 'hmac' }
+
+      jwk_json = '{
+                  "kty": "oct",
+                  "k": "c2VjcmV0",
+                  "alg": "HS256",
+                  "kid": "hmac"
+                  }'
+
+      jwk = JWT::JWK.import(JSON.parse(jwk_json))
+
+      token = JWT::Token.new(payload: payload, header: header)
+      token.sign!(key: jwk)
+
+      encoded_token = JWT::EncodedToken.new(token.jwt)
+      expect { encoded_token.verify!(signature: { key: jwk }) }.not_to raise_error
+    end
+  end
 end
