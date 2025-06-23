@@ -147,7 +147,7 @@ module JWT
     # Checks if the signature of the JWT token is valid.
     #
     # @param algorithm [String, Array<String>, Object, Array<Object>] the algorithm(s) to use for verification.
-    # @param key [String, Array<String>] the key(s) to use for verification.
+    # @param key [String, Array<String>, JWT::JWK::KeyBase, Array<JWT::JWK::KeyBase>] the key(s) to use for verification.
     # @param key_finder [#call] an object responding to `call` to find the key for verification.
     # @return [Boolean] true if the signature is valid, false otherwise.
     def valid_signature?(algorithm: nil, key: nil, key_finder: nil)

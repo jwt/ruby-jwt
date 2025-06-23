@@ -73,7 +73,7 @@ module JWT
 
       private
 
-      def resolve_algorithm
+      def jwa
         return super if self[:alg]
 
         curve_name = self.class.to_openssl_curve(self[:crv])

@@ -462,9 +462,6 @@ RSpec.describe 'README.md code test' do
       payload = { exp: Time.now.to_i + 60, jti: '1234', sub: 'my-subject' }
       header = { kid: 'hmac' }
 
-      token = JWT::Token.new(payload: payload, header: header)
-      token.sign!(algorithm: 'HS256', key: 'secret')
-
       jwk_json = '{
                   "kty": "oct",
                   "k": "c2VjcmV0",
@@ -473,6 +470,10 @@ RSpec.describe 'README.md code test' do
                   }'
 
       jwk = JWT::JWK.import(JSON.parse(jwk_json))
+
+      token = JWT::Token.new(payload: payload, header: header)
+      token.sign!(key: jwk)
+
       encoded_token = JWT::EncodedToken.new(token.jwt)
       expect { encoded_token.verify!(signature: { key: jwk }) }.not_to raise_error
     end

@@ -43,11 +43,16 @@ module JWT
       end
 
       def verify(**kwargs)
-        resolve_algorithm.verify(**kwargs, verification_key: verify_key)
+        jwa.verify(**kwargs, verification_key: verify_key)
       end
 
       def sign(**kwargs)
-        resolve_algorithm.sign(**kwargs, signing_key: signing_key)
+        jwa.sign(**kwargs, signing_key: signing_key)
+      end
+
+      # @api private
+      def jwa_header
+        jwa.header
       end
 
       alias eql? ==
@@ -60,7 +65,7 @@ module JWT
 
       private
 
-      def resolve_algorithm
+      def jwa
         raise JWT::JWKError, 'Could not resolve the JWA, the "alg" parameter is missing' unless self[:alg]
 
         JWA.resolve(self[:alg])

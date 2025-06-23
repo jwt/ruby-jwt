@@ -10,7 +10,7 @@
 - Raise an error if the ECDSA signing or verification key is not an instance of `OpenSSL::PKey::EC` [#688](https://github.com/jwt/ruby-jwt/pull/688) ([@anakinj](https://github.com/anakinj))
 - Allow `OpenSSL::PKey::EC::Point` to be used as the verification key in ECDSA [#689](https://github.com/jwt/ruby-jwt/pull/689) ([@anakinj](https://github.com/anakinj))
 - Require claims to have been verified before accessing the `JWT::EncodedToken#payload` [#690](https://github.com/jwt/ruby-jwt/pull/690) ([@anakinj](https://github.com/anakinj))
-- Support verifying token signature using a JWK [#692](https://github.com/jwt/ruby-jwt/pull/692) ([@anakinj](https://github.com/anakinj))
+- Support verifying and signing token signature using a JWK [#692](https://github.com/jwt/ruby-jwt/pull/692) ([@anakinj](https://github.com/anakinj))
 - Your contribution here
 
 **Fixes and enhancements:**

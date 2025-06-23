@@ -251,7 +251,7 @@ encoded_token.payload # => { 'exp'=>1234, 'jti'=>'1234", 'sub'=>'my-subject' }
 encoded_token.header # {'kid'=>'hmac', 'alg'=>'HS256'}
 ```
 
-A JWK can be used to verify the token if it's possible to derive the signing algorithm from the key.
+A JWK can be used to sign and verify the token if it's possible to derive the signing algorithm from the key.
 
 ```ruby
 jwk_json = '{
@@ -262,6 +262,11 @@ jwk_json = '{
 }'
 
 jwk = JWT::JWK.import(JSON.parse(jwk_json))
+
+token = JWT::Token.new(payload: payload, header: header)
+
+token.sign!(key: jwk)
+
 encoded_token = JWT::EncodedToken.new(token.jwt)
 encoded_token.verify!(signature: { key: jwk})
 ```

@@ -87,16 +87,16 @@ module JWT
 
     # Signs the JWT token.
     #
+    # @param key [String, JWT::JWK::KeyBase] the key to use for signing.
     # @param algorithm [String, Object] the algorithm to use for signing.
-    # @param key [String] the key to use for signing.
     # @return [void]
     # @raise [JWT::EncodeError] if the token is already signed or other problems when signing
-    def sign!(algorithm:, key:)
+    def sign!(key:, algorithm: nil)
       raise ::JWT::EncodeError, 'Token already signed' if @signature
 
-      JWA.resolve(algorithm).tap do |algo|
-        header.merge!(algo.header) { |_key, old, _new| old }
-        @signature = algo.sign(data: signing_input, signing_key: key)
+      JWA.create_signer(algorithm: algorithm, key: key).tap do |signer|
+        header.merge!(signer.jwa_header) { |_key, old, _new| old }
+        @signature = signer.sign(data: signing_input)
       end
 
       nil
