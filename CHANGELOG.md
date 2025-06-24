@@ -10,6 +10,7 @@
 
 **Fixes and enhancements:**
 
+- Require the algorithm to be provided when signing and verifying tokens using JWKs [#695](https://github.com/jwt/ruby-jwt/pull/695) ([@anakinj](https://github.com/anakinj))
 - Your contribution here
 
 ## [v3.1.0](https://github.com/jwt/ruby-jwt/tree/v3.1.0) (2025-06-23)

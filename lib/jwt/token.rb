@@ -91,11 +91,11 @@ module JWT
     # @param algorithm [String, Object] the algorithm to use for signing.
     # @return [void]
     # @raise [JWT::EncodeError] if the token is already signed or other problems when signing
-    def sign!(key:, algorithm: nil)
+    def sign!(key:, algorithm:)
       raise ::JWT::EncodeError, 'Token already signed' if @signature
 
       JWA.create_signer(algorithm: algorithm, key: key).tap do |signer|
-        header.merge!(signer.jwa_header) { |_key, old, _new| old }
+        header.merge!(signer.jwa.header) { |_key, old, _new| old }
         @signature = signer.sign(data: signing_input)
       end
 

@@ -139,9 +139,15 @@ RSpec.describe JWT::EncodedToken do
       end
     end
 
+    context 'when algorithm is an empty array' do
+      it 'raises an error' do
+        expect { token.verify_signature!(key: 'secret', algorithm: []) }.to raise_error(JWT::VerificationError, 'No algorithm provided')
+      end
+    end
+
     context 'when algorithm is not given' do
       it 'raises an error' do
-        expect { token.verify_signature!(key: 'secret') }.to raise_error(JWT::VerificationError, 'No algorithm provided')
+        expect { token.verify_signature!(key: 'secret') }.to raise_error(ArgumentError, /missing keyword/)
       end
     end
 
@@ -226,8 +232,22 @@ RSpec.describe JWT::EncodedToken do
                   .jwt
       end
 
-      it 'uses the JWK for verification' do
-        expect(token.verify_signature!(key: jwk)).to eq(nil)
+      context 'with empty algorithm array provided' do
+        it 'uses the JWK for verification' do
+          expect(token.verify_signature!(key: jwk, algorithm: [])).to eq(nil)
+        end
+      end
+
+      context 'with algorithms supported by key provided' do
+        it 'uses the JWK for verification' do
+          expect(token.verify_signature!(algorithm: %w[RS256 RS512], key: jwk)).to eq(nil)
+        end
+      end
+
+      context 'with algorithms not supported by key provided' do
+        it 'raises JWT::VerificationError' do
+          expect { token.verify_signature!(algorithm: %w[RS384 RS512], key: jwk) }.to raise_error(JWT::VerificationError, 'Provided JWKs do not support one of the specified algorithms: RS384, RS512')
+        end
       end
     end
   end

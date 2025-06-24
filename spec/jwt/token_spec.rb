@@ -27,15 +27,29 @@ RSpec.describe JWT::Token do
       let(:jwk) { JWT::JWK::RSA.new(OpenSSL::PKey::RSA.new(2048), alg: 'RS256') }
 
       it 'signs the token' do
-        token.sign!(key: jwk)
+        token.sign!(key: jwk, algorithm: []) # any algorithm is fine here
 
         expect(JWT::EncodedToken.new(token.jwt).valid_signature?(algorithm: 'RS256', key: jwk.verify_key)).to be(true)
+      end
+
+      context 'with algorithm provided in sign call' do
+        it 'signs the token' do
+          token.sign!(algorithm: %w[RS256 RS512], key: jwk)
+
+          expect(JWT::EncodedToken.new(token.jwt).valid_signature?(algorithm: 'RS256', key: jwk.verify_key)).to be(true)
+        end
+      end
+
+      context 'with mismatching algorithm provided in sign call' do
+        it 'signs the token' do
+          expect { token.sign!(algorithm: %w[RS384 RS512], key: jwk) }.to raise_error(JWT::DecodeError, 'Provided JWKs do not support one of the specified algorithms: RS384, RS512')
+        end
       end
     end
 
     context 'when string key is given but not algorithm' do
       it 'raises an error' do
-        expect { token.sign!(key: 'secret') }.to raise_error(ArgumentError, 'Algorithm must be provided')
+        expect { token.sign!(key: 'secret') }.to raise_error(ArgumentError, /missing keyword/)
       end
     end
   end

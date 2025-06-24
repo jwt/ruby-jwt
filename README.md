@@ -268,7 +268,7 @@ token = JWT::Token.new(payload: payload, header: header)
 token.sign!(key: jwk)
 
 encoded_token = JWT::EncodedToken.new(token.jwt)
-encoded_token.verify!(signature: { key: jwk})
+encoded_token.verify!(signature: { algorithm: ["HS256", "HS512"], key: jwk})
 ```
 
 #### Using a keyfinder
