@@ -118,6 +118,40 @@
 
 
 
+  <h2>Instance Attribute Summary <small><a href="#" class="summary_toggle">collapse</a></small></h2>
+  <ul class="summary">
+    
+      <li class="public ">
+  <span class="summary_signature">
+    
+      <a href="#parameters-instance_method" title="#parameters (instance method)">#<strong>parameters</strong>  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+    
+      <span class="note title readonly">readonly</span>
+    
+    
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'>
+<p>Returns the value of attribute parameters.</p>
+</div></span>
+  
+</li>
+
+    
+  </ul>
+
 
 
 
@@ -270,7 +304,7 @@
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#jwa_header-instance_method" title="#jwa_header (instance method)">#<strong>jwa_header</strong>  &#x21d2; Object </a>
+      <a href="#jwa-instance_method" title="#jwa (instance method)">#<strong>jwa</strong>  &#x21d2; Object </a>
     
 
     
@@ -281,7 +315,7 @@
   
   
   
-  <span class="private note title">private</span>
+  
 
   
     <span class="summary_desc"><div class='inline'></div></span>
@@ -422,6 +456,54 @@
   
 </div>
 
+  <div id="instance_attr_details" class="attr_details">
+    <h2>Instance Attribute Details</h2>
+    
+      
+      <span id=""></span>
+      <div class="method_details first">
+  <h3 class="signature first" id="parameters-instance_method">
+  
+    #<strong>parameters</strong>  &#x21d2; <tt>Object</tt>  <span class="extras">(readonly)</span>
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    
+<p>Returns the value of attribute parameters.</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+69
+70
+71</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/jwt/jwk/key_base.rb', line 69</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_parameters'>parameters</span>
+  <span class='ivar'>@parameters</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+  </div>
+
 
   <div id="instance_method_details" class="method_details_list">
     <h2>Instance Method Details</h2>
@@ -442,14 +524,14 @@
       <pre class="lines">
 
 
-60
-61
-62
-63
-64</pre>
+55
+56
+57
+58
+59</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/jwt/jwk/key_base.rb', line 60</span>
+      <pre class="code"><span class="info file"># File 'lib/jwt/jwk/key_base.rb', line 55</span>
 
 <span class='kw'>def</span> <span class='op'>&lt;=&gt;</span><span class='lparen'>(</span><span class='id identifier rubyid_other'>other</span><span class='rparen'>)</span>
   <span class='kw'>return</span> <span class='kw'>nil</span> <span class='kw'>unless</span> <span class='id identifier rubyid_other'>other</span><span class='period'>.</span><span class='id identifier rubyid_is_a?'>is_a?</span><span class='lparen'>(</span><span class='op'>::</span><span class='const'><span class='object_link'><a href="../../JWT.html" title="JWT (module)">JWT</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="../JWK.html" title="JWT::JWK (module)">JWK</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="" title="JWT::JWK::KeyBase (class)">KeyBase</a></span></span><span class='rparen'>)</span>
@@ -586,9 +668,9 @@
 </div>
     
       <div class="method_details ">
-  <h3 class="signature " id="jwa_header-instance_method">
+  <h3 class="signature " id="jwa-instance_method">
   
-    #<strong>jwa_header</strong>  &#x21d2; <tt>Object</tt> 
+    #<strong>jwa</strong>  &#x21d2; <tt>Object</tt> 
   
 
   
@@ -596,16 +678,25 @@
   
 </h3><div class="docstring">
   <div class="discussion">
-    <p class="note private">
-  <strong>This method is part of a private API.</strong>
-  You should avoid using this method if possible, as it may be removed or be changed in the future.
-</p>
-
+    
 
   </div>
 </div>
 <div class="tags">
   
+<p class="tag_title">Raises:</p>
+<ul class="raise">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt><span class='object_link'><a href="../JWKError.html" title="JWT::JWKError (class)">JWT::JWKError</a></span></tt>)</span>
+      
+      
+      
+    </li>
+  
+</ul>
 
 </div><table class="source_code">
   <tr>
@@ -613,15 +704,23 @@
       <pre class="lines">
 
 
-54
-55
-56</pre>
+61
+62
+63
+64
+65
+66
+67</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/jwt/jwk/key_base.rb', line 54</span>
+      <pre class="code"><span class="info file"># File 'lib/jwt/jwk/key_base.rb', line 61</span>
 
-<span class='kw'>def</span> <span class='id identifier rubyid_jwa_header'>jwa_header</span>
-  <span class='id identifier rubyid_jwa'>jwa</span><span class='period'>.</span><span class='id identifier rubyid_header'>header</span>
+<span class='kw'>def</span> <span class='id identifier rubyid_jwa'>jwa</span>
+  <span class='id identifier rubyid_raise'>raise</span> <span class='const'><span class='object_link'><a href="../../JWT.html" title="JWT (module)">JWT</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="../JWKError.html" title="JWT::JWKError (class)">JWKError</a></span></span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>Could not resolve the JWA, the &quot;alg&quot; parameter is missing</span><span class='tstring_end'>&#39;</span></span> <span class='kw'>unless</span> <span class='kw'>self</span><span class='lbracket'>[</span><span class='symbol'>:alg</span><span class='rbracket'>]</span>
+
+  <span class='const'><span class='object_link'><a href="../JWA.html" title="JWT::JWA (module)">JWA</a></span></span><span class='period'>.</span><span class='id identifier rubyid_resolve'><span class='object_link'><a href="../JWA.html#resolve-class_method" title="JWT::JWA.resolve (method)">resolve</a></span></span><span class='lparen'>(</span><span class='kw'>self</span><span class='lbracket'>[</span><span class='symbol'>:alg</span><span class='rbracket'>]</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_tap'>tap</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_jwa'>jwa</span><span class='op'>|</span>
+    <span class='id identifier rubyid_raise'>raise</span> <span class='const'><span class='object_link'><a href="../../JWT.html" title="JWT (module)">JWT</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="../JWKError.html" title="JWT::JWKError (class)">JWKError</a></span></span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>none algorithm usage not supported via JWK</span><span class='tstring_end'>&#39;</span></span> <span class='kw'>if</span> <span class='id identifier rubyid_jwa'>jwa</span><span class='period'>.</span><span class='id identifier rubyid_is_a?'>is_a?</span><span class='lparen'>(</span><span class='const'><span class='object_link'><a href="../JWA.html" title="JWT::JWA (module)">JWA</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="../JWA/None.html" title="JWT::JWA::None (class)">None</a></span></span><span class='rparen'>)</span>
+  <span class='kw'>end</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -723,7 +822,7 @@
 </div>
 
       <div id="footer">
-  Generated on Tue Jun 24 16:21:34 2025 by
+  Generated on Tue Jun 24 17:27:20 2025 by
   <a href="https://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.9.37 (ruby-3.4.4).
 </div>

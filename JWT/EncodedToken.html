@@ -549,7 +549,7 @@
         <li class="public ">
   <span class="summary_signature">
     
-      <a href="#verify_signature!-instance_method" title="#verify_signature! (instance method)">#<strong>verify_signature!</strong>(algorithm: nil, key: nil, key_finder: nil)  &#x21d2; nil </a>
+      <a href="#verify_signature!-instance_method" title="#verify_signature! (instance method)">#<strong>verify_signature!</strong>(algorithm:, key: nil, key_finder: nil)  &#x21d2; nil </a>
     
 
     
@@ -1867,7 +1867,7 @@
       <div class="method_details ">
   <h3 class="signature " id="verify_signature!-instance_method">
   
-    #<strong>verify_signature!</strong>(algorithm: nil, key: nil, key_finder: nil)  &#x21d2; <tt>nil</tt> 
+    #<strong>verify_signature!</strong>(algorithm:, key: nil, key_finder: nil)  &#x21d2; <tt>nil</tt> 
   
 
   
@@ -1892,8 +1892,6 @@
       
         <span class='type'>(<tt>String</tt>, <tt>Array&lt;String&gt;</tt>, <tt>Object</tt>, <tt>Array&lt;Object&gt;</tt>)</span>
       
-      
-        <em class="default">(defaults to: <tt>nil</tt>)</em>
       
       
         &mdash;
@@ -2002,7 +2000,7 @@
     <td>
       <pre class="code"><span class="info file"># File 'lib/jwt/encoded_token.rb', line 141</span>
 
-<span class='kw'>def</span> <span class='id identifier rubyid_verify_signature!'>verify_signature!</span><span class='lparen'>(</span><span class='label'>algorithm:</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='label'>key:</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='label'>key_finder:</span> <span class='kw'>nil</span><span class='rparen'>)</span>
+<span class='kw'>def</span> <span class='id identifier rubyid_verify_signature!'>verify_signature!</span><span class='lparen'>(</span><span class='label'>algorithm:</span><span class='comma'>,</span> <span class='label'>key:</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='label'>key_finder:</span> <span class='kw'>nil</span><span class='rparen'>)</span>
   <span class='kw'>return</span> <span class='kw'>if</span> <span class='id identifier rubyid_valid_signature?'>valid_signature?</span><span class='lparen'>(</span><span class='label'>algorithm:</span> <span class='id identifier rubyid_algorithm'>algorithm</span><span class='comma'>,</span> <span class='label'>key:</span> <span class='id identifier rubyid_key'>key</span><span class='comma'>,</span> <span class='label'>key_finder:</span> <span class='id identifier rubyid_key_finder'>key_finder</span><span class='rparen'>)</span>
 
   <span class='id identifier rubyid_raise'>raise</span> <span class='const'><span class='object_link'><a href="../JWT.html" title="JWT (module)">JWT</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="VerificationError.html" title="JWT::VerificationError (class)">VerificationError</a></span></span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>Signature verification failed</span><span class='tstring_end'>&#39;</span></span>
@@ -2017,7 +2015,7 @@
 </div>
 
       <div id="footer">
-  Generated on Tue Jun 24 16:21:34 2025 by
+  Generated on Tue Jun 24 17:27:20 2025 by
   <a href="https://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.9.37 (ruby-3.4.4).
 </div>
