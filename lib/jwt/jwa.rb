@@ -15,6 +15,8 @@ module JWT
   module JWA
     # @api private
     class VerifierContext
+      attr_reader :jwa
+
       def initialize(jwa:, keys:)
         @jwa = jwa
         @keys = Array(keys)
@@ -29,6 +31,8 @@ module JWT
 
     # @api private
     class SignerContext
+      attr_reader :jwa
+
       def initialize(jwa:, key:)
         @jwa = jwa
         @key = key
@@ -36,10 +40,6 @@ module JWT
 
       def sign(*args, **kwargs)
         @jwa.sign(*args, **kwargs, signing_key: @key)
-      end
-
-      def jwa_header
-        @jwa.header
       end
     end
 
@@ -64,7 +64,11 @@ module JWT
 
       # @api private
       def create_signer(algorithm:, key:)
-        return key if key.is_a?(JWK::KeyBase)
+        if key.is_a?(JWK::KeyBase)
+          validate_jwk_algorithms!(key, algorithm, DecodeError)
+
+          return key
+        end
 
         SignerContext.new(jwa: resolve(algorithm), key: key)
       end
@@ -73,9 +77,26 @@ module JWT
       def create_verifiers(algorithms:, keys:, preferred_algorithm:)
         jwks, other_keys = keys.partition { |key| key.is_a?(JWK::KeyBase) }
 
+        validate_jwk_algorithms!(jwks, algorithms, VerificationError)
+
         jwks + resolve_and_sort(algorithms: algorithms,
                                 preferred_algorithm: preferred_algorithm)
                .map { |jwa| VerifierContext.new(jwa: jwa, keys: other_keys) }
+      end
+
+      # @api private
+      def validate_jwk_algorithms!(jwks, algorithms, error_class)
+        algorithms = Array(algorithms)
+
+        return if algorithms.empty?
+
+        return if Array(jwks).all? do |jwk|
+          algorithms.any? do |alg|
+            jwk.jwa.valid_alg?(alg)
+          end
+        end
+
+        raise error_class, "Provided JWKs do not support one of the specified algorithms: #{algorithms.join(', ')}"
       end
     end
   end

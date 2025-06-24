@@ -50,11 +50,6 @@ module JWT
         jwa.sign(**kwargs, signing_key: signing_key)
       end
 
-      # @api private
-      def jwa_header
-        jwa.header
-      end
-
       alias eql? ==
 
       def <=>(other)
@@ -63,12 +58,12 @@ module JWT
         self[:kid] <=> other[:kid]
       end
 
-      private
-
       def jwa
         raise JWT::JWKError, 'Could not resolve the JWA, the "alg" parameter is missing' unless self[:alg]
 
-        JWA.resolve(self[:alg])
+        JWA.resolve(self[:alg]).tap do |jwa|
+          raise JWT::JWKError, 'none algorithm usage not supported via JWK' if jwa.is_a?(JWA::None)
+        end
       end
 
       attr_reader :parameters

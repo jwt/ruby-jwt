@@ -138,7 +138,7 @@ module JWT
     # @return [nil]
     # @raise [JWT::VerificationError] if the signature verification fails.
     # @raise [ArgumentError] if neither key nor key_finder is provided, or if both are provided.
-    def verify_signature!(algorithm: nil, key: nil, key_finder: nil)
+    def verify_signature!(algorithm:, key: nil, key_finder: nil)
       return if valid_signature?(algorithm: algorithm, key: key, key_finder: key_finder)
 
       raise JWT::VerificationError, 'Signature verification failed'
