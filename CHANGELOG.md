@@ -1,17 +1,12 @@
 # Changelog
 
-## [v3.1.1](https://github.com/jwt/ruby-jwt/tree/v3.1.1) (NEXT)
+## [v3.1.1](https://github.com/jwt/ruby-jwt/tree/v3.1.1) (2025-06-24)
 
 [Full Changelog](https://github.com/jwt/ruby-jwt/compare/v3.1.0...v3.1.1)
-
-**Features:**
-
-- Your contribution here
 
 **Fixes and enhancements:**
 
 - Require the algorithm to be provided when signing and verifying tokens using JWKs [#695](https://github.com/jwt/ruby-jwt/pull/695) ([@anakinj](https://github.com/anakinj))
-- Your contribution here
 
 ## [v3.1.0](https://github.com/jwt/ruby-jwt/tree/v3.1.0) (2025-06-23)
 
