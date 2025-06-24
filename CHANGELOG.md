@@ -1,5 +1,17 @@
 # Changelog
 
+## [v3.1.2](https://github.com/jwt/ruby-jwt/tree/v3.1.2) (NEXT)
+
+[Full Changelog](https://github.com/jwt/ruby-jwt/compare/v3.1.1...v3.1.2)
+
+**Features:**
+
+- Your contribution here
+
+**Fixes and enhancements:**
+
+- Your contribution here
+
 ## [v3.1.1](https://github.com/jwt/ruby-jwt/tree/v3.1.1) (2025-06-24)
 
 [Full Changelog](https://github.com/jwt/ruby-jwt/compare/v3.1.0...v3.1.1)
