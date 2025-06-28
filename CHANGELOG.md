@@ -10,6 +10,7 @@
 
 **Fixes and enhancements:**
 
+- Fix signing with a EC JWK [#699](https://github.com/jwt/ruby-jwt/pull/699) ([@anakinj](https://github.com/anakinj))
 - Your contribution here
 
 ## [v3.1.1](https://github.com/jwt/ruby-jwt/tree/v3.1.1) (2025-06-24)
