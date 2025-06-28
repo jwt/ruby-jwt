@@ -1,9 +1,8 @@
 # frozen_string_literal: true
 
 RSpec.describe JWT::JWA::Ecdsa do
-
-  context "used across threads for encoding and decoding" do
-    it "successfully encodes, decodes, and verifies" do
+  context 'used across threads for encoding and decoding' do
+    it 'successfully encodes, decodes, and verifies' do
       threads = 10.times.map do
         Thread.new do
           public_key_pem = "-----BEGIN PUBLIC KEY-----\nMFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEcKuFOqoNEN+TXylz4MVAWREa9yA8\npOF9QgGchnAy6Ad4P7yCpk+R3wCGTDLfNboYqUmbK5Hd9uHszf+EMTi22g==\n-----END PUBLIC KEY-----\n"
@@ -13,8 +12,8 @@ RSpec.describe JWT::JWA::Ecdsa do
           public_key = OpenSSL::PKey::EC.new(public_key_pem)
 
           10.times do
-            input_payload = {"aud" => "https://fcm.googleapis.com", "exp" => (Time.now.to_i + 600), "sub" => "mailto:example@example.com"}
-            input_header = { "typ" => "JWT", "alg" => "ES256" }
+            input_payload = { 'aud' => 'https://fcm.googleapis.com', 'exp' => (Time.now.to_i + 600), 'sub' => 'mailto:example@example.com' }
+            input_header = { 'typ' => 'JWT', 'alg' => 'ES256' }
             token = JWT.encode(input_payload, curve, 'ES256', input_header)
 
             output_payload, output_header = JWT.decode(token, public_key, true, { algorithm: 'ES256', verify_expiration: true })
