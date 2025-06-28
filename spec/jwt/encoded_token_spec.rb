@@ -224,7 +224,7 @@ RSpec.describe JWT::EncodedToken do
       end
     end
 
-    context 'when JWK is given as a key' do
+    context 'when RSA JWK is given as a key' do
       let(:jwk) { JWT::JWK.new(test_pkey('rsa-2048-private.pem'), alg: 'RS256') }
       let(:encoded_token) do
         JWT::Token.new(payload: payload)

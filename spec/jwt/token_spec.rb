@@ -23,7 +23,7 @@ RSpec.describe JWT::Token do
       end
     end
 
-    context 'when JWK is given as key' do
+    context 'when RSA JWK is given as key' do
       let(:jwk) { JWT::JWK::RSA.new(OpenSSL::PKey::RSA.new(2048), alg: 'RS256') }
 
       it 'signs the token' do
@@ -51,6 +51,16 @@ RSpec.describe JWT::Token do
       it 'raises an error' do
         expect { token.sign!(key: 'secret') }.to raise_error(ArgumentError, /missing keyword/)
       end
+    end
+  end
+
+  context 'when EC JWK is given as key' do
+    let(:jwk) { JWT::JWK::EC.new(test_pkey('ec384-private.pem')) }
+
+    it 'signs the token' do
+      token.sign!(key: jwk, algorithm: [])
+
+      expect(JWT::EncodedToken.new(token.jwt).valid_signature?(algorithm: [], key: jwk)).to be(true)
     end
   end
 
