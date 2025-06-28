@@ -8,7 +8,7 @@ RSpec.describe JWT::JWA::Rsa do
   describe '#initialize' do
     it 'initializes with the correct algorithm and digest' do
       expect(rsa_instance.instance_variable_get(:@alg)).to eq('RS256')
-      expect(rsa_instance.send(:digest).name).to eq('SHA256')
+      expect(rsa_instance.send(:digest)).to eq('SHA256')
     end
   end
 

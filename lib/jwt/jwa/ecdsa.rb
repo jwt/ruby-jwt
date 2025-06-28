@@ -8,7 +8,7 @@ module JWT
 
       def initialize(alg, digest)
         @alg = alg
-        @digest = OpenSSL::Digest.new(digest)
+        @digest = digest
       end
 
       def sign(data:, signing_key:)
@@ -16,7 +16,7 @@ module JWT
         key_algorithm = curve_definition[:algorithm]
         raise IncorrectAlgorithm, "payload algorithm is #{alg} but #{key_algorithm} signing key was provided" if alg != key_algorithm
 
-        asn1_to_raw(signing_key.dsa_sign_asn1(digest.digest(data)), signing_key)
+        asn1_to_raw(signing_key.dsa_sign_asn1(OpenSSL::Digest.new(digest).digest(data)), signing_key)
       end
 
       def verify(data:, signature:, verification_key:)
@@ -24,7 +24,7 @@ module JWT
         key_algorithm = curve_definition[:algorithm]
         raise IncorrectAlgorithm, "payload algorithm is #{alg} but #{key_algorithm} verification key was provided" if alg != key_algorithm
 
-        verification_key.dsa_verify_asn1(digest.digest(data), raw_to_asn1(signature, verification_key))
+        verification_key.dsa_verify_asn1(OpenSSL::Digest.new(digest).digest(data), raw_to_asn1(signature, verification_key))
       rescue OpenSSL::PKey::PKeyError
         raise JWT::VerificationError, 'Signature verification raised'
       end
