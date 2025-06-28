@@ -315,6 +315,28 @@
         <li class="public ">
   <span class="summary_signature">
     
+      <a href="#jwa-instance_method" title="#jwa (instance method)">#<strong>jwa</strong>  &#x21d2; Object </a>
+    
+
+    
+  </span>
+  
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
       <a href="#key_digest-instance_method" title="#key_digest (instance method)">#<strong>key_digest</strong>  &#x21d2; Object </a>
     
 
@@ -726,6 +748,42 @@
 </div>
     
       <div class="method_details ">
+  <h3 class="signature " id="jwa-instance_method">
+  
+    #<strong>jwa</strong>  &#x21d2; <tt>Object</tt> 
+  
+
+  
+
+  
+</h3><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+74
+75
+76
+77
+78
+79</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/jwt/jwk/ec.rb', line 74</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_jwa'>jwa</span>
+  <span class='kw'>return</span> <span class='kw'>super</span> <span class='kw'>if</span> <span class='kw'>self</span><span class='lbracket'>[</span><span class='symbol'>:alg</span><span class='rbracket'>]</span>
+
+  <span class='id identifier rubyid_curve_name'>curve_name</span> <span class='op'>=</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_class'>class</span><span class='period'>.</span><span class='id identifier rubyid_to_openssl_curve'>to_openssl_curve</span><span class='lparen'>(</span><span class='kw'>self</span><span class='lbracket'>[</span><span class='symbol'>:crv</span><span class='rbracket'>]</span><span class='rparen'>)</span>
+  <span class='const'><span class='object_link'><a href="../JWA.html" title="JWT::JWA (module)">JWA</a></span></span><span class='period'>.</span><span class='id identifier rubyid_resolve'><span class='object_link'><a href="../JWA.html#resolve-class_method" title="JWT::JWA.resolve (method)">resolve</a></span></span><span class='lparen'>(</span><span class='const'><span class='object_link'><a href="../JWA.html" title="JWT::JWA (module)">JWA</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="../JWA/Ecdsa.html" title="JWT::JWA::Ecdsa (class)">Ecdsa</a></span></span><span class='period'>.</span><span class='id identifier rubyid_curve_by_name'><span class='object_link'><a href="../JWA/Ecdsa.html#curve_by_name-class_method" title="JWT::JWA::Ecdsa.curve_by_name (method)">curve_by_name</a></span></span><span class='lparen'>(</span><span class='id identifier rubyid_curve_name'>curve_name</span><span class='rparen'>)</span><span class='lbracket'>[</span><span class='symbol'>:algorithm</span><span class='rbracket'>]</span><span class='rparen'>)</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      <div class="method_details ">
   <h3 class="signature " id="key_digest-instance_method">
   
     #<strong>key_digest</strong>  &#x21d2; <tt>Object</tt> 
@@ -968,7 +1026,7 @@
 </div>
 
       <div id="footer">
-  Generated on Sat Jun 28 18:48:49 2025 by
+  Generated on Sat Jun 28 18:52:09 2025 by
   <a href="https://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.9.37 (ruby-3.4.4).
 </div>
