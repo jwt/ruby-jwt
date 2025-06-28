@@ -10,7 +10,7 @@
 
 **Fixes and enhancements:**
 
-- Your contribution here
+- Avoid using the same digest across calls in JWT::JWA::Ecdsa and JWT::JWA::Rsa [#697](https://github.com/jwt/ruby-jwt/pull/697)
 
 ## [v3.1.1](https://github.com/jwt/ruby-jwt/tree/v3.1.1) (2025-06-24)
 
