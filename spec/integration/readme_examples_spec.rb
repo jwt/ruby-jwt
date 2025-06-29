@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'logger'
+
 RSpec.describe 'README.md code test' do
   context 'algorithm usage' do
     let(:payload) { { data: 'test' } }
