@@ -40,14 +40,17 @@ jobs:
           - "3.4"
         gemfile:
           - gemfiles/standalone.gemfile
-          - gemfiles/openssl.gemfile
           - gemfiles/rbnacl.gemfile
           - gemfiles/rbnacl_pre_6.gemfile
         experimental: [false]
         include:
           - os: ubuntu-latest
-            ruby: "3.1"
-            gemfile: "gemfiles/standalone.gemfile"
+            ruby: "2.5"
+            gemfile: "gemfiles/openssl.gemfile"
+            experimental: false
+          - os: ubuntu-latest
+            ruby: "3.0"
+            gemfile: "gemfiles/openssl.gemfile"
             experimental: false
           - os: ubuntu-latest
             ruby: "truffleruby-head"
