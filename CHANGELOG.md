@@ -1,6 +1,16 @@
 # Changelog
 
+## [v2.10.2](https://github.com/jwt/ruby-jwt/tree/v2.10.2) (2025-06-29)
+
+[Full Changelog](https://github.com/jwt/ruby-jwt/compare/v2.10.1...v2.10.2)
+
+**Fixes and enhancements:**
+
+- Avoid using the same digest across calls in JWT::JWA::Ecdsa and JWT::JWA::Rsa [#697](https://github.com/jwt/ruby-jwt/pull/697)
+
 ## [v2.10.1](https://github.com/jwt/ruby-jwt/tree/v2.10.1) (2024-12-26)
+
+[Full Changelog](https://github.com/jwt/ruby-jwt/compare/v2.10.0...v2.10.1)
 
 **Fixes and enhancements:**
 
