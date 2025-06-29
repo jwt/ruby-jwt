@@ -28,7 +28,7 @@ jobs:
       fail-fast: false
       matrix:
         os:
-          - ubuntu-20.04
+          - ubuntu-latest
         ruby:
           - "2.5"
           - "2.6"
@@ -45,15 +45,15 @@ jobs:
           - gemfiles/rbnacl_pre_6.gemfile
         experimental: [false]
         include:
-          - os: ubuntu-22.04
+          - os: ubuntu-latest
             ruby: "3.1"
             gemfile: "gemfiles/standalone.gemfile"
             experimental: false
-          - os: ubuntu-20.04
+          - os: ubuntu-latest
             ruby: "truffleruby-head"
             gemfile: "gemfiles/standalone.gemfile"
             experimental: true
-          - os: ubuntu-22.04
+          - os: ubuntu-latest
             ruby: "head"
             gemfile: "gemfiles/standalone.gemfile"
             experimental: true
