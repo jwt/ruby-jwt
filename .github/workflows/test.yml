@@ -37,6 +37,7 @@ jobs:
           - "3.1"
           - "3.2"
           - "3.3"
+          - "3.4"
         gemfile:
           - gemfiles/standalone.gemfile
           - gemfiles/openssl.gemfile
@@ -46,15 +47,15 @@ jobs:
         include:
           - os: ubuntu-22.04
             ruby: "3.1"
-            gemfile: 'gemfiles/standalone.gemfile'
+            gemfile: "gemfiles/standalone.gemfile"
             experimental: false
           - os: ubuntu-20.04
             ruby: "truffleruby-head"
-            gemfile: 'gemfiles/standalone.gemfile'
+            gemfile: "gemfiles/standalone.gemfile"
             experimental: true
           - os: ubuntu-22.04
             ruby: "head"
-            gemfile: 'gemfiles/standalone.gemfile'
+            gemfile: "gemfiles/standalone.gemfile"
             experimental: true
     continue-on-error: ${{ matrix.experimental }}
     env:
@@ -76,32 +77,6 @@ jobs:
 
       - name: Run tests
         run: bundle exec rspec
-
-      - name: Upload test coverage folder for later reporting
-        uses: actions/upload-artifact@v3
-        with:
-          name: coverage-reports
-          path: ${{github.workspace}}/coverage-*/coverage.json
-          retention-days: 1
-
-  coverage:
-    name: Report coverage to Code Climate
-    runs-on: ubuntu-20.04
-    needs: test
-    if: success() && github.ref == 'refs/heads/main'
-    env:
-      CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
-    steps:
-      - uses: actions/checkout@v3
-
-      - name: Download coverage reports from the test job
-        uses: actions/download-artifact@v3
-        with:
-          name: coverage-reports
-
-      - uses: paambaati/codeclimate-action@v3.2.0
-        with:
-          coverageLocations: "coverage-*/coverage.json:simplecov"
 
   smoke:
     name: Built GEM smoke test
