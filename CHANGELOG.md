@@ -352,7 +352,7 @@ Take a look at the [upgrade guide](UPGRADING.md) for more details.
 **Implemented enhancements:**
 
 - JWK does not decode. [\#332](https://github.com/jwt/ruby-jwt/issues/332)
-- Inconsistent use of symbol and string keys in args \(exp and alrogithm\). [\#331](https://github.com/jwt/ruby-jwt/issues/331)
+- Inconsistent use of symbol and string keys in args \(exp and algorithm\). [\#331](https://github.com/jwt/ruby-jwt/issues/331)
 - Pin simplecov to \< 0.18 [\#356](https://github.com/jwt/ruby-jwt/pull/356) ([anakinj](https://github.com/anakinj))
 - verifies algorithm before evaluating keyfinder [\#346](https://github.com/jwt/ruby-jwt/pull/346) ([jb08](https://github.com/jb08))
 - Update Rails 6 appraisal to use actual release version [\#336](https://github.com/jwt/ruby-jwt/pull/336) ([smudge](https://github.com/smudge))
@@ -467,7 +467,7 @@ Take a look at the [upgrade guide](UPGRADING.md) for more details.
 - 'DecodeError'will replace 'ExpiredSignature' [\#260](https://github.com/jwt/ruby-jwt/issues/260)
 - TypeError: no implicit conversion of OpenSSL::PKey::RSA into String [\#259](https://github.com/jwt/ruby-jwt/issues/259)
 - NameError: uninitialized constant JWT::Algos::Eddsa::RbNaCl [\#258](https://github.com/jwt/ruby-jwt/issues/258)
-- Get new token if curren token expired [\#256](https://github.com/jwt/ruby-jwt/issues/256)
+- Get new token if current token expired [\#256](https://github.com/jwt/ruby-jwt/issues/256)
 - Infer algorithm from header [\#254](https://github.com/jwt/ruby-jwt/issues/254)
 - Why is the result of decode is an array? [\#252](https://github.com/jwt/ruby-jwt/issues/252)
 - Add support for headless token [\#251](https://github.com/jwt/ruby-jwt/issues/251)
@@ -833,13 +833,13 @@ Take a look at the [upgrade guide](UPGRADING.md) for more details.
 - Signature Verification to Return Verification Error rather than decode error [\#57](https://github.com/jwt/ruby-jwt/issues/57)
 - Incorrect readme for leeway [\#55](https://github.com/jwt/ruby-jwt/issues/55)
 - What is the reason behind stripping the = in base64 encoding? [\#54](https://github.com/jwt/ruby-jwt/issues/54)
-- Preperations for version 2.x [\#50](https://github.com/jwt/ruby-jwt/issues/50)
+- Preparations for version 2.x [\#50](https://github.com/jwt/ruby-jwt/issues/50)
 - Release a new version [\#47](https://github.com/jwt/ruby-jwt/issues/47)
 - Catch up for ActiveWhatever 4.1.1 series [\#40](https://github.com/jwt/ruby-jwt/issues/40)
 
 **Merged pull requests:**
 
-- raise verification error for signiture verification [\#58](https://github.com/jwt/ruby-jwt/pull/58) ([punkle](https://github.com/punkle))
+- raise verification error for signature verification [\#58](https://github.com/jwt/ruby-jwt/pull/58) ([punkle](https://github.com/punkle))
 - Added support for not before claim verification [\#56](https://github.com/jwt/ruby-jwt/pull/56) ([punkle](https://github.com/punkle))
 
 ## [jwt-1.2.1](https://github.com/jwt/ruby-jwt/tree/jwt-1.2.1) (2015-01-22)
