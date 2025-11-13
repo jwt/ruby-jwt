@@ -195,7 +195,7 @@ module JWT
 
         if ::JWT.openssl_3?
           alias create_rsa_key create_rsa_key_using_der
-        elsif OpenSSL::PKey::RSA.new.respond_to?(:set_key)
+        elsif OpenSSL::PKey::RSA.method_defined?(:set_key)
           alias create_rsa_key create_rsa_key_using_sets
         else
           alias create_rsa_key create_rsa_key_using_accessors

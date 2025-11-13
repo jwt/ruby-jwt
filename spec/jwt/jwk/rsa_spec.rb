@@ -262,7 +262,7 @@ RSpec.describe JWT::JWK::RSA do
 
   describe '.create_rsa_key_using_sets' do
     before do
-      skip 'OpenSSL without the RSA#set_key method not supported' unless OpenSSL::PKey::RSA.new.respond_to?(:set_key)
+      skip 'OpenSSL without the RSA#set_key method not supported' unless OpenSSL::PKey::RSA.method_defined?(:set_key)
       skip 'OpenSSL 3.0 does not allow mutating objects anymore' if JWT.openssl_3?
     end
 
@@ -274,7 +274,7 @@ RSpec.describe JWT::JWK::RSA do
 
   describe '.create_rsa_key_using_accessors' do
     before do
-      skip 'OpenSSL if RSA#d= is not available there is no accessors anymore' unless OpenSSL::PKey::RSA.new.respond_to?(:d=)
+      skip 'OpenSSL if RSA#d= is not available there is no accessors anymore' unless OpenSSL::PKey::RSA.method_defined?(:d=)
     end
 
     subject(:rsa) { described_class.create_rsa_key_using_accessors(rsa_parameters) }
