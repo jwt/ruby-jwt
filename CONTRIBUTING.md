@@ -2,7 +2,7 @@
 
 ## Forking the project
 
-Fork the project on GitHub and clone your own fork. Instuctions on forking can be found from the [GitHub Docs](https://docs.github.com/en/get-started/quickstart/fork-a-repo)
+Fork the project on GitHub and clone your own fork. Instructions on forking can be found from the [GitHub Docs](https://docs.github.com/en/get-started/quickstart/fork-a-repo)
 
 ```bash
 git clone git@github.com:you/ruby-jwt.git
