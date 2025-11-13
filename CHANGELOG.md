@@ -1,5 +1,18 @@
 # Changelog
 
+## [v3.1.3](https://github.com/jwt/ruby-jwt/tree/v3.1.3) (NEXT)
+
+[Full Changelog](https://github.com/jwt/ruby-jwt/compare/v3.1.2...v3.1.3)
+
+**Features:**
+
+- Your contribution here
+
+**Fixes and enhancements:**
+
+- Fix compatibility with the openssl 4.0 gem [#706](https://github.com/jwt/ruby-jwt/pull/706)
+- Your contribution here
+
 ## [v3.1.2](https://github.com/jwt/ruby-jwt/tree/v3.1.2) (2025-06-28)
 
 [Full Changelog](https://github.com/jwt/ruby-jwt/compare/v3.1.1...v3.1.2)
