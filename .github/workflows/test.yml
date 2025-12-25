@@ -8,6 +8,8 @@ on:
   pull_request:
     branches:
       - "*"
+  schedule:
+    - cron: "0 0 * * 5"
 jobs:
   rubocop:
     name: RuboCop
@@ -39,6 +41,7 @@ jobs:
           - "3.2"
           - "3.3"
           - "3.4"
+          - "4.0"
         gemfile:
           - gemfiles/standalone.gemfile
         experimental: [false]
