@@ -14,7 +14,7 @@ jobs:
       - uses: rubygems/configure-rubygems-credentials@main
         with:
           role-to-assume: ${{ secrets.RUBYGEMS_PUSH_ROLE }}
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - name: Set remote URL
         run: |
           # Attribute commits to the last committer on HEAD
