@@ -77,7 +77,7 @@ jobs:
         run: echo "SANITIZED_GEMFILE=${{ matrix.gemfile }}" | tr '/' '-' >> $GITHUB_ENV
 
       - name: Upload test coverage folder for later reporting
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: coverage-${{ matrix.os }}-${{ matrix.ruby }}-${{ env.SANITIZED_GEMFILE }}
           path: coverage/*.json
