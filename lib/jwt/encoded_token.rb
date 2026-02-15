@@ -1,5 +1,9 @@
 # frozen_string_literal: true
 
+require_relative 'encoded_token/claims_context'
+require_relative 'encoded_token/segment_parser'
+require_relative 'encoded_token/signature_verifier'
+
 module JWT
   # Represents an encoded JWT token
   #
@@ -12,29 +16,24 @@ module JWT
   #   encoded_token.verify_signature!(algorithm: 'HS256', key: 'secret')
   #   encoded_token.payload # => {'pay' => 'load'}
   class EncodedToken
-    # @private
-    # Allow access to the unverified payload for claim verification.
-    class ClaimsContext
-      extend Forwardable
-
-      def_delegators :@token, :header, :unverified_payload
-
-      def initialize(token)
-        @token = token
-      end
-
-      def payload
-        unverified_payload
-      end
-    end
-
     DEFAULT_CLAIMS = [:exp].freeze
-
     private_constant(:DEFAULT_CLAIMS)
 
     # Returns the original token provided to the class.
     # @return [String] The JWT token.
     attr_reader :jwt
+
+    # Returns the encoded signature of the JWT token.
+    # @return [String] the encoded signature.
+    attr_reader :encoded_signature
+
+    # Returns the encoded header of the JWT token.
+    # @return [String] the encoded header.
+    attr_reader :encoded_header
+
+    # Sets or returns the encoded payload of the JWT token.
+    # @return [String] the encoded payload.
+    attr_accessor :encoded_payload
 
     # Initializes a new EncodedToken instance.
     #
@@ -44,60 +43,61 @@ module JWT
       raise ArgumentError, 'Provided JWT must be a String' unless jwt.is_a?(String)
 
       @jwt = jwt
+      @allow_duplicate_keys = true
       @signature_verified = false
-      @claims_verified    = false
-
+      @claims_verified = false
       @encoded_header, @encoded_payload, @encoded_signature = jwt.split('.')
     end
 
-    # Returns the decoded signature of the JWT token.
+    # Enables strict duplicate key detection for this token.
+    # When called, the token will raise JWT::DuplicateKeyError if duplicate keys
+    # are found in the header or payload during parsing.
     #
+    # @example
+    #   token = JWT::EncodedToken.new(jwt_string)
+    #   token.raise_on_duplicate_keys!
+    #   token.header # May raise JWT::DuplicateKeyError
+    #
+    # @return [self]
+    # @raise [JWT::DuplicateKeyError] if duplicate keys are found during subsequent parsing.
+    # @raise [JWT::UnsupportedError] if the JSON gem version does not support duplicate key detection.
+    def raise_on_duplicate_keys!
+      raise JWT::UnsupportedError, 'Duplicate key detection requires JSON gem >= 2.13.0' unless JSON.supports_duplicate_key_detection?
+
+      @allow_duplicate_keys = false
+      @parser = nil
+      self
+    end
+
+    # Returns the decoded signature of the JWT token.
     # @return [String] the decoded signature.
     def signature
       @signature ||= ::JWT::Base64.url_decode(encoded_signature || '')
     end
 
-    # Returns the encoded signature of the JWT token.
-    #
-    # @return [String] the encoded signature.
-    attr_reader :encoded_signature
-
     # Returns the decoded header of the JWT token.
-    #
     # @return [Hash] the header.
     def header
-      @header ||= parse_and_decode(@encoded_header)
+      @header ||= parser.parse_and_decode(@encoded_header)
     end
 
-    # Returns the encoded header of the JWT token.
-    #
-    # @return [String] the encoded header.
-    attr_reader :encoded_header
-
     # Returns the payload of the JWT token. Access requires the signature and claims to have been verified.
-    #
     # @return [Hash] the payload.
-    # @raise [JWT::DecodeError] if the signature has not been verified.
+    # @raise [JWT::DecodeError] if the signature or claims have not been verified.
     def payload
       raise JWT::DecodeError, 'Verify the token signature before accessing the payload' unless @signature_verified
       raise JWT::DecodeError, 'Verify the token claims before accessing the payload' unless @claims_verified
 
-      decoded_payload
+      unverified_payload
     end
 
     # Returns the payload of the JWT token without requiring the signature to have been verified.
     # @return [Hash] the payload.
     def unverified_payload
-      decoded_payload
+      @unverified_payload ||= decode_payload
     end
 
-    # Sets or returns the encoded payload of the JWT token.
-    #
-    # @return [String] the encoded payload.
-    attr_accessor :encoded_payload
-
     # Returns the signing input of the JWT token.
-    #
     # @return [String] the signing input.
     def signing_input
       [encoded_header, encoded_payload].join('.')
@@ -121,13 +121,12 @@ module JWT
 
     # Verifies the token signature and claims.
     # By default it verifies the 'exp' claim.
-
+    #
     # @param signature [Hash] the parameters for signature verification (see {#verify_signature!}).
     # @param claims [Array<Symbol>, Hash] the claims to verify (see {#verify_claims!}).
     # @return [Boolean] true if the signature and claims are valid, false otherwise.
     def valid?(signature:, claims: nil)
-      valid_signature?(**signature) &&
-        (claims.is_a?(Array) ? valid_claims?(*claims) : valid_claims?(claims))
+      valid_signature?(**signature) && (claims.is_a?(Array) ? valid_claims?(*claims) : valid_claims?(claims))
     end
 
     # Verifies the signature of the JWT token.
@@ -151,26 +150,17 @@ module JWT
     # @param key_finder [#call] an object responding to `call` to find the key for verification.
     # @return [Boolean] true if the signature is valid, false otherwise.
     def valid_signature?(algorithm: nil, key: nil, key_finder: nil)
-      raise ArgumentError, 'Provide either key or key_finder, not both or neither' if key.nil? == key_finder.nil?
-
-      keys      = Array(key || key_finder.call(self))
-      verifiers = JWA.create_verifiers(algorithms: algorithm, keys: keys, preferred_algorithm: header['alg'])
-
-      raise JWT::VerificationError, 'No algorithm provided' if verifiers.empty?
-
-      valid = verifiers.any? do |jwa|
-        jwa.verify(data: signing_input, signature: signature)
+      SignatureVerifier.new(self).verify(algorithm: algorithm, key: key, key_finder: key_finder).tap do |valid|
+        @signature_verified = valid
       end
-      valid.tap { |verified| @signature_verified = verified }
     end
 
     # Verifies the claims of the token.
     # @param options [Array<Symbol>, Hash] the claims to verify. By default, it checks the 'exp' claim.
+    # @return [nil]
     # @raise [JWT::DecodeError] if the claims are invalid.
     def verify_claims!(*options)
-      Claims::Verifier.verify!(ClaimsContext.new(self), *claims_options(options)).tap do
-        @claims_verified = true
-      end
+      Claims::Verifier.verify!(ClaimsContext.new(self), *claims_options(options)).tap { @claims_verified = true }
     rescue StandardError
       @claims_verified = false
       raise
@@ -195,42 +185,19 @@ module JWT
     private
 
     def claims_options(options)
-      return DEFAULT_CLAIMS if options.first.nil?
+      options.first.nil? ? DEFAULT_CLAIMS : options
+    end
 
-      options
+    def parser
+      @parser ||= SegmentParser.new(allow_duplicate_keys: @allow_duplicate_keys)
     end
 
     def decode_payload
       raise JWT::DecodeError, 'Encoded payload is empty' if encoded_payload == ''
 
-      if unencoded_payload?
-        verify_claims!(crit: ['b64'])
-        return parse_unencoded(encoded_payload)
-      end
+      return parser.parse_unencoded(encoded_payload).tap { verify_claims!(crit: ['b64']) } if header['b64'] == false
 
-      parse_and_decode(encoded_payload)
-    end
-
-    def unencoded_payload?
-      header['b64'] == false
-    end
-
-    def parse_and_decode(segment)
-      parse(::JWT::Base64.url_decode(segment || ''))
-    end
-
-    def parse_unencoded(segment)
-      parse(segment)
-    end
-
-    def parse(segment)
-      JWT::JSON.parse(segment)
-    rescue ::JSON::ParserError
-      raise JWT::DecodeError, 'Invalid segment encoding'
-    end
-
-    def decoded_payload
-      @decoded_payload ||= decode_payload
+      parser.parse_and_decode(encoded_payload)
     end
   end
 end

@@ -325,6 +325,28 @@ encoded_token.verify_signature!(algorithm: 'HS256', key: "secret")
 encoded_token.payload # => {"pay"=>"load"}
 ```
 
+## Duplicate Claim Name Detection
+
+RFC 7519 Section 4 specifies that claim names within a JWT Claims Set MUST be unique. By default, ruby-jwt follows ECMAScript 5.1 behavior and uses the last value for duplicate keys. You can enable strict duplicate key detection to reject JWTs with duplicate claim names using the `EncodedToken` API.
+
+### Using EncodedToken API
+
+```ruby
+# Enable strict duplicate key detection
+token = JWT::EncodedToken.new(jwt_string)
+token.raise_on_duplicate_keys!
+
+begin
+  token.verify_signature!(algorithm: 'HS256', key: secret)
+  token.verify_claims!
+  token.payload
+rescue JWT::DuplicateKeyError => e
+  puts "Duplicate key detected: #{e.message}"
+end
+```
+
+This is recommended for security-sensitive applications to prevent attacks that exploit different systems reading different values from the same JWT.
+
 ## Claims
 
 JSON Web Token defines some reserved claim names and defines how they should be

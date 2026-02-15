@@ -4,9 +4,13 @@
 
 [Full Changelog](https://github.com/jwt/ruby-jwt/compare/v3.1.2...v3.1.3)
 
+**Breaking changes:**
+- Drop support for Ruby 2.6 and older [#713](https://github.com/jwt/ruby-jwt/pull/713) ([@ydah](https://github.com/ydah))
+- Bump minimum json gem version to 2.6 [#713](https://github.com/jwt/ruby-jwt/pull/713) ([@ydah](https://github.com/ydah))
+
 **Features:**
 
-- Your contribution here
+- Add duplicate claim name detection per RFC 7519 Section 4 [#713](https://github.com/jwt/ruby-jwt/pull/713) ([@ydah](https://github.com/ydah))
 
 **Fixes and enhancements:**
 
