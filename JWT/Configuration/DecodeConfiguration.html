@@ -147,6 +147,33 @@
       <li class="public ">
   <span class="summary_signature">
     
+      <a href="#enforce_hmac_key_length-instance_method" title="#enforce_hmac_key_length (instance method)">#<strong>enforce_hmac_key_length</strong>  &#x21d2; Boolean </a>
+    
+
+    
+  </span>
+  
+  
+  
+    
+    
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'>
+<p>Whether to enforce minimum HMAC key lengths.</p>
+</div></span>
+  
+</li>
+
+    
+      <li class="public ">
+  <span class="summary_signature">
+    
       <a href="#leeway-instance_method" title="#leeway (instance method)">#<strong>leeway</strong>  &#x21d2; Integer </a>
     
 
@@ -480,9 +507,6 @@
       <pre class="lines">
 
 
-40
-41
-42
 43
 44
 45
@@ -491,10 +515,14 @@
 48
 49
 50
-51</pre>
+51
+52
+53
+54
+55</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/jwt/configuration/decode_configuration.rb', line 40</span>
+      <pre class="code"><span class="info file"># File 'lib/jwt/configuration/decode_configuration.rb', line 43</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_initialize'>initialize</span>
   <span class='ivar'>@verify_expiration</span> <span class='op'>=</span> <span class='kw'>true</span>
@@ -507,6 +535,7 @@
   <span class='ivar'>@leeway</span> <span class='op'>=</span> <span class='int'>0</span>
   <span class='ivar'>@algorithms</span> <span class='op'>=</span> <span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>HS256</span><span class='tstring_end'>&#39;</span></span><span class='rbracket'>]</span>
   <span class='ivar'>@required_claims</span> <span class='op'>=</span> <span class='lbracket'>[</span><span class='rbracket'>]</span>
+  <span class='ivar'>@enforce_hmac_key_length</span> <span class='op'>=</span> <span class='kw'>false</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -564,8 +593,6 @@
       <pre class="lines">
 
 
-28
-29
 30
 31
 32
@@ -573,10 +600,13 @@
 34
 35
 36
-37</pre>
+37
+38
+39
+40</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/jwt/configuration/decode_configuration.rb', line 28</span>
+      <pre class="code"><span class="info file"># File 'lib/jwt/configuration/decode_configuration.rb', line 30</span>
 
 <span class='id identifier rubyid_attr_accessor'>attr_accessor</span> <span class='symbol'>:verify_expiration</span><span class='comma'>,</span>
 <span class='symbol'>:verify_not_before</span><span class='comma'>,</span>
@@ -587,7 +617,85 @@
 <span class='symbol'>:verify_sub</span><span class='comma'>,</span>
 <span class='symbol'>:leeway</span><span class='comma'>,</span>
 <span class='symbol'>:algorithms</span><span class='comma'>,</span>
-<span class='symbol'>:required_claims</span></pre>
+<span class='symbol'>:required_claims</span><span class='comma'>,</span>
+<span class='symbol'>:enforce_hmac_key_length</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+    
+      
+      <span id="enforce_hmac_key_length=-instance_method"></span>
+      <div class="method_details ">
+  <h3 class="signature " id="enforce_hmac_key_length-instance_method">
+  
+    #<strong>enforce_hmac_key_length</strong>  &#x21d2; <tt>Boolean</tt> 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    
+<p>Returns whether to enforce minimum HMAC key lengths. false disables validation (default).</p>
+
+
+  </div>
+</div>
+<div class="tags">
+  
+<p class="tag_title">Returns:</p>
+<ul class="return">
+  
+    <li>
+      
+      
+        <span class='type'>(<tt>Boolean</tt>)</span>
+      
+      
+      
+        &mdash;
+        <div class='inline'>
+<p>whether to enforce minimum HMAC key lengths. false disables validation (default).</p>
+</div>
+      
+    </li>
+  
+</ul>
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/jwt/configuration/decode_configuration.rb', line 30</span>
+
+<span class='id identifier rubyid_attr_accessor'>attr_accessor</span> <span class='symbol'>:verify_expiration</span><span class='comma'>,</span>
+<span class='symbol'>:verify_not_before</span><span class='comma'>,</span>
+<span class='symbol'>:verify_iss</span><span class='comma'>,</span>
+<span class='symbol'>:verify_iat</span><span class='comma'>,</span>
+<span class='symbol'>:verify_jti</span><span class='comma'>,</span>
+<span class='symbol'>:verify_aud</span><span class='comma'>,</span>
+<span class='symbol'>:verify_sub</span><span class='comma'>,</span>
+<span class='symbol'>:leeway</span><span class='comma'>,</span>
+<span class='symbol'>:algorithms</span><span class='comma'>,</span>
+<span class='symbol'>:required_claims</span><span class='comma'>,</span>
+<span class='symbol'>:enforce_hmac_key_length</span></pre>
     </td>
   </tr>
 </table>
@@ -639,8 +747,6 @@
       <pre class="lines">
 
 
-28
-29
 30
 31
 32
@@ -648,10 +754,13 @@
 34
 35
 36
-37</pre>
+37
+38
+39
+40</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/jwt/configuration/decode_configuration.rb', line 28</span>
+      <pre class="code"><span class="info file"># File 'lib/jwt/configuration/decode_configuration.rb', line 30</span>
 
 <span class='id identifier rubyid_attr_accessor'>attr_accessor</span> <span class='symbol'>:verify_expiration</span><span class='comma'>,</span>
 <span class='symbol'>:verify_not_before</span><span class='comma'>,</span>
@@ -662,7 +771,8 @@
 <span class='symbol'>:verify_sub</span><span class='comma'>,</span>
 <span class='symbol'>:leeway</span><span class='comma'>,</span>
 <span class='symbol'>:algorithms</span><span class='comma'>,</span>
-<span class='symbol'>:required_claims</span></pre>
+<span class='symbol'>:required_claims</span><span class='comma'>,</span>
+<span class='symbol'>:enforce_hmac_key_length</span></pre>
     </td>
   </tr>
 </table>
@@ -714,8 +824,6 @@
       <pre class="lines">
 
 
-28
-29
 30
 31
 32
@@ -723,10 +831,13 @@
 34
 35
 36
-37</pre>
+37
+38
+39
+40</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/jwt/configuration/decode_configuration.rb', line 28</span>
+      <pre class="code"><span class="info file"># File 'lib/jwt/configuration/decode_configuration.rb', line 30</span>
 
 <span class='id identifier rubyid_attr_accessor'>attr_accessor</span> <span class='symbol'>:verify_expiration</span><span class='comma'>,</span>
 <span class='symbol'>:verify_not_before</span><span class='comma'>,</span>
@@ -737,7 +848,8 @@
 <span class='symbol'>:verify_sub</span><span class='comma'>,</span>
 <span class='symbol'>:leeway</span><span class='comma'>,</span>
 <span class='symbol'>:algorithms</span><span class='comma'>,</span>
-<span class='symbol'>:required_claims</span></pre>
+<span class='symbol'>:required_claims</span><span class='comma'>,</span>
+<span class='symbol'>:enforce_hmac_key_length</span></pre>
     </td>
   </tr>
 </table>
@@ -789,8 +901,6 @@
       <pre class="lines">
 
 
-28
-29
 30
 31
 32
@@ -798,10 +908,13 @@
 34
 35
 36
-37</pre>
+37
+38
+39
+40</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/jwt/configuration/decode_configuration.rb', line 28</span>
+      <pre class="code"><span class="info file"># File 'lib/jwt/configuration/decode_configuration.rb', line 30</span>
 
 <span class='id identifier rubyid_attr_accessor'>attr_accessor</span> <span class='symbol'>:verify_expiration</span><span class='comma'>,</span>
 <span class='symbol'>:verify_not_before</span><span class='comma'>,</span>
@@ -812,7 +925,8 @@
 <span class='symbol'>:verify_sub</span><span class='comma'>,</span>
 <span class='symbol'>:leeway</span><span class='comma'>,</span>
 <span class='symbol'>:algorithms</span><span class='comma'>,</span>
-<span class='symbol'>:required_claims</span></pre>
+<span class='symbol'>:required_claims</span><span class='comma'>,</span>
+<span class='symbol'>:enforce_hmac_key_length</span></pre>
     </td>
   </tr>
 </table>
@@ -864,12 +978,12 @@
       <pre class="lines">
 
 
-28
-29
-30</pre>
+30
+31
+32</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/jwt/configuration/decode_configuration.rb', line 28</span>
+      <pre class="code"><span class="info file"># File 'lib/jwt/configuration/decode_configuration.rb', line 30</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_verify_expiration'>verify_expiration</span>
   <span class='ivar'>@verify_expiration</span>
@@ -925,8 +1039,6 @@
       <pre class="lines">
 
 
-28
-29
 30
 31
 32
@@ -934,10 +1046,13 @@
 34
 35
 36
-37</pre>
+37
+38
+39
+40</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/jwt/configuration/decode_configuration.rb', line 28</span>
+      <pre class="code"><span class="info file"># File 'lib/jwt/configuration/decode_configuration.rb', line 30</span>
 
 <span class='id identifier rubyid_attr_accessor'>attr_accessor</span> <span class='symbol'>:verify_expiration</span><span class='comma'>,</span>
 <span class='symbol'>:verify_not_before</span><span class='comma'>,</span>
@@ -948,7 +1063,8 @@
 <span class='symbol'>:verify_sub</span><span class='comma'>,</span>
 <span class='symbol'>:leeway</span><span class='comma'>,</span>
 <span class='symbol'>:algorithms</span><span class='comma'>,</span>
-<span class='symbol'>:required_claims</span></pre>
+<span class='symbol'>:required_claims</span><span class='comma'>,</span>
+<span class='symbol'>:enforce_hmac_key_length</span></pre>
     </td>
   </tr>
 </table>
@@ -1000,8 +1116,6 @@
       <pre class="lines">
 
 
-28
-29
 30
 31
 32
@@ -1009,10 +1123,13 @@
 34
 35
 36
-37</pre>
+37
+38
+39
+40</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/jwt/configuration/decode_configuration.rb', line 28</span>
+      <pre class="code"><span class="info file"># File 'lib/jwt/configuration/decode_configuration.rb', line 30</span>
 
 <span class='id identifier rubyid_attr_accessor'>attr_accessor</span> <span class='symbol'>:verify_expiration</span><span class='comma'>,</span>
 <span class='symbol'>:verify_not_before</span><span class='comma'>,</span>
@@ -1023,7 +1140,8 @@
 <span class='symbol'>:verify_sub</span><span class='comma'>,</span>
 <span class='symbol'>:leeway</span><span class='comma'>,</span>
 <span class='symbol'>:algorithms</span><span class='comma'>,</span>
-<span class='symbol'>:required_claims</span></pre>
+<span class='symbol'>:required_claims</span><span class='comma'>,</span>
+<span class='symbol'>:enforce_hmac_key_length</span></pre>
     </td>
   </tr>
 </table>
@@ -1075,8 +1193,6 @@
       <pre class="lines">
 
 
-28
-29
 30
 31
 32
@@ -1084,10 +1200,13 @@
 34
 35
 36
-37</pre>
+37
+38
+39
+40</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/jwt/configuration/decode_configuration.rb', line 28</span>
+      <pre class="code"><span class="info file"># File 'lib/jwt/configuration/decode_configuration.rb', line 30</span>
 
 <span class='id identifier rubyid_attr_accessor'>attr_accessor</span> <span class='symbol'>:verify_expiration</span><span class='comma'>,</span>
 <span class='symbol'>:verify_not_before</span><span class='comma'>,</span>
@@ -1098,7 +1217,8 @@
 <span class='symbol'>:verify_sub</span><span class='comma'>,</span>
 <span class='symbol'>:leeway</span><span class='comma'>,</span>
 <span class='symbol'>:algorithms</span><span class='comma'>,</span>
-<span class='symbol'>:required_claims</span></pre>
+<span class='symbol'>:required_claims</span><span class='comma'>,</span>
+<span class='symbol'>:enforce_hmac_key_length</span></pre>
     </td>
   </tr>
 </table>
@@ -1150,8 +1270,6 @@
       <pre class="lines">
 
 
-28
-29
 30
 31
 32
@@ -1159,10 +1277,13 @@
 34
 35
 36
-37</pre>
+37
+38
+39
+40</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/jwt/configuration/decode_configuration.rb', line 28</span>
+      <pre class="code"><span class="info file"># File 'lib/jwt/configuration/decode_configuration.rb', line 30</span>
 
 <span class='id identifier rubyid_attr_accessor'>attr_accessor</span> <span class='symbol'>:verify_expiration</span><span class='comma'>,</span>
 <span class='symbol'>:verify_not_before</span><span class='comma'>,</span>
@@ -1173,7 +1294,8 @@
 <span class='symbol'>:verify_sub</span><span class='comma'>,</span>
 <span class='symbol'>:leeway</span><span class='comma'>,</span>
 <span class='symbol'>:algorithms</span><span class='comma'>,</span>
-<span class='symbol'>:required_claims</span></pre>
+<span class='symbol'>:required_claims</span><span class='comma'>,</span>
+<span class='symbol'>:enforce_hmac_key_length</span></pre>
     </td>
   </tr>
 </table>
@@ -1225,8 +1347,6 @@
       <pre class="lines">
 
 
-28
-29
 30
 31
 32
@@ -1234,10 +1354,13 @@
 34
 35
 36
-37</pre>
+37
+38
+39
+40</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/jwt/configuration/decode_configuration.rb', line 28</span>
+      <pre class="code"><span class="info file"># File 'lib/jwt/configuration/decode_configuration.rb', line 30</span>
 
 <span class='id identifier rubyid_attr_accessor'>attr_accessor</span> <span class='symbol'>:verify_expiration</span><span class='comma'>,</span>
 <span class='symbol'>:verify_not_before</span><span class='comma'>,</span>
@@ -1248,7 +1371,8 @@
 <span class='symbol'>:verify_sub</span><span class='comma'>,</span>
 <span class='symbol'>:leeway</span><span class='comma'>,</span>
 <span class='symbol'>:algorithms</span><span class='comma'>,</span>
-<span class='symbol'>:required_claims</span></pre>
+<span class='symbol'>:required_claims</span><span class='comma'>,</span>
+<span class='symbol'>:enforce_hmac_key_length</span></pre>
     </td>
   </tr>
 </table>
@@ -1289,10 +1413,6 @@
       <pre class="lines">
 
 
-54
-55
-56
-57
 58
 59
 60
@@ -1302,10 +1422,15 @@
 64
 65
 66
-67</pre>
+67
+68
+69
+70
+71
+72</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/jwt/configuration/decode_configuration.rb', line 54</span>
+      <pre class="code"><span class="info file"># File 'lib/jwt/configuration/decode_configuration.rb', line 58</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_to_h'>to_h</span>
   <span class='lbrace'>{</span>
@@ -1318,7 +1443,8 @@
     <span class='label'>verify_sub:</span> <span class='id identifier rubyid_verify_sub'>verify_sub</span><span class='comma'>,</span>
     <span class='label'>leeway:</span> <span class='id identifier rubyid_leeway'>leeway</span><span class='comma'>,</span>
     <span class='label'>algorithms:</span> <span class='id identifier rubyid_algorithms'>algorithms</span><span class='comma'>,</span>
-    <span class='label'>required_claims:</span> <span class='id identifier rubyid_required_claims'>required_claims</span>
+    <span class='label'>required_claims:</span> <span class='id identifier rubyid_required_claims'>required_claims</span><span class='comma'>,</span>
+    <span class='label'>enforce_hmac_key_length:</span> <span class='id identifier rubyid_enforce_hmac_key_length'>enforce_hmac_key_length</span>
   <span class='rbrace'>}</span>
 <span class='kw'>end</span></pre>
     </td>
@@ -1331,7 +1457,7 @@
 </div>
 
       <div id="footer">
-  Generated on Sun Feb 15 09:08:06 2026 by
+  Generated on Sun Feb 15 10:29:48 2026 by
   <a href="https://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.9.38 (ruby-4.0.1).
 </div>
