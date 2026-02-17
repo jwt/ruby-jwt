@@ -355,7 +355,7 @@
 <span class='kw'>def</span> <span class='id identifier rubyid_initialize'>initialize</span><span class='lparen'>(</span><span class='id identifier rubyid_jwt'>jwt</span><span class='comma'>,</span> <span class='id identifier rubyid_key'>key</span><span class='comma'>,</span> <span class='id identifier rubyid_verify'>verify</span><span class='comma'>,</span> <span class='id identifier rubyid_options'>options</span><span class='comma'>,</span> <span class='op'>&amp;</span><span class='id identifier rubyid_keyfinder'>keyfinder</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_raise'>raise</span> <span class='const'><span class='object_link'><a href="../JWT.html" title="JWT (module)">JWT</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="DecodeError.html" title="JWT::DecodeError (class)">DecodeError</a></span></span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>Nil JSON web token</span><span class='tstring_end'>&#39;</span></span> <span class='kw'>unless</span> <span class='id identifier rubyid_jwt'>jwt</span>
 
-  <span class='ivar'>@token</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="EncodedToken.html" title="JWT::EncodedToken (class)">EncodedToken</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="EncodedToken.html#initialize-instance_method" title="JWT::EncodedToken#initialize (method)">new</a></span></span><span class='lparen'>(</span><span class='id identifier rubyid_jwt'>jwt</span><span class='rparen'>)</span>
+  <span class='ivar'>@token</span> <span class='op'>=</span> <span class='const'>EncodedToken</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='id identifier rubyid_jwt'>jwt</span><span class='rparen'>)</span>
   <span class='ivar'>@key</span> <span class='op'>=</span> <span class='id identifier rubyid_key'>key</span>
   <span class='ivar'>@options</span> <span class='op'>=</span> <span class='id identifier rubyid_options'>options</span>
   <span class='ivar'>@verify</span> <span class='op'>=</span> <span class='id identifier rubyid_verify'>verify</span>
@@ -453,7 +453,7 @@
 </div>
 
       <div id="footer">
-  Generated on Sun Feb 15 10:29:47 2026 by
+  Generated on Tue Feb 17 20:08:07 2026 by
   <a href="https://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.9.38 (ruby-4.0.1).
 </div>

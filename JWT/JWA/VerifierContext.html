@@ -94,7 +94,7 @@
   
   <dl>
     <dt>Defined in:</dt>
-    <dd>lib/jwt/jwa.rb</dd>
+    <dd>lib/jwt/jwa/verifier_context.rb</dd>
   </dl>
   
 </div>
@@ -243,13 +243,13 @@
       <pre class="lines">
 
 
-20
-21
-22
-23</pre>
+9
+10
+11
+12</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/jwt/jwa.rb', line 20</span>
+      <pre class="code"><span class="info file"># File 'lib/jwt/jwa/verifier_context.rb', line 9</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_initialize'>initialize</span><span class='lparen'>(</span><span class='label'>jwa:</span><span class='comma'>,</span> <span class='label'>keys:</span><span class='rparen'>)</span>
   <span class='ivar'>@jwa</span> <span class='op'>=</span> <span class='id identifier rubyid_jwa'>jwa</span>
@@ -295,12 +295,12 @@
       <pre class="lines">
 
 
-18
-19
-20</pre>
+7
+8
+9</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/jwt/jwa.rb', line 18</span>
+      <pre class="code"><span class="info file"># File 'lib/jwt/jwa/verifier_context.rb', line 7</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_jwa'>jwa</span>
   <span class='ivar'>@jwa</span>
@@ -345,14 +345,14 @@
       <pre class="lines">
 
 
-25
-26
-27
-28
-29</pre>
+14
+15
+16
+17
+18</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/jwt/jwa.rb', line 25</span>
+      <pre class="code"><span class="info file"># File 'lib/jwt/jwa/verifier_context.rb', line 14</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_verify'>verify</span><span class='lparen'>(</span><span class='op'>*</span><span class='id identifier rubyid_args'>args</span><span class='comma'>,</span> <span class='op'>**</span><span class='id identifier rubyid_kwargs'>kwargs</span><span class='rparen'>)</span>
   <span class='ivar'>@keys</span><span class='period'>.</span><span class='id identifier rubyid_any?'>any?</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_key'>key</span><span class='op'>|</span>
@@ -369,7 +369,7 @@
 </div>
 
       <div id="footer">
-  Generated on Sun Feb 15 10:29:47 2026 by
+  Generated on Tue Feb 17 20:08:08 2026 by
   <a href="https://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.9.38 (ruby-4.0.1).
 </div>
