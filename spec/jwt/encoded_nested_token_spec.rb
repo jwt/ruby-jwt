@@ -64,60 +64,42 @@ RSpec.describe JWT::EncodedNestedToken do
 
     it 'verifies signatures and returns self' do
       nested = described_class.new(nested_jwt)
-      result = nested.verify!(
-        keys: [
-          { algorithm: 'HS256', key: outer_secret },
-          { algorithm: 'HS256', key: inner_secret }
-        ]
-      )
+      result = nested.verify!(algorithm: 'HS256', key: [outer_secret, inner_secret])
 
       expect(result).to eq(nested)
     end
 
     it 'allows accessing innermost payload after verification' do
       nested = described_class.new(nested_jwt)
-      nested.verify!(
-        keys: [
-          { algorithm: 'HS256', key: outer_secret },
-          { algorithm: 'HS256', key: inner_secret }
-        ]
-      )
+      nested.verify!(algorithm: 'HS256', key: [outer_secret, inner_secret])
 
       expect(nested.last.payload).to eq(inner_payload)
     end
 
-    it 'raises VerificationError for invalid outer signature' do
+    it 'verifies claims on the innermost token' do
+      nested = described_class.new(nested_jwt)
+      nested.verify!(algorithm: 'HS256', key: [outer_secret, inner_secret])
+
+      expect { nested.last.payload }.not_to raise_error
+    end
+
+    it 'raises VerificationError when no key matches' do
       nested = described_class.new(nested_jwt)
 
       expect do
-        nested.verify!(
-          keys: [
-            { algorithm: 'HS256', key: 'wrong_key' },
-            { algorithm: 'HS256', key: inner_secret }
-          ]
-        )
+        nested.verify!(algorithm: 'HS256', key: 'wrong_key')
       end.to raise_error(JWT::VerificationError, 'Signature verification failed')
     end
 
-    it 'raises VerificationError for invalid inner signature' do
+    it 'works with a single shared key for all levels' do
+      shared_key = 'shared_secret'
+      inner = create_signed_jwt(key: shared_key)
+      nested_jwt = create_nested(inner, algorithm: 'HS256', key: shared_key)
+
       nested = described_class.new(nested_jwt)
+      nested.verify!(algorithm: 'HS256', key: shared_key)
 
-      expect do
-        nested.verify!(
-          keys: [
-            { algorithm: 'HS256', key: outer_secret },
-            { algorithm: 'HS256', key: 'wrong_key' }
-          ]
-        )
-      end.to raise_error(JWT::VerificationError, 'Signature verification failed')
-    end
-
-    it 'raises DecodeError when key count does not match nesting depth' do
-      nested = described_class.new(nested_jwt)
-
-      expect do
-        nested.verify!(keys: [{ algorithm: 'HS256', key: outer_secret }])
-      end.to raise_error(JWT::DecodeError, 'Expected 2 key configurations, got 1')
+      expect(nested.last.payload).to eq(inner_payload)
     end
 
     it 'handles case-insensitive cty header' do
@@ -129,12 +111,7 @@ RSpec.describe JWT::EncodedNestedToken do
       lowercase_nested = "#{encoded_header}.#{encoded_payload}.#{JWT::Base64.url_encode(signature)}"
 
       nested = described_class.new(lowercase_nested)
-      nested.verify!(
-        keys: [
-          { algorithm: 'HS256', key: outer_secret },
-          { algorithm: 'HS256', key: inner_secret }
-        ]
-      )
+      nested.verify!(algorithm: 'HS256', key: [outer_secret, inner_secret])
 
       expect(nested.last.payload).to eq(inner_payload)
     end
@@ -143,30 +120,18 @@ RSpec.describe JWT::EncodedNestedToken do
       let(:rsa_private) { test_pkey('rsa-2048-private.pem') }
       let(:rsa_public) { rsa_private.public_key }
 
-      it 'supports HS256 inner with RS256 outer' do
+      it 'supports mixed algorithms via key_finder' do
         nested_jwt = create_nested(inner_jwt, algorithm: 'RS256', key: rsa_private)
+
+        key_map = {
+          'RS256' => rsa_public,
+          'HS256' => inner_secret
+        }
+
         nested = described_class.new(nested_jwt)
-
         nested.verify!(
-          keys: [
-            { algorithm: 'RS256', key: rsa_public },
-            { algorithm: 'HS256', key: inner_secret }
-          ]
-        )
-
-        expect(nested.last.payload).to eq(inner_payload)
-      end
-
-      it 'supports RS256 inner with HS256 outer' do
-        rsa_inner_jwt = create_signed_jwt(algorithm: 'RS256', key: rsa_private)
-        nested_jwt = create_nested(rsa_inner_jwt, algorithm: 'HS256', key: outer_secret)
-        nested = described_class.new(nested_jwt)
-
-        nested.verify!(
-          keys: [
-            { algorithm: 'HS256', key: outer_secret },
-            { algorithm: 'RS256', key: rsa_public }
-          ]
+          algorithm: %w[RS256 HS256],
+          key_finder: ->(token) { key_map[token.header['alg']] }
         )
 
         expect(nested.last.payload).to eq(inner_payload)
@@ -174,17 +139,14 @@ RSpec.describe JWT::EncodedNestedToken do
     end
 
     context 'with multiple nesting levels' do
-      it 'verifies all levels' do
+      it 'verifies all levels with same algorithm family' do
         level2 = create_nested(inner_jwt, algorithm: 'HS384', key: 'key2')
         level3 = create_nested(level2, algorithm: 'HS512', key: 'key3')
 
         nested = described_class.new(level3)
         nested.verify!(
-          keys: [
-            { algorithm: 'HS512', key: 'key3' },
-            { algorithm: 'HS384', key: 'key2' },
-            { algorithm: 'HS256', key: inner_secret }
-          ]
+          algorithm: %w[HS512 HS384 HS256],
+          key: ['key3', 'key2', inner_secret]
         )
 
         expect(nested.last.payload).to eq(inner_payload)
@@ -192,7 +154,7 @@ RSpec.describe JWT::EncodedNestedToken do
     end
   end
 
-  describe 'max depth protection' do
+  describe 'max_depth' do
     it 'raises DecodeError when nesting exceeds MAX_DEPTH' do
       current = inner_jwt
       (described_class::MAX_DEPTH + 1).times do |i|
@@ -202,6 +164,19 @@ RSpec.describe JWT::EncodedNestedToken do
       expect do
         described_class.new(current)
       end.to raise_error(JWT::DecodeError, /exceeds maximum depth/)
+    end
+
+    it 'allows overriding max_depth via constructor' do
+      level2 = create_nested(inner_jwt, algorithm: 'HS256', key: 'key2')
+      level3 = create_nested(level2, algorithm: 'HS256', key: 'key3')
+
+      expect do
+        described_class.new(level3, max_depth: 2)
+      end.to raise_error(JWT::DecodeError, 'Nested JWT exceeds maximum depth of 2')
+
+      expect do
+        described_class.new(level3, max_depth: 5)
+      end.not_to raise_error
     end
   end
 end

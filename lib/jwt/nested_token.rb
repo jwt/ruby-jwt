@@ -7,8 +7,10 @@ module JWT
   # The payload is base64url-encoded directly (not JSON-encoded).
   #
   # @example Creating a Nested JWT
-  #   inner_jwt = JWT.encode({ user_id: 123 }, 'inner_secret', 'HS256')
-  #   nested = JWT::NestedToken.new(inner_jwt)
+  #   inner = JWT::Token.new(payload: { user_id: 123 })
+  #   inner.sign!(algorithm: 'HS256', key: 'inner_secret')
+  #
+  #   nested = JWT::NestedToken.new(inner.jwt)
   #   nested.sign!(algorithm: 'RS256', key: rsa_private_key)
   #   nested.jwt
   #
