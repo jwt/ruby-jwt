@@ -7,6 +7,7 @@
 **Features:**
 
 - Add `enforce_hmac_key_length` configuration option [#716](https://github.com/jwt/ruby-jwt/pull/716) - ([@304](https://github.com/304))
+- Implements Nested JWT functionality as defined in RFC 7519 Section 5.2, 7.1, 7.2, and Appendix A.2. [#712](https://github.com/jwt/ruby-jwt/pull/712) ([@ydah](https://github.com/ydah))
 - Your contribution here
 
 **Fixes and enhancements:**

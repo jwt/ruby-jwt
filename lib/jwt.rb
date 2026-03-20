@@ -11,6 +11,7 @@ require 'jwt/jwk'
 require 'jwt/claims'
 require 'jwt/encoded_token'
 require 'jwt/token'
+require 'jwt/nested_token'
 
 # JSON Web Token implementation
 #

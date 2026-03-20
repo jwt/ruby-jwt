@@ -325,6 +325,49 @@ encoded_token.verify_signature!(algorithm: 'HS256', key: "secret")
 encoded_token.payload # => {"pay"=>"load"}
 ```
 
+## Nested JWT
+
+A Nested JWT is a JWT that is used as the payload of another JWT, as defined in RFC 7519 Section 5.2. This allows for multiple layers of signing.
+
+### Creating a Nested JWT
+
+```ruby
+# Create the inner JWT
+inner_payload = { user_id: 123, role: 'admin' }
+inner_key = 'inner_secret'
+inner_jwt = JWT.encode(inner_payload, inner_key, 'HS256')
+
+# Wrap it in an outer JWT with a different key/algorithm
+outer_key = OpenSSL::PKey::RSA.generate(2048)
+nested = JWT::NestedToken.new(inner_jwt)
+nested.sign!(algorithm: 'RS256', key: outer_key)
+nested_jwt = nested.jwt
+```
+
+### Decoding a Nested JWT
+
+```ruby
+# Decode and verify all nesting levels
+tokens = JWT::NestedToken.new(nested_jwt).verify!(
+  keys: [
+    { algorithm: 'RS256', key: outer_key.public_key },
+    { algorithm: 'HS256', key: inner_key }
+  ]
+)
+
+inner_payload = tokens.last.payload
+# => { 'user_id' => 123, 'role' => 'admin' }
+```
+
+### Checking for Nested JWTs
+
+```ruby
+token = JWT::EncodedToken.new(nested_jwt)
+token.nested?     # => true
+token.inner_token # => JWT::EncodedToken of the inner JWT
+token.unwrap_all  # => [outer_token, inner_token]
+```
+
 ## Claims
 
 JSON Web Token defines some reserved claim names and defines how they should be

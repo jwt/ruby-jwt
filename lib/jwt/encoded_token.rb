@@ -13,7 +13,7 @@ module JWT
   #   encoded_token = JWT::EncodedToken.new(token.jwt)
   #   encoded_token.verify_signature!(algorithm: 'HS256', key: 'secret')
   #   encoded_token.payload # => {'pay' => 'load'}
-  class EncodedToken
+  class EncodedToken # rubocop:disable Metrics/ClassLength
     DEFAULT_CLAIMS = [:exp].freeze
 
     private_constant(:DEFAULT_CLAIMS)
@@ -178,6 +178,60 @@ module JWT
 
     alias to_s jwt
 
+    # Checks if this token is a Nested JWT.
+    # A token is considered nested if it has a `cty` header with value "JWT" (case-insensitive).
+    #
+    # @return [Boolean] true if this is a Nested JWT, false otherwise
+    #
+    # @example
+    #   token = JWT::EncodedToken.new(nested_jwt_string)
+    #   token.nested? # => true
+    #
+    # @see https://datatracker.ietf.org/doc/html/rfc7519#section-5.2 RFC 7519 Section 5.2
+    def nested?
+      cty = header['cty']
+      cty&.upcase == 'JWT'
+    end
+
+    # Returns the inner token if this is a Nested JWT.
+    # The inner token is created from the payload of this token.
+    #
+    # @return [JWT::EncodedToken, nil] the inner token if nested, nil otherwise
+    #
+    # @example
+    #   outer_token = JWT::EncodedToken.new(nested_jwt_string)
+    #   inner_token = outer_token.inner_token
+    #   inner_token.header # => { 'alg' => 'HS256' }
+    def inner_token
+      return nil unless nested?
+
+      EncodedToken.new(decode_nested_payload)
+    end
+
+    # Unwraps all nesting levels and returns an array of tokens.
+    # The array is ordered from outermost to innermost token.
+    #
+    # @return [Array<JWT::EncodedToken>] array of all tokens from outer to inner
+    #
+    # @example
+    #   token = JWT::EncodedToken.new(deeply_nested_jwt)
+    #   all_tokens = token.unwrap_all
+    #   all_tokens.first # => outermost token
+    #   all_tokens.last  # => innermost token
+    def unwrap_all(max_depth:)
+      tokens = [self]
+      current = self
+
+      while current.nested?
+        raise JWT::DecodeError, "Nested JWT exceeds maximum depth of #{max_depth}" if tokens.length >= max_depth
+
+        current = current.inner_token
+        tokens << current
+      end
+
+      tokens
+    end
+
     private
 
     def claims_options(options)
@@ -195,6 +249,14 @@ module JWT
       end
 
       parse_and_decode(encoded_payload)
+    end
+
+    def decode_nested_payload
+      raise JWT::DecodeError, 'Encoded payload is empty' if encoded_payload == ''
+
+      return encoded_payload if unencoded_payload?
+
+      ::JWT::Base64.url_decode(encoded_payload || '')
     end
 
     def unencoded_payload?
