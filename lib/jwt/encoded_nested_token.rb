@@ -6,9 +6,17 @@ module JWT
   # Unwraps all nesting levels and provides an Enumerable interface over the token layers
   # (outermost to innermost).
   #
-  # @example Verifying a Nested JWT
+  # @example Verifying a Nested JWT with a shared algorithm
   #   nested = JWT::EncodedNestedToken.new(nested_jwt_string)
-  #   nested.verify!(algorithm: ['RS256', 'HS256'], key: [rsa_public, 'inner_secret'])
+  #   nested.verify!(algorithm: 'HS256', key: [outer_secret, inner_secret])
+  #   nested.last.payload # => { 'user_id' => 123 }
+  #
+  # @example Verifying with mixed algorithms using key_finder
+  #   nested = JWT::EncodedNestedToken.new(nested_jwt_string)
+  #   nested.verify!(
+  #     algorithm: %w[RS256 HS256],
+  #     key_finder: ->(token) { key_map[token.header['alg']] }
+  #   )
   #   nested.last.payload # => { 'user_id' => 123 }
   #
   # @example Inspecting layers
@@ -27,16 +35,22 @@ module JWT
     def initialize(jwt, max_depth: MAX_DEPTH)
       raise ArgumentError, 'Provided JWT must be a String' unless jwt.is_a?(String)
 
+      @jwt = jwt
       @max_depth = max_depth
-      @tokens = unwrap(jwt)
+      @verified = false
     end
 
     def each(&block)
-      @tokens.each(&block)
+      tokens.each(&block)
     end
 
+    # Returns the innermost token. Requires {#verify!} to have been called first.
+    # @return [JWT::EncodedToken] the innermost token.
+    # @raise [JWT::DecodeError] if the token has not been verified.
     def last
-      @tokens.last
+      raise JWT::DecodeError, 'Verify the token before accessing the innermost token' unless @verified
+
+      tokens.last
     end
 
     # Verifies signatures at each nesting level and claims on the innermost token.
@@ -58,11 +72,16 @@ module JWT
         token.verify_signature!(algorithm: algorithm, key: key, key_finder: key_finder)
       end
 
+      @verified = true
       claims.is_a?(Array) ? last.verify_claims!(*claims) : last.verify_claims!(claims)
       self
     end
 
     private
+
+    def tokens
+      @tokens ||= unwrap(@jwt)
+    end
 
     def unwrap(jwt)
       tokens = []

@@ -51,11 +51,19 @@ RSpec.describe JWT::EncodedNestedToken do
   end
 
   describe '#last' do
-    it 'returns the innermost token' do
+    it 'raises DecodeError before verification' do
       nested_jwt = create_nested(inner_jwt, algorithm: 'HS256', key: outer_secret)
       nested = described_class.new(nested_jwt)
 
-      expect(nested.last.unverified_payload).to eq(inner_payload)
+      expect { nested.last }.to raise_error(JWT::DecodeError, /Verify the token before/)
+    end
+
+    it 'returns the innermost token after verification' do
+      nested_jwt = create_nested(inner_jwt, algorithm: 'HS256', key: outer_secret)
+      nested = described_class.new(nested_jwt)
+      nested.verify!(algorithm: 'HS256', key: [outer_secret, inner_secret])
+
+      expect(nested.last.payload).to eq(inner_payload)
     end
   end
 
@@ -161,8 +169,9 @@ RSpec.describe JWT::EncodedNestedToken do
         current = create_nested(current, algorithm: 'HS256', key: "key_#{i}")
       end
 
+      nested = described_class.new(current)
       expect do
-        described_class.new(current)
+        nested.count
       end.to raise_error(JWT::DecodeError, /exceeds maximum depth/)
     end
 
@@ -171,11 +180,11 @@ RSpec.describe JWT::EncodedNestedToken do
       level3 = create_nested(level2, algorithm: 'HS256', key: 'key3')
 
       expect do
-        described_class.new(level3, max_depth: 2)
+        described_class.new(level3, max_depth: 2).count
       end.to raise_error(JWT::DecodeError, 'Nested JWT exceeds maximum depth of 2')
 
       expect do
-        described_class.new(level3, max_depth: 5)
+        described_class.new(level3, max_depth: 5).count
       end.not_to raise_error
     end
   end
