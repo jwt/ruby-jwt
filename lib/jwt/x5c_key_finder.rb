@@ -40,7 +40,7 @@ module JWT
     end
 
     def parse_certificates(x5c_header_or_certificates)
-      if x5c_header_or_certificates.all? { |obj| obj.is_a?(OpenSSL::X509::Certificate) }
+      if x5c_header_or_certificates.all?(OpenSSL::X509::Certificate)
         x5c_header_or_certificates
       else
         x5c_header_or_certificates.map do |encoded|
