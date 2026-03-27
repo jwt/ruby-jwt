@@ -28,12 +28,12 @@ module JWT
       # Returns the verification key for the given kid
       # @param [String] kid the key id
       def key_for(kid, key_field = :kid)
-        raise ::JWT::DecodeError, "Invalid type for #{key_field} header parameter" unless kid.nil? || kid.is_a?(String)
+        raise ::JWT::SignatureError, "Invalid type for #{key_field} header parameter" unless kid.nil? || kid.is_a?(String)
 
         jwk = resolve_key(kid, key_field)
 
-        raise ::JWT::DecodeError, 'No keys found in jwks' unless @jwks.any?
-        raise ::JWT::DecodeError, "Could not find public key for kid #{kid}" unless jwk
+        raise ::JWT::SignatureError, 'No keys found in jwks' unless @jwks.any?
+        raise ::JWT::SignatureError, "Could not find public key for kid #{kid}" unless jwk
 
         jwk.verify_key
       end
@@ -47,7 +47,7 @@ module JWT
           return key_for(field_value, key_field) if field_value
         end
 
-        raise ::JWT::DecodeError, 'No key id (kid) or x5t found from token headers' unless @allow_nil_kid
+        raise ::JWT::SignatureError, 'No key id (kid) or x5t found from token headers' unless @allow_nil_kid
 
         kid = token.header['kid']
         key_for(kid)
