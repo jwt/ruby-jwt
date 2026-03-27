@@ -33,7 +33,7 @@ module JWT
           errors = []
           iterate_verifiers(*options) do |verifier, verifier_options|
             verify_one!(context, verifier, verifier_options)
-          rescue ::JWT::DecodeError => e
+          rescue ::JWT::ClaimValidationError => e
             errors << Error.new(message: e.message)
           end
           errors
