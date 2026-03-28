@@ -67,6 +67,6 @@ module JWT
   # Raised when a JWK uses a key type (kty) that this library does not support.
   class UnsupportedKeyType < JWKError; end
 
-  # Backwards compatibility alias
+  # @deprecated Use {JWT::Error}, {JWT::TokenError}, or a more specific error class instead.
   DecodeError = Error
 end
