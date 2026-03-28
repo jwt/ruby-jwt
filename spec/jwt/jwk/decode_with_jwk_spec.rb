@@ -131,7 +131,7 @@ RSpec.describe JWT do
       context 'when RSA key is pointed to as HMAC secret' do
         let(:signed_token) { described_class.encode({ 'foo' => 'bar' }, 'is not really relevant in the scenario', 'HS256', { kid: rsa_jwk.kid }) }
 
-        it 'raises JWT::SignatureError' do
+        it 'raises JWT::VerificationError' do
           expect { described_class.decode(signed_token, nil, true, algorithms: ['HS256'], jwks: jwks) }.to raise_error(JWT::VerificationError, 'HMAC key expected to be a String')
         end
       end
@@ -139,7 +139,7 @@ RSpec.describe JWT do
       context 'when EC key is pointed to as HMAC secret' do
         let(:signed_token) { described_class.encode({ 'foo' => 'bar' }, 'is not really relevant in the scenario', 'HS256', { kid: ec_jwk_secp384r1.kid }) }
 
-        it 'raises JWT::SignatureError' do
+        it 'raises JWT::VerificationError' do
           expect { described_class.decode(signed_token, nil, true, algorithms: ['HS256'], jwks: jwks) }.to raise_error(JWT::VerificationError, 'HMAC key expected to be a String')
         end
       end
