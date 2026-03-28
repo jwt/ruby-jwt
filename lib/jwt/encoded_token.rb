@@ -63,10 +63,10 @@ module JWT
     # Returns the payload of the JWT token. Access requires the signature and claims to have been verified.
     #
     # @return [Hash] the payload.
-    # @raise [JWT::Error] if the signature has not been verified.
+    # @raise [JWT::TokenError] if the signature has not been verified.
     def payload
-      raise JWT::Error, 'Verify the token signature before accessing the payload' unless @signature_verified
-      raise JWT::Error, 'Verify the token claims before accessing the payload' unless @claims_verified
+      raise JWT::TokenError, 'Verify the token signature before accessing the payload' unless @signature_verified
+      raise JWT::TokenError, 'Verify the token claims before accessing the payload' unless @claims_verified
 
       decoded_payload
     end

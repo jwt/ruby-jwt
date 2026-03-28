@@ -322,7 +322,7 @@ RSpec.describe 'README.md code test' do
         jwk = JWT::JWK.new(OpenSSL::PKey::RSA.new(2048), 'yet-another-new-kid')
         headers = { kid: jwk.kid }
         token = JWT.encode(payload, jwk.signing_key, 'RS512', headers)
-        expect { JWT.decode(token, nil, true, { algorithms: ['RS512'], jwks: jwk_loader }) }.to raise_error(JWT::DecodeError, 'Could not find public key for kid yet-another-new-kid')
+        expect { JWT.decode(token, nil, true, { algorithms: ['RS512'], jwks: jwk_loader }) }.to raise_error(JWT::SignatureError, 'Could not find public key for kid yet-another-new-kid')
       end
 
       it 'works as expected' do
