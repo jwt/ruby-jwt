@@ -169,7 +169,7 @@ RSpec.describe JWT do
         data[alg] = JWT.encode(payload, data["#{alg}_private"], alg)
       end
 
-      let(:wrong_key) { test_pkey('ec256-wrong-public.pem') }
+      let(:wrong_key) { OpenSSL::PKey::EC.generate(data["#{alg}_private"].group.curve_name) }
 
       it 'should generate a valid token' do
         jwt_payload, header = JWT.decode data[alg], data["#{alg}_public"], true, algorithm: alg
@@ -185,10 +185,10 @@ RSpec.describe JWT do
         expect(jwt_payload).to eq payload
       end
 
-      it 'wrong key should raise JWT::SignatureError' do
+      it 'wrong key should raise JWT::VerificationError' do
         expect do
-          JWT.decode data[alg], wrong_key
-        end.to raise_error JWT::SignatureError
+          JWT.decode data[alg], wrong_key, true, algorithm: alg
+        end.to raise_error JWT::VerificationError
       end
 
       it 'wrong key and verify = false should not raise an error' do
@@ -234,10 +234,10 @@ RSpec.describe JWT do
         expect(jwt_payload).to eq payload
       end
 
-      it 'wrong key should raise JWT::SignatureError' do
+      it 'wrong key should raise JWT::VerificationError' do
         expect do
-          JWT.decode data[alg], wrong_key
-        end.to raise_error JWT::SignatureError
+          JWT.decode data[alg], wrong_key, true, algorithm: alg
+        end.to raise_error JWT::VerificationError
       end
 
       it 'wrong key and verify = false should not raise an error' do
