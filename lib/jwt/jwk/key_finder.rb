@@ -28,7 +28,7 @@ module JWT
       # Returns the verification key for the given kid
       # @param [String] kid the key id
       def key_for(kid, key_field = :kid)
-        raise ::JWT::SignatureError, "Invalid type for #{key_field} header parameter" unless kid.nil? || kid.is_a?(String)
+        raise ::JWT::MalformedTokenError, "Invalid type for #{key_field} header parameter" unless kid.nil? || kid.is_a?(String)
 
         jwk = resolve_key(kid, key_field)
 

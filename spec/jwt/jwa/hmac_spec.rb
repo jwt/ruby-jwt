@@ -17,8 +17,8 @@ RSpec.describe JWT::JWA::Hmac do
     context 'when nil hmac_secret is passed' do
       let(:hmac_secret) { nil }
 
-      it 'raises JWT::DecodeError' do
-        expect { subject }.to raise_error(JWT::DecodeError, 'HMAC key expected to be a String')
+      it 'raises JWT::VerificationError' do
+        expect { subject }.to raise_error(JWT::VerificationError, 'HMAC key expected to be a String')
       end
 
       it 'does not call OpenSSL::HMAC.digest' do
@@ -30,8 +30,8 @@ RSpec.describe JWT::JWA::Hmac do
     context 'when blank hmac_secret is passed' do
       let(:hmac_secret) { '' }
 
-      it 'raises JWT::DecodeError' do
-        expect { subject }.to raise_error(JWT::DecodeError, 'HMAC key cannot be empty')
+      it 'raises JWT::VerificationError' do
+        expect { subject }.to raise_error(JWT::VerificationError, 'HMAC key cannot be empty')
       end
 
       it 'does not call OpenSSL::HMAC.digest' do
@@ -85,7 +85,7 @@ RSpec.describe JWT::JWA::Hmac do
         let(:hmac_secret) { 'short' }
 
         it 'raises error' do
-          expect { subject }.to raise_error(JWT::DecodeError, 'HMAC key must be at least 32 bytes for HS256 algorithm')
+          expect { subject }.to raise_error(JWT::VerificationError, 'HMAC key must be at least 32 bytes for HS256 algorithm')
         end
       end
 
@@ -119,7 +119,7 @@ RSpec.describe JWT::JWA::Hmac do
       let(:hmac_secret) { 123 }
 
       it 'raises error' do
-        expect { subject }.to raise_error(JWT::DecodeError, 'HMAC key expected to be a String')
+        expect { subject }.to raise_error(JWT::VerificationError, 'HMAC key expected to be a String')
       end
     end
 
@@ -159,7 +159,7 @@ RSpec.describe JWT::JWA::Hmac do
         let(:hmac_secret) { 'short' }
 
         it 'raises error' do
-          expect { subject }.to raise_error(JWT::DecodeError, 'HMAC key must be at least 32 bytes for HS256 algorithm')
+          expect { subject }.to raise_error(JWT::VerificationError, 'HMAC key must be at least 32 bytes for HS256 algorithm')
         end
       end
 
