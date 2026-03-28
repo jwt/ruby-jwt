@@ -538,6 +538,12 @@ RSpec.describe JWT do
     end
   end
 
+  context 'when nil is passed as the token' do
+    it 'raises JWT::MalformedTokenError' do
+      expect { JWT.decode(nil, nil, true) }.to raise_error(JWT::MalformedTokenError, 'Nil JSON web token')
+    end
+  end
+
   context 'a token with no segments' do
     it 'raises JWT::MalformedTokenError' do
       expect { JWT.decode('ThisIsNotAValidJWTToken', nil, true) }.to raise_error(JWT::MalformedTokenError, 'Not enough or too many segments')

@@ -42,7 +42,7 @@ RSpec.describe JWT::Token do
 
       context 'with mismatching algorithm provided in sign call' do
         it 'signs the token' do
-          expect { token.sign!(algorithm: %w[RS384 RS512], key: jwk) }.to raise_error(JWT::Error, 'Provided JWKs do not support one of the specified algorithms: RS384, RS512')
+          expect { token.sign!(algorithm: %w[RS384 RS512], key: jwk) }.to raise_error(JWT::EncodeError, 'Provided JWKs do not support one of the specified algorithms: RS384, RS512')
         end
       end
     end
