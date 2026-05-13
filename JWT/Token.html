@@ -6,13 +6,13 @@
 <title>
   Class: JWT::Token
   
-    &mdash; Documentation by YARD 0.9.38
+    &mdash; Documentation by YARD 0.9.43
   
 </title>
 
-  <link rel="stylesheet" href="../css/style.css" type="text/css" />
+  <link rel="stylesheet" href="../css/style.css" type="text/css">
 
-  <link rel="stylesheet" href="../css/common.css" type="text/css" />
+  <link rel="stylesheet" href="../css/common.css" type="text/css">
 
 <script type="text/javascript">
   pathId = "JWT::Token";
@@ -27,6 +27,8 @@
 
   </head>
   <body>
+    <div id="main_progress" aria-hidden="true"></div>
+
     <div class="nav_wrap">
       <iframe id="nav" src="../class_list.html?1"></iframe>
       <div id="resizer"></div>
@@ -94,30 +96,24 @@
   
   <dl>
     <dt>Defined in:</dt>
-    <dd>lib/jwt/token.rb</dd>
+    <dd>lib/jwt/token.rb
+</dd>
   </dl>
   
 </div>
 
 <h2>Overview</h2><div class="docstring">
   <div class="discussion">
-    
-<p>Represents a JWT token</p>
-
+    <p>Represents a JWT token</p>
 <p>Basic token signed using the HS256 algorithm:</p>
-
 <pre class="code ruby"><code class="ruby"><span class='id identifier rubyid_token'>token</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="../JWT.html" title="JWT (module)">JWT</a></span></span><span class='op'>::</span><span class='const'>Token</span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="#initialize-instance_method" title="JWT::Token#initialize (method)">new</a></span></span><span class='lparen'>(</span><span class='label'>payload:</span> <span class='lbrace'>{</span><span class='label'>pay:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>load</span><span class='tstring_end'>&#39;</span></span><span class='rbrace'>}</span><span class='rparen'>)</span>
 <span class='id identifier rubyid_token'>token</span><span class='period'>.</span><span class='id identifier rubyid_sign!'>sign!</span><span class='lparen'>(</span><span class='label'>algorithm:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>HS256</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>key:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>secret</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span>
 <span class='id identifier rubyid_token'>token</span><span class='period'>.</span><span class='id identifier rubyid_jwt'>jwt</span> <span class='comment'># =&gt; eyJhb....
 </span></code></pre>
-
 <p>Custom headers will be combined with generated headers:</p>
-
 <pre class="code ruby"><code class="ruby"><span class='id identifier rubyid_token'>token</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="../JWT.html" title="JWT (module)">JWT</a></span></span><span class='op'>::</span><span class='const'>Token</span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="#initialize-instance_method" title="JWT::Token#initialize (method)">new</a></span></span><span class='lparen'>(</span><span class='label'>payload:</span> <span class='lbrace'>{</span><span class='label'>pay:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>load</span><span class='tstring_end'>&#39;</span></span><span class='rbrace'>}</span><span class='comma'>,</span> <span class='label'>header:</span> <span class='lbrace'>{</span><span class='label'>custom:</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>value</span><span class='tstring_end'>&quot;</span></span><span class='rbrace'>}</span><span class='rparen'>)</span>
 <span class='id identifier rubyid_token'>token</span><span class='period'>.</span><span class='id identifier rubyid_sign!'>sign!</span><span class='lparen'>(</span><span class='label'>algorithm:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>HS256</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>key:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>secret</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span>
-<span class='id identifier rubyid_token'>token</span><span class='period'>.</span><span class='id identifier rubyid_header'>header</span> <span class='comment'># =&gt; {&quot;custom&quot;=&gt;&quot;value&quot;, &quot;alg&quot;=&gt;&quot;HS256&quot;}
-</span></code></pre>
-
+<span class='id identifier rubyid_token'>token</span><span class='period'>.</span><span class='id identifier rubyid_header'>header</span> <span class='comment'># =&gt; {&quot;custom&quot;=&gt;&quot;value&quot;, &quot;alg&quot;=&gt;&quot;HS256&quot;}</span></code></pre>
 
   </div>
 </div>
@@ -153,9 +149,7 @@
   
 
   
-    <span class="summary_desc"><div class='inline'>
-<p>Returns the decoded header of the JWT token.</p>
-</div></span>
+    <span class="summary_desc"><div class='inline'><p>Returns the decoded header of the JWT token.</p></div></span>
   
 </li>
 
@@ -182,9 +176,7 @@
   
 
   
-    <span class="summary_desc"><div class='inline'>
-<p>Returns the payload of the JWT token.</p>
-</div></span>
+    <span class="summary_desc"><div class='inline'><p>Returns the payload of the JWT token.</p></div></span>
   
 </li>
 
@@ -219,9 +211,7 @@
   
 
   
-    <span class="summary_desc"><div class='inline'>
-<p>Returns the errors of the claims of the token.</p>
-</div></span>
+    <span class="summary_desc"><div class='inline'><p>Returns the errors of the claims of the token.</p></div></span>
   
 </li>
 
@@ -243,9 +233,7 @@
   
 
   
-    <span class="summary_desc"><div class='inline'>
-<p>Detaches the payload according to <a href="https://datatracker.ietf.org/doc/html/rfc7515#appendix-F">datatracker.ietf.org/doc/html/rfc7515#appendix-F</a>.</p>
-</div></span>
+    <span class="summary_desc"><div class='inline'><p>Detaches the payload according to <a href="https://datatracker.ietf.org/doc/html/rfc7515#appendix-F">https://datatracker.ietf.org/doc/html/rfc7515#appendix-F</a>.</p></div></span>
   
 </li>
 
@@ -267,9 +255,7 @@
   
 
   
-    <span class="summary_desc"><div class='inline'>
-<p>Returns the encoded header of the JWT token.</p>
-</div></span>
+    <span class="summary_desc"><div class='inline'><p>Returns the encoded header of the JWT token.</p></div></span>
   
 </li>
 
@@ -291,9 +277,7 @@
   
 
   
-    <span class="summary_desc"><div class='inline'>
-<p>Returns the encoded payload of the JWT token.</p>
-</div></span>
+    <span class="summary_desc"><div class='inline'><p>Returns the encoded payload of the JWT token.</p></div></span>
   
 </li>
 
@@ -315,9 +299,7 @@
   
 
   
-    <span class="summary_desc"><div class='inline'>
-<p>Returns the encoded signature of the JWT token.</p>
-</div></span>
+    <span class="summary_desc"><div class='inline'><p>Returns the encoded signature of the JWT token.</p></div></span>
   
 </li>
 
@@ -341,9 +323,7 @@
   
 
   
-    <span class="summary_desc"><div class='inline'>
-<p>Initializes a new Token instance.</p>
-</div></span>
+    <span class="summary_desc"><div class='inline'><p>Initializes a new Token instance.</p></div></span>
   
 </li>
 
@@ -367,9 +347,7 @@
   
 
   
-    <span class="summary_desc"><div class='inline'>
-<p>Returns the JWT token as a string.</p>
-</div></span>
+    <span class="summary_desc"><div class='inline'><p>Returns the JWT token as a string.</p></div></span>
   
 </li>
 
@@ -391,9 +369,7 @@
   
 
   
-    <span class="summary_desc"><div class='inline'>
-<p>Signs the JWT token.</p>
-</div></span>
+    <span class="summary_desc"><div class='inline'><p>Signs the JWT token.</p></div></span>
   
 </li>
 
@@ -415,9 +391,7 @@
   
 
   
-    <span class="summary_desc"><div class='inline'>
-<p>Returns the decoded signature of the JWT token.</p>
-</div></span>
+    <span class="summary_desc"><div class='inline'><p>Returns the decoded signature of the JWT token.</p></div></span>
   
 </li>
 
@@ -439,9 +413,7 @@
   
 
   
-    <span class="summary_desc"><div class='inline'>
-<p>Returns the signing input of the JWT token.</p>
-</div></span>
+    <span class="summary_desc"><div class='inline'><p>Returns the signing input of the JWT token.</p></div></span>
   
 </li>
 
@@ -463,9 +435,7 @@
   
 
   
-    <span class="summary_desc"><div class='inline'>
-<p>Returns whether the claims of the token are valid.</p>
-</div></span>
+    <span class="summary_desc"><div class='inline'><p>Returns whether the claims of the token are valid.</p></div></span>
   
 </li>
 
@@ -487,14 +457,13 @@
   
 
   
-    <span class="summary_desc"><div class='inline'>
-<p>Verifies the claims of the token.</p>
-</div></span>
+    <span class="summary_desc"><div class='inline'><p>Verifies the claims of the token.</p></div></span>
   
 </li>
 
       
     </ul>
+    
   
 
 <div id="constructor_details" class="method_details_list">
@@ -511,9 +480,7 @@
   
 </h3><div class="docstring">
   <div class="discussion">
-    
-<p>Initializes a new Token instance.</p>
-
+    <p>Initializes a new Token instance.</p>
 
   </div>
 </div>
@@ -533,9 +500,7 @@
       
       
         &mdash;
-        <div class='inline'>
-<p>the header of the JWT token.</p>
-</div>
+        <div class='inline'><p>the header of the JWT token.</p></div>
       
     </li>
   
@@ -549,9 +514,7 @@
       
       
         &mdash;
-        <div class='inline'>
-<p>the payload of the JWT token.</p>
-</div>
+        <div class='inline'><p>the payload of the JWT token.</p></div>
       
     </li>
   
@@ -599,9 +562,7 @@
   
 </h3><div class="docstring">
   <div class="discussion">
-    
-<p>Returns the decoded header of the JWT token.</p>
-
+    <p>Returns the decoded header of the JWT token.</p>
 
   </div>
 </div>
@@ -618,9 +579,7 @@
       
       
         &mdash;
-        <div class='inline'>
-<p>the header of the JWT token.</p>
-</div>
+        <div class='inline'><p>the header of the JWT token.</p></div>
       
     </li>
   
@@ -660,9 +619,7 @@
   
 </h3><div class="docstring">
   <div class="discussion">
-    
-<p>Returns the payload of the JWT token.</p>
-
+    <p>Returns the payload of the JWT token.</p>
 
   </div>
 </div>
@@ -679,9 +636,7 @@
       
       
         &mdash;
-        <div class='inline'>
-<p>the payload of the JWT token.</p>
-</div>
+        <div class='inline'><p>the payload of the JWT token.</p></div>
       
     </li>
   
@@ -726,9 +681,7 @@
   
 </h3><div class="docstring">
   <div class="discussion">
-    
-<p>Returns the errors of the claims of the token.</p>
-
+    <p>Returns the errors of the claims of the token.</p>
 
   </div>
 </div>
@@ -746,9 +699,7 @@
       
       
         &mdash;
-        <div class='inline'>
-<p>the claims to verify.</p>
-</div>
+        <div class='inline'><p>the claims to verify.</p></div>
       
     </li>
   
@@ -765,9 +716,7 @@
       
       
         &mdash;
-        <div class='inline'>
-<p>the errors of the claims.</p>
-</div>
+        <div class='inline'><p>the errors of the claims.</p></div>
       
     </li>
   
@@ -805,9 +754,7 @@
   
 </h3><div class="docstring">
   <div class="discussion">
-    
-<p>Detaches the payload according to <a href="https://datatracker.ietf.org/doc/html/rfc7515#appendix-F">datatracker.ietf.org/doc/html/rfc7515#appendix-F</a></p>
-
+    <p>Detaches the payload according to <a href="https://datatracker.ietf.org/doc/html/rfc7515#appendix-F">https://datatracker.ietf.org/doc/html/rfc7515#appendix-F</a></p>
 
   </div>
 </div>
@@ -850,9 +797,7 @@
   
 </h3><div class="docstring">
   <div class="discussion">
-    
-<p>Returns the encoded header of the JWT token.</p>
-
+    <p>Returns the encoded header of the JWT token.</p>
 
   </div>
 </div>
@@ -869,9 +814,7 @@
       
       
         &mdash;
-        <div class='inline'>
-<p>the encoded header of the JWT token.</p>
-</div>
+        <div class='inline'><p>the encoded header of the JWT token.</p></div>
       
     </li>
   
@@ -909,9 +852,7 @@
   
 </h3><div class="docstring">
   <div class="discussion">
-    
-<p>Returns the encoded payload of the JWT token.</p>
-
+    <p>Returns the encoded payload of the JWT token.</p>
 
   </div>
 </div>
@@ -928,9 +869,7 @@
       
       
         &mdash;
-        <div class='inline'>
-<p>the encoded payload of the JWT token.</p>
-</div>
+        <div class='inline'><p>the encoded payload of the JWT token.</p></div>
       
     </li>
   
@@ -968,9 +907,7 @@
   
 </h3><div class="docstring">
   <div class="discussion">
-    
-<p>Returns the encoded signature of the JWT token.</p>
-
+    <p>Returns the encoded signature of the JWT token.</p>
 
   </div>
 </div>
@@ -987,9 +924,7 @@
       
       
         &mdash;
-        <div class='inline'>
-<p>the encoded signature of the JWT token.</p>
-</div>
+        <div class='inline'><p>the encoded signature of the JWT token.</p></div>
       
     </li>
   
@@ -1031,9 +966,7 @@
   
 </h3><div class="docstring">
   <div class="discussion">
-    
-<p>Returns the JWT token as a string.</p>
-
+    <p>Returns the JWT token as a string.</p>
 
   </div>
 </div>
@@ -1050,9 +983,7 @@
       
       
         &mdash;
-        <div class='inline'>
-<p>the JWT token as a string.</p>
-</div>
+        <div class='inline'><p>the JWT token as a string.</p></div>
       
     </li>
   
@@ -1068,9 +999,7 @@
       
       
         &mdash;
-        <div class='inline'>
-<p>if the token is not signed or other encoding issues</p>
-</div>
+        <div class='inline'><p>if the token is not signed or other encoding issues</p></div>
       
     </li>
   
@@ -1108,9 +1037,7 @@
   
 </h3><div class="docstring">
   <div class="discussion">
-    <p class="note returns_void">This method returns an undefined value.</p>
-<p>Signs the JWT token.</p>
-
+    <p class="note returns_void">This method returns an undefined value.</p><p>Signs the JWT token.</p>
 
   </div>
 </div>
@@ -1128,9 +1055,7 @@
       
       
         &mdash;
-        <div class='inline'>
-<p>the key to use for signing.</p>
-</div>
+        <div class='inline'><p>the key to use for signing.</p></div>
       
     </li>
   
@@ -1144,9 +1069,7 @@
       
       
         &mdash;
-        <div class='inline'>
-<p>the algorithm to use for signing.</p>
-</div>
+        <div class='inline'><p>the algorithm to use for signing.</p></div>
       
     </li>
   
@@ -1163,9 +1086,7 @@
       
       
         &mdash;
-        <div class='inline'>
-<p>if the token is already signed or other problems when signing</p>
-</div>
+        <div class='inline'><p>if the token is already signed or other problems when signing</p></div>
       
     </li>
   
@@ -1217,9 +1138,7 @@
   
 </h3><div class="docstring">
   <div class="discussion">
-    
-<p>Returns the decoded signature of the JWT token.</p>
-
+    <p>Returns the decoded signature of the JWT token.</p>
 
   </div>
 </div>
@@ -1236,9 +1155,7 @@
       
       
         &mdash;
-        <div class='inline'>
-<p>the decoded signature of the JWT token.</p>
-</div>
+        <div class='inline'><p>the decoded signature of the JWT token.</p></div>
       
     </li>
   
@@ -1276,9 +1193,7 @@
   
 </h3><div class="docstring">
   <div class="discussion">
-    
-<p>Returns the signing input of the JWT token.</p>
-
+    <p>Returns the signing input of the JWT token.</p>
 
   </div>
 </div>
@@ -1295,9 +1210,7 @@
       
       
         &mdash;
-        <div class='inline'>
-<p>the signing input of the JWT token.</p>
-</div>
+        <div class='inline'><p>the signing input of the JWT token.</p></div>
       
     </li>
   
@@ -1335,9 +1248,7 @@
   
 </h3><div class="docstring">
   <div class="discussion">
-    
-<p>Returns whether the claims of the token are valid.</p>
-
+    <p>Returns whether the claims of the token are valid.</p>
 
   </div>
 </div>
@@ -1355,9 +1266,7 @@
       
       
         &mdash;
-        <div class='inline'>
-<p>the claims to verify.</p>
-</div>
+        <div class='inline'><p>the claims to verify.</p></div>
       
     </li>
   
@@ -1374,9 +1283,7 @@
       
       
         &mdash;
-        <div class='inline'>
-<p>whether the claims are valid.</p>
-</div>
+        <div class='inline'><p>whether the claims are valid.</p></div>
       
     </li>
   
@@ -1414,9 +1321,7 @@
   
 </h3><div class="docstring">
   <div class="discussion">
-    
-<p>Verifies the claims of the token.</p>
-
+    <p>Verifies the claims of the token.</p>
 
   </div>
 </div>
@@ -1434,9 +1339,7 @@
       
       
         &mdash;
-        <div class='inline'>
-<p>the claims to verify.</p>
-</div>
+        <div class='inline'><p>the claims to verify.</p></div>
       
     </li>
   
@@ -1453,9 +1356,7 @@
       
       
         &mdash;
-        <div class='inline'>
-<p>if the claims are invalid.</p>
-</div>
+        <div class='inline'><p>if the claims are invalid.</p></div>
       
     </li>
   
@@ -1487,9 +1388,9 @@
 </div>
 
       <div id="footer">
-  Generated on Fri Mar 20 18:30:52 2026 by
+  Generated on Wed May 13 19:32:58 2026 by
   <a href="https://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.38 (ruby-4.0.2).
+  0.9.43 (ruby-4.0.4).
 </div>
 
     </div>

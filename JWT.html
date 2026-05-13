@@ -6,13 +6,13 @@
 <title>
   Module: JWT
   
-    &mdash; Documentation by YARD 0.9.38
+    &mdash; Documentation by YARD 0.9.43
   
 </title>
 
-  <link rel="stylesheet" href="css/style.css" type="text/css" />
+  <link rel="stylesheet" href="css/style.css" type="text/css">
 
-  <link rel="stylesheet" href="css/common.css" type="text/css" />
+  <link rel="stylesheet" href="css/common.css" type="text/css">
 
 <script type="text/javascript">
   pathId = "JWT";
@@ -27,6 +27,8 @@
 
   </head>
   <body>
+    <div id="main_progress" aria-hidden="true"></div>
+
     <div class="nav_wrap">
       <iframe id="nav" src="class_list.html?1"></iframe>
       <div id="resizer"></div>
@@ -83,8 +85,9 @@
   
   <dl>
     <dt>Defined in:</dt>
-    <dd>lib/jwt.rb<span class="defines">,<br />
-  lib/jwt/jwa.rb,<br /> lib/jwt/jwk.rb,<br /> lib/jwt/json.rb,<br /> lib/jwt/error.rb,<br /> lib/jwt/token.rb,<br /> lib/jwt/base64.rb,<br /> lib/jwt/claims.rb,<br /> lib/jwt/decode.rb,<br /> lib/jwt/encode.rb,<br /> lib/jwt/jwa/ps.rb,<br /> lib/jwt/jwk/ec.rb,<br /> lib/jwt/jwa/rsa.rb,<br /> lib/jwt/jwk/rsa.rb,<br /> lib/jwt/jwk/set.rb,<br /> lib/jwt/version.rb,<br /> lib/jwt/jwa/hmac.rb,<br /> lib/jwt/jwa/none.rb,<br /> lib/jwt/jwk/hmac.rb,<br /> lib/jwt/jwa/ecdsa.rb,<br /> lib/jwt/claims/crit.rb,<br /> lib/jwt/jwk/key_base.rb,<br /> lib/jwt/claims/issuer.rb,<br /> lib/jwt/claims/jwt_id.rb,<br /> lib/jwt/configuration.rb,<br /> lib/jwt/encoded_token.rb,<br /> lib/jwt/claims/numeric.rb,<br /> lib/jwt/claims/subject.rb,<br /> lib/jwt/jwk/key_finder.rb,<br /> lib/jwt/jwk/thumbprint.rb,<br /> lib/jwt/x5c_key_finder.rb,<br /> lib/jwt/claims/audience.rb,<br /> lib/jwt/claims/required.rb,<br /> lib/jwt/claims/verifier.rb,<br /> lib/jwt/jwa/unsupported.rb,<br /> lib/jwt/claims/issued_at.rb,<br /> lib/jwt/claims/expiration.rb,<br /> lib/jwt/claims/not_before.rb,<br /> lib/jwt/jwa/signer_context.rb,<br /> lib/jwt/jwa/verifier_context.rb,<br /> lib/jwt/jwa/signing_algorithm.rb,<br /> lib/jwt/jwk/kid_as_key_digest.rb,<br /> lib/jwt/claims/decode_verifier.rb,<br /> lib/jwt/configuration/container.rb,<br /> lib/jwt/encoded_token/claims_context.rb,<br /> lib/jwt/configuration/jwk_configuration.rb,<br /> lib/jwt/configuration/decode_configuration.rb</span>
+    <dd>lib/jwt.rb<span class="defines">,<br>
+  lib/jwt/jwa.rb,<br> lib/jwt/jwk.rb,<br> lib/jwt/json.rb,<br> lib/jwt/error.rb,<br> lib/jwt/token.rb,<br> lib/jwt/base64.rb,<br> lib/jwt/claims.rb,<br> lib/jwt/decode.rb,<br> lib/jwt/encode.rb,<br> lib/jwt/jwa/ps.rb,<br> lib/jwt/jwk/ec.rb,<br> lib/jwt/jwa/rsa.rb,<br> lib/jwt/jwk/rsa.rb,<br> lib/jwt/jwk/set.rb,<br> lib/jwt/version.rb,<br> lib/jwt/jwa/hmac.rb,<br> lib/jwt/jwa/none.rb,<br> lib/jwt/jwk/hmac.rb,<br> lib/jwt/jwa/ecdsa.rb,<br> lib/jwt/claims/crit.rb,<br> lib/jwt/jwk/key_base.rb,<br> lib/jwt/claims/issuer.rb,<br> lib/jwt/claims/jwt_id.rb,<br> lib/jwt/configuration.rb,<br> lib/jwt/encoded_token.rb,<br> lib/jwt/claims/numeric.rb,<br> lib/jwt/claims/subject.rb,<br> lib/jwt/jwk/key_finder.rb,<br> lib/jwt/jwk/thumbprint.rb,<br> lib/jwt/x5c_key_finder.rb,<br> lib/jwt/claims/audience.rb,<br> lib/jwt/claims/required.rb,<br> lib/jwt/claims/verifier.rb,<br> lib/jwt/jwa/unsupported.rb,<br> lib/jwt/claims/issued_at.rb,<br> lib/jwt/claims/expiration.rb,<br> lib/jwt/claims/not_before.rb,<br> lib/jwt/jwa/signer_context.rb,<br> lib/jwt/jwa/verifier_context.rb,<br> lib/jwt/jwa/signing_algorithm.rb,<br> lib/jwt/jwk/kid_as_key_digest.rb,<br> lib/jwt/claims/decode_verifier.rb,<br> lib/jwt/configuration/container.rb,<br> lib/jwt/encoded_token/claims_context.rb,<br> lib/jwt/configuration/jwk_configuration.rb,<br> lib/jwt/configuration/decode_configuration.rb</span>
+
 </dd>
   </dl>
   
@@ -92,11 +95,9 @@
 
 <h2>Overview</h2><div class="docstring">
   <div class="discussion">
-    
-<p>JSON Web Token implementation</p>
-
-<p>Should be up to date with the latest spec: <a href="https://tools.ietf.org/html/rfc7519">tools.ietf.org/html/rfc7519</a></p>
-
+    <p>JSON Web Token implementation</p>
+<p>Should be up to date with the latest spec:
+<a href="https://tools.ietf.org/html/rfc7519">https://tools.ietf.org/html/rfc7519</a></p>
 
   </div>
 </div>
@@ -147,9 +148,7 @@
   
 
   
-    <span class="summary_desc"><div class='inline'>
-<p>Decodes a JWT to extract the payload and header.</p>
-</div></span>
+    <span class="summary_desc"><div class='inline'><p>Decodes a JWT to extract the payload and header.</p></div></span>
   
 </li>
 
@@ -171,9 +170,7 @@
   
 
   
-    <span class="summary_desc"><div class='inline'>
-<p>Encodes a payload into a JWT.</p>
-</div></span>
+    <span class="summary_desc"><div class='inline'><p>Encodes a payload into a JWT.</p></div></span>
   
 </li>
 
@@ -195,9 +192,7 @@
   
 
   
-    <span class="summary_desc"><div class='inline'>
-<p>Returns the gem version of the JWT library.</p>
-</div></span>
+    <span class="summary_desc"><div class='inline'><p>Returns the gem version of the JWT library.</p></div></span>
   
 </li>
 
@@ -219,33 +214,7 @@
   <span class="private note title">private</span>
 
   
-    <span class="summary_desc"><div class='inline'>
-<p>Checks if the OpenSSL version is 3 or greater.</p>
-</div></span>
-  
-</li>
-
-      
-        <li class="public ">
-  <span class="summary_signature">
-    
-      <a href="#openssl_3_hmac_empty_key_regression%3F-class_method" title="openssl_3_hmac_empty_key_regression? (class method)">.<strong>openssl_3_hmac_empty_key_regression?</strong>  &#x21d2; Boolean </a>
-    
-
-    
-  </span>
-  
-  
-  
-  
-  
-  
-  <span class="private note title">private</span>
-
-  
-    <span class="summary_desc"><div class='inline'>
-<p>Checks if there is an OpenSSL 3 HMAC empty key regression.</p>
-</div></span>
+    <span class="summary_desc"><div class='inline'><p>Checks if the OpenSSL version is 3 or greater.</p></div></span>
   
 </li>
 
@@ -267,17 +236,17 @@
   <span class="private note title">private</span>
 
   
-    <span class="summary_desc"><div class='inline'>
-<p>Returns the OpenSSL version.</p>
-</div></span>
+    <span class="summary_desc"><div class='inline'><p>Returns the OpenSSL version.</p></div></span>
   
 </li>
 
       
     </ul>
+    
   
 
 
+  
   
   
   
@@ -305,9 +274,7 @@
   
 </h3><div class="docstring">
   <div class="discussion">
-    
-<p>Decodes a JWT to extract the payload and header</p>
-
+    <p>Decodes a JWT to extract the payload and header</p>
 
   </div>
 </div>
@@ -325,9 +292,7 @@
       
       
         &mdash;
-        <div class='inline'>
-<p>the JWT to decode.</p>
-</div>
+        <div class='inline'><p>the JWT to decode.</p></div>
       
     </li>
   
@@ -343,9 +308,7 @@
       
       
         &mdash;
-        <div class='inline'>
-<p>the key used to verify the JWT.</p>
-</div>
+        <div class='inline'><p>the key used to verify the JWT.</p></div>
       
     </li>
   
@@ -361,9 +324,7 @@
       
       
         &mdash;
-        <div class='inline'>
-<p>whether to verify the JWT signature.</p>
-</div>
+        <div class='inline'><p>whether to verify the JWT signature.</p></div>
       
     </li>
   
@@ -379,9 +340,7 @@
       
       
         &mdash;
-        <div class='inline'>
-<p>additional options for decoding.</p>
-</div>
+        <div class='inline'><p>additional options for decoding.</p></div>
       
     </li>
   
@@ -398,9 +357,7 @@
       
       
         &mdash;
-        <div class='inline'>
-<p>the decoded payload and headers.</p>
-</div>
+        <div class='inline'><p>the decoded payload and headers.</p></div>
       
     </li>
   
@@ -438,9 +395,7 @@
   
 </h3><div class="docstring">
   <div class="discussion">
-    
-<p>Encodes a payload into a JWT.</p>
-
+    <p>Encodes a payload into a JWT.</p>
 
   </div>
 </div>
@@ -458,9 +413,7 @@
       
       
         &mdash;
-        <div class='inline'>
-<p>the payload to encode.</p>
-</div>
+        <div class='inline'><p>the payload to encode.</p></div>
       
     </li>
   
@@ -474,9 +427,7 @@
       
       
         &mdash;
-        <div class='inline'>
-<p>the key used to sign the JWT.</p>
-</div>
+        <div class='inline'><p>the key used to sign the JWT.</p></div>
       
     </li>
   
@@ -492,9 +443,7 @@
       
       
         &mdash;
-        <div class='inline'>
-<p>the algorithm used to sign the JWT.</p>
-</div>
+        <div class='inline'><p>the algorithm used to sign the JWT.</p></div>
       
     </li>
   
@@ -510,9 +459,7 @@
       
       
         &mdash;
-        <div class='inline'>
-<p>additional headers to include in the JWT.</p>
-</div>
+        <div class='inline'><p>additional headers to include in the JWT.</p></div>
       
     </li>
   
@@ -529,9 +476,7 @@
       
       
         &mdash;
-        <div class='inline'>
-<p>the encoded JWT.</p>
-</div>
+        <div class='inline'><p>the encoded JWT.</p></div>
       
     </li>
   
@@ -575,9 +520,7 @@
   
 </h3><div class="docstring">
   <div class="discussion">
-    
-<p>Returns the gem version of the JWT library.</p>
-
+    <p>Returns the gem version of the JWT library.</p>
 
   </div>
 </div>
@@ -594,9 +537,7 @@
       
       
         &mdash;
-        <div class='inline'>
-<p>the gem version.</p>
-</div>
+        <div class='inline'><p>the gem version.</p></div>
       
     </li>
   
@@ -638,9 +579,7 @@
   <strong>This method is part of a private API.</strong>
   You should avoid using this method if possible, as it may be removed or be changed in the future.
 </p>
-
 <p>Checks if the OpenSSL version is 3 or greater.</p>
-
 
   </div>
 </div>
@@ -657,9 +596,7 @@
       
       
         &mdash;
-        <div class='inline'>
-<p>true if OpenSSL version is 3 or greater, false otherwise.</p>
-</div>
+        <div class='inline'><p>true if OpenSSL version is 3 or greater, false otherwise.</p></div>
       
     </li>
   
@@ -691,9 +628,9 @@
 </div>
     
       <div class="method_details ">
-  <h3 class="signature " id="openssl_3_hmac_empty_key_regression?-class_method">
+  <h3 class="signature " id="openssl_version-class_method">
   
-    .<strong>openssl_3_hmac_empty_key_regression?</strong>  &#x21d2; <tt>Boolean</tt> 
+    .<strong>openssl_version</strong>  &#x21d2; <tt>Gem::Version</tt> 
   
 
   
@@ -705,9 +642,7 @@
   <strong>This method is part of a private API.</strong>
   You should avoid using this method if possible, as it may be removed or be changed in the future.
 </p>
-
-<p>Checks if there is an OpenSSL 3 HMAC empty key regression.</p>
-
+<p>Returns the OpenSSL version.</p>
 
   </div>
 </div>
@@ -719,14 +654,12 @@
     <li>
       
       
-        <span class='type'>(<tt>Boolean</tt>)</span>
+        <span class='type'>(<tt>Gem::Version</tt>)</span>
       
       
       
         &mdash;
-        <div class='inline'>
-<p>true if there is an OpenSSL 3 HMAC empty key regression, false otherwise.</p>
-</div>
+        <div class='inline'><p>the OpenSSL version.</p></div>
       
     </li>
   
@@ -745,69 +678,6 @@
     <td>
       <pre class="code"><span class="info file"># File 'lib/jwt/version.rb', line 39</span>
 
-<span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_openssl_3_hmac_empty_key_regression?'>openssl_3_hmac_empty_key_regression?</span>
-  <span class='id identifier rubyid_openssl_3?'>openssl_3?</span> <span class='op'>&amp;&amp;</span> <span class='id identifier rubyid_openssl_version'>openssl_version</span> <span class='op'>&lt;=</span> <span class='op'>::</span><span class='const'>Gem</span><span class='op'>::</span><span class='const'>Version</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>3.0.0</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span>
-<span class='kw'>end</span></pre>
-    </td>
-  </tr>
-</table>
-</div>
-    
-      <div class="method_details ">
-  <h3 class="signature " id="openssl_version-class_method">
-  
-    .<strong>openssl_version</strong>  &#x21d2; <tt>Gem::Version</tt> 
-  
-
-  
-
-  
-</h3><div class="docstring">
-  <div class="discussion">
-    <p class="note private">
-  <strong>This method is part of a private API.</strong>
-  You should avoid using this method if possible, as it may be removed or be changed in the future.
-</p>
-
-<p>Returns the OpenSSL version.</p>
-
-
-  </div>
-</div>
-<div class="tags">
-  
-<p class="tag_title">Returns:</p>
-<ul class="return">
-  
-    <li>
-      
-      
-        <span class='type'>(<tt>Gem::Version</tt>)</span>
-      
-      
-      
-        &mdash;
-        <div class='inline'>
-<p>the OpenSSL version.</p>
-</div>
-      
-    </li>
-  
-</ul>
-
-</div><table class="source_code">
-  <tr>
-    <td>
-      <pre class="lines">
-
-
-47
-48
-49</pre>
-    </td>
-    <td>
-      <pre class="code"><span class="info file"># File 'lib/jwt/version.rb', line 47</span>
-
 <span class='kw'>def</span> <span class='kw'>self</span><span class='period'>.</span><span class='id identifier rubyid_openssl_version'>openssl_version</span>
   <span class='ivar'>@openssl_version</span> <span class='op'>||=</span> <span class='op'>::</span><span class='const'>Gem</span><span class='op'>::</span><span class='const'>Version</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='const'>OpenSSL</span><span class='op'>::</span><span class='const'>VERSION</span><span class='rparen'>)</span>
 <span class='kw'>end</span></pre>
@@ -821,9 +691,9 @@
 </div>
 
       <div id="footer">
-  Generated on Fri Mar 20 18:30:52 2026 by
+  Generated on Wed May 13 19:32:58 2026 by
   <a href="https://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.38 (ruby-4.0.2).
+  0.9.43 (ruby-4.0.4).
 </div>
 
     </div>

@@ -6,13 +6,13 @@
 <title>
   Module: JWT::JWA::Hmac::SecurityUtils
   
-    &mdash; Documentation by YARD 0.9.38
+    &mdash; Documentation by YARD 0.9.43
   
 </title>
 
-  <link rel="stylesheet" href="../../../css/style.css" type="text/css" />
+  <link rel="stylesheet" href="../../../css/style.css" type="text/css">
 
-  <link rel="stylesheet" href="../../../css/common.css" type="text/css" />
+  <link rel="stylesheet" href="../../../css/common.css" type="text/css">
 
 <script type="text/javascript">
   pathId = "JWT::JWA::Hmac::SecurityUtils";
@@ -27,6 +27,8 @@
 
   </head>
   <body>
+    <div id="main_progress" aria-hidden="true"></div>
+
     <div class="nav_wrap">
       <iframe id="nav" src="../../../class_list.html?1"></iframe>
       <div id="resizer"></div>
@@ -78,16 +80,16 @@
   
   <dl>
     <dt>Defined in:</dt>
-    <dd>lib/jwt/jwa/hmac.rb</dd>
+    <dd>lib/jwt/jwa/hmac.rb
+</dd>
   </dl>
   
 </div>
 
 <h2>Overview</h2><div class="docstring">
   <div class="discussion">
-    
-<p>Copy of <a href="https://github.com/rails/rails/blob/v7.0.3.1/activesupport/lib/active_support/security_utils.rb">github.com/rails/rails/blob/v7.0.3.1/activesupport/lib/active_support/security_utils.rb</a> rubocop:disable Naming/MethodParameterName, Style/StringLiterals, Style/NumericPredicate</p>
-
+    <p>Copy of <a href="https://github.com/rails/rails/blob/v7.0.3.1/activesupport/lib/active_support/security_utils.rb">https://github.com/rails/rails/blob/v7.0.3.1/activesupport/lib/active_support/security_utils.rb</a>
+rubocop:disable Naming/MethodParameterName, Style/StringLiterals, Style/NumericPredicate</p>
 
   </div>
 </div>
@@ -126,9 +128,7 @@
   
 
   
-    <span class="summary_desc"><div class='inline'>
-<p>:nocov:.</p>
-</div></span>
+    <span class="summary_desc"><div class='inline'><p>:nocov:.</p></div></span>
   
 </li>
 
@@ -150,14 +150,13 @@
   
 
   
-    <span class="summary_desc"><div class='inline'>
-<p>Secure string comparison for strings of variable length.</p>
-</div></span>
+    <span class="summary_desc"><div class='inline'><p>Secure string comparison for strings of variable length.</p></div></span>
   
 </li>
 
       
     </ul>
+    
   
 
 
@@ -177,9 +176,7 @@
   
 </h3><div class="docstring">
   <div class="discussion">
-    
-<p>:nocov:</p>
-
+    <p>:nocov:</p>
 
   </div>
 </div>
@@ -205,12 +202,12 @@
       <pre class="lines">
 
 
-76
-77
-78</pre>
+73
+74
+75</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/jwt/jwa/hmac.rb', line 76</span>
+      <pre class="code"><span class="info file"># File 'lib/jwt/jwa/hmac.rb', line 73</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_fixed_length_secure_compare'>fixed_length_secure_compare</span><span class='lparen'>(</span><span class='id identifier rubyid_a'>a</span><span class='comma'>,</span> <span class='id identifier rubyid_b'>b</span><span class='rparen'>)</span>
   <span class='const'>OpenSSL</span><span class='period'>.</span><span class='id identifier rubyid_fixed_length_secure_compare'>fixed_length_secure_compare</span><span class='lparen'>(</span><span class='id identifier rubyid_a'>a</span><span class='comma'>,</span> <span class='id identifier rubyid_b'>b</span><span class='rparen'>)</span>
@@ -231,11 +228,11 @@
   
 </h3><div class="docstring">
   <div class="discussion">
-    
-<p>Secure string comparison for strings of variable length.</p>
-
-<p>While a timing attack would not be able to discern the content of a secret compared via secure_compare, it is possible to determine the secret length. This should be considered when using secure_compare to compare weak, short secrets to user input.</p>
-
+    <p>Secure string comparison for strings of variable length.</p>
+<p>While a timing attack would not be able to discern the content of
+a secret compared via secure_compare, it is possible to determine
+the secret length. This should be considered when using secure_compare
+to compare weak, short secrets to user input.</p>
 
   </div>
 </div>
@@ -248,12 +245,12 @@
       <pre class="lines">
 
 
-95
-96
-97</pre>
+92
+93
+94</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/jwt/jwa/hmac.rb', line 95</span>
+      <pre class="code"><span class="info file"># File 'lib/jwt/jwa/hmac.rb', line 92</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_secure_compare'>secure_compare</span><span class='lparen'>(</span><span class='id identifier rubyid_a'>a</span><span class='comma'>,</span> <span class='id identifier rubyid_b'>b</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_a'>a</span><span class='period'>.</span><span class='id identifier rubyid_bytesize'>bytesize</span> <span class='op'>==</span> <span class='id identifier rubyid_b'>b</span><span class='period'>.</span><span class='id identifier rubyid_bytesize'>bytesize</span> <span class='op'>&amp;&amp;</span> <span class='id identifier rubyid_fixed_length_secure_compare'>fixed_length_secure_compare</span><span class='lparen'>(</span><span class='id identifier rubyid_a'>a</span><span class='comma'>,</span> <span class='id identifier rubyid_b'>b</span><span class='rparen'>)</span>
@@ -268,9 +265,9 @@
 </div>
 
       <div id="footer">
-  Generated on Fri Mar 20 18:30:52 2026 by
+  Generated on Wed May 13 19:32:58 2026 by
   <a href="https://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.38 (ruby-4.0.2).
+  0.9.43 (ruby-4.0.4).
 </div>
 
     </div>

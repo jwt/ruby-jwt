@@ -6,13 +6,13 @@
 <title>
   File: README
   
-    &mdash; Documentation by YARD 0.9.38
+    &mdash; Documentation by YARD 0.9.43
   
 </title>
 
-  <link rel="stylesheet" href="css/style.css" type="text/css" />
+  <link rel="stylesheet" href="css/style.css" type="text/css">
 
-  <link rel="stylesheet" href="css/common.css" type="text/css" />
+  <link rel="stylesheet" href="css/common.css" type="text/css">
 
 <script type="text/javascript">
   pathId = "README";
@@ -27,6 +27,8 @@
 
   </head>
   <body>
+    <div id="main_progress" aria-hidden="true"></div>
+
     <div class="nav_wrap">
       <iframe id="nav" src="class_list.html?1"></iframe>
       <div id="resizer"></div>
@@ -57,70 +59,50 @@
         <div class="clear"></div>
       </div>
 
-      <div id="content"><div id='filecontents'><h1 id="jwt">JWT</h1>
-
-<p><a href="https://badge.fury.io/rb/jwt"><img src="https://badge.fury.io/rb/jwt.svg" alt="Gem Version"></a>
-<a href="https://github.com/jwt/ruby-jwt/actions"><img src="https://github.com/jwt/ruby-jwt/actions/workflows/test.yml/badge.svg?branch=main" alt="Build Status"></a>
-<a href="https://qlty.sh/gh/jwt/projects/ruby-jwt"><img src="https://qlty.sh/badges/6f61c5a6-6e23-41a7-8896-a3ce8b006655/maintainability.svg" alt="Maintainability"></a>
-<a href="https://qlty.sh/gh/jwt/projects/ruby-jwt"><img src="https://qlty.sh/badges/6f61c5a6-6e23-41a7-8896-a3ce8b006655/test_coverage.svg" alt="Code Coverage"></a></p>
-
+      <div id="content"><div id='filecontents'><h1 id="JWT">JWT</h1>
+<p><a href="https://badge.fury.io/rb/jwt"><img src="https://badge.fury.io/rb/jwt.svg" alt="Gem Version" /></a>
+<a href="https://github.com/jwt/ruby-jwt/actions"><img src="https://github.com/jwt/ruby-jwt/actions/workflows/test.yml/badge.svg?branch=main" alt="Build Status" /></a>
+<a href="https://qlty.sh/gh/jwt/projects/ruby-jwt"><img src="https://qlty.sh/badges/6f61c5a6-6e23-41a7-8896-a3ce8b006655/maintainability.svg" alt="Maintainability" /></a>
+<a href="https://qlty.sh/gh/jwt/projects/ruby-jwt"><img src="https://qlty.sh/badges/6f61c5a6-6e23-41a7-8896-a3ce8b006655/test_coverage.svg" alt="Code Coverage" /></a></p>
 <p>A ruby implementation of the <a href="https://tools.ietf.org/html/rfc7519">RFC 7519 OAuth JSON Web Token (JWT)</a> standard.</p>
-
 <p>If you have further questions related to development or usage, join us: <a href="https://groups.google.com/forum/#!forum/ruby-jwt">ruby-jwt google group</a>.</p>
-
 <p>See <a href="CHANGELOG.md">CHANGELOG.md</a> for a complete set of changes and <a href="UPGRADING.md">upgrade guide</a> for upgrading between major versions.</p>
-
-<h2 id="sponsors">Sponsors</h2>
-
-<table><thead>
+<h2 id="Sponsors">Sponsors</h2>
+<table>
+<thead>
 <tr>
 <th>Logo</th>
 <th>Message</th>
 </tr>
-</thead><tbody>
+</thead>
+<tbody>
 <tr>
-<td><img src="https://user-images.githubusercontent.com/83319/31722733-de95bbde-b3ea-11e7-96bf-4f4e8f915588.png" alt="auth0 logo"></td>
-<td>If you want to quickly add secure token-based authentication to Ruby projects, feel free to check Auth0&#39;s Ruby SDK and free plan at <a href="https://auth0.com/developers?utm_source=GHsponsor&utm_medium=GHsponsor&utm_campaign=rubyjwt&utm_content=auth">auth0.com/developers</a></td>
+<td><img src="https://user-images.githubusercontent.com/83319/31722733-de95bbde-b3ea-11e7-96bf-4f4e8f915588.png" alt="auth0 logo" /></td>
+<td>If you want to quickly add secure token-based authentication to Ruby projects, feel free to check Auth0's Ruby SDK and free plan at <a href="https://auth0.com/developers?utm_source=GHsponsor&amp;utm_medium=GHsponsor&amp;utm_campaign=rubyjwt&amp;utm_content=auth">auth0.com/developers</a></td>
 </tr>
-</tbody></table>
-
-<h2 id="installing">Installing</h2>
-
-<h3 id="using-rubygems">Using Rubygems</h3>
-
+</tbody>
+</table>
+<h2 id="Installing">Installing</h2>
+<h3 id="Using_Rubygems">Using Rubygems</h3>
 <pre class="code bash"><code class="bash">gem install jwt
 </code></pre>
-
-<h3 id="using-bundler">Using Bundler</h3>
-
+<h3 id="Using_Bundler">Using Bundler</h3>
 <p>Add the following to your Gemfile</p>
-
 <pre class="code bash"><code class="bash">gem &#39;jwt&#39;
 </code></pre>
-
 <p>And run <code>bundle install</code></p>
-
 <p>Finally require the gem in your application</p>
-
 <pre class="code ruby"><code class="ruby"><span class='id identifier rubyid_require'>require</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>jwt</span><span class='tstring_end'>&#39;</span></span>
 </code></pre>
-
-<h2 id="algorithms-and-usage">Algorithms and Usage</h2>
-
+<h2 id="Algorithms_and_Usage">Algorithms and Usage</h2>
 <p>The jwt gem natively supports the NONE, HMAC, RSASSA, ECDSA and RSASSA-PSS algorithms via the openssl library. The gem can be extended with additional or alternative implementations of the algorithms via extensions.</p>
-
 <p>Additionally the EdDSA algorithm is supported via a the <a href="https://rubygems.org/gems/jwt-eddsa">jwt-eddsa gem</a>.</p>
-
 <p>For safe cryptographic signing, you need to specify the algorithm in the options hash whenever you call <code>JWT.decode</code> to ensure that an attacker <a href="https://auth0.com/blog/critical-vulnerabilities-in-json-web-token-libraries/">cannot bypass the algorithm verification step</a>. <strong>It is strongly recommended that you hard code the algorithm, as you may leave yourself vulnerable by dynamically picking the algorithm</strong></p>
-
 <p>See <a href="https://tools.ietf.org/html/rfc7518#section-3.1">JSON Web Algorithms (JWA) 3.1. &quot;alg&quot; (Algorithm) Header Parameter Values for JWS</a></p>
-
-<h3 id="none"><strong>NONE</strong></h3>
-
+<h3 id="__NONE__"><strong>NONE</strong></h3>
 <ul>
 <li>none - unsigned token</li>
 </ul>
-
 <pre class="code ruby"><code class="ruby"><span class='id identifier rubyid_payload'>payload</span> <span class='op'>=</span> <span class='lbrace'>{</span> <span class='label'>data:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>test</span><span class='tstring_end'>&#39;</span></span> <span class='rbrace'>}</span>
 <span class='id identifier rubyid_token'>token</span>   <span class='op'>=</span> <span class='const'><span class='object_link'><a href="JWT.html" title="JWT (module)">JWT</a></span></span><span class='period'>.</span><span class='id identifier rubyid_encode'><span class='object_link'><a href="JWT.html#encode-class_method" title="JWT.encode (method)">encode</a></span></span><span class='lparen'>(</span><span class='id identifier rubyid_payload'>payload</span><span class='comma'>,</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>none</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span>
 <span class='comment'># =&gt; &quot;eyJhbGciOiJub25lIn0.eyJkYXRhIjoidGVzdCJ9.&quot;
@@ -131,15 +113,12 @@
 </span><span class='comment'>#       {&quot;alg&quot;=&gt;&quot;none&quot;} # header
 </span><span class='comment'>#     ]
 </span></code></pre>
-
-<h3 id="hmac"><strong>HMAC</strong></h3>
-
+<h3 id="__HMAC__"><strong>HMAC</strong></h3>
 <ul>
 <li>HS256 - HMAC using SHA-256 hash algorithm</li>
 <li>HS384 - HMAC using SHA-384 hash algorithm</li>
 <li>HS512 - HMAC using SHA-512 hash algorithm</li>
 </ul>
-
 <pre class="code ruby"><code class="ruby"><span class='id identifier rubyid_payload'>payload</span>     <span class='op'>=</span> <span class='lbrace'>{</span> <span class='label'>data:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>test</span><span class='tstring_end'>&#39;</span></span> <span class='rbrace'>}</span>
 <span class='id identifier rubyid_hmac_secret'>hmac_secret</span> <span class='op'>=</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>my$ecretK3y</span><span class='tstring_end'>&#39;</span></span>
 
@@ -152,15 +131,12 @@
 </span><span class='comment'>#      {&quot;alg&quot;=&gt;&quot;HS256&quot;} # header
 </span><span class='comment'>#    ]
 </span></code></pre>
-
-<h3 id="rsa"><strong>RSA</strong></h3>
-
+<h3 id="__RSA__"><strong>RSA</strong></h3>
 <ul>
 <li>RS256 - RSA using SHA-256 hash algorithm</li>
 <li>RS384 - RSA using SHA-384 hash algorithm</li>
 <li>RS512 - RSA using SHA-512 hash algorithm</li>
 </ul>
-
 <pre class="code ruby"><code class="ruby"><span class='id identifier rubyid_payload'>payload</span>     <span class='op'>=</span> <span class='lbrace'>{</span> <span class='label'>data:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>test</span><span class='tstring_end'>&#39;</span></span> <span class='rbrace'>}</span>
 <span class='id identifier rubyid_rsa_private'>rsa_private</span> <span class='op'>=</span> <span class='const'>OpenSSL</span><span class='op'>::</span><span class='const'>PKey</span><span class='op'>::</span><span class='const'>RSA</span><span class='period'>.</span><span class='id identifier rubyid_generate'>generate</span><span class='lparen'>(</span><span class='int'>2048</span><span class='rparen'>)</span>
 <span class='id identifier rubyid_rsa_public'>rsa_public</span>  <span class='op'>=</span> <span class='id identifier rubyid_rsa_private'>rsa_private</span><span class='period'>.</span><span class='id identifier rubyid_public_key'>public_key</span>
@@ -174,16 +150,13 @@
 </span><span class='comment'>#      {&quot;alg&quot;=&gt;&quot;RS256&quot;} # header
 </span><span class='comment'>#    ]
 </span></code></pre>
-
-<h3 id="ecdsa"><strong>ECDSA</strong></h3>
-
+<h3 id="__ECDSA__"><strong>ECDSA</strong></h3>
 <ul>
 <li>ES256 - ECDSA using P-256 and SHA-256</li>
 <li>ES384 - ECDSA using P-384 and SHA-384</li>
 <li>ES512 - ECDSA using P-521 and SHA-512</li>
 <li>ES256K - ECDSA using P-256K and SHA-256</li>
 </ul>
-
 <pre class="code ruby"><code class="ruby"><span class='id identifier rubyid_payload'>payload</span>   <span class='op'>=</span> <span class='lbrace'>{</span> <span class='label'>data:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>test</span><span class='tstring_end'>&#39;</span></span> <span class='rbrace'>}</span>
 <span class='id identifier rubyid_ecdsa_key'>ecdsa_key</span> <span class='op'>=</span> <span class='const'>OpenSSL</span><span class='op'>::</span><span class='const'>PKey</span><span class='op'>::</span><span class='const'>EC</span><span class='period'>.</span><span class='id identifier rubyid_generate'>generate</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>prime256v1</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span>
 
@@ -196,19 +169,14 @@
 </span><span class='comment'>#      {&quot;alg&quot;=&gt;&quot;ES256&quot;} # header
 </span><span class='comment'>#    ]
 </span></code></pre>
-
-<h3 id="eddsa"><strong>EdDSA</strong></h3>
-
+<h3 id="__EdDSA__"><strong>EdDSA</strong></h3>
 <p>Since version 3.0, the EdDSA algorithm has been moved to the <a href="https://rubygems.org/gems/jwt-eddsa">jwt-eddsa gem</a>.</p>
-
-<h3 id="rsassa-pss"><strong>RSASSA-PSS</strong></h3>
-
+<h3 id="__RSASSA_PSS__"><strong>RSASSA-PSS</strong></h3>
 <ul>
 <li>PS256 - RSASSA-PSS using SHA-256 hash algorithm</li>
 <li>PS384 - RSASSA-PSS using SHA-384 hash algorithm</li>
 <li>PS512 - RSASSA-PSS using SHA-512 hash algorithm</li>
 </ul>
-
 <pre class="code ruby"><code class="ruby"><span class='id identifier rubyid_payload'>payload</span>     <span class='op'>=</span> <span class='lbrace'>{</span> <span class='label'>data:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>test</span><span class='tstring_end'>&#39;</span></span> <span class='rbrace'>}</span>
 <span class='id identifier rubyid_rsa_private'>rsa_private</span> <span class='op'>=</span> <span class='const'>OpenSSL</span><span class='op'>::</span><span class='const'>PKey</span><span class='op'>::</span><span class='const'>RSA</span><span class='period'>.</span><span class='id identifier rubyid_generate'>generate</span><span class='lparen'>(</span><span class='int'>2048</span><span class='rparen'>)</span>
 <span class='id identifier rubyid_rsa_public'>rsa_public</span>  <span class='op'>=</span> <span class='id identifier rubyid_rsa_private'>rsa_private</span><span class='period'>.</span><span class='id identifier rubyid_public_key'>public_key</span>
@@ -222,18 +190,13 @@
 </span><span class='comment'>#      {&quot;alg&quot;=&gt;&quot;PS256&quot;} # header
 </span><span class='comment'>#    ]
 </span></code></pre>
-
-<h3 id="custom-algorithms"><strong>Custom algorithms</strong></h3>
-
+<h3 id="__Custom_algorithms__"><strong>Custom algorithms</strong></h3>
 <p>When encoding or decoding a token, you can pass in a custom object through the <code>algorithm</code> option to handle signing or verification. This custom object must include or extend the <code>JWT::JWA::SigningAlgorithm</code> module and implement certain methods:</p>
-
 <ul>
 <li>For decoding/verifying: The object must implement the methods <code>alg</code> and <code>verify</code>.</li>
 <li>For encoding/signing: The object must implement the methods <code>alg</code> and <code>sign</code>.</li>
 </ul>
-
 <p>For customization options check the details from <code>JWT::JWA::SigningAlgorithm</code>.</p>
-
 <pre class="code ruby"><code class="ruby"><span class='kw'>module</span> <span class='const'>CustomHS512Algorithm</span>
   <span class='id identifier rubyid_extend'>extend</span> <span class='const'><span class='object_link'><a href="JWT.html" title="JWT (module)">JWT</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="JWT/JWA.html" title="JWT::JWA (module)">JWA</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="JWT/JWA/SigningAlgorithm.html" title="JWT::JWA::SigningAlgorithm (module)">SigningAlgorithm</a></span></span>
 
@@ -260,12 +223,9 @@
 </span><span class='comment'>#      {&quot;alg&quot;=&gt;&quot;HS512&quot;} # header
 </span><span class='comment'>#    ]
 </span></code></pre>
-
-<h3 id="add-custom-header-fields">Add custom header fields</h3>
-
+<h3 id="Add_custom_header_fields">Add custom header fields</h3>
 <p>The ruby-jwt gem supports custom <a href="https://tools.ietf.org/html/rfc7519#section-5">header fields</a>
 To add custom header fields you need to pass <code>header_fields</code> parameter</p>
-
 <pre class="code ruby"><code class="ruby"><span class='id identifier rubyid_payload'>payload</span> <span class='op'>=</span> <span class='lbrace'>{</span> <span class='label'>data:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>test</span><span class='tstring_end'>&#39;</span></span> <span class='rbrace'>}</span>
 
 <span class='id identifier rubyid_token'>token</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="JWT.html" title="JWT (module)">JWT</a></span></span><span class='period'>.</span><span class='id identifier rubyid_encode'><span class='object_link'><a href="JWT.html#encode-class_method" title="JWT.encode (method)">encode</a></span></span><span class='lparen'>(</span><span class='id identifier rubyid_payload'>payload</span><span class='comma'>,</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>none</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='lbrace'>{</span> <span class='label'>typ:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>JWT</span><span class='tstring_end'>&#39;</span></span> <span class='rbrace'>}</span><span class='rparen'>)</span>
@@ -277,13 +237,9 @@ To add custom header fields you need to pass <code>header_fields</code> paramete
 </span><span class='comment'>#       {&quot;typ&quot;=&gt;&quot;JWT&quot;, &quot;alg&quot;=&gt;&quot;none&quot;} # header
 </span><span class='comment'>#     ]
 </span></code></pre>
-
-<h2 id="jwt-token-and-jwt-encodedtoken"><code>JWT::Token</code> and <code>JWT::EncodedToken</code></h2>
-
+<h2 id="_JWT__Token__and__JWT__EncodedToken_"><code>JWT::Token</code> and <code>JWT::EncodedToken</code></h2>
 <p>The <code>JWT::Token</code> and <code>JWT::EncodedToken</code> classes can be used to manage your JWTs.</p>
-
-<h3 id="signing-and-encoding-a-token">Signing and encoding a token</h3>
-
+<h3 id="Signing_and_encoding_a_token">Signing and encoding a token</h3>
 <pre class="code ruby"><code class="ruby"><span class='id identifier rubyid_payload'>payload</span> <span class='op'>=</span> <span class='lbrace'>{</span> <span class='label'>exp:</span> <span class='const'>Time</span><span class='period'>.</span><span class='id identifier rubyid_now'>now</span><span class='period'>.</span><span class='id identifier rubyid_to_i'>to_i</span> <span class='op'>+</span> <span class='int'>60</span><span class='comma'>,</span> <span class='label'>jti:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>1234</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>sub:</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>my-subject</span><span class='tstring_end'>&quot;</span></span> <span class='rbrace'>}</span>
 <span class='id identifier rubyid_header'>header</span> <span class='op'>=</span>  <span class='lbrace'>{</span> <span class='label'>kid:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>hmac</span><span class='tstring_end'>&#39;</span></span> <span class='rbrace'>}</span>
 
@@ -293,11 +249,8 @@ To add custom header fields you need to pass <code>header_fields</code> paramete
 <span class='id identifier rubyid_token'>token</span><span class='period'>.</span><span class='id identifier rubyid_jwt'>jwt</span>
 <span class='comment'># =&gt; &quot;eyJraWQiOiJobWFjIiwiYWxnIjoiSFMyNTYifQ.eyJleHAiOjE3NTAwMDU0NzksImp0aSI6IjEyMzQiLCJzdWIiOiJteS1zdWJqZWN0In0.NRLcK6fYr3IdNfmncJePMWLQ34M4n14EgqSYrQIjL9w&quot;
 </span></code></pre>
-
-<h3 id="verifying-and-decoding-a-token">Verifying and decoding a token</h3>
-
+<h3 id="Verifying_and_decoding_a_token">Verifying and decoding a token</h3>
 <p>The <code>JWT::EncodedToken</code> can be used as a token object that allows verification of signatures and claims.</p>
-
 <pre class="code ruby"><code class="ruby"><span class='id identifier rubyid_encoded_token'>encoded_token</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="JWT.html" title="JWT (module)">JWT</a></span></span><span class='op'>::</span><span class='const'>EncodedToken</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='id identifier rubyid_token'>token</span><span class='period'>.</span><span class='id identifier rubyid_jwt'>jwt</span><span class='rparen'>)</span>
 
 <span class='id identifier rubyid_encoded_token'>encoded_token</span><span class='period'>.</span><span class='id identifier rubyid_verify_signature!'>verify_signature!</span><span class='lparen'>(</span><span class='label'>algorithm:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>HS256</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>key:</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>secret</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span>
@@ -308,17 +261,13 @@ To add custom header fields you need to pass <code>header_fields</code> paramete
 </span><span class='id identifier rubyid_encoded_token'>encoded_token</span><span class='period'>.</span><span class='id identifier rubyid_payload'>payload</span> <span class='comment'># =&gt; { &#39;exp&#39;=&gt;1234, &#39;jti&#39;=&gt;&#39;1234&quot;, &#39;sub&#39;=&gt;&#39;my-subject&#39; }
 </span><span class='id identifier rubyid_encoded_token'>encoded_token</span><span class='period'>.</span><span class='id identifier rubyid_header'>header</span> <span class='comment'># {&#39;kid&#39;=&gt;&#39;hmac&#39;, &#39;alg&#39;=&gt;&#39;HS256&#39;}
 </span></code></pre>
-
 <p>The <code>JWT::EncodedToken#verify!</code> method can be used to verify signature and claim verification in one go. The <code>exp</code> claim is verified by default.</p>
-
 <pre class="code ruby"><code class="ruby"><span class='id identifier rubyid_encoded_token'>encoded_token</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="JWT.html" title="JWT (module)">JWT</a></span></span><span class='op'>::</span><span class='const'>EncodedToken</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='id identifier rubyid_token'>token</span><span class='period'>.</span><span class='id identifier rubyid_jwt'>jwt</span><span class='rparen'>)</span>
 <span class='id identifier rubyid_encoded_token'>encoded_token</span><span class='period'>.</span><span class='id identifier rubyid_verify!'>verify!</span><span class='lparen'>(</span><span class='label'>signature:</span> <span class='lbrace'>{</span><span class='label'>algorithm:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>HS256</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>key:</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>secret</span><span class='tstring_end'>&quot;</span></span><span class='rbrace'>}</span><span class='rparen'>)</span>
 <span class='id identifier rubyid_encoded_token'>encoded_token</span><span class='period'>.</span><span class='id identifier rubyid_payload'>payload</span> <span class='comment'># =&gt; { &#39;exp&#39;=&gt;1234, &#39;jti&#39;=&gt;&#39;1234&quot;, &#39;sub&#39;=&gt;&#39;my-subject&#39; }
 </span><span class='id identifier rubyid_encoded_token'>encoded_token</span><span class='period'>.</span><span class='id identifier rubyid_header'>header</span> <span class='comment'># {&#39;kid&#39;=&gt;&#39;hmac&#39;, &#39;alg&#39;=&gt;&#39;HS256&#39;}
 </span></code></pre>
-
-<p>A JWK can be used to sign and verify the token if it&#39;s possible to derive the signing algorithm from the key.</p>
-
+<p>A JWK can be used to sign and verify the token if it's possible to derive the signing algorithm from the key.</p>
 <pre class="code ruby"><code class="ruby"><span class='id identifier rubyid_jwk_json'>jwk_json</span> <span class='op'>=</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>{
  &quot;kty&quot;: &quot;oct&quot;,
  &quot;k&quot;: &quot;c2VjcmV0&quot;,
@@ -335,13 +284,9 @@ To add custom header fields you need to pass <code>header_fields</code> paramete
 <span class='id identifier rubyid_encoded_token'>encoded_token</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="JWT.html" title="JWT (module)">JWT</a></span></span><span class='op'>::</span><span class='const'>EncodedToken</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='id identifier rubyid_token'>token</span><span class='period'>.</span><span class='id identifier rubyid_jwt'>jwt</span><span class='rparen'>)</span>
 <span class='id identifier rubyid_encoded_token'>encoded_token</span><span class='period'>.</span><span class='id identifier rubyid_verify!'>verify!</span><span class='lparen'>(</span><span class='label'>signature:</span> <span class='lbrace'>{</span> <span class='label'>algorithm:</span> <span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>HS256</span><span class='tstring_end'>&quot;</span></span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>HS512</span><span class='tstring_end'>&quot;</span></span><span class='rbracket'>]</span><span class='comma'>,</span> <span class='label'>key:</span> <span class='id identifier rubyid_jwk'>jwk</span><span class='rbrace'>}</span><span class='rparen'>)</span>
 </code></pre>
-
-<h4 id="using-a-keyfinder">Using a keyfinder</h4>
-
+<h4 id="Using_a_keyfinder">Using a keyfinder</h4>
 <p>A keyfinder can be used to verify a signature. A keyfinder is an object responding to the <code>#call</code> method. The method expects to receive one argument, which is the token to be verified.</p>
-
 <p>An example on using the built-in JWK keyfinder.</p>
-
 <pre class="code ruby"><code class="ruby"><span class='comment'># Create and sign a token
 </span><span class='id identifier rubyid_jwk'>jwk</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="JWT.html" title="JWT (module)">JWT</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="JWT/JWK.html" title="JWT::JWK (module)">JWK</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='const'>OpenSSL</span><span class='op'>::</span><span class='const'>PKey</span><span class='op'>::</span><span class='const'>RSA</span><span class='period'>.</span><span class='id identifier rubyid_generate'>generate</span><span class='lparen'>(</span><span class='int'>2048</span><span class='rparen'>)</span><span class='rparen'>)</span>
 <span class='id identifier rubyid_token'>token</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="JWT.html" title="JWT (module)">JWT</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="JWT/Token.html" title="JWT::Token (class)">Token</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="JWT/Token.html#initialize-instance_method" title="JWT::Token#initialize (method)">new</a></span></span><span class='lparen'>(</span><span class='label'>payload:</span> <span class='lbrace'>{</span> <span class='label'>pay:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>load</span><span class='tstring_end'>&#39;</span></span> <span class='rbrace'>}</span><span class='comma'>,</span> <span class='label'>header:</span> <span class='lbrace'>{</span> <span class='label'>kid:</span> <span class='id identifier rubyid_jwk'>jwk</span><span class='period'>.</span><span class='id identifier rubyid_kid'>kid</span> <span class='rbrace'>}</span><span class='rparen'>)</span>
@@ -353,9 +298,7 @@ To add custom header fields you need to pass <code>header_fields</code> paramete
 <span class='id identifier rubyid_encoded_token'>encoded_token</span><span class='period'>.</span><span class='id identifier rubyid_verify!'>verify!</span><span class='lparen'>(</span><span class='label'>signature:</span> <span class='lbrace'>{</span> <span class='label'>algorithm:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>RS256</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>key_finder:</span> <span class='id identifier rubyid_key_finder'>key_finder</span><span class='rbrace'>}</span><span class='rparen'>)</span>
 <span class='id identifier rubyid_encoded_token'>encoded_token</span><span class='period'>.</span><span class='id identifier rubyid_payload'>payload</span> <span class='comment'># =&gt; { &#39;pay&#39; =&gt; &#39;load&#39; }
 </span></code></pre>
-
 <p>Using a custom keyfinder proc.</p>
-
 <pre class="code ruby"><code class="ruby"><span class='comment'># Create and sign a token
 </span><span class='id identifier rubyid_key'>key</span> <span class='op'>=</span> <span class='const'>OpenSSL</span><span class='op'>::</span><span class='const'>PKey</span><span class='op'>::</span><span class='const'>RSA</span><span class='period'>.</span><span class='id identifier rubyid_generate'>generate</span><span class='lparen'>(</span><span class='int'>2048</span><span class='rparen'>)</span>
 <span class='id identifier rubyid_token'>token</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="JWT.html" title="JWT (module)">JWT</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="JWT/Token.html" title="JWT::Token (class)">Token</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="JWT/Token.html#initialize-instance_method" title="JWT::Token#initialize (method)">new</a></span></span><span class='lparen'>(</span><span class='label'>payload:</span> <span class='lbrace'>{</span> <span class='label'>pay:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>load</span><span class='tstring_end'>&#39;</span></span> <span class='rbrace'>}</span><span class='rparen'>)</span>
@@ -366,49 +309,37 @@ To add custom header fields you need to pass <code>header_fields</code> paramete
 <span class='id identifier rubyid_encoded_token'>encoded_token</span><span class='period'>.</span><span class='id identifier rubyid_verify!'>verify!</span><span class='lparen'>(</span><span class='label'>signature:</span> <span class='lbrace'>{</span> <span class='label'>algorithm:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>RS256</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>key_finder:</span> <span class='tlambda'>-&gt;</span><span class='lparen'>(</span><span class='id identifier rubyid__token'>_token</span><span class='rparen'>)</span><span class='tlambeg'>{</span> <span class='id identifier rubyid_key'>key</span><span class='period'>.</span><span class='id identifier rubyid_public_key'>public_key</span> <span class='rbrace'>}</span><span class='rbrace'>}</span><span class='rparen'>)</span>
 <span class='id identifier rubyid_encoded_token'>encoded_token</span><span class='period'>.</span><span class='id identifier rubyid_payload'>payload</span> <span class='comment'># =&gt; { &#39;pay&#39; =&gt; &#39;load&#39; }
 </span></code></pre>
-
-<h3 id="detached-payload">Detached payload</h3>
-
+<h3 id="Detached_payload">Detached payload</h3>
 <p>The <code>::JWT::Token#detach_payload!</code> method can be use to detach the payload from the JWT.</p>
-
 <pre class="code ruby"><code class="ruby"><span class='id identifier rubyid_token'>token</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="JWT.html" title="JWT (module)">JWT</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="JWT/Token.html" title="JWT::Token (class)">Token</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'><span class='object_link'><a href="JWT/Token.html#initialize-instance_method" title="JWT::Token#initialize (method)">new</a></span></span><span class='lparen'>(</span><span class='label'>payload:</span> <span class='lbrace'>{</span> <span class='label'>pay:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>load</span><span class='tstring_end'>&#39;</span></span> <span class='rbrace'>}</span><span class='rparen'>)</span>
 <span class='id identifier rubyid_token'>token</span><span class='period'>.</span><span class='id identifier rubyid_sign!'>sign!</span><span class='lparen'>(</span><span class='label'>algorithm:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>HS256</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>key:</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>secret</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span>
 <span class='id identifier rubyid_token'>token</span><span class='period'>.</span><span class='id identifier rubyid_detach_payload!'>detach_payload!</span>
 <span class='id identifier rubyid_token'>token</span><span class='period'>.</span><span class='id identifier rubyid_jwt'>jwt</span> <span class='comment'># =&gt; &quot;eyJhbGciOiJIUzI1NiJ9..UEhDY1Qlj29ammxuVRA_-gBah4qTy5FngIWg0yEAlC0&quot;
 </span><span class='id identifier rubyid_token'>token</span><span class='period'>.</span><span class='id identifier rubyid_encoded_payload'>encoded_payload</span> <span class='comment'># =&gt; &quot;eyJwYXkiOiJsb2FkIn0&quot;
 </span></code></pre>
-
 <p>The <code>JWT::EncodedToken</code> class can be used to decode a token with a detached payload by providing the payload to the token instance in separate.</p>
-
 <pre class="code ruby"><code class="ruby"><span class='id identifier rubyid_encoded_token'>encoded_token</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="JWT.html" title="JWT (module)">JWT</a></span></span><span class='op'>::</span><span class='const'>EncodedToken</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='id identifier rubyid_token'>token</span><span class='period'>.</span><span class='id identifier rubyid_jwt'>jwt</span><span class='rparen'>)</span>
 <span class='id identifier rubyid_encoded_token'>encoded_token</span><span class='period'>.</span><span class='id identifier rubyid_encoded_payload'>encoded_payload</span> <span class='op'>=</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>eyJwYXkiOiJsb2FkIn0</span><span class='tstring_end'>&quot;</span></span>
 <span class='id identifier rubyid_encoded_token'>encoded_token</span><span class='period'>.</span><span class='id identifier rubyid_verify_signature!'>verify_signature!</span><span class='lparen'>(</span><span class='label'>algorithm:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>HS256</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>key:</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>secret</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span>
 <span class='id identifier rubyid_encoded_token'>encoded_token</span><span class='period'>.</span><span class='id identifier rubyid_payload'>payload</span> <span class='comment'># =&gt; {&quot;pay&quot;=&gt;&quot;load&quot;}
 </span></code></pre>
-
-<h2 id="claims">Claims</h2>
-
+<h2 id="Claims">Claims</h2>
 <p>JSON Web Token defines some reserved claim names and defines how they should be
 used. JWT supports these reserved claim names:</p>
-
 <ul>
-<li>&#39;exp&#39; (Expiration Time) Claim</li>
-<li>&#39;nbf&#39; (Not Before Time) Claim</li>
-<li>&#39;iss&#39; (Issuer) Claim</li>
-<li>&#39;aud&#39; (Audience) Claim</li>
-<li>&#39;jti&#39; (JWT ID) Claim</li>
-<li>&#39;iat&#39; (Issued At) Claim</li>
-<li>&#39;sub&#39; (Subject) Claim</li>
+<li>'exp' (Expiration Time) Claim</li>
+<li>'nbf' (Not Before Time) Claim</li>
+<li>'iss' (Issuer) Claim</li>
+<li>'aud' (Audience) Claim</li>
+<li>'jti' (JWT ID) Claim</li>
+<li>'iat' (Issued At) Claim</li>
+<li>'sub' (Subject) Claim</li>
 </ul>
-
-<h3 id="expiration-time-claim">Expiration Time Claim</h3>
-
+<h3 id="Expiration_Time_Claim">Expiration Time Claim</h3>
 <p>From <a href="https://tools.ietf.org/html/rfc7519#section-4.1.4">Oauth JSON Web Token 4.1.4. &quot;exp&quot; (Expiration Time) Claim</a>:</p>
-
 <blockquote>
 <p>The <code>exp</code> (expiration time) claim identifies the expiration time on or after which the JWT MUST NOT be accepted for processing. The processing of the <code>exp</code> claim requires that the current date/time MUST be before the expiration date/time listed in the <code>exp</code> claim. Implementers MAY provide for some small <code>leeway</code>, usually no more than a few minutes, to account for clock skew. Its value MUST be a number containing a <strong><em>NumericDate</em></strong> value. Use of this claim is OPTIONAL.</p>
 </blockquote>
-
 <pre class="code ruby"><code class="ruby"><span class='id identifier rubyid_exp'>exp</span> <span class='op'>=</span> <span class='const'>Time</span><span class='period'>.</span><span class='id identifier rubyid_now'>now</span><span class='period'>.</span><span class='id identifier rubyid_to_i'>to_i</span> <span class='op'>+</span> <span class='int'>4</span> <span class='op'>*</span> <span class='int'>3600</span>
 <span class='id identifier rubyid_exp_payload'>exp_payload</span> <span class='op'>=</span> <span class='lbrace'>{</span> <span class='label'>data:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>data</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>exp:</span> <span class='id identifier rubyid_exp'>exp</span> <span class='rbrace'>}</span>
 
@@ -420,15 +351,11 @@ used. JWT supports these reserved claim names:</p>
   <span class='comment'># Handle expired token, e.g. logout user or deny access
 </span><span class='kw'>end</span>
 </code></pre>
-
 <p>The Expiration Claim verification can be disabled.</p>
-
 <pre class="code ruby"><code class="ruby"><span class='comment'># Decode token without raising JWT::ExpiredSignature error
 </span><span class='const'><span class='object_link'><a href="JWT.html" title="JWT (module)">JWT</a></span></span><span class='period'>.</span><span class='id identifier rubyid_decode'><span class='object_link'><a href="JWT.html#decode-class_method" title="JWT.decode (method)">decode</a></span></span><span class='lparen'>(</span><span class='id identifier rubyid_token'>token</span><span class='comma'>,</span> <span class='id identifier rubyid_hmac_secret'>hmac_secret</span><span class='comma'>,</span> <span class='kw'>true</span><span class='comma'>,</span> <span class='lbrace'>{</span> <span class='label'>verify_expiration:</span> <span class='kw'>false</span><span class='comma'>,</span> <span class='label'>algorithm:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>HS256</span><span class='tstring_end'>&#39;</span></span> <span class='rbrace'>}</span><span class='rparen'>)</span>
 </code></pre>
-
 <p>Leeway and the exp claim.</p>
-
 <pre class="code ruby"><code class="ruby"><span class='id identifier rubyid_exp'>exp</span> <span class='op'>=</span> <span class='const'>Time</span><span class='period'>.</span><span class='id identifier rubyid_now'>now</span><span class='period'>.</span><span class='id identifier rubyid_to_i'>to_i</span> <span class='op'>-</span> <span class='int'>10</span>
 <span class='id identifier rubyid_leeway'>leeway</span> <span class='op'>=</span> <span class='int'>30</span> <span class='comment'># seconds
 </span>
@@ -444,15 +371,11 @@ used. JWT supports these reserved claim names:</p>
   <span class='comment'># Handle expired token, e.g. logout user or deny access
 </span><span class='kw'>end</span>
 </code></pre>
-
-<h3 id="not-before-time-claim">Not Before Time Claim</h3>
-
+<h3 id="Not_Before_Time_Claim">Not Before Time Claim</h3>
 <p>From <a href="https://tools.ietf.org/html/rfc7519#section-4.1.5">Oauth JSON Web Token 4.1.5. &quot;nbf&quot; (Not Before) Claim</a>:</p>
-
 <blockquote>
 <p>The <code>nbf</code> (not before) claim identifies the time before which the JWT MUST NOT be accepted for processing. The processing of the <code>nbf</code> claim requires that the current date/time MUST be after or equal to the not-before date/time listed in the <code>nbf</code> claim. Implementers MAY provide for some small <code>leeway</code>, usually no more than a few minutes, to account for clock skew. Its value MUST be a number containing a <strong><em>NumericDate</em></strong> value. Use of this claim is OPTIONAL.</p>
 </blockquote>
-
 <pre class="code ruby"><code class="ruby"><span class='id identifier rubyid_nbf'>nbf</span> <span class='op'>=</span> <span class='const'>Time</span><span class='period'>.</span><span class='id identifier rubyid_now'>now</span><span class='period'>.</span><span class='id identifier rubyid_to_i'>to_i</span> <span class='op'>-</span> <span class='int'>3600</span>
 <span class='id identifier rubyid_nbf_payload'>nbf_payload</span> <span class='op'>=</span> <span class='lbrace'>{</span> <span class='label'>data:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>data</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>nbf:</span> <span class='id identifier rubyid_nbf'>nbf</span> <span class='rbrace'>}</span>
 
@@ -464,15 +387,11 @@ used. JWT supports these reserved claim names:</p>
   <span class='comment'># Handle invalid token, e.g. logout user or deny access
 </span><span class='kw'>end</span>
 </code></pre>
-
 <p>The Not Before Claim verification can be disabled.</p>
-
 <pre class="code ruby"><code class="ruby"><span class='comment'># Decode token without raising JWT::ImmatureSignature error
 </span><span class='const'><span class='object_link'><a href="JWT.html" title="JWT (module)">JWT</a></span></span><span class='period'>.</span><span class='id identifier rubyid_decode'><span class='object_link'><a href="JWT.html#decode-class_method" title="JWT.decode (method)">decode</a></span></span><span class='lparen'>(</span><span class='id identifier rubyid_token'>token</span><span class='comma'>,</span> <span class='id identifier rubyid_hmac_secret'>hmac_secret</span><span class='comma'>,</span> <span class='kw'>true</span><span class='comma'>,</span> <span class='lbrace'>{</span> <span class='label'>verify_not_before:</span> <span class='kw'>false</span><span class='comma'>,</span> <span class='label'>algorithm:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>HS256</span><span class='tstring_end'>&#39;</span></span> <span class='rbrace'>}</span><span class='rparen'>)</span>
 </code></pre>
-
 <p>Leeway and the nbf claim.</p>
-
 <pre class="code ruby"><code class="ruby"><span class='id identifier rubyid_nbf'>nbf</span> <span class='op'>=</span> <span class='const'>Time</span><span class='period'>.</span><span class='id identifier rubyid_now'>now</span><span class='period'>.</span><span class='id identifier rubyid_to_i'>to_i</span> <span class='op'>+</span> <span class='int'>10</span>
 <span class='id identifier rubyid_leeway'>leeway</span> <span class='op'>=</span> <span class='int'>30</span>
 
@@ -488,17 +407,12 @@ used. JWT supports these reserved claim names:</p>
   <span class='comment'># Handle invalid token, e.g. logout user or deny access
 </span><span class='kw'>end</span>
 </code></pre>
-
-<h3 id="issuer-claim">Issuer Claim</h3>
-
+<h3 id="Issuer_Claim">Issuer Claim</h3>
 <p>From <a href="https://tools.ietf.org/html/rfc7519#section-4.1.1">Oauth JSON Web Token 4.1.1. &quot;iss&quot; (Issuer) Claim</a>:</p>
-
 <blockquote>
 <p>The <code>iss</code> (issuer) claim identifies the principal that issued the JWT. The processing of this claim is generally application specific. The <code>iss</code> value is a case-sensitive string containing a <strong><em>StringOrURI</em></strong> value. Use of this claim is OPTIONAL.</p>
 </blockquote>
-
 <p>You can pass multiple allowed issuers as an Array, verification will pass if one of them matches the <code>iss</code> value in the payload.</p>
-
 <pre class="code ruby"><code class="ruby"><span class='id identifier rubyid_iss'>iss</span> <span class='op'>=</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>My Awesome Company Inc. or https://my.awesome.website/</span><span class='tstring_end'>&#39;</span></span>
 <span class='id identifier rubyid_iss_payload'>iss_payload</span> <span class='op'>=</span> <span class='lbrace'>{</span> <span class='label'>data:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>data</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>iss:</span> <span class='id identifier rubyid_iss'>iss</span> <span class='rbrace'>}</span>
 
@@ -511,23 +425,19 @@ used. JWT supports these reserved claim names:</p>
   <span class='comment'># Handle invalid token, e.g. logout user or deny access
 </span><span class='kw'>end</span>
 </code></pre>
-
 <p>You can also pass a Regexp or Proc (with arity 1), verification will pass if the regexp matches or the proc returns truthy.
 On supported ruby versions (&gt;= 2.5) you can also delegate to methods, on older versions you will have
 to convert them to proc (using <code>to_proc</code>)</p>
-
 <pre class="code ruby"><code class="ruby"><span class='const'><span class='object_link'><a href="JWT.html" title="JWT (module)">JWT</a></span></span><span class='period'>.</span><span class='id identifier rubyid_decode'><span class='object_link'><a href="JWT.html#decode-class_method" title="JWT.decode (method)">decode</a></span></span><span class='lparen'>(</span><span class='id identifier rubyid_token'>token</span><span class='comma'>,</span> <span class='id identifier rubyid_hmac_secret'>hmac_secret</span><span class='comma'>,</span> <span class='kw'>true</span><span class='comma'>,</span>
            <span class='label'>iss:</span> <span class='tstring'><span class='regexp_beg'>%r&#39;</span><span class='tstring_content'>https://my.awesome.website/</span><span class='regexp_end'>&#39;</span></span><span class='comma'>,</span>
            <span class='label'>verify_iss:</span> <span class='kw'>true</span><span class='comma'>,</span>
            <span class='label'>algorithm:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>HS256</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span>
 </code></pre>
-
 <pre class="code ruby"><code class="ruby"><span class='const'><span class='object_link'><a href="JWT.html" title="JWT (module)">JWT</a></span></span><span class='period'>.</span><span class='id identifier rubyid_decode'><span class='object_link'><a href="JWT.html#decode-class_method" title="JWT.decode (method)">decode</a></span></span><span class='lparen'>(</span><span class='id identifier rubyid_token'>token</span><span class='comma'>,</span> <span class='id identifier rubyid_hmac_secret'>hmac_secret</span><span class='comma'>,</span> <span class='kw'>true</span><span class='comma'>,</span>
            <span class='label'>iss:</span> <span class='tlambda'>-&gt;</span><span class='lparen'>(</span><span class='id identifier rubyid_issuer'>issuer</span><span class='rparen'>)</span> <span class='tlambeg'>{</span> <span class='id identifier rubyid_issuer'>issuer</span><span class='period'>.</span><span class='id identifier rubyid_start_with?'>start_with?</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>My Awesome Company Inc</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span> <span class='rbrace'>}</span><span class='comma'>,</span>
            <span class='label'>verify_iss:</span> <span class='kw'>true</span><span class='comma'>,</span>
            <span class='label'>algorithm:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>HS256</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span>
 </code></pre>
-
 <pre class="code ruby"><code class="ruby"><span class='const'><span class='object_link'><a href="JWT.html" title="JWT (module)">JWT</a></span></span><span class='period'>.</span><span class='id identifier rubyid_decode'><span class='object_link'><a href="JWT.html#decode-class_method" title="JWT.decode (method)">decode</a></span></span><span class='lparen'>(</span><span class='id identifier rubyid_token'>token</span><span class='comma'>,</span> <span class='id identifier rubyid_hmac_secret'>hmac_secret</span><span class='comma'>,</span> <span class='kw'>true</span><span class='comma'>,</span>
            <span class='label'>iss:</span> <span class='id identifier rubyid_method'>method</span><span class='lparen'>(</span><span class='symbol'>:valid_issuer?</span><span class='rparen'>)</span><span class='comma'>,</span>
            <span class='label'>verify_iss:</span> <span class='kw'>true</span><span class='comma'>,</span>
@@ -538,15 +448,11 @@ to convert them to proc (using <code>to_proc</code>)</p>
   <span class='comment'># custom validation
 </span><span class='kw'>end</span>
 </code></pre>
-
-<h3 id="audience-claim">Audience Claim</h3>
-
+<h3 id="Audience_Claim">Audience Claim</h3>
 <p>From <a href="https://tools.ietf.org/html/rfc7519#section-4.1.3">Oauth JSON Web Token 4.1.3. &quot;aud&quot; (Audience) Claim</a>:</p>
-
 <blockquote>
 <p>The <code>aud</code> (audience) claim identifies the recipients that the JWT is intended for. Each principal intended to process the JWT MUST identify itself with a value in the audience claim. If the principal processing the claim does not identify itself with a value in the <code>aud</code> claim when this claim is present, then the JWT MUST be rejected. In the general case, the <code>aud</code> value is an array of case-sensitive strings, each containing a <strong><em>StringOrURI</em></strong> value. In the special case when the JWT has one audience, the <code>aud</code> value MAY be a single case-sensitive string containing a <strong><em>StringOrURI</em></strong> value. The interpretation of audience values is generally application specific. Use of this claim is OPTIONAL.</p>
 </blockquote>
-
 <pre class="code ruby"><code class="ruby"><span class='id identifier rubyid_aud'>aud</span> <span class='op'>=</span> <span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>Young</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>Old</span><span class='tstring_end'>&#39;</span></span><span class='rbracket'>]</span>
 <span class='id identifier rubyid_aud_payload'>aud_payload</span> <span class='op'>=</span> <span class='lbrace'>{</span> <span class='label'>data:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>data</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>aud:</span> <span class='id identifier rubyid_aud'>aud</span> <span class='rbrace'>}</span>
 
@@ -560,15 +466,11 @@ to convert them to proc (using <code>to_proc</code>)</p>
 </span>  <span class='id identifier rubyid_puts'>puts</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>Audience Error</span><span class='tstring_end'>&#39;</span></span>
 <span class='kw'>end</span>
 </code></pre>
-
-<h3 id="jwt-id-claim">JWT ID Claim</h3>
-
+<h3 id="JWT_ID_Claim">JWT ID Claim</h3>
 <p>From <a href="https://tools.ietf.org/html/rfc7519#section-4.1.7">Oauth JSON Web Token 4.1.7. &quot;jti&quot; (JWT ID) Claim</a>:</p>
-
 <blockquote>
 <p>The <code>jti</code> (JWT ID) claim provides a unique identifier for the JWT. The identifier value MUST be assigned in a manner that ensures that there is a negligible probability that the same value will be accidentally assigned to a different data object; if the application uses multiple issuers, collisions MUST be prevented among values produced by different issuers as well. The <code>jti</code> claim can be used to prevent the JWT from being replayed. The <code>jti</code> value is a case-sensitive string. Use of this claim is OPTIONAL.</p>
 </blockquote>
-
 <pre class="code ruby"><code class="ruby"><span class='comment'># Use the secret and iat to create a unique key per request to prevent replay attacks
 </span><span class='id identifier rubyid_jti_raw'>jti_raw</span> <span class='op'>=</span> <span class='lbracket'>[</span><span class='id identifier rubyid_hmac_secret'>hmac_secret</span><span class='comma'>,</span> <span class='id identifier rubyid_iat'>iat</span><span class='rbracket'>]</span><span class='period'>.</span><span class='id identifier rubyid_join'>join</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>:</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_to_s'>to_s</span>
 <span class='id identifier rubyid_jti'>jti</span> <span class='op'>=</span> <span class='const'>Digest</span><span class='op'>::</span><span class='const'>MD5</span><span class='period'>.</span><span class='id identifier rubyid_hexdigest'>hexdigest</span><span class='lparen'>(</span><span class='id identifier rubyid_jti_raw'>jti_raw</span><span class='rparen'>)</span>
@@ -588,15 +490,11 @@ to convert them to proc (using <code>to_proc</code>)</p>
 </span>  <span class='id identifier rubyid_puts'>puts</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>Error</span><span class='tstring_end'>&#39;</span></span>
 <span class='kw'>end</span>
 </code></pre>
-
-<h3 id="issued-at-claim">Issued At Claim</h3>
-
+<h3 id="Issued_At_Claim">Issued At Claim</h3>
 <p>From <a href="https://tools.ietf.org/html/rfc7519#section-4.1.6">Oauth JSON Web Token 4.1.6. &quot;iat&quot; (Issued At) Claim</a>:</p>
-
 <blockquote>
 <p>The <code>iat</code> (issued at) claim identifies the time at which the JWT was issued. This claim can be used to determine the age of the JWT. The <code>leeway</code> option is not taken into account when verifying this claim. The <code>iat_leeway</code> option was removed in version 2.2.0. Its value MUST be a number containing a <strong><em>NumericDate</em></strong> value. Use of this claim is OPTIONAL.</p>
 </blockquote>
-
 <pre class="code ruby"><code class="ruby"><span class='id identifier rubyid_iat'>iat</span> <span class='op'>=</span> <span class='const'>Time</span><span class='period'>.</span><span class='id identifier rubyid_now'>now</span><span class='period'>.</span><span class='id identifier rubyid_to_i'>to_i</span>
 <span class='id identifier rubyid_iat_payload'>iat_payload</span> <span class='op'>=</span> <span class='lbrace'>{</span> <span class='label'>data:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>data</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>iat:</span> <span class='id identifier rubyid_iat'>iat</span> <span class='rbrace'>}</span>
 
@@ -609,15 +507,11 @@ to convert them to proc (using <code>to_proc</code>)</p>
   <span class='comment'># Handle invalid token, e.g. logout user or deny access
 </span><span class='kw'>end</span>
 </code></pre>
-
-<h3 id="subject-claim">Subject Claim</h3>
-
+<h3 id="Subject_Claim">Subject Claim</h3>
 <p>From <a href="https://tools.ietf.org/html/rfc7519#section-4.1.2">Oauth JSON Web Token 4.1.2. &quot;sub&quot; (Subject) Claim</a>:</p>
-
 <blockquote>
 <p>The <code>sub</code> (subject) claim identifies the principal that is the subject of the JWT. The Claims in a JWT are normally statements about the subject. The subject value MUST either be scoped to be locally unique in the context of the issuer or be globally unique. The processing of this claim is generally application specific. The sub value is a case-sensitive string containing a <strong><em>StringOrURI</em></strong> value. Use of this claim is OPTIONAL.</p>
 </blockquote>
-
 <pre class="code ruby"><code class="ruby"><span class='id identifier rubyid_sub'>sub</span> <span class='op'>=</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>Subject</span><span class='tstring_end'>&#39;</span></span>
 <span class='id identifier rubyid_sub_payload'>sub_payload</span> <span class='op'>=</span> <span class='lbrace'>{</span> <span class='label'>data:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>data</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>sub:</span> <span class='id identifier rubyid_sub'>sub</span> <span class='rbrace'>}</span>
 
@@ -630,13 +524,9 @@ to convert them to proc (using <code>to_proc</code>)</p>
   <span class='comment'># Handle invalid token, e.g. logout user or deny access
 </span><span class='kw'>end</span>
 </code></pre>
-
-<h3 id="standalone-claim-verification">Standalone claim verification</h3>
-
+<h3 id="Standalone_claim_verification">Standalone claim verification</h3>
 <p>The JWT claim verifications can be used to verify any Hash to include expected keys and values.</p>
-
 <p>A few example on verifying the claims for a payload:</p>
-
 <pre class="code ruby"><code class="ruby"><span class='const'><span class='object_link'><a href="JWT.html" title="JWT (module)">JWT</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="JWT/Claims.html" title="JWT::Claims (module)">Claims</a></span></span><span class='period'>.</span><span class='id identifier rubyid_verify_payload!'><span class='object_link'><a href="JWT/Claims.html#verify_payload!-class_method" title="JWT::Claims.verify_payload! (method)">verify_payload!</a></span></span><span class='lparen'>(</span><span class='lbrace'>{</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>exp</span><span class='tstring_end'>&quot;</span></span> <span class='op'>=&gt;</span> <span class='const'>Time</span><span class='period'>.</span><span class='id identifier rubyid_now'>now</span><span class='period'>.</span><span class='id identifier rubyid_to_i'>to_i</span> <span class='op'>+</span> <span class='int'>10</span><span class='rbrace'>}</span><span class='comma'>,</span> <span class='symbol'>:numeric</span><span class='comma'>,</span> <span class='symbol'>:exp</span><span class='rparen'>)</span>
 <span class='const'><span class='object_link'><a href="JWT.html" title="JWT (module)">JWT</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="JWT/Claims.html" title="JWT::Claims (module)">Claims</a></span></span><span class='period'>.</span><span class='id identifier rubyid_valid_payload?'><span class='object_link'><a href="JWT/Claims.html#valid_payload%3F-class_method" title="JWT::Claims.valid_payload? (method)">valid_payload?</a></span></span><span class='lparen'>(</span><span class='lbrace'>{</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>exp</span><span class='tstring_end'>&quot;</span></span> <span class='op'>=&gt;</span> <span class='const'>Time</span><span class='period'>.</span><span class='id identifier rubyid_now'>now</span><span class='period'>.</span><span class='id identifier rubyid_to_i'>to_i</span> <span class='op'>+</span> <span class='int'>10</span><span class='rbrace'>}</span><span class='comma'>,</span> <span class='symbol'>:exp</span><span class='rparen'>)</span>
 <span class='comment'># =&gt; true
@@ -646,11 +536,8 @@ to convert them to proc (using <code>to_proc</code>)</p>
 
 <span class='const'><span class='object_link'><a href="JWT.html" title="JWT (module)">JWT</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="JWT/Claims.html" title="JWT::Claims (module)">Claims</a></span></span><span class='period'>.</span><span class='id identifier rubyid_verify_payload!'><span class='object_link'><a href="JWT/Claims.html#verify_payload!-class_method" title="JWT::Claims.verify_payload! (method)">verify_payload!</a></span></span><span class='lparen'>(</span><span class='lbrace'>{</span><span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>exp</span><span class='tstring_end'>&quot;</span></span> <span class='op'>=&gt;</span> <span class='const'>Time</span><span class='period'>.</span><span class='id identifier rubyid_now'>now</span><span class='period'>.</span><span class='id identifier rubyid_to_i'>to_i</span> <span class='op'>+</span> <span class='int'>10</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>sub</span><span class='tstring_end'>&quot;</span></span> <span class='op'>=&gt;</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>subject</span><span class='tstring_end'>&quot;</span></span><span class='rbrace'>}</span><span class='comma'>,</span> <span class='symbol'>:exp</span><span class='comma'>,</span> <span class='label'>sub:</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>subject</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span>
 </code></pre>
-
-<h3 id="finding-a-key">Finding a Key</h3>
-
+<h3 id="Finding_a_Key">Finding a Key</h3>
 <p>To dynamically find the key for verifying the JWT signature, pass a block to the decode block. The block receives headers and the original payload as parameters. It should return with the key to verify the signature that was used to sign the JWT.</p>
-
 <pre class="code ruby"><code class="ruby"><span class='id identifier rubyid_issuers'>issuers</span> <span class='op'>=</span> <span class='qwords_beg'>%w[</span><span class='tstring_content'>My_Awesome_Company1</span><span class='words_sep'> </span><span class='tstring_content'>My_Awesome_Company2</span><span class='tstring_end'>]</span></span>
 <span class='id identifier rubyid_iss_payload'>iss_payload</span> <span class='op'>=</span> <span class='lbrace'>{</span> <span class='label'>data:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>data</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>iss:</span> <span class='id identifier rubyid_issuers'>issuers</span><span class='period'>.</span><span class='id identifier rubyid_first'>first</span> <span class='rbrace'>}</span>
 
@@ -667,19 +554,13 @@ to convert them to proc (using <code>to_proc</code>)</p>
   <span class='comment'># Handle invalid token, e.g. logout user or deny access
 </span><span class='kw'>end</span>
 </code></pre>
-
-<h3 id="required-claims">Required Claims</h3>
-
+<h3 id="Required_Claims">Required Claims</h3>
 <p>You can specify claims that must be present for decoding to be successful. JWT::MissingRequiredClaim will be raised if any are missing</p>
-
 <pre class="code ruby"><code class="ruby"><span class='comment'># Will raise a JWT::MissingRequiredClaim error if the &#39;exp&#39; claim is absent
 </span><span class='const'><span class='object_link'><a href="JWT.html" title="JWT (module)">JWT</a></span></span><span class='period'>.</span><span class='id identifier rubyid_decode'><span class='object_link'><a href="JWT.html#decode-class_method" title="JWT.decode (method)">decode</a></span></span><span class='lparen'>(</span><span class='id identifier rubyid_token'>token</span><span class='comma'>,</span> <span class='id identifier rubyid_hmac_secret'>hmac_secret</span><span class='comma'>,</span> <span class='kw'>true</span><span class='comma'>,</span> <span class='lbrace'>{</span> <span class='label'>required_claims:</span> <span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>exp</span><span class='tstring_end'>&#39;</span></span><span class='rbracket'>]</span><span class='comma'>,</span> <span class='label'>algorithm:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>HS256</span><span class='tstring_end'>&#39;</span></span> <span class='rbrace'>}</span><span class='rparen'>)</span>
 </code></pre>
-
-<h3 id="x-509-certificates-in-x5c-header">X.509 certificates in x5c header</h3>
-
-<p>A JWT signature can be verified using certificate(s) given in the <code>x5c</code> header. Before doing that, the trustworthiness of these certificate(s) must be established. This is done in accordance with RFC 5280 which (among other things) verifies the certificate(s) are issued by a trusted root certificate, the timestamps are valid, and none of the certificate(s) are revoked (i.e. being present in the root certificate&#39;s Certificate Revocation List).</p>
-
+<h3 id="X_509_certificates_in_x5c_header">X.509 certificates in x5c header</h3>
+<p>A JWT signature can be verified using certificate(s) given in the <code>x5c</code> header. Before doing that, the trustworthiness of these certificate(s) must be established. This is done in accordance with RFC 5280 which (among other things) verifies the certificate(s) are issued by a trusted root certificate, the timestamps are valid, and none of the certificate(s) are revoked (i.e. being present in the root certificate's Certificate Revocation List).</p>
 <pre class="code ruby"><code class="ruby"><span class='id identifier rubyid_root_certificates'>root_certificates</span> <span class='op'>=</span> <span class='lbracket'>[</span><span class='rbracket'>]</span> <span class='comment'># trusted `OpenSSL::X509::Certificate` objects
 </span><span class='id identifier rubyid_crl_uris'>crl_uris</span> <span class='op'>=</span> <span class='id identifier rubyid_root_certificates'>root_certificates</span><span class='period'>.</span><span class='id identifier rubyid_map'>map</span><span class='lparen'>(</span><span class='op'>&amp;</span><span class='symbol'>:crl_uris</span><span class='rparen'>)</span>
 <span class='id identifier rubyid_crls'>crls</span> <span class='op'>=</span> <span class='id identifier rubyid_crl_uris'>crl_uris</span><span class='period'>.</span><span class='id identifier rubyid_map'>map</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_uri'>uri</span><span class='op'>|</span>
@@ -695,13 +576,9 @@ to convert them to proc (using <code>to_proc</code>)</p>
   <span class='comment'># Handle error, e.g. x5c header certificate revoked or expired
 </span><span class='kw'>end</span>
 </code></pre>
-
-<h2 id="json-web-key-jwk">JSON Web Key (JWK)</h2>
-
+<h2 id="JSON_Web_Key__JWK_">JSON Web Key (JWK)</h2>
 <p>JWK is a JSON structure representing a cryptographic key. This gem currently supports RSA, EC, OKP and HMAC keys. OKP support requires <a href="https://github.com/RubyCrypto/rbnacl">RbNaCl</a> and currently only supports the Ed25519 curve.</p>
-
 <p>To encode a JWT using your JWK:</p>
-
 <pre class="code ruby"><code class="ruby"><span class='id identifier rubyid_optional_parameters'>optional_parameters</span> <span class='op'>=</span> <span class='lbrace'>{</span> <span class='label'>kid:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>my-kid</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>use:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>sig</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>alg:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>RS512</span><span class='tstring_end'>&#39;</span></span> <span class='rbrace'>}</span>
 <span class='id identifier rubyid_jwk'>jwk</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="JWT.html" title="JWT (module)">JWT</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="JWT/JWK.html" title="JWT::JWK (module)">JWK</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='const'>OpenSSL</span><span class='op'>::</span><span class='const'>PKey</span><span class='op'>::</span><span class='const'>RSA</span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='int'>2048</span><span class='rparen'>)</span><span class='comma'>,</span> <span class='id identifier rubyid_optional_parameters'>optional_parameters</span><span class='rparen'>)</span>
 
@@ -712,25 +589,19 @@ to convert them to proc (using <code>to_proc</code>)</p>
 <span class='comment'># JSON Web Key Set for advertising your signing keys
 </span><span class='id identifier rubyid_jwks_hash'>jwks_hash</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="JWT.html" title="JWT (module)">JWT</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="JWT/JWK.html" title="JWT::JWK (module)">JWK</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="JWT/JWK/Set.html" title="JWT::JWK::Set (class)">Set</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='id identifier rubyid_jwk'>jwk</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_export'>export</span>
 </code></pre>
-
-<p>To decode a JWT using a trusted entity&#39;s JSON Web Key Set (JWKS):</p>
-
+<p>To decode a JWT using a trusted entity's JSON Web Key Set (JWKS):</p>
 <pre class="code ruby"><code class="ruby"><span class='id identifier rubyid_jwks'>jwks</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="JWT.html" title="JWT (module)">JWT</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="JWT/JWK.html" title="JWT::JWK (module)">JWK</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="JWT/JWK/Set.html" title="JWT::JWK::Set (class)">Set</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='id identifier rubyid_jwks_hash'>jwks_hash</span><span class='rparen'>)</span>
 <span class='id identifier rubyid_jwks'>jwks</span><span class='period'>.</span><span class='id identifier rubyid_filter!'>filter!</span> <span class='lbrace'>{</span><span class='op'>|</span><span class='id identifier rubyid_key'>key</span><span class='op'>|</span> <span class='id identifier rubyid_key'>key</span><span class='lbracket'>[</span><span class='symbol'>:use</span><span class='rbracket'>]</span> <span class='op'>==</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>sig</span><span class='tstring_end'>&#39;</span></span> <span class='rbrace'>}</span> <span class='comment'># Signing keys only!
 </span><span class='id identifier rubyid_algorithms'>algorithms</span> <span class='op'>=</span> <span class='id identifier rubyid_jwks'>jwks</span><span class='period'>.</span><span class='id identifier rubyid_map'>map</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_key'>key</span><span class='op'>|</span> <span class='id identifier rubyid_key'>key</span><span class='lbracket'>[</span><span class='symbol'>:alg</span><span class='rbracket'>]</span> <span class='rbrace'>}</span><span class='period'>.</span><span class='id identifier rubyid_compact'>compact</span><span class='period'>.</span><span class='id identifier rubyid_uniq'>uniq</span>
 <span class='const'><span class='object_link'><a href="JWT.html" title="JWT (module)">JWT</a></span></span><span class='period'>.</span><span class='id identifier rubyid_decode'><span class='object_link'><a href="JWT.html#decode-class_method" title="JWT.decode (method)">decode</a></span></span><span class='lparen'>(</span><span class='id identifier rubyid_token'>token</span><span class='comma'>,</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='kw'>true</span><span class='comma'>,</span> <span class='label'>algorithms:</span> <span class='id identifier rubyid_algorithms'>algorithms</span><span class='comma'>,</span> <span class='label'>jwks:</span> <span class='id identifier rubyid_jwks'>jwks</span><span class='rparen'>)</span>
 </code></pre>
-
 <p>The <code>jwks</code> option can also be given as a lambda that evaluates every time a key identifier is resolved.
 This can be used to implement caching of remotely fetched JWK Sets.</p>
-
 <p>Key identifiers can be specified using <code>kid</code>, <code>x5t</code> header parameters.
 If the requested identifier is not found from the given set the loader will be called a second time with the <code>kid_not_found</code> option set to <code>true</code>.
 The application can choose to implement some kind of JWK cache invalidation or other mechanism to handle such cases.</p>
-
 <p>Tokens without a specified key identifier (<code>kid</code> or <code>x5t</code>) are rejected by default.
 This behaviour may be overwritten by setting the <code>allow_nil_kid</code> option for <code>decode</code> to <code>true</code>.</p>
-
 <pre class="code ruby"><code class="ruby"><span class='id identifier rubyid_jwks_loader'>jwks_loader</span> <span class='op'>=</span> <span class='tlambda'>-&gt;</span><span class='lparen'>(</span><span class='id identifier rubyid_options'>options</span><span class='rparen'>)</span> <span class='kw'>do</span>
   <span class='comment'># The jwk loader would fetch the set of JWKs from a trusted source.
 </span>  <span class='comment'># To avoid malicious requests triggering cache invalidations there needs to be
@@ -757,14 +628,10 @@ This behaviour may be overwritten by setting the <code>allow_nil_kid</code> opti
   <span class='comment'># Handle other decode related issues e.g. no kid in header, no matching public key found etc.
 </span><span class='kw'>end</span>
 </code></pre>
-
-<h3 id="importing-and-exporting-json-web-keys">Importing and exporting JSON Web Keys</h3>
-
+<h3 id="Importing_and_exporting_JSON_Web_Keys">Importing and exporting JSON Web Keys</h3>
 <p>The ::JWT::JWK class can be used to import both JSON Web Keys and OpenSSL keys
 and export to either format with and without the private key included.</p>
-
 <p>To include the private key in the export pass the <code>include_private</code> parameter to the export method.</p>
-
 <pre class="code ruby"><code class="ruby"><span class='comment'># Import a JWK Hash (showing an HMAC example)
 </span><span class='id identifier rubyid_jwk'>jwk</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="JWT.html" title="JWT (module)">JWT</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="JWT/JWK.html" title="JWT::JWK (module)">JWK</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='lbrace'>{</span> <span class='label'>kty:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>oct</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>k:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>my-secret</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>kid:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>my-kid</span><span class='tstring_end'>&#39;</span></span> <span class='rbrace'>}</span><span class='rparen'>)</span>
 
@@ -786,13 +653,10 @@ and export to either format with and without the private key included.</p>
 <span class='id identifier rubyid_jwks'>jwks</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="JWT.html" title="JWT (module)">JWT</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="JWT/JWK.html" title="JWT::JWK (module)">JWK</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="JWT/JWK/Set.html" title="JWT::JWK::Set (class)">Set</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='id identifier rubyid_jwks_hash'>jwks_hash</span><span class='rparen'>)</span>
 <span class='id identifier rubyid_jwks_hash'>jwks_hash</span> <span class='op'>=</span> <span class='id identifier rubyid_jwks'>jwks</span><span class='period'>.</span><span class='id identifier rubyid_export'>export</span>
 </code></pre>
-
-<h3 id="key-id-kid-and-jwks">Key ID (kid) and JWKs</h3>
-
+<h3 id="Key_ID__kid__and_JWKs">Key ID (kid) and JWKs</h3>
 <p>The key id (kid) generation in the gem is a custom algorithm and not based on any standards.
 To use a standardized JWK thumbprint (RFC 7638) as the kid for JWKs a generator type can be specified in the global configuration
 or can be given to the JWK instance on initialization.</p>
-
 <pre class="code ruby"><code class="ruby"><span class='const'><span class='object_link'><a href="JWT.html" title="JWT (module)">JWT</a></span></span><span class='period'>.</span><span class='id identifier rubyid_configuration'><span class='object_link'><a href="JWT/Configuration.html#configuration-instance_method" title="JWT::Configuration#configuration (method)">configuration</a></span></span><span class='period'>.</span><span class='id identifier rubyid_jwk'><span class='object_link'><a href="JWT/Configuration/Container.html#jwk-instance_method" title="JWT::Configuration::Container#jwk (method)">jwk</a></span></span><span class='period'>.</span><span class='id identifier rubyid_kid_generator_type'>kid_generator_type</span> <span class='op'>=</span> <span class='symbol'>:rfc7638_thumbprint</span>
 <span class='comment'># OR
 </span><span class='const'><span class='object_link'><a href="JWT.html" title="JWT (module)">JWT</a></span></span><span class='period'>.</span><span class='id identifier rubyid_configuration'><span class='object_link'><a href="JWT/Configuration.html#configuration-instance_method" title="JWT::Configuration#configuration (method)">configuration</a></span></span><span class='period'>.</span><span class='id identifier rubyid_jwk'><span class='object_link'><a href="JWT/Configuration/Container.html#jwk-instance_method" title="JWT::Configuration::Container#jwk (method)">jwk</a></span></span><span class='period'>.</span><span class='id identifier rubyid_kid_generator'><span class='object_link'><a href="JWT/Configuration/JwkConfiguration.html#kid_generator-instance_method" title="JWT::Configuration::JwkConfiguration#kid_generator (method)">kid_generator</a></span></span> <span class='op'>=</span> <span class='op'>::</span><span class='const'><span class='object_link'><a href="JWT.html" title="JWT (module)">JWT</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="JWT/JWK.html" title="JWT::JWK (module)">JWK</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="JWT/JWK/Thumbprint.html" title="JWT::JWK::Thumbprint (class)">Thumbprint</a></span></span>
@@ -803,41 +667,27 @@ or can be given to the JWK instance on initialization.</p>
 
 <span class='id identifier rubyid_thumbprint_as_the_kid'>thumbprint_as_the_kid</span> <span class='op'>=</span> <span class='id identifier rubyid_jwk_hash'>jwk_hash</span><span class='lbracket'>[</span><span class='symbol'>:kid</span><span class='rbracket'>]</span>
 </code></pre>
-
-<h2 id="development-and-testing">Development and testing</h2>
-
+<h2 id="Development_and_testing">Development and testing</h2>
 <p>The tests are written with rspec. <a href="https://github.com/thoughtbot/appraisal">Appraisal</a> is used to ensure compatibility with 3rd party dependencies providing cryptographic features.</p>
-
 <pre class="code bash"><code class="bash">bundle install
 bundle exec appraisal rake test
 </code></pre>
-
-<h2 id="releasing">Releasing</h2>
-
+<h2 id="Releasing">Releasing</h2>
 <p>To cut a new release adjust the <a href="lib/jwt/version.rb">version.rb</a> and <a href="CHANGELOG.md">CHANGELOG</a> with desired version numbers and dates and commit the changes. Tag the release with the version number using the following command:</p>
-
 <pre class="code bash"><code class="bash">rake release:source_control_push
 </code></pre>
-
 <p>This will tag a new version an trigger a <a href=".github/workflows/push_gem.yml">GitHub action</a> that eventually will push the gem to rubygems.org.</p>
-
-<h2 id="how-to-contribute">How to contribute</h2>
-
+<h2 id="How_to_contribute">How to contribute</h2>
 <p>See <a href="CONTRIBUTING.md">CONTRIBUTING</a>.</p>
-
-<h2 id="contributors">Contributors</h2>
-
+<h2 id="Contributors">Contributors</h2>
 <p>See <a href="AUTHORS">AUTHORS</a>.</p>
-
-<h2 id="license">License</h2>
-
-<p>See <a href="LICENSE">LICENSE</a>.</p>
-</div></div>
+<h2 id="License">License</h2>
+<p>See <a href="LICENSE">LICENSE</a>.</p></div></div>
 
       <div id="footer">
-  Generated on Fri Mar 20 18:30:52 2026 by
+  Generated on Wed May 13 19:32:56 2026 by
   <a href="https://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.38 (ruby-4.0.2).
+  0.9.43 (ruby-4.0.4).
 </div>
 
     </div>

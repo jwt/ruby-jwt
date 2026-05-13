@@ -6,13 +6,13 @@
 <title>
   Module: JWT::Claims
   
-    &mdash; Documentation by YARD 0.9.38
+    &mdash; Documentation by YARD 0.9.43
   
 </title>
 
-  <link rel="stylesheet" href="../css/style.css" type="text/css" />
+  <link rel="stylesheet" href="../css/style.css" type="text/css">
 
-  <link rel="stylesheet" href="../css/common.css" type="text/css" />
+  <link rel="stylesheet" href="../css/common.css" type="text/css">
 
 <script type="text/javascript">
   pathId = "JWT::Claims";
@@ -27,6 +27,8 @@
 
   </head>
   <body>
+    <div id="main_progress" aria-hidden="true"></div>
+
     <div class="nav_wrap">
       <iframe id="nav" src="../class_list.html?1"></iframe>
       <div id="resizer"></div>
@@ -78,8 +80,9 @@
   
   <dl>
     <dt>Defined in:</dt>
-    <dd>lib/jwt/claims.rb<span class="defines">,<br />
-  lib/jwt/claims/crit.rb,<br /> lib/jwt/claims/issuer.rb,<br /> lib/jwt/claims/jwt_id.rb,<br /> lib/jwt/claims/numeric.rb,<br /> lib/jwt/claims/subject.rb,<br /> lib/jwt/claims/audience.rb,<br /> lib/jwt/claims/required.rb,<br /> lib/jwt/claims/verifier.rb,<br /> lib/jwt/claims/issued_at.rb,<br /> lib/jwt/claims/expiration.rb,<br /> lib/jwt/claims/not_before.rb,<br /> lib/jwt/claims/decode_verifier.rb</span>
+    <dd>lib/jwt/claims.rb<span class="defines">,<br>
+  lib/jwt/claims/crit.rb,<br> lib/jwt/claims/issuer.rb,<br> lib/jwt/claims/jwt_id.rb,<br> lib/jwt/claims/numeric.rb,<br> lib/jwt/claims/subject.rb,<br> lib/jwt/claims/audience.rb,<br> lib/jwt/claims/required.rb,<br> lib/jwt/claims/verifier.rb,<br> lib/jwt/claims/issued_at.rb,<br> lib/jwt/claims/expiration.rb,<br> lib/jwt/claims/not_before.rb,<br> lib/jwt/claims/decode_verifier.rb</span>
+
 </dd>
   </dl>
   
@@ -87,11 +90,18 @@
 
 <h2>Overview</h2><div class="docstring">
   <div class="discussion">
-    
-<p>JWT Claim verifications <a href="https://datatracker.ietf.org/doc/html/rfc7519#section-4">datatracker.ietf.org/doc/html/rfc7519#section-4</a></p>
-
-<p>Verification is supported for the following claims: exp nbf iss iat jti aud sub required numeric</p>
-
+    <p>JWT Claim verifications
+<a href="https://datatracker.ietf.org/doc/html/rfc7519#section-4">https://datatracker.ietf.org/doc/html/rfc7519#section-4</a></p>
+<p>Verification is supported for the following claims:
+exp
+nbf
+iss
+iat
+jti
+aud
+sub
+required
+numeric</p>
 
   </div>
 </div>
@@ -142,9 +152,7 @@
   
 
   
-    <span class="summary_desc"><div class='inline'>
-<p>Returns the errors in the claims of the JWT token.</p>
-</div></span>
+    <span class="summary_desc"><div class='inline'><p>Returns the errors in the claims of the JWT token.</p></div></span>
   
 </li>
 
@@ -166,9 +174,7 @@
   
 
   
-    <span class="summary_desc"><div class='inline'>
-<p>Checks if the claims in the JWT payload are valid.</p>
-</div></span>
+    <span class="summary_desc"><div class='inline'><p>Checks if the claims in the JWT payload are valid.</p></div></span>
   
 </li>
 
@@ -190,14 +196,13 @@
   
 
   
-    <span class="summary_desc"><div class='inline'>
-<p>Checks if the claims in the JWT payload are valid.</p>
-</div></span>
+    <span class="summary_desc"><div class='inline'><p>Checks if the claims in the JWT payload are valid.</p></div></span>
   
 </li>
 
       
     </ul>
+    
   
 
 
@@ -217,9 +222,7 @@
   
 </h3><div class="docstring">
   <div class="discussion">
-    
-<p>Returns the errors in the claims of the JWT token.</p>
-
+    <p>Returns the errors in the claims of the JWT token.</p>
 
   </div>
 </div>
@@ -237,9 +240,7 @@
       
       
         &mdash;
-        <div class='inline'>
-<p>the options for verifying the claims.</p>
-</div>
+        <div class='inline'><p>the options for verifying the claims.</p></div>
       
     </li>
   
@@ -256,9 +257,7 @@
       
       
         &mdash;
-        <div class='inline'>
-<p>the errors in the claims of the JWT</p>
-</div>
+        <div class='inline'><p>the errors in the claims of the JWT</p></div>
       
     </li>
   
@@ -296,9 +295,7 @@
   
 </h3><div class="docstring">
   <div class="discussion">
-    
-<p>Checks if the claims in the JWT payload are valid.</p>
-
+    <p>Checks if the claims in the JWT payload are valid.</p>
 
   </div>
 </div>
@@ -316,9 +313,7 @@
       
       
         &mdash;
-        <div class='inline'>
-<p>the JWT payload.</p>
-</div>
+        <div class='inline'><p>the JWT payload.</p></div>
       
     </li>
   
@@ -332,9 +327,7 @@
       
       
         &mdash;
-        <div class='inline'>
-<p>the options for verifying the claims.</p>
-</div>
+        <div class='inline'><p>the options for verifying the claims.</p></div>
       
     </li>
   
@@ -351,9 +344,7 @@
       
       
         &mdash;
-        <div class='inline'>
-<p>true if the claims are valid, false otherwise</p>
-</div>
+        <div class='inline'><p>true if the claims are valid, false otherwise</p></div>
       
     </li>
   
@@ -391,9 +382,7 @@
   
 </h3><div class="docstring">
   <div class="discussion">
-    <p class="note returns_void">This method returns an undefined value.</p>
-<p>Checks if the claims in the JWT payload are valid.</p>
-
+    <p class="note returns_void">This method returns an undefined value.</p><p>Checks if the claims in the JWT payload are valid.</p>
 
   </div>
 </div>
@@ -421,9 +410,7 @@
       
       
         &mdash;
-        <div class='inline'>
-<p>the JWT payload.</p>
-</div>
+        <div class='inline'><p>the JWT payload.</p></div>
       
     </li>
   
@@ -437,9 +424,7 @@
       
       
         &mdash;
-        <div class='inline'>
-<p>the options for verifying the claims.</p>
-</div>
+        <div class='inline'><p>the options for verifying the claims.</p></div>
       
     </li>
   
@@ -456,9 +441,7 @@
       
       
         &mdash;
-        <div class='inline'>
-<p>if any claim is invalid.</p>
-</div>
+        <div class='inline'><p>if any claim is invalid.</p></div>
       
     </li>
   
@@ -490,9 +473,9 @@
 </div>
 
       <div id="footer">
-  Generated on Fri Mar 20 18:30:52 2026 by
+  Generated on Wed May 13 19:32:58 2026 by
   <a href="https://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.38 (ruby-4.0.2).
+  0.9.43 (ruby-4.0.4).
 </div>
 
     </div>
