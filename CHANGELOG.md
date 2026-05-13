@@ -1,20 +1,19 @@
 # Changelog
 
-## [v3.1.3](https://github.com/jwt/ruby-jwt/tree/v3.1.3) (NEXT)
+## [v3.2.0](https://github.com/jwt/ruby-jwt/tree/v3.2.0) (2026-05-13)
 
-[Full Changelog](https://github.com/jwt/ruby-jwt/compare/v3.1.2...v3.1.3)
+[Full Changelog](https://github.com/jwt/ruby-jwt/compare/v3.1.2...v3.2.0)
 
 **Features:**
 
 - Add `enforce_hmac_key_length` configuration option [#716](https://github.com/jwt/ruby-jwt/pull/716) - ([@304](https://github.com/304))
-- Your contribution here
 
 **Fixes and enhancements:**
 
+- Reject `nil` and empty HMAC keys when signing and verifying ([CVE-2026-45363](https://www.cve.org/CVERecord?id=CVE-2026-45363) / [GHSA-c32j-vqhx-rx3x](https://github.com/jwt/ruby-jwt/security/advisories/GHSA-c32j-vqhx-rx3x))
 - Fix compatibility with the openssl 4.0 gem [#706](https://github.com/jwt/ruby-jwt/pull/706)
 - Test against Ruby 4.0 on CI [#707](https://github.com/jwt/ruby-jwt/pull/707)
 - Fix type error when header is not a JSON object [#715](https://github.com/jwt/ruby-jwt/pull/715) - ([@304](https://github.com/304))
-- Your contribution here
 
 ## [v3.1.2](https://github.com/jwt/ruby-jwt/tree/v3.1.2) (2025-06-28)
 

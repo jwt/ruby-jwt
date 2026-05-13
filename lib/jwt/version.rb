@@ -15,8 +15,8 @@ module JWT
   # Version constants
   module VERSION
     MAJOR = 3
-    MINOR = 1
-    TINY  = 3
+    MINOR = 2
+    TINY  = 0
     PRE   = nil
 
     STRING = [MAJOR, MINOR, TINY, PRE].compact.join('.')
@@ -30,14 +30,6 @@ module JWT
     return false if OpenSSL::OPENSSL_VERSION.include?('LibreSSL')
 
     true if 3 * 0x10000000 <= OpenSSL::OPENSSL_VERSION_NUMBER
-  end
-
-  # Checks if there is an OpenSSL 3 HMAC empty key regression.
-  #
-  # @return [Boolean] true if there is an OpenSSL 3 HMAC empty key regression, false otherwise.
-  # @api private
-  def self.openssl_3_hmac_empty_key_regression?
-    openssl_3? && openssl_version <= ::Gem::Version.new('3.0.0')
   end
 
   # Returns the OpenSSL version.

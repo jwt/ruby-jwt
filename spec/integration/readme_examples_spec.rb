@@ -28,18 +28,6 @@ RSpec.describe 'README.md code test' do
       ]
     end
 
-    it 'decodes with HMAC algorithm without secret key' do
-      pending 'Different behaviour on OpenSSL 3.0 (https://github.com/openssl/openssl/issues/13089)' if JWT.openssl_3_hmac_empty_key_regression?
-      token = JWT.encode payload, nil, 'HS256'
-      decoded_token = JWT.decode token, nil, false
-
-      expect(token).to eq 'eyJhbGciOiJIUzI1NiJ9.eyJkYXRhIjoidGVzdCJ9.pVzcY2dX8JNM3LzIYeP2B1e1Wcpt1K3TWVvIYSF4x-o'
-      expect(decoded_token).to eq [
-        { 'data' => 'test' },
-        { 'alg' => 'HS256' }
-      ]
-    end
-
     it 'RSA' do
       rsa_private = OpenSSL::PKey::RSA.generate 2048
       rsa_public = rsa_private.public_key

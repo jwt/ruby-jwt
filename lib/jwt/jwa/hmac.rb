@@ -21,25 +21,17 @@ module JWT
       end
 
       def sign(data:, signing_key:)
-        signing_key ||= ''
-        raise_verify_error!('HMAC key expected to be a String') unless signing_key.is_a?(String)
-
+        ensure_valid_key!(signing_key)
         validate_key_length!(signing_key)
 
         OpenSSL::HMAC.digest(digest.new, signing_key, data)
-      rescue OpenSSL::HMACError => e
-        raise_verify_error!('OpenSSL 3.0 does not support nil or empty hmac_secret') if signing_key == '' && e.message == 'EVP_PKEY_new_mac_key: malloc failure'
-
-        raise e
       end
 
       def verify(data:, signature:, verification_key:)
-        validation_key = verification_key || ''
-        raise_verify_error!('HMAC key expected to be a String') unless validation_key.is_a?(String)
+        ensure_valid_key!(verification_key)
+        validate_key_length!(verification_key)
 
-        validate_key_length!(validation_key)
-
-        SecurityUtils.secure_compare(signature, sign(data: data, signing_key: verification_key))
+        SecurityUtils.secure_compare(signature, OpenSSL::HMAC.digest(digest.new, verification_key, data))
       end
 
       register_algorithm(new('HS256', OpenSSL::Digest::SHA256))
@@ -49,6 +41,11 @@ module JWT
       private
 
       attr_reader :digest
+
+      def ensure_valid_key!(key)
+        raise_verify_error!('HMAC key expected to be a String') unless key.is_a?(String)
+        raise_verify_error!('HMAC key cannot be empty') if key.empty?
+      end
 
       def validate_key_length!(key)
         return unless JWT.configuration.decode.enforce_hmac_key_length
