@@ -650,20 +650,6 @@ RSpec.describe JWT do
     end
   end
 
-  context 'when hmac algorithm is used without secret key' do
-    it 'encodes payload' do
-      pending 'Different behaviour on OpenSSL 3.0 (https://github.com/openssl/openssl/issues/13089)' if JWT.openssl_3_hmac_empty_key_regression?
-      payload = { a: 1, b: 'b' }
-
-      token = JWT.encode(payload, '', 'HS256')
-
-      expect do
-        token_without_secret = JWT.encode(payload, nil, 'HS256')
-        expect(token).to eq(token_without_secret)
-      end.not_to raise_error
-    end
-  end
-
   context 'algorithm case insensitivity' do
     let(:payload) { { 'a' => 1, 'b' => 'b' } }
 
@@ -777,14 +763,6 @@ RSpec.describe JWT do
     let(:none_token) { JWT.encode(payload, nil, 'none') }
     it 'decodes the token' do
       expect(JWT.decode(none_token, 'key', false)).to eq([payload, { 'alg' => 'none' }])
-    end
-  end
-
-  describe 'when token signed with nil and decoded with nil' do
-    let(:no_key_token) { JWT.encode(payload, nil, 'HS512') }
-    it 'raises JWT::DecodeError' do
-      pending 'Different behaviour on OpenSSL 3.0 (https://github.com/openssl/openssl/issues/13089)' if JWT.openssl_3_hmac_empty_key_regression?
-      expect { JWT.decode(no_key_token, nil, true, algorithms: 'HS512') }.to raise_error(JWT::DecodeError, 'No verification key available')
     end
   end
 

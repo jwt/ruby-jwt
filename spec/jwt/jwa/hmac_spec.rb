@@ -12,68 +12,39 @@ RSpec.describe JWT::JWA::Hmac do
       it { is_expected.to eq(valid_signature) }
     end
 
-    # Address OpenSSL 3.0 errors with empty hmac_secret - https://github.com/jwt/ruby-jwt/issues/526
+    # GHSA-c32j-vqhx-rx3x: empty/nil keys must be rejected before reaching OpenSSL,
+    # so a forged token signed with "" cannot verify.
     context 'when nil hmac_secret is passed' do
       let(:hmac_secret) { nil }
-      context 'when OpenSSL 3.0 raises a malloc failure' do
-        before do
-          allow(OpenSSL::HMAC).to receive(:digest).and_raise(OpenSSL::HMACError.new('EVP_PKEY_new_mac_key: malloc failure'))
-        end
 
-        it 'raises JWT::DecodeError' do
-          expect { subject }.to raise_error(JWT::DecodeError, 'OpenSSL 3.0 does not support nil or empty hmac_secret')
-        end
+      it 'raises JWT::DecodeError' do
+        expect { subject }.to raise_error(JWT::DecodeError, 'HMAC key expected to be a String')
       end
 
-      context 'when OpenSSL raises any other error' do
-        before do
-          allow(OpenSSL::HMAC).to receive(:digest).and_raise(OpenSSL::HMACError.new('Another Random Error'))
-        end
-
-        it 'raises the original error' do
-          expect { subject }.to raise_error(OpenSSL::HMACError, 'Another Random Error')
-        end
-      end
-
-      context 'when other versions of openssl do not raise an exception' do
-        let(:response) { Base64.decode64("Q7DO+ZJl+eNMEOqdNQGSbSezn1fG1nRWHYuiNueoGfs=\n") }
-        before do
-          allow(OpenSSL::HMAC).to receive(:digest).and_return(response)
-        end
-
-        it { is_expected.to eql(response) }
+      it 'does not call OpenSSL::HMAC.digest' do
+        expect(OpenSSL::HMAC).not_to receive(:digest)
+        expect { subject }.to raise_error(JWT::DecodeError)
       end
     end
 
     context 'when blank hmac_secret is passed' do
       let(:hmac_secret) { '' }
-      context 'when OpenSSL 3.0 raises a malloc failure' do
-        before do
-          allow(OpenSSL::HMAC).to receive(:digest).and_raise(OpenSSL::HMACError.new('EVP_PKEY_new_mac_key: malloc failure'))
-        end
 
-        it 'raises JWT::DecodeError' do
-          expect { subject }.to raise_error(JWT::DecodeError, 'OpenSSL 3.0 does not support nil or empty hmac_secret')
-        end
+      it 'raises JWT::DecodeError' do
+        expect { subject }.to raise_error(JWT::DecodeError, 'HMAC key cannot be empty')
       end
 
-      context 'when OpenSSL raises any other error' do
-        before do
-          allow(OpenSSL::HMAC).to receive(:digest).and_raise(OpenSSL::HMACError.new('Another Random Error'))
-        end
-
-        it 'raises the original error' do
-          expect { subject }.to raise_error(OpenSSL::HMACError, 'Another Random Error')
-        end
+      it 'does not call OpenSSL::HMAC.digest' do
+        expect(OpenSSL::HMAC).not_to receive(:digest)
+        expect { subject }.to raise_error(JWT::DecodeError)
       end
+    end
 
-      context 'when other versions of openssl do not raise an exception' do
-        let(:response) { Base64.decode64("Q7DO+ZJl+eNMEOqdNQGSbSezn1fG1nRWHYuiNueoGfs=\n") }
-        before do
-          allow(OpenSSL::HMAC).to receive(:digest).and_return(response)
-        end
+    context 'when non-String hmac_secret is passed' do
+      let(:hmac_secret) { 123 }
 
-        it { is_expected.to eql(response) }
+      it 'raises JWT::DecodeError' do
+        expect { subject }.to raise_error(JWT::DecodeError, 'HMAC key expected to be a String')
       end
     end
 
@@ -123,6 +94,45 @@ RSpec.describe JWT::JWA::Hmac do
       let(:signature) { [60, 56, 87, 72, 185, 194].pack('C*') }
 
       it { is_expected.to be(false) }
+    end
+
+    # GHSA-c32j-vqhx-rx3x: empty/nil keys must be rejected before reaching OpenSSL,
+    # so a forged token signed with "" cannot verify.
+    context 'when verification_key is nil' do
+      let(:signature) { valid_signature }
+      let(:hmac_secret) { nil }
+
+      it 'raises JWT::DecodeError' do
+        expect { subject }.to raise_error(JWT::DecodeError, 'HMAC key expected to be a String')
+      end
+
+      it 'does not call OpenSSL::HMAC.digest' do
+        expect(OpenSSL::HMAC).not_to receive(:digest)
+        expect { subject }.to raise_error(JWT::DecodeError)
+      end
+    end
+
+    context 'when verification_key is an empty string' do
+      let(:signature) { valid_signature }
+      let(:hmac_secret) { '' }
+
+      it 'raises JWT::DecodeError' do
+        expect { subject }.to raise_error(JWT::DecodeError, 'HMAC key cannot be empty')
+      end
+
+      it 'does not call OpenSSL::HMAC.digest' do
+        expect(OpenSSL::HMAC).not_to receive(:digest)
+        expect { subject }.to raise_error(JWT::DecodeError)
+      end
+    end
+
+    context 'when verification_key is not a String' do
+      let(:signature) { valid_signature }
+      let(:hmac_secret) { 123 }
+
+      it 'raises JWT::DecodeError' do
+        expect { subject }.to raise_error(JWT::DecodeError, 'HMAC key expected to be a String')
+      end
     end
   end
 

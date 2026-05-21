@@ -16,18 +16,15 @@ module JWT
       end
 
       def sign(data:, signing_key:)
-        signing_key ||= ''
-        raise_verify_error!('HMAC key expected to be a String') unless signing_key.is_a?(String)
+        ensure_valid_key!(signing_key)
 
         OpenSSL::HMAC.digest(digest.new, signing_key, data)
-      rescue OpenSSL::HMACError => e
-        raise_verify_error!('OpenSSL 3.0 does not support nil or empty hmac_secret') if signing_key == '' && e.message == 'EVP_PKEY_new_mac_key: malloc failure'
-
-        raise e
       end
 
       def verify(data:, signature:, verification_key:)
-        SecurityUtils.secure_compare(signature, sign(data: data, signing_key: verification_key))
+        ensure_valid_key!(verification_key)
+
+        SecurityUtils.secure_compare(signature, OpenSSL::HMAC.digest(digest.new, verification_key, data))
       end
 
       register_algorithm(new('HS256', OpenSSL::Digest::SHA256))
@@ -37,6 +34,11 @@ module JWT
       private
 
       attr_reader :digest
+
+      def ensure_valid_key!(key)
+        raise_verify_error!('HMAC key expected to be a String') unless key.is_a?(String)
+        raise_verify_error!('HMAC key cannot be empty') if key.empty?
+      end
 
       # Copy of https://github.com/rails/rails/blob/v7.0.3.1/activesupport/lib/active_support/security_utils.rb
       # rubocop:disable Naming/MethodParameterName, Style/StringLiterals, Style/NumericPredicate
