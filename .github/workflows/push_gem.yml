@@ -3,6 +3,7 @@
   push:
     tags:
       - v*
+
 name: Push Gem
 jobs:
   push:
@@ -11,10 +12,12 @@ jobs:
       contents: write
       id-token: write
     steps:
-      - uses: rubygems/configure-rubygems-credentials@main
+      - uses: rubygems/configure-rubygems-credentials@762a4b77c3300434bb57c7ce80b20e36231927aa # v2.0.0
         with:
           role-to-assume: ${{ secrets.RUBYGEMS_PUSH_ROLE }}
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          persist-credentials: false
       - name: Set remote URL
         run: |
           # Attribute commits to the last committer on HEAD
@@ -22,9 +25,9 @@ jobs:
           git config --global user.name "$(git log -1 --pretty=format:'%an')"
           git remote set-url origin "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/$GITHUB_REPOSITORY"
       - name: Set up Ruby
-        uses: ruby/setup-ruby@v1
+        uses: ruby/setup-ruby@afeafc3d1ab54a631816aba4c914a0081c12ff2f # v1.310.0
         with:
-          bundler-cache: true
+          bundler-cache: false
           ruby-version: ruby
       - name: Release
         run: bundle exec rake release
