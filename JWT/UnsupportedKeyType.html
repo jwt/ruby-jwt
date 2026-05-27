@@ -4,7 +4,7 @@
     <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>
-  Exception: JWT::ImmatureSignature
+  Exception: JWT::UnsupportedKeyType
   
     &mdash; Documentation by YARD 0.9.44
   
@@ -15,7 +15,7 @@
   <link rel="stylesheet" href="../css/common.css" type="text/css">
 
 <script type="text/javascript">
-  pathId = "JWT::ImmatureSignature";
+  pathId = "JWT::UnsupportedKeyType";
   relpath = '../';
 </script>
 
@@ -38,10 +38,10 @@
       <div id="header">
         <div id="menu">
   
-    <a href="../_index.html">Index (I)</a> &raquo;
+    <a href="../_index.html">Index (U)</a> &raquo;
     <span class='title'><span class='object_link'><a href="../JWT.html" title="JWT (module)">JWT</a></span></span>
      &raquo; 
-    <span class="title">ImmatureSignature</span>
+    <span class="title">UnsupportedKeyType</span>
   
 </div>
 
@@ -61,7 +61,7 @@
         <div class="clear"></div>
       </div>
 
-      <div id="content"><h1>Exception: JWT::ImmatureSignature
+      <div id="content"><h1>Exception: JWT::UnsupportedKeyType
   
   
   
@@ -71,7 +71,7 @@
   <dl>
     <dt>Inherits:</dt>
     <dd>
-      <span class="inheritName"><span class='object_link'><a href="DecodeError.html" title="JWT::DecodeError (class)">DecodeError</a></span></span>
+      <span class="inheritName"><span class='object_link'><a href="JWKError.html" title="JWT::JWKError (class)">JWKError</a></span></span>
       
         <ul class="fullTree">
           <li>Object</li>
@@ -80,7 +80,9 @@
           
             <li class="next"><span class='object_link'><a href="DecodeError.html" title="JWT::DecodeError (class)">DecodeError</a></span></li>
           
-            <li class="next">JWT::ImmatureSignature</li>
+            <li class="next"><span class='object_link'><a href="JWKError.html" title="JWT::JWKError (class)">JWKError</a></span></li>
+          
+            <li class="next">JWT::UnsupportedKeyType</li>
           
         </ul>
         <a href="#" class="inheritanceTree">show all</a>
@@ -108,7 +110,7 @@
 
 <h2>Overview</h2><div class="docstring">
   <div class="discussion">
-    <p>The ImmatureSignature class is raised when the JWT signature is immature.</p>
+    <p>Raised when a JWK uses a key type (kty) that this library does not support.</p>
 
   </div>
 </div>
@@ -123,6 +125,13 @@
 
 
 
+  
+  
+  
+  
+  
+  
+  
   
   
   
