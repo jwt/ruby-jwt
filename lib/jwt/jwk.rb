@@ -13,7 +13,7 @@ module JWT
           raise JWT::JWKError, 'Key type (kty) not provided' unless jwk_kty
 
           return mappings.fetch(jwk_kty.to_s) do |kty|
-            raise JWT::JWKError, "Key type #{kty} not supported"
+            raise JWT::UnsupportedKeyType, "Key type #{kty} not supported"
           end.new(key, params, options)
         end
 

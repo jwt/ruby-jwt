@@ -1,5 +1,17 @@
 # Changelog
 
+## [v3.2.1](https://github.com/jwt/ruby-jwt/tree/v3.2.1) (NEXT)
+
+[Full Changelog](https://github.com/jwt/ruby-jwt/compare/v3.2.0...v3.2.1)
+
+**Features:**
+
+- Your contribution here
+
+**Fixes and enhancements:**
+
+- Fix rejection of unknown algorithms from JWKs for RFC compliance and pquip [#728](https://github.com/jwt/ruby-jwt/pull/728)
+
 ## [v3.2.0](https://github.com/jwt/ruby-jwt/tree/v3.2.0) (2026-05-13)
 
 [Full Changelog](https://github.com/jwt/ruby-jwt/compare/v3.1.2...v3.2.0)

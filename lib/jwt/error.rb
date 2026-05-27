@@ -51,4 +51,7 @@ module JWT
 
   # The JWKError class is raised when there is an error with the JSON Web Key (JWK).
   class JWKError < DecodeError; end
+
+  # Raised when a JWK uses a key type (kty) that this library does not support.
+  class UnsupportedKeyType < JWKError; end
 end

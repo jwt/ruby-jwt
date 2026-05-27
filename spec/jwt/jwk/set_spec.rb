@@ -36,6 +36,38 @@ RSpec.describe JWT::JWK::Set do
       end
     end
 
+    it 'ignores keys with unsupported kty values (RFC 7517 §5), required for hybrid PQC' do
+      jwks = {
+        keys: [
+          { kty: 'unknown', alg: 'unknown-alg', kid: 'unknown' },
+          { kty: 'oct', k: Base64.strict_encode64('testkey') }
+        ]
+      }
+      set = described_class.new(jwks)
+      expect(set.size).to eql(1)
+      expect(set.keys[0][:kty]).to eql('oct')
+    end
+
+    it 'returns an empty set when all keys have unsupported kty values' do
+      jwks = {
+        keys: [
+          { kty: 'unknown', alg: 'unknown-alg', kid: 'unknown-1' },
+          { kty: 'future', alg: 'future-alg', kid: 'future-1' }
+        ]
+      }
+      set = described_class.new(jwks)
+      expect(set.size).to eql(0)
+    end
+
+    it 'raises on malformed keys with a known kty' do
+      jwks = {
+        keys: [
+          { kty: 'RSA' }
+        ]
+      }
+      expect { described_class.new(jwks) }.to raise_error(JWT::JWKError, /Key format is invalid for RSA/)
+    end
+
     it 'raises an error on invalid inputs' do
       expect { described_class.new(42) }.to raise_error(ArgumentError)
     end
