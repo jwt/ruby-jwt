@@ -22,7 +22,11 @@ module JWT
                   [jwks]
                 when Hash
                   jwks = jwks.transform_keys(&:to_sym)
-                  [*jwks[:keys]].map { |k| JWT::JWK.new(k, nil, options) }
+                  [*jwks[:keys]].each_with_object([]) do |k, arr|
+                    arr << JWT::JWK.new(k, nil, options)
+                  rescue JWT::UnsupportedKeyType
+                    nil
+                  end
                 when Array
                   jwks.map { |k| JWT::JWK.new(k, nil, options) }
                 else
