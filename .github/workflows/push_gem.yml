@@ -29,6 +29,8 @@ jobs:
         with:
           bundler-cache: false
           ruby-version: ruby
+      - name: Install dependencies
+        run: bundle install
       - name: Release
         run: bundle exec rake release
       - name: Wait for release to propagate
