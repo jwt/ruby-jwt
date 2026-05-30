@@ -6,7 +6,7 @@
 
 **Features:**
 
-- Revamp error hierarchy: introduce `JWT::Error`, `JWT::TokenError`, `JWT::MalformedTokenError`, `JWT::SignatureError`, and `JWT::ClaimValidationError` grouping classes. `JWT::DecodeError` is now a deprecated alias for `JWT::Error` [#722](https://github.com/jwt/ruby-jwt/pull/722) ([@anakinj](https://github.com/anakinj))
+- Revamp error hierarchy: introduce `JWT::Error`, `JWT::TokenError`, `JWT::MalformedTokenError`, `JWT::SignatureError`, and `JWT::ClaimValidationError` grouping classes. `JWT::DecodeError` is now a deprecated alias for `JWT::Error`; because of this, `rescue JWT::DecodeError` now also catches `JWT::EncodeError` and `JWT::JWKError` [#722](https://github.com/jwt/ruby-jwt/pull/722) ([@anakinj](https://github.com/anakinj))
 - Your contribution here
 
 **Fixes and enhancements:**

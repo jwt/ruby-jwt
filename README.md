@@ -632,7 +632,7 @@ end
 
 begin
   JWT.decode(token, nil, true, { x5c: { root_certificates: root_certificates, crls: crls } })
-rescue JWT::DecodeError
+rescue JWT::TokenError
   # Handle error, e.g. x5c header certificate revoked or expired
 end
 ```
@@ -697,8 +697,8 @@ begin
   JWT.decode(token, nil, true, { algorithms: ['RS512'], jwks: jwks_loader })
 rescue JWT::JWKError
   # Handle problems with the provided JWKs
-rescue JWT::DecodeError
-  # Handle other decode related issues e.g. no kid in header, no matching public key found etc.
+rescue JWT::TokenError
+  # Handle other token related issues e.g. no kid in header, no matching public key found etc.
 end
 ```
 
