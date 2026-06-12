@@ -102,7 +102,7 @@ jobs:
       - name: Download coverage reports from the test job
         uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
 
-      - uses: qltysh/qlty-action/coverage@a19242102d17e497f437d7466aa01b528537e899 # v2.2.0
+      - uses: qltysh/qlty-action/coverage@fd52dc852530a708d68c3b7342f8d33d1df4cd55 # v2.2.1
         with:
           token: ${{ secrets.QLTY_COVERAGE_TOKEN }}
           files: coverage-*/*.json
