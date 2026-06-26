@@ -12,7 +12,7 @@ jobs:
       contents: write
       id-token: write
     steps:
-      - uses: rubygems/configure-rubygems-credentials@762a4b77c3300434bb57c7ce80b20e36231927aa # v2.0.0
+      - uses: rubygems/configure-rubygems-credentials@dc5a8d8553e6ee01fc26761a49e99e733d17954a # v2.1.0
         with:
           role-to-assume: ${{ secrets.RUBYGEMS_PUSH_ROLE }}
       - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
