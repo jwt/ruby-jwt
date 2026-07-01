@@ -48,7 +48,7 @@ RSpec.describe JWT::JWA::Ps do
     end
 
     context 'with a key length less than 2048 bits' do
-      let(:rsa_key) { OpenSSL::PKey::RSA.generate(2047) }
+      let(:rsa_key) { OpenSSL::PKey::RSA.generate(1536) }
 
       it 'raises an error' do
         expect do
