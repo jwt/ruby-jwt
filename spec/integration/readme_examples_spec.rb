@@ -304,8 +304,8 @@ RSpec.describe 'README.md code test' do
           JWT.decode(token, nil, true, { algorithms: ['RS512'], jwks: jwk_loader })
         rescue JWT::JWKError
           # Handle problems with the provided JWKs
-        rescue JWT::DecodeError
-          # Handle other decode related issues e.g. no kid in header, no matching public key found etc.
+        rescue JWT::TokenError
+          # Handle other token related issues e.g. no kid in header, no matching public key found etc.
         end
 
         ## This is not in the example but verifies that the cache is invalidated after 5 minutes
@@ -322,7 +322,7 @@ RSpec.describe 'README.md code test' do
         jwk = JWT::JWK.new(OpenSSL::PKey::RSA.new(2048), 'yet-another-new-kid')
         headers = { kid: jwk.kid }
         token = JWT.encode(payload, jwk.signing_key, 'RS512', headers)
-        expect { JWT.decode(token, nil, true, { algorithms: ['RS512'], jwks: jwk_loader }) }.to raise_error(JWT::DecodeError, 'Could not find public key for kid yet-another-new-kid')
+        expect { JWT.decode(token, nil, true, { algorithms: ['RS512'], jwks: jwk_loader }) }.to raise_error(JWT::SignatureError, 'Could not find public key for kid yet-another-new-kid')
       end
 
       it 'works as expected' do
@@ -355,8 +355,8 @@ RSpec.describe 'README.md code test' do
           JWT.decode(token, nil, true, { algorithms: ['RS512'], jwks: jwks_loader })
         rescue JWT::JWKError
           # Handle problems with the provided JWKs
-        rescue JWT::DecodeError
-          # Handle other decode related issues e.g. no kid in header, no matching public key found etc.
+        rescue JWT::TokenError
+          # Handle other token related issues e.g. no kid in header, no matching public key found etc.
         end
       end
     end

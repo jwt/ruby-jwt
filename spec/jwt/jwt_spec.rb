@@ -83,7 +83,7 @@ RSpec.describe JWT do
           it 'should fail to decode the token' do
             expect do
               JWT.decode encoded_token, nil, true
-            end.to raise_error JWT::DecodeError
+            end.to raise_error JWT::IncorrectAlgorithm
           end
         end
       end
@@ -105,13 +105,13 @@ RSpec.describe JWT do
         expect(jwt_payload).to eq payload
       end
 
-      it 'wrong secret should raise JWT::DecodeError' do
+      it 'wrong secret should raise JWT::VerificationError' do
         expect do
           JWT.decode data[alg], 'wrong_secret', true, algorithm: alg
         end.to raise_error JWT::VerificationError
       end
 
-      it 'wrong secret and verify = false should not raise JWT::DecodeError' do
+      it 'wrong secret and verify = false should not raise an error' do
         expect do
           JWT.decode data[alg], 'wrong_secret', false
         end.not_to raise_error
@@ -141,15 +141,15 @@ RSpec.describe JWT do
         expect(jwt_payload).to eq payload
       end
 
-      it 'wrong key should raise JWT::DecodeError' do
+      it 'wrong key should raise JWT::VerificationError' do
         key = test_pkey('rsa-2048-wrong-public.pem')
 
         expect do
           JWT.decode data[alg], key, true, algorithm: alg
-        end.to raise_error JWT::DecodeError
+        end.to raise_error JWT::VerificationError
       end
 
-      it 'wrong key and verify = false should not raise JWT::DecodeError' do
+      it 'wrong key and verify = false should not raise an error' do
         key = test_pkey('rsa-2048-wrong-public.pem')
 
         expect do
@@ -169,7 +169,7 @@ RSpec.describe JWT do
         data[alg] = JWT.encode(payload, data["#{alg}_private"], alg)
       end
 
-      let(:wrong_key) { test_pkey('ec256-wrong-public.pem') }
+      let(:wrong_key) { OpenSSL::PKey::EC.generate(data["#{alg}_private"].group.curve_name) }
 
       it 'should generate a valid token' do
         jwt_payload, header = JWT.decode data[alg], data["#{alg}_public"], true, algorithm: alg
@@ -185,13 +185,13 @@ RSpec.describe JWT do
         expect(jwt_payload).to eq payload
       end
 
-      it 'wrong key should raise JWT::DecodeError' do
+      it 'wrong key should raise JWT::VerificationError' do
         expect do
-          JWT.decode data[alg], wrong_key
-        end.to raise_error JWT::DecodeError
+          JWT.decode data[alg], wrong_key, true, algorithm: alg
+        end.to raise_error JWT::VerificationError
       end
 
-      it 'wrong key and verify = false should not raise JWT::DecodeError' do
+      it 'wrong key and verify = false should not raise an error' do
         expect do
           JWT.decode data[alg], wrong_key, false
         end.not_to raise_error
@@ -234,13 +234,13 @@ RSpec.describe JWT do
         expect(jwt_payload).to eq payload
       end
 
-      it 'wrong key should raise JWT::DecodeError' do
+      it 'wrong key should raise JWT::VerificationError' do
         expect do
-          JWT.decode data[alg], wrong_key
-        end.to raise_error JWT::DecodeError
+          JWT.decode data[alg], wrong_key, true, algorithm: alg
+        end.to raise_error JWT::VerificationError
       end
 
-      it 'wrong key and verify = false should not raise JWT::DecodeError' do
+      it 'wrong key and verify = false should not raise an error' do
         expect do
           JWT.decode data[alg], wrong_key, false
         end.not_to raise_error
@@ -249,7 +249,7 @@ RSpec.describe JWT do
   end
 
   context 'Invalid' do
-    it 'algorithm should raise DecodeError' do
+    it 'invalid algorithm should raise EncodeError' do
       expect do
         JWT.encode payload, 'secret', 'HS255'
       end.to raise_error JWT::EncodeError
@@ -257,7 +257,7 @@ RSpec.describe JWT do
 
     it 'raises "No verification key available" error' do
       token = JWT.encode({}, 'foo')
-      expect { JWT.decode(token, nil, true) }.to raise_error(JWT::DecodeError, 'No verification key available')
+      expect { JWT.decode(token, nil, true) }.to raise_error(JWT::SignatureError, 'No verification key available')
     end
 
     it 'ECDSA curve_name should raise JWT::IncorrectAlgorithm' do
@@ -424,7 +424,7 @@ RSpec.describe JWT do
           JWT.decode(token, nil, true, algorithm: 'HS256') do
             nil
           end
-        end.to raise_error JWT::DecodeError, 'No verification key available'
+        end.to raise_error JWT::SignatureError, 'No verification key available'
       end
 
       it 'should raise JWT::IncorrectAlgorithm when algorithms array does not contain algorithm' do
@@ -466,18 +466,18 @@ RSpec.describe JWT do
         end
 
         context 'invalid header format' do
-          it 'should raise JWT::DecodeError' do
+          it 'should raise JWT::MalformedTokenError' do
             expect do
               JWT.decode data[:invalid_header_token]
-            end.to raise_error JWT::DecodeError
+            end.to raise_error JWT::MalformedTokenError
           end
         end
 
         context 'invalid 2-segment header format' do
-          it 'should raise JWT::DecodeError' do
+          it 'should raise JWT::MalformedTokenError' do
             expect do
               JWT.decode data[:invalid_2_segment_header_token]
-            end.to raise_error JWT::DecodeError, 'Not enough or too many segments'
+            end.to raise_error JWT::MalformedTokenError, 'Not enough or too many segments'
           end
         end
 
@@ -485,7 +485,7 @@ RSpec.describe JWT do
           it 'should raise JWT::IncorrectAlgorithm' do
             expect do
               JWT.decode data[:empty_token_2_segment]
-            end.to raise_error JWT::DecodeError
+            end.to raise_error JWT::IncorrectAlgorithm
           end
         end
       end
@@ -538,22 +538,28 @@ RSpec.describe JWT do
     end
   end
 
+  context 'when nil is passed as the token' do
+    it 'raises JWT::MalformedTokenError' do
+      expect { JWT.decode(nil, nil, true) }.to raise_error(JWT::MalformedTokenError, 'Nil JSON web token')
+    end
+  end
+
   context 'a token with no segments' do
-    it 'raises JWT::DecodeError' do
-      expect { JWT.decode('ThisIsNotAValidJWTToken', nil, true) }.to raise_error(JWT::DecodeError, 'Not enough or too many segments')
+    it 'raises JWT::MalformedTokenError' do
+      expect { JWT.decode('ThisIsNotAValidJWTToken', nil, true) }.to raise_error(JWT::MalformedTokenError, 'Not enough or too many segments')
     end
   end
 
   context 'a token with not enough segments' do
-    it 'raises JWT::DecodeError' do
+    it 'raises JWT::MalformedTokenError' do
       token = JWT.encode('ThisIsNotAValidJWTToken', 'secret').split('.').slice(1, 2).join
-      expect { JWT.decode(token, nil, true) }.to raise_error(JWT::DecodeError, 'Not enough or too many segments')
+      expect { JWT.decode(token, nil, true) }.to raise_error(JWT::MalformedTokenError, 'Not enough or too many segments')
     end
   end
 
   context 'a token with not too many segments' do
-    it 'raises JWT::DecodeError' do
-      expect { JWT.decode('ThisIsNotAValidJWTToken.second.third.signature', nil, true) }.to raise_error(JWT::DecodeError, 'Not enough or too many segments')
+    it 'raises JWT::MalformedTokenError' do
+      expect { JWT.decode('ThisIsNotAValidJWTToken.second.third.signature', nil, true) }.to raise_error(JWT::MalformedTokenError, 'Not enough or too many segments')
     end
   end
 
@@ -731,8 +737,8 @@ RSpec.describe JWT do
       JWT.configuration.strict_base64_decoding = true
     end
 
-    it 'raises JWT::DecodeError' do
-      expect { JWT.decode(token, 'secret', true, algorithm: 'HS256') }.to raise_error(JWT::DecodeError, 'Invalid base64 encoding')
+    it 'raises JWT::Base64DecodeError' do
+      expect { JWT.decode(token, 'secret', true, algorithm: 'HS256') }.to raise_error(JWT::Base64DecodeError, 'Invalid base64 encoding')
     end
   end
 
@@ -929,7 +935,7 @@ RSpec.describe JWT do
       end
 
       it 'raises error on decoding' do
-        expect { JWT.decode(expected_token, 'secret', true, algorithm: custom_algorithm.new) }.to raise_error(JWT::DecodeError, /missing the verify method/)
+        expect { JWT.decode(expected_token, 'secret', true, algorithm: custom_algorithm.new) }.to raise_error(JWT::VerificationError, /missing the verify method/)
       end
     end
   end

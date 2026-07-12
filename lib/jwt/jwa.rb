@@ -37,7 +37,7 @@ module JWT
       # @api private
       def create_signer(algorithm:, key:)
         if key.is_a?(JWK::KeyBase)
-          validate_jwk_algorithms!(key, algorithm, DecodeError)
+          validate_jwk_algorithms!(key, algorithm, EncodeError)
 
           return key
         end
