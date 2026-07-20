@@ -140,6 +140,33 @@ RSpec.describe JWT::X5cKeyFinder do
     end
   end
 
+  context 'when the x5c header parameter is malformed' do
+    [
+      ['a non-array string', 'not-an-array'],
+      ['an integer', 123],
+      ['nil', nil],
+      ['a hash', {}],
+      ['an empty array', []],
+      ['an array of non-string/non-certificate values', [123]],
+      ['an array of valid base64 that is not a certificate', [Base64.strict_encode64('this is not a certificate')]]
+    ].each do |desc, bad_x5c|
+      it "raises JWT::MalformedTokenError for #{desc} rather than a raw exception" do
+        expect { described_class.new([root_certificate], [crl]).from(bad_x5c) }.to raise_error(JWT::MalformedTokenError)
+      end
+    end
+
+    it 'raises JWT::MalformedTokenError for a valid certificate mixed with a non-string' do
+      expect { described_class.new([root_certificate], [crl]).from([leaf_certificate, 123]) }.to raise_error(JWT::MalformedTokenError)
+    end
+
+    it 'surfaces as JWT::MalformedTokenError through JWT.decode with the x5c option' do
+      encoded_token = JWT.encode({ 'data' => 'something' }, leaf_key, 'RS256', { 'x5c' => 'not-an-array' })
+      expect do
+        JWT.decode(encoded_token, nil, true, algorithms: ['RS256'], x5c: { root_certificates: [root_certificate], crls: [crl] })
+      end.to raise_error(JWT::MalformedTokenError)
+    end
+  end
+
   private
 
   def generate_key
