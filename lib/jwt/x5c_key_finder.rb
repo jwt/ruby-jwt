@@ -40,13 +40,21 @@ module JWT
     end
 
     def parse_certificates(x5c_header_or_certificates)
+      unless x5c_header_or_certificates.is_a?(Array) && !x5c_header_or_certificates.empty?
+        raise JWT::DecodeError, 'Invalid x5c header parameter'
+      end
+
       if x5c_header_or_certificates.all?(OpenSSL::X509::Certificate)
         x5c_header_or_certificates
-      else
+      elsif x5c_header_or_certificates.all?(String)
         x5c_header_or_certificates.map do |encoded|
           OpenSSL::X509::Certificate.new(::JWT::Base64.url_decode(encoded))
         end
+      else
+        raise JWT::DecodeError, 'Invalid x5c header parameter'
       end
+    rescue OpenSSL::X509::CertificateError => e
+      raise JWT::DecodeError, "Invalid x5c certificate: #{e.message}"
     end
   end
 end
