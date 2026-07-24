@@ -28,7 +28,11 @@ module JWT
                     nil
                   end
                 when Array
-                  jwks.map { |k| JWT::JWK.new(k, nil, options) }
+                  jwks.each_with_object([]) do |k, arr|
+                    arr << JWT::JWK.new(k, nil, options)
+                  rescue JWT::UnsupportedKeyType
+                    nil
+                  end
                 else
                   raise ArgumentError, 'Can only create new JWKS from Hash, Array and JWK'
                 end

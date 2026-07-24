@@ -48,6 +48,16 @@ RSpec.describe JWT::JWK::Set do
       expect(set.keys[0][:kty]).to eql('oct')
     end
 
+    it 'ignores keys with unsupported kty values when constructed from an array (RFC 7517 §5)' do
+      keys = [
+        { kty: 'unknown', alg: 'unknown-alg', kid: 'unknown' },
+        { kty: 'oct', k: Base64.strict_encode64('testkey') }
+      ]
+      set = described_class.new(keys)
+      expect(set.size).to eql(1)
+      expect(set.keys[0][:kty]).to eql('oct')
+    end
+
     it 'returns an empty set when all keys have unsupported kty values' do
       jwks = {
         keys: [
