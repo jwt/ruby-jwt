@@ -35,7 +35,7 @@ module JWT
       end
 
       def raise_verify_error!(message)
-        raise(DecodeError.new(message).tap { |e| e.set_backtrace(caller(1)) })
+        raise(VerificationError.new(message).tap { |e| e.set_backtrace(caller(1)) })
       end
 
       def raise_sign_error!(message)

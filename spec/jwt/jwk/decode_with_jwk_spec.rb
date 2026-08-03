@@ -34,7 +34,7 @@ RSpec.describe JWT do
         end
         it 'raises an exception' do
           expect { described_class.decode(signed_token, nil, true, { algorithms: [algorithm], jwks: public_jwks }) }.to raise_error(
-            JWT::DecodeError, /Could not find public key for kid .*/
+            JWT::SignatureError, /Could not find public key for kid .*/
           )
         end
       end
@@ -63,7 +63,7 @@ RSpec.describe JWT do
         let(:public_jwks) { { keys: [] } }
         it 'raises an exception' do
           expect { described_class.decode(signed_token, nil, true, { algorithms: [algorithm], jwks: public_jwks }) }.to raise_error(
-            JWT::DecodeError, /No keys found in jwks/
+            JWT::SignatureError, /No keys found in jwks/
           )
         end
       end
@@ -72,7 +72,7 @@ RSpec.describe JWT do
         let(:token_headers) { {} }
         it 'raises an exception' do
           expect { described_class.decode(signed_token, nil, true, { algorithms: [algorithm], jwks: public_jwks }) }.to raise_error(
-            JWT::DecodeError, 'No key id (kid) or x5t found from token headers'
+            JWT::SignatureError, 'No key id (kid) or x5t found from token headers'
           )
         end
       end
@@ -116,7 +116,7 @@ RSpec.describe JWT do
       let(:token_headers) { { kid: 5 } }
       it 'raises an exception' do
         expect { described_class.decode(signed_token, nil, true, { algorithms: ['RS512'], jwks: public_jwks }) }.to raise_error(
-          JWT::DecodeError, 'Invalid type for kid header parameter'
+          JWT::MalformedTokenError, 'Invalid type for kid header parameter'
         )
       end
     end
@@ -131,16 +131,16 @@ RSpec.describe JWT do
       context 'when RSA key is pointed to as HMAC secret' do
         let(:signed_token) { described_class.encode({ 'foo' => 'bar' }, 'is not really relevant in the scenario', 'HS256', { kid: rsa_jwk.kid }) }
 
-        it 'raises JWT::DecodeError' do
-          expect { described_class.decode(signed_token, nil, true, algorithms: ['HS256'], jwks: jwks) }.to raise_error(JWT::DecodeError, 'HMAC key expected to be a String')
+        it 'raises JWT::VerificationError' do
+          expect { described_class.decode(signed_token, nil, true, algorithms: ['HS256'], jwks: jwks) }.to raise_error(JWT::VerificationError, 'HMAC key expected to be a String')
         end
       end
 
       context 'when EC key is pointed to as HMAC secret' do
         let(:signed_token) { described_class.encode({ 'foo' => 'bar' }, 'is not really relevant in the scenario', 'HS256', { kid: ec_jwk_secp384r1.kid }) }
 
-        it 'raises JWT::DecodeError' do
-          expect { described_class.decode(signed_token, nil, true, algorithms: ['HS256'], jwks: jwks) }.to raise_error(JWT::DecodeError, 'HMAC key expected to be a String')
+        it 'raises JWT::VerificationError' do
+          expect { described_class.decode(signed_token, nil, true, algorithms: ['HS256'], jwks: jwks) }.to raise_error(JWT::VerificationError, 'HMAC key expected to be a String')
         end
       end
 
@@ -169,7 +169,7 @@ RSpec.describe JWT do
 
         it 'fails in some way' do
           expect { described_class.decode(signed_token, nil, true, algorithms: ['ES384'], jwks: jwks) }.to(
-            raise_error(JWT::DecodeError, 'The given key is a String. It has to be an OpenSSL::PKey::EC instance')
+            raise_error(JWT::VerificationError, 'The given key is a String. It has to be an OpenSSL::PKey::EC instance')
           )
         end
       end
