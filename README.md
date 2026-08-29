@@ -548,6 +548,12 @@ rescue JWT::InvalidIatError
 end
 ```
 
+The comparison is exact by default. When the clock of the issuer can drift ahead of the clock of the verifier, the tolerated drift can be given explicitly:
+
+```ruby
+decoded_token = JWT.decode(token, hmac_secret, true, { verify_iat: { leeway: 30 }, algorithm: 'HS256' })
+```
+
 ### Subject Claim
 
 From [Oauth JSON Web Token 4.1.2. "sub" (Subject) Claim](https://tools.ietf.org/html/rfc7519#section-4.1.2):
