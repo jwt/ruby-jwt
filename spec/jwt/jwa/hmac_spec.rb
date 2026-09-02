@@ -23,7 +23,7 @@ RSpec.describe JWT::JWA::Hmac do
 
       it 'does not call OpenSSL::HMAC.digest' do
         expect(OpenSSL::HMAC).not_to receive(:digest)
-        expect { subject }.to raise_error(JWT::DecodeError)
+        expect { subject }.to raise_error(JWT::VerificationError)
       end
     end
 
@@ -36,7 +36,7 @@ RSpec.describe JWT::JWA::Hmac do
 
       it 'does not call OpenSSL::HMAC.digest' do
         expect(OpenSSL::HMAC).not_to receive(:digest)
-        expect { subject }.to raise_error(JWT::DecodeError)
+        expect { subject }.to raise_error(JWT::VerificationError)
       end
     end
 
@@ -130,7 +130,7 @@ RSpec.describe JWT::JWA::Hmac do
 
       it 'raises error and does not call OpenSSL::HMAC.digest' do
         expect(OpenSSL::HMAC).not_to receive(:digest)
-        expect { subject }.to raise_error(JWT::DecodeError, 'HMAC key expected to be a String')
+        expect { subject }.to raise_error(JWT::VerificationError, 'HMAC key expected to be a String')
       end
     end
 
@@ -140,7 +140,7 @@ RSpec.describe JWT::JWA::Hmac do
 
       it 'raises error and does not call OpenSSL::HMAC.digest' do
         expect(OpenSSL::HMAC).not_to receive(:digest)
-        expect { subject }.to raise_error(JWT::DecodeError, 'HMAC key cannot be empty')
+        expect { subject }.to raise_error(JWT::VerificationError, 'HMAC key cannot be empty')
       end
     end
 
