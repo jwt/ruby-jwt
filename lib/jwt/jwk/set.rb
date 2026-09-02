@@ -17,7 +17,7 @@ module JWT
 
         @keys = case jwks
                 when JWT::JWK::Set # Simple duplication
-                  jwks.keys
+                  jwks.keys.dup
                 when JWT::JWK::KeyBase # Singleton
                   [jwks]
                 when Hash
@@ -32,6 +32,13 @@ module JWT
                 else
                   raise ArgumentError, 'Can only create new JWKS from Hash, Array and JWK'
                 end
+      end
+
+      # Ensures a duplicated set owns its key collection. The keys themselves are
+      # intentionally shared; only the collection is copied.
+      def initialize_copy(other)
+        super
+        @keys = other.keys.dup
       end
 
       def export(options = {})
