@@ -15,10 +15,8 @@ module JWT
         raise_sign_error!("The given key is a #{signing_key.class}. It has to be an OpenSSL::PKey::EC instance") unless signing_key.is_a?(::OpenSSL::PKey::EC)
         raise_sign_error!('The given key is not a private key') unless signing_key.private?
 
-        curve_definition = curve_by_name(signing_key.group.curve_name)
-        key_algorithm = curve_definition[:algorithm]
-
-        raise IncorrectAlgorithm, "payload algorithm is #{alg} but #{key_algorithm} signing key was provided" if alg != key_algorithm
+        key_algorithm = signing_key_algorithm(signing_key)
+        raise_sign_error!("payload algorithm is #{alg} but #{key_algorithm} signing key was provided") if alg != key_algorithm
 
         asn1_to_raw(signing_key.dsa_sign_asn1(OpenSSL::Digest.new(digest).digest(data)), signing_key)
       end
@@ -93,6 +91,13 @@ module JWT
 
       def curve_by_name(name)
         self.class.curve_by_name(name)
+      end
+
+      # Signing-side counterpart of {.curve_by_name}. An unsupported curve on the
+      # signing key is an encoding problem, so it raises a JWT::EncodeError.
+      def signing_key_algorithm(signing_key)
+        curve_name = signing_key.group.curve_name
+        NAMED_CURVES.fetch(curve_name) { raise_sign_error!("The ECDSA curve '#{curve_name}' is not supported") }[:algorithm]
       end
 
       def raw_to_asn1(signature, private_key)

@@ -125,7 +125,7 @@ RSpec.describe JWT do
       let(:hmac_jwk)           { JWT::JWK.new('secret') }
       let(:rsa_jwk)            { JWT::JWK.new(test_pkey('rsa-2048-private.pem')) }
       let(:ec_jwk_secp384r1)   { JWT::JWK.new(test_pkey('ec384-private.pem')) }
-      let(:ec_jwk_secp521r1)   { JWT::JWK.new(test_pkey('ec384-private.pem')) }
+      let(:ec_jwk_secp521r1)   { JWT::JWK.new(test_pkey('ec512-private.pem')) }
       let(:jwks)               { { keys: [hmac_jwk.export(include_private: true), rsa_jwk.export, ec_jwk_secp384r1.export, ec_jwk_secp521r1.export] } }
 
       context 'when RSA key is pointed to as HMAC secret' do
@@ -175,11 +175,11 @@ RSpec.describe JWT do
       end
 
       context 'when ES384 key is pointed to as ES512 key' do
-        let(:signed_token) { described_class.encode({ 'foo' => 'bar' }, ec_jwk_secp384r1.signing_key, 'ES512', { kid: ec_jwk_secp521r1.kid }) }
+        let(:signed_token) { described_class.encode({ 'foo' => 'bar' }, ec_jwk_secp384r1.signing_key, 'ES384', { kid: ec_jwk_secp521r1.kid }) }
 
         it 'fails in some way' do
-          expect { described_class.decode(signed_token, nil, true, algorithms: ['ES512'], jwks: jwks) }.to(
-            raise_error(JWT::IncorrectAlgorithm, 'payload algorithm is ES512 but ES384 signing key was provided')
+          expect { described_class.decode(signed_token, nil, true, algorithms: ['ES384'], jwks: jwks) }.to(
+            raise_error(JWT::IncorrectAlgorithm, 'payload algorithm is ES384 but ES512 verification key was provided')
           )
         end
       end

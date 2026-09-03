@@ -6,7 +6,7 @@
 
 **Features:**
 
-- Revamp error hierarchy: introduce `JWT::Error`, `JWT::TokenError`, `JWT::MalformedTokenError`, `JWT::SignatureError`, and `JWT::ClaimValidationError` grouping classes. `JWT::DecodeError` is now a deprecated alias for `JWT::Error`; because of this, `rescue JWT::DecodeError` now also catches `JWT::EncodeError` [#722](https://github.com/jwt/ruby-jwt/pull/722) ([@anakinj](https://github.com/anakinj))
+- Revamp error hierarchy: introduce `JWT::Error`, `JWT::TokenError`, `JWT::MalformedTokenError`, `JWT::SignatureError`, and `JWT::ClaimValidationError` grouping classes. `JWT::DecodeError` is now a deprecated alias for `JWT::Error`; because of this, `rescue JWT::DecodeError` now also catches `JWT::EncodeError`. Signing failures now consistently raise `JWT::EncodeError`: an ECDSA signing key with a mismatched or unsupported curve and an invalid HMAC signing key previously surfaced as `JWT::IncorrectAlgorithm`, `JWT::UnsupportedEcdsaCurve` or `JWT::DecodeError` from `JWT.encode` [#722](https://github.com/jwt/ruby-jwt/pull/722) ([@anakinj](https://github.com/anakinj))
 - Your contribution here
 
 **Fixes and enhancements:**

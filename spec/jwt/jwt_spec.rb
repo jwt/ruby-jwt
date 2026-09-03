@@ -260,18 +260,21 @@ RSpec.describe JWT do
       expect { JWT.decode(token, nil, true) }.to raise_error(JWT::SignatureError, 'No verification key available')
     end
 
-    it 'ECDSA curve_name should raise JWT::IncorrectAlgorithm' do
+    it 'ECDSA curve_name mismatch should raise JWT::EncodeError when encoding' do
       key = OpenSSL::PKey::EC.generate('secp256k1')
 
       expect do
         JWT.encode payload, key, 'ES256'
-      end.to raise_error JWT::IncorrectAlgorithm
+      end.to raise_error JWT::EncodeError, 'payload algorithm is ES256 but ES256K signing key was provided'
+    end
 
+    it 'ECDSA curve_name mismatch should raise JWT::IncorrectAlgorithm when decoding' do
+      key = OpenSSL::PKey::EC.generate('secp256k1')
       token = JWT.encode payload, data['ES256_private'], 'ES256'
 
       expect do
-        JWT.decode token, key
-      end.to raise_error JWT::IncorrectAlgorithm
+        JWT.decode token, key, true, algorithm: 'ES256'
+      end.to raise_error JWT::IncorrectAlgorithm, 'payload algorithm is ES256 but ES256K verification key was provided'
     end
   end
 
