@@ -84,8 +84,14 @@ RSpec.describe JWT::JWK::Set do
         original.dup.reject! { true }
         expect(original.keys).to eql([jwk])
       end
+    end
 
-      it 'keeps the original intact when a union is built from it' do
+    context 'when a union is built from it' do
+      let(:jwk) { JWT::JWK.new({ kty: 'oct', k: Base64.strict_encode64('testkey') }) }
+      let(:other) { JWT::JWK.new({ kty: 'oct', k: Base64.strict_encode64('otherkey') }) }
+      let(:original) { described_class.new([jwk]) }
+
+      it 'keeps the original intact' do
         original.union([other])
         expect(original.keys).to eql([jwk])
       end

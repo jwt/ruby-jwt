@@ -38,7 +38,7 @@ module JWT
       # intentionally shared; only the collection is copied.
       def initialize_copy(other)
         super
-        @keys = other.keys.dup
+        @keys = @keys.dup
       end
 
       def export(options = {})
