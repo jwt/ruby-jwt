@@ -20,6 +20,7 @@ RSpec.describe JWT::Claims::IssuedAt do
       verify!
     end
   end
+
   context 'when the issuer clock is ahead of the verifier clock' do
     let(:now) { Time.at(1_609_459_200.5) }
     let(:payload) { { 'iat' => 1_609_459_201 } }
@@ -44,6 +45,50 @@ RSpec.describe JWT::Claims::IssuedAt do
 
       it 'fails validation' do
         expect { verify! }.to raise_error(JWT::InvalidIatError)
+      end
+    end
+  end
+
+  context 'when iat is at the boundary of the allowed drift' do
+    let(:now) { Time.at(1_609_459_200) }
+
+    before { allow(Time).to receive(:now) { now } }
+
+    context 'when no leeway is given' do
+      context 'when iat is exactly now' do
+        let(:payload) { { 'iat' => 1_609_459_200 } }
+
+        it 'passes validation' do
+          verify!
+        end
+      end
+
+      context 'when iat is one second after now' do
+        let(:payload) { { 'iat' => 1_609_459_201 } }
+
+        it 'fails validation' do
+          expect { verify! }.to raise_error(JWT::InvalidIatError)
+        end
+      end
+    end
+
+    context 'when a leeway is given' do
+      let(:options) { { leeway: 30 } }
+
+      context 'when iat is exactly at the end of the leeway window' do
+        let(:payload) { { 'iat' => 1_609_459_230 } }
+
+        it 'passes validation' do
+          verify!
+        end
+      end
+
+      context 'when iat is one second past the leeway window' do
+        let(:payload) { { 'iat' => 1_609_459_231 } }
+
+        it 'fails validation' do
+          expect { verify! }.to raise_error(JWT::InvalidIatError)
+        end
       end
     end
   end
