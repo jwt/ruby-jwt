@@ -417,6 +417,32 @@ RSpec.describe JWT::EncodedToken do
         end
       end
     end
+
+    context 'when payload is detached and not provided' do
+      let(:encoded_token) { detached_payload_token.jwt }
+
+      it 'returns false instead of raising' do
+        expect(token.valid_claims?(:exp)).to be(false)
+      end
+    end
+
+    context 'when payload is not valid JSON' do
+      let(:encoded_token) do
+        header_segment = Base64.urlsafe_encode64('{"alg":"HS256"}', padding: false)
+        payload_segment = Base64.urlsafe_encode64('not json', padding: false)
+        signature = Base64.urlsafe_encode64(OpenSSL::HMAC.digest('SHA256', 'secret', "#{header_segment}.#{payload_segment}"), padding: false)
+        [header_segment, payload_segment, signature].join('.')
+      end
+
+      it 'returns false instead of raising' do
+        expect(token.valid_claims?(:exp)).to be(false)
+      end
+
+      it 'makes #valid? return false even though the signature is valid' do
+        expect(token.valid_signature?(algorithm: 'HS256', key: 'secret')).to be(true)
+        expect(token.valid?(signature: { algorithm: 'HS256', key: 'secret' })).to be(false)
+      end
+    end
   end
 
   describe '#claim_errors' do
@@ -433,6 +459,14 @@ RSpec.describe JWT::EncodedToken do
         it 'returns array with error objects' do
           expect(token.claim_errors(:exp).map(&:message)).to eq(['Signature has expired'])
         end
+      end
+    end
+
+    context 'when payload is detached and not provided' do
+      let(:encoded_token) { detached_payload_token.jwt }
+
+      it 'reports the decoding problem instead of raising' do
+        expect(token.claim_errors(:exp).map(&:message)).to eq(['Encoded payload is empty'])
       end
     end
   end
