@@ -57,7 +57,7 @@ module JWT
       end
 
       # Copy of https://github.com/rails/rails/blob/v7.0.3.1/activesupport/lib/active_support/security_utils.rb
-      # rubocop:disable Naming/MethodParameterName, Style/StringLiterals, Style/NumericPredicate
+      # rubocop:disable-next Naming/MethodParameterName, Style/StringLiterals, Style/NumericPredicate
       module SecurityUtils
         # Constant time string comparison, for fixed length strings.
         #
@@ -94,7 +94,6 @@ module JWT
         end
         module_function :secure_compare
       end
-      # rubocop:enable Naming/MethodParameterName, Style/StringLiterals, Style/NumericPredicate
     end
   end
 end

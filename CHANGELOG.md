@@ -11,6 +11,7 @@
 **Fixes and enhancements:**
 
 - Fix rejection of unknown algorithms from JWKs for RFC compliance and pquip [#728](https://github.com/jwt/ruby-jwt/pull/728)
+- Fix the `Style/DirectiveScope` RuboCop offense failing the build [#752](https://github.com/jwt/ruby-jwt/pull/752)
 
 ## [v3.2.0](https://github.com/jwt/ruby-jwt/tree/v3.2.0) (2026-05-13)
 
