@@ -19,6 +19,8 @@ module JWT
       end
 
       def verify(data:, signature:, verification_key:)
+        raise_verify_error!("The given key is a #{verification_key.class}. It has to be an OpenSSL::PKey::RSA instance") unless verification_key.is_a?(::OpenSSL::PKey::RSA)
+
         verification_key.verify(OpenSSL::Digest.new(digest), signature, data)
       rescue OpenSSL::PKey::PKeyError
         raise JWT::VerificationError, 'Signature verification raised'

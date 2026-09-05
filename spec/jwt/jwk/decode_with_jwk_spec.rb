@@ -149,7 +149,7 @@ RSpec.describe JWT do
 
         it 'fails in some way' do
           expect { described_class.decode(signed_token, nil, true, algorithms: [algorithm], jwks: jwks) }.to(
-            raise_error(JWT::VerificationError, 'Signature verification raised')
+            raise_error(JWT::VerificationKeyError, 'The given key is a OpenSSL::PKey::EC. It has to be an OpenSSL::PKey::RSA instance')
           )
         end
       end
@@ -159,7 +159,7 @@ RSpec.describe JWT do
 
         it 'fails in some way' do
           expect { described_class.decode(signed_token, nil, true, algorithms: [algorithm], jwks: jwks) }.to(
-            raise_error(NoMethodError, /undefined method .*verify/)
+            raise_error(JWT::VerificationKeyError, 'The given key is a String. It has to be an OpenSSL::PKey::RSA instance')
           )
         end
       end

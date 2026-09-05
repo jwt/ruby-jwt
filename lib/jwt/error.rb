@@ -32,7 +32,7 @@ module JWT
 
   # The VerificationKeyError class is raised when the key or algorithm given for
   # verification cannot be used, as opposed to a signature that does not match.
-  class VerificationKeyError < SignatureError; end
+  class VerificationKeyError < VerificationError; end
 
   # The IncorrectAlgorithm class is raised when the JWT algorithm is incorrect.
   class IncorrectAlgorithm < SignatureError; end

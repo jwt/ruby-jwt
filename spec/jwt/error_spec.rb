@@ -62,13 +62,10 @@ RSpec.describe 'JWT error hierarchy' do
       expect(JWT::VerificationError).to be < JWT::SignatureError
     end
 
-    it 'JWT::VerificationKeyError inherits from JWT::SignatureError' do
-      expect(JWT::VerificationKeyError).to be < JWT::SignatureError
-    end
-
-    it 'JWT::VerificationKeyError is not a JWT::VerificationError' do
-      expect(JWT::VerificationKeyError).not_to be <= JWT::VerificationError
-      expect(JWT::VerificationError).not_to be <= JWT::VerificationKeyError
+    # A key that cannot be used is a kind of verification failure, so rescuing
+    # JWT::VerificationError keeps catching everything it caught before.
+    it 'JWT::VerificationKeyError inherits from JWT::VerificationError' do
+      expect(JWT::VerificationKeyError).to be < JWT::VerificationError
     end
 
     it 'JWT::IncorrectAlgorithm inherits from JWT::SignatureError' do

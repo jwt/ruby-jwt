@@ -119,8 +119,8 @@ RSpec.describe JWT::JWK::RSA do
 
     context 'when the jwk has an invalid alg header' do
       let(:rsa) { described_class.new(rsa_key, alg: 'INVALID') }
-      it 'raises JWT::VerificationError' do
-        expect { rsa.verify(data: data, signature: 'signature') }.to raise_error(JWT::VerificationError, 'Algorithm not supported')
+      it 'raises JWT::VerificationKeyError' do
+        expect { rsa.verify(data: data, signature: 'signature') }.to raise_error(JWT::VerificationKeyError, 'Algorithm not supported')
       end
     end
 

@@ -12,7 +12,7 @@ module JWT
         end
 
         def verify(*)
-          raise JWT::VerificationError, 'Algorithm not supported'
+          raise_verify_error!('Algorithm not supported')
         end
       end
     end

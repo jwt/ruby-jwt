@@ -245,8 +245,8 @@ RSpec.describe JWT::EncodedToken do
       end
 
       context 'with algorithms not supported by key provided' do
-        it 'raises JWT::VerificationError' do
-          expect { token.verify_signature!(algorithm: %w[RS384 RS512], key: jwk) }.to raise_error(JWT::VerificationError, 'Provided JWKs do not support one of the specified algorithms: RS384, RS512')
+        it 'raises JWT::VerificationKeyError' do
+          expect { token.verify_signature!(algorithm: %w[RS384 RS512], key: jwk) }.to raise_error(JWT::VerificationKeyError, 'Provided JWKs do not support one of the specified algorithms: RS384, RS512')
         end
       end
     end
