@@ -36,6 +36,67 @@ RSpec.describe JWT::JWK::Set do
       end
     end
 
+    context 'when created from an existing JWT::JWK::Set' do
+      let(:jwk) { JWT::JWK.new({ kty: 'oct', k: Base64.strict_encode64('testkey') }) }
+      let(:other) { JWT::JWK.new({ kty: 'oct', k: Base64.strict_encode64('otherkey') }) }
+      let(:original) { described_class.new([jwk]) }
+      let(:copy) { described_class.new(original) }
+
+      it 'does not share the key collection with the original' do
+        expect(copy.keys).not_to be(original.keys)
+      end
+
+      it 'keeps the original intact when keys are added to the copy' do
+        copy.add(other)
+        expect(original.keys).to eql([jwk])
+      end
+
+      it 'keeps the original intact when keys are removed from the copy' do
+        copy.delete(jwk)
+        expect(original.keys).to eql([jwk])
+      end
+
+      it 'keeps the original intact when the copy is filtered' do
+        copy.select! { false }
+        expect(original.keys).to eql([jwk])
+      end
+
+      it 'shares the key objects with the original' do
+        expect(copy.keys.first).to be(original.keys.first)
+      end
+    end
+
+    context 'when duplicated' do
+      let(:jwk) { JWT::JWK.new({ kty: 'oct', k: Base64.strict_encode64('testkey') }) }
+      let(:other) { JWT::JWK.new({ kty: 'oct', k: Base64.strict_encode64('otherkey') }) }
+      let(:original) { described_class.new([jwk]) }
+
+      it 'does not share the key collection with the original' do
+        expect(original.dup.keys).not_to be(original.keys)
+      end
+
+      it 'keeps the original intact when keys are added to the duplicate' do
+        original.dup << other
+        expect(original.keys).to eql([jwk])
+      end
+
+      it 'keeps the original intact when the duplicate is filtered' do
+        original.dup.reject! { true }
+        expect(original.keys).to eql([jwk])
+      end
+    end
+
+    context 'when a union is built from it' do
+      let(:jwk) { JWT::JWK.new({ kty: 'oct', k: Base64.strict_encode64('testkey') }) }
+      let(:other) { JWT::JWK.new({ kty: 'oct', k: Base64.strict_encode64('otherkey') }) }
+      let(:original) { described_class.new([jwk]) }
+
+      it 'keeps the original intact' do
+        original.union([other])
+        expect(original.keys).to eql([jwk])
+      end
+    end
+
     it 'ignores keys with unsupported kty values (RFC 7517 §5), required for hybrid PQC' do
       jwks = {
         keys: [
