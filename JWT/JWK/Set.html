@@ -258,7 +258,7 @@
   
 
   
-    <span class="summary_desc"><div class='inline'><p>rubocop:disable Metrics/CyclomaticComplexity.</p></div></span>
+    <span class="summary_desc"><div class='inline'><p>A new instance of Set.</p></div></span>
   
 </li>
 
@@ -419,7 +419,7 @@
   
 </h3><div class="docstring">
   <div class="discussion">
-    <p>rubocop:disable Metrics/CyclomaticComplexity</p>
+    <p>Returns a new instance of Set.</p>
 
   </div>
 </div>
@@ -441,41 +441,19 @@
 21
 22
 23
-24
-25
-26
-27
-28
-29
-30
-31
-32
-33
-34
-35</pre>
+24</pre>
     </td>
     <td>
       <pre class="code"><span class="info file"># File 'lib/jwt/jwk/set.rb', line 15</span>
 
-<span class='kw'>def</span> <span class='id identifier rubyid_initialize'>initialize</span><span class='lparen'>(</span><span class='id identifier rubyid_jwks'>jwks</span> <span class='op'>=</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='id identifier rubyid_options'>options</span> <span class='op'>=</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='rparen'>)</span> <span class='comment'># rubocop:disable Metrics/CyclomaticComplexity
-</span>  <span class='id identifier rubyid_jwks'>jwks</span> <span class='op'>||=</span> <span class='lbrace'>{</span><span class='rbrace'>}</span>
-
+<span class='kw'>def</span> <span class='id identifier rubyid_initialize'>initialize</span><span class='lparen'>(</span><span class='id identifier rubyid_jwks'>jwks</span> <span class='op'>=</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='id identifier rubyid_options'>options</span> <span class='op'>=</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='rparen'>)</span>
   <span class='ivar'>@keys</span> <span class='op'>=</span> <span class='kw'>case</span> <span class='id identifier rubyid_jwks'>jwks</span>
-          <span class='kw'>when</span> <span class='const'><span class='object_link'><a href="../../JWT.html" title="JWT (module)">JWT</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="../JWK.html" title="JWT::JWK (module)">JWK</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="" title="JWT::JWK::Set (class)">Set</a></span></span> <span class='comment'># Simple duplication
-</span>            <span class='id identifier rubyid_jwks'>jwks</span><span class='period'>.</span><span class='id identifier rubyid_keys'>keys</span><span class='period'>.</span><span class='id identifier rubyid_dup'>dup</span>
-          <span class='kw'>when</span> <span class='const'><span class='object_link'><a href="../../JWT.html" title="JWT (module)">JWT</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="../JWK.html" title="JWT::JWK (module)">JWK</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="KeyBase.html" title="JWT::JWK::KeyBase (class)">KeyBase</a></span></span> <span class='comment'># Singleton
-</span>            <span class='lbracket'>[</span><span class='id identifier rubyid_jwks'>jwks</span><span class='rbracket'>]</span>
-          <span class='kw'>when</span> <span class='const'>Hash</span>
-            <span class='id identifier rubyid_jwks'>jwks</span> <span class='op'>=</span> <span class='id identifier rubyid_jwks'>jwks</span><span class='period'>.</span><span class='id identifier rubyid_transform_keys'>transform_keys</span><span class='lparen'>(</span><span class='op'>&amp;</span><span class='symbol'>:to_sym</span><span class='rparen'>)</span>
-            <span class='lbracket'>[</span><span class='op'>*</span><span class='id identifier rubyid_jwks'>jwks</span><span class='lbracket'>[</span><span class='symbol'>:keys</span><span class='rbracket'>]</span><span class='rbracket'>]</span><span class='period'>.</span><span class='id identifier rubyid_each_with_object'>each_with_object</span><span class='lparen'>(</span><span class='lbracket'>[</span><span class='rbracket'>]</span><span class='rparen'>)</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_k'>k</span><span class='comma'>,</span> <span class='id identifier rubyid_arr'>arr</span><span class='op'>|</span>
-              <span class='id identifier rubyid_arr'>arr</span> <span class='op'>&lt;&lt;</span> <span class='const'><span class='object_link'><a href="../../JWT.html" title="JWT (module)">JWT</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="../JWK.html" title="JWT::JWK (module)">JWK</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='id identifier rubyid_k'>k</span><span class='comma'>,</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='id identifier rubyid_options'>options</span><span class='rparen'>)</span>
-            <span class='kw'>rescue</span> <span class='const'><span class='object_link'><a href="../../JWT.html" title="JWT (module)">JWT</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="../UnsupportedKeyType.html" title="JWT::UnsupportedKeyType (class)">UnsupportedKeyType</a></span></span>
-              <span class='kw'>nil</span>
-            <span class='kw'>end</span>
-          <span class='kw'>when</span> <span class='const'>Array</span>
-            <span class='id identifier rubyid_jwks'>jwks</span><span class='period'>.</span><span class='id identifier rubyid_map'>map</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_k'>k</span><span class='op'>|</span> <span class='const'><span class='object_link'><a href="../../JWT.html" title="JWT (module)">JWT</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="../JWK.html" title="JWT::JWK (module)">JWK</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='id identifier rubyid_k'>k</span><span class='comma'>,</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='id identifier rubyid_options'>options</span><span class='rparen'>)</span> <span class='rbrace'>}</span>
-          <span class='kw'>else</span>
-            <span class='id identifier rubyid_raise'>raise</span> <span class='const'>ArgumentError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>Can only create new JWKS from Hash, Array and JWK</span><span class='tstring_end'>&#39;</span></span>
+          <span class='kw'>when</span> <span class='kw'>nil</span>               <span class='kw'>then</span> <span class='lbracket'>[</span><span class='rbracket'>]</span>
+          <span class='kw'>when</span> <span class='const'><span class='object_link'><a href="../../JWT.html" title="JWT (module)">JWT</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="../JWK.html" title="JWT::JWK (module)">JWK</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="" title="JWT::JWK::Set (class)">Set</a></span></span>     <span class='kw'>then</span> <span class='id identifier rubyid_jwks'>jwks</span><span class='period'>.</span><span class='id identifier rubyid_keys'>keys</span><span class='period'>.</span><span class='id identifier rubyid_dup'>dup</span>
+          <span class='kw'>when</span> <span class='const'><span class='object_link'><a href="../../JWT.html" title="JWT (module)">JWT</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="../JWK.html" title="JWT::JWK (module)">JWK</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="KeyBase.html" title="JWT::JWK::KeyBase (class)">KeyBase</a></span></span> <span class='kw'>then</span> <span class='lbracket'>[</span><span class='id identifier rubyid_jwks'>jwks</span><span class='rbracket'>]</span>
+          <span class='kw'>when</span> <span class='const'>Hash</span>              <span class='kw'>then</span> <span class='id identifier rubyid_build_supported_keys'>build_supported_keys</span><span class='lparen'>(</span><span class='id identifier rubyid_jwks'>jwks</span><span class='period'>.</span><span class='id identifier rubyid_transform_keys'>transform_keys</span><span class='lparen'>(</span><span class='op'>&amp;</span><span class='symbol'>:to_sym</span><span class='rparen'>)</span><span class='lbracket'>[</span><span class='symbol'>:keys</span><span class='rbracket'>]</span><span class='comma'>,</span> <span class='id identifier rubyid_options'>options</span><span class='rparen'>)</span>
+          <span class='kw'>when</span> <span class='const'>Array</span>             <span class='kw'>then</span> <span class='id identifier rubyid_build_keys'>build_keys</span><span class='lparen'>(</span><span class='id identifier rubyid_jwks'>jwks</span><span class='comma'>,</span> <span class='id identifier rubyid_options'>options</span><span class='rparen'>)</span>
+          <span class='kw'>else</span> <span class='id identifier rubyid_raise'>raise</span> <span class='const'>ArgumentError</span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>Can only create new JWKS from Hash, Array and JWK</span><span class='tstring_end'>&#39;</span></span>
           <span class='kw'>end</span>
 <span class='kw'>end</span></pre>
     </td>
@@ -555,12 +533,12 @@
       <pre class="lines">
 
 
-80
-81
-82</pre>
+69
+70
+71</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/jwt/jwk/set.rb', line 80</span>
+      <pre class="code"><span class="info file"># File 'lib/jwt/jwk/set.rb', line 69</span>
 
 <span class='kw'>def</span> <span class='op'>==</span><span class='lparen'>(</span><span class='id identifier rubyid_other'>other</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_other'>other</span><span class='period'>.</span><span class='id identifier rubyid_is_a?'>is_a?</span><span class='lparen'>(</span><span class='const'><span class='object_link'><a href="../../JWT.html" title="JWT (module)">JWT</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="../JWK.html" title="JWT::JWK (module)">JWK</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="" title="JWT::JWK::Set (class)">Set</a></span></span><span class='rparen'>)</span> <span class='op'>&amp;&amp;</span> <span class='id identifier rubyid_keys'>keys</span><span class='period'>.</span><span class='id identifier rubyid_sort'>sort</span> <span class='op'>==</span> <span class='id identifier rubyid_other'>other</span><span class='period'>.</span><span class='id identifier rubyid_keys'>keys</span><span class='period'>.</span><span class='id identifier rubyid_sort'>sort</span>
@@ -589,13 +567,13 @@
       <pre class="lines">
 
 
-75
-76
-77
-78</pre>
+64
+65
+66
+67</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/jwt/jwk/set.rb', line 75</span>
+      <pre class="code"><span class="info file"># File 'lib/jwt/jwk/set.rb', line 64</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_add'>add</span><span class='lparen'>(</span><span class='id identifier rubyid_key'>key</span><span class='rparen'>)</span>
   <span class='ivar'>@keys</span> <span class='op'>&lt;&lt;</span> <span class='const'><span class='object_link'><a href="../../JWT.html" title="JWT (module)">JWT</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="../JWK.html" title="JWT::JWK (module)">JWK</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='id identifier rubyid_key'>key</span><span class='rparen'>)</span>
@@ -621,12 +599,12 @@
       <pre class="lines">
 
 
-44
-45
-46</pre>
+33
+34
+35</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/jwt/jwk/set.rb', line 44</span>
+      <pre class="code"><span class="info file"># File 'lib/jwt/jwk/set.rb', line 33</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_export'>export</span><span class='lparen'>(</span><span class='id identifier rubyid_options'>options</span> <span class='op'>=</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='rparen'>)</span>
   <span class='lbrace'>{</span> <span class='label'>keys:</span> <span class='ivar'>@keys</span><span class='period'>.</span><span class='id identifier rubyid_map'>map</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_k'>k</span><span class='op'>|</span> <span class='id identifier rubyid_k'>k</span><span class='period'>.</span><span class='id identifier rubyid_export'>export</span><span class='lparen'>(</span><span class='id identifier rubyid_options'>options</span><span class='rparen'>)</span> <span class='rbrace'>}</span> <span class='rbrace'>}</span>
@@ -661,13 +639,13 @@ intentionally shared; only the collection is copied.</p>
       <pre class="lines">
 
 
-39
-40
-41
-42</pre>
+28
+29
+30
+31</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/jwt/jwk/set.rb', line 39</span>
+      <pre class="code"><span class="info file"># File 'lib/jwt/jwk/set.rb', line 28</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_initialize_copy'>initialize_copy</span><span class='lparen'>(</span><span class='id identifier rubyid_other'>other</span><span class='rparen'>)</span>
   <span class='kw'>super</span>
@@ -693,13 +671,13 @@ intentionally shared; only the collection is copied.</p>
       <pre class="lines">
 
 
-66
-67
-68
-69</pre>
+55
+56
+57
+58</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/jwt/jwk/set.rb', line 66</span>
+      <pre class="code"><span class="info file"># File 'lib/jwt/jwk/set.rb', line 55</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_merge'>merge</span><span class='lparen'>(</span><span class='id identifier rubyid_enum'>enum</span><span class='rparen'>)</span>
   <span class='ivar'>@keys</span> <span class='op'>+=</span> <span class='const'><span class='object_link'><a href="../../JWT.html" title="JWT (module)">JWT</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="../JWK.html" title="JWT::JWK (module)">JWK</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="" title="JWT::JWK::Set (class)">Set</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='id identifier rubyid_enum'>enum</span><span class='period'>.</span><span class='id identifier rubyid_to_a'>to_a</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_keys'>keys</span>
@@ -725,14 +703,14 @@ intentionally shared; only the collection is copied.</p>
       <pre class="lines">
 
 
-56
-57
-58
-59
-60</pre>
+45
+46
+47
+48
+49</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/jwt/jwk/set.rb', line 56</span>
+      <pre class="code"><span class="info file"># File 'lib/jwt/jwk/set.rb', line 45</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_reject!'>reject!</span><span class='lparen'>(</span><span class='op'>&amp;</span><span class='id identifier rubyid_block'>block</span><span class='rparen'>)</span>
   <span class='kw'>return</span> <span class='ivar'>@keys</span><span class='period'>.</span><span class='id identifier rubyid_reject!'>reject!</span> <span class='kw'>unless</span> <span class='id identifier rubyid_block'>block</span>
@@ -763,14 +741,14 @@ intentionally shared; only the collection is copied.</p>
       <pre class="lines">
 
 
-50
-51
-52
-53
-54</pre>
+39
+40
+41
+42
+43</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/jwt/jwk/set.rb', line 50</span>
+      <pre class="code"><span class="info file"># File 'lib/jwt/jwk/set.rb', line 39</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_select!'>select!</span><span class='lparen'>(</span><span class='op'>&amp;</span><span class='id identifier rubyid_block'>block</span><span class='rparen'>)</span>
   <span class='kw'>return</span> <span class='ivar'>@keys</span><span class='period'>.</span><span class='id identifier rubyid_select!'>select!</span> <span class='kw'>unless</span> <span class='id identifier rubyid_block'>block</span>
@@ -801,12 +779,12 @@ intentionally shared; only the collection is copied.</p>
       <pre class="lines">
 
 
-71
-72
-73</pre>
+60
+61
+62</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/jwt/jwk/set.rb', line 71</span>
+      <pre class="code"><span class="info file"># File 'lib/jwt/jwk/set.rb', line 60</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_union'>union</span><span class='lparen'>(</span><span class='id identifier rubyid_enum'>enum</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_dup'>dup</span><span class='period'>.</span><span class='id identifier rubyid_merge'>merge</span><span class='lparen'>(</span><span class='id identifier rubyid_enum'>enum</span><span class='rparen'>)</span>
@@ -831,12 +809,12 @@ intentionally shared; only the collection is copied.</p>
       <pre class="lines">
 
 
-62
-63
-64</pre>
+51
+52
+53</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/jwt/jwk/set.rb', line 62</span>
+      <pre class="code"><span class="info file"># File 'lib/jwt/jwk/set.rb', line 51</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_uniq!'>uniq!</span><span class='lparen'>(</span><span class='op'>&amp;</span><span class='id identifier rubyid_block'>block</span><span class='rparen'>)</span>
   <span class='kw'>self</span> <span class='kw'>if</span> <span class='ivar'>@keys</span><span class='period'>.</span><span class='id identifier rubyid_uniq!'>uniq!</span><span class='lparen'>(</span><span class='op'>&amp;</span><span class='id identifier rubyid_block'>block</span><span class='rparen'>)</span>
@@ -851,7 +829,7 @@ intentionally shared; only the collection is copied.</p>
 </div>
 
       <div id="footer">
-  Generated on Sat Sep  5 18:11:18 2026 by
+  Generated on Sat Sep  5 18:52:26 2026 by
   <a href="https://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.9.45 (ruby-4.0.6).
 </div>
