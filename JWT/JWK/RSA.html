@@ -1028,7 +1028,7 @@ Before openssl 2.0, we need to use the accessors to set the key</p>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_export'>export</span><span class='lparen'>(</span><span class='id identifier rubyid_options'>options</span> <span class='op'>=</span> <span class='lbrace'>{</span><span class='rbrace'>}</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_exported'>exported</span> <span class='op'>=</span> <span class='id identifier rubyid_parameters'>parameters</span><span class='period'>.</span><span class='id identifier rubyid_clone'>clone</span>
-  <span class='id identifier rubyid_exported'>exported</span><span class='period'>.</span><span class='id identifier rubyid_reject!'>reject!</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_k'>k</span><span class='comma'>,</span> <span class='id identifier rubyid__'>_</span><span class='op'>|</span> <span class='const'><span class='object_link'><a href="#RSA_PRIVATE_KEY_ELEMENTS-constant" title="JWT::JWK::RSA::RSA_PRIVATE_KEY_ELEMENTS (constant)">RSA_PRIVATE_KEY_ELEMENTS</a></span></span><span class='period'>.</span><span class='id identifier rubyid_include?'>include?</span> <span class='id identifier rubyid_k'>k</span> <span class='rbrace'>}</span> <span class='kw'>unless</span> <span class='id identifier rubyid_private?'>private?</span> <span class='op'>&amp;&amp;</span> <span class='id identifier rubyid_options'>options</span><span class='lbracket'>[</span><span class='symbol'>:include_private</span><span class='rbracket'>]</span> <span class='op'>==</span> <span class='kw'>true</span>
+  <span class='id identifier rubyid_exported'>exported</span><span class='period'>.</span><span class='id identifier rubyid_reject!'>reject!</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_k'>k</span><span class='comma'>,</span> <span class='id identifier rubyid__'>_</span><span class='op'>|</span> <span class='const'><span class='object_link'><a href="#RSA_PRIVATE_KEY_ELEMENTS-constant" title="JWT::JWK::RSA::RSA_PRIVATE_KEY_ELEMENTS (constant)">RSA_PRIVATE_KEY_ELEMENTS</a></span></span><span class='period'>.</span><span class='id identifier rubyid_include?'>include?</span><span class='lparen'>(</span><span class='id identifier rubyid_k'>k</span><span class='rparen'>)</span> <span class='rbrace'>}</span> <span class='kw'>unless</span> <span class='id identifier rubyid_private?'>private?</span> <span class='op'>&amp;&amp;</span> <span class='id identifier rubyid_options'>options</span><span class='lbracket'>[</span><span class='symbol'>:include_private</span><span class='rbracket'>]</span> <span class='op'>==</span> <span class='kw'>true</span>
 
   <span class='id identifier rubyid_exported'>exported</span>
 <span class='kw'>end</span></pre>
@@ -1278,7 +1278,7 @@ Before openssl 2.0, we need to use the accessors to set the key</p>
 </div>
 
       <div id="footer">
-  Generated on Sat Sep  5 19:39:15 2026 by
+  Generated on Sat Sep  5 19:50:06 2026 by
   <a href="https://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.9.45 (ruby-4.0.6).
 </div>
