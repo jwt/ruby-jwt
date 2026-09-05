@@ -15,6 +15,7 @@
 - Fix the `Style/DirectiveScope` RuboCop offense failing the build [#752](https://github.com/jwt/ruby-jwt/pull/752)
 - Fix `JWT::JWK::Set` sharing its key collection with the set it was copied from [#751](https://github.com/jwt/ruby-jwt/pull/751)
 - Reset the decoded payload and verification state in `JWT::EncodedToken#encoded_payload=` [#749](https://github.com/jwt/ruby-jwt/issues/749)
+- Fix `JWT::Token#detach_payload!` not invalidating an already rendered token [#748](https://github.com/jwt/ruby-jwt/issues/748)
 
 ## [v3.2.0](https://github.com/jwt/ruby-jwt/tree/v3.2.0) (2026-05-13)
 

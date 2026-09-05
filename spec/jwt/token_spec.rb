@@ -103,6 +103,28 @@ RSpec.describe JWT::Token do
         expect(token.jwt).to eq('eyJhbGciOiJIUzI1NiJ9..UEhDY1Qlj29ammxuVRA_-gBah4qTy5FngIWg0yEAlC0')
       end
     end
+
+    context 'after the token has been rendered' do
+      before do
+        token.sign!(algorithm: 'HS256', key: 'secret')
+        token.jwt
+      end
+
+      it 'detaches the payload' do
+        token.detach_payload!
+        expect(token.jwt).to eq('eyJhbGciOiJIUzI1NiJ9..UEhDY1Qlj29ammxuVRA_-gBah4qTy5FngIWg0yEAlC0')
+      end
+
+      it 'detaches the payload from #to_s' do
+        token.detach_payload!
+        expect(token.to_s).to eq('eyJhbGciOiJIUzI1NiJ9..UEhDY1Qlj29ammxuVRA_-gBah4qTy5FngIWg0yEAlC0')
+      end
+
+      it 'keeps the encoded payload available' do
+        token.detach_payload!
+        expect(token.encoded_payload).to eq('eyJwYXkiOiJsb2FkIn0')
+      end
+    end
   end
 
   describe '#verify_claims!' do
