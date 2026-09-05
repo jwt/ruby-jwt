@@ -645,10 +645,18 @@ RSpec.describe JWT do
       end
     end
 
-    context 'when iat is 1 second before Time.now' do
+    context 'when iat is 1 second after Time.now' do
       let(:iat) { time_now.to_i + 1 }
       it 'raises an error' do
         expect { decoded_token }.to raise_error(JWT::InvalidIatError, 'Invalid iat')
+      end
+
+      context 'when a leeway covering the drift is given' do
+        subject(:decoded_token) { JWT.decode(token, 'secret', true, verify_iat: { leeway: 1 }) }
+
+        it 'considers iat valid' do
+          expect(decoded_token).to be_an(Array)
+        end
       end
     end
   end
