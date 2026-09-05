@@ -36,7 +36,7 @@ module JWT
           rescue ::JWT::ClaimValidationError, ::JWT::MalformedTokenError => e
             # A payload that cannot be decoded has no valid claims either, so the
             # predicate API reports it instead of raising.
-            errors << Error.new(message: e.message)
+            errors << JWT::Claims::Error.new(message: e.message)
           end
           errors
         end
