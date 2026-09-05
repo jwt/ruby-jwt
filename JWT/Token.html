@@ -728,12 +728,12 @@
       <pre class="lines">
 
 
-115
 116
-117</pre>
+117
+118</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/jwt/token.rb', line 115</span>
+      <pre class="code"><span class="info file"># File 'lib/jwt/token.rb', line 116</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_claim_errors'>claim_errors</span><span class='lparen'>(</span><span class='op'>*</span><span class='id identifier rubyid_options'>options</span><span class='rparen'>)</span>
   <span class='const'><span class='object_link'><a href="Claims.html" title="JWT::Claims (module)">Claims</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="Claims/Verifier.html" title="JWT::Claims::Verifier (module)">Verifier</a></span></span><span class='period'>.</span><span class='id identifier rubyid_errors'><span class='object_link'><a href="Claims/Verifier.html#errors-class_method" title="JWT::Claims::Verifier.errors (method)">errors</a></span></span><span class='lparen'>(</span><span class='kw'>self</span><span class='comma'>,</span> <span class='op'>*</span><span class='id identifier rubyid_options'>options</span><span class='rparen'>)</span>
@@ -771,13 +771,15 @@
 83
 84
 85
-86</pre>
+86
+87</pre>
     </td>
     <td>
       <pre class="code"><span class="info file"># File 'lib/jwt/token.rb', line 82</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_detach_payload!'>detach_payload!</span>
   <span class='ivar'>@detached_payload</span> <span class='op'>=</span> <span class='kw'>true</span>
+  <span class='ivar'>@jwt</span> <span class='op'>=</span> <span class='kw'>nil</span>
 
   <span class='kw'>nil</span>
 <span class='kw'>end</span></pre>
@@ -1098,7 +1100,6 @@
       <pre class="lines">
 
 
-94
 95
 96
 97
@@ -1107,10 +1108,11 @@
 100
 101
 102
-103</pre>
+103
+104</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/jwt/token.rb', line 94</span>
+      <pre class="code"><span class="info file"># File 'lib/jwt/token.rb', line 95</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_sign!'>sign!</span><span class='lparen'>(</span><span class='label'>key:</span><span class='comma'>,</span> <span class='label'>algorithm:</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_raise'>raise</span> <span class='op'>::</span><span class='const'><span class='object_link'><a href="../JWT.html" title="JWT (module)">JWT</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="EncodeError.html" title="JWT::EncodeError (class)">EncodeError</a></span></span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>Token already signed</span><span class='tstring_end'>&#39;</span></span> <span class='kw'>if</span> <span class='ivar'>@signature</span>
@@ -1295,12 +1297,12 @@
       <pre class="lines">
 
 
-122
 123
-124</pre>
+124
+125</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/jwt/token.rb', line 122</span>
+      <pre class="code"><span class="info file"># File 'lib/jwt/token.rb', line 123</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_valid_claims?'>valid_claims?</span><span class='lparen'>(</span><span class='op'>*</span><span class='id identifier rubyid_options'>options</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_claim_errors'>claim_errors</span><span class='lparen'>(</span><span class='op'>*</span><span class='id identifier rubyid_options'>options</span><span class='rparen'>)</span><span class='period'>.</span><span class='id identifier rubyid_empty?'>empty?</span>
@@ -1368,12 +1370,12 @@
       <pre class="lines">
 
 
-108
 109
-110</pre>
+110
+111</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/jwt/token.rb', line 108</span>
+      <pre class="code"><span class="info file"># File 'lib/jwt/token.rb', line 109</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_verify_claims!'>verify_claims!</span><span class='lparen'>(</span><span class='op'>*</span><span class='id identifier rubyid_options'>options</span><span class='rparen'>)</span>
   <span class='const'><span class='object_link'><a href="Claims.html" title="JWT::Claims (module)">Claims</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="Claims/Verifier.html" title="JWT::Claims::Verifier (module)">Verifier</a></span></span><span class='period'>.</span><span class='id identifier rubyid_verify!'><span class='object_link'><a href="Claims/Verifier.html#verify!-class_method" title="JWT::Claims::Verifier.verify! (method)">verify!</a></span></span><span class='lparen'>(</span><span class='kw'>self</span><span class='comma'>,</span> <span class='op'>*</span><span class='id identifier rubyid_options'>options</span><span class='rparen'>)</span>
@@ -1388,7 +1390,7 @@
 </div>
 
       <div id="footer">
-  Generated on Sat Sep  5 17:11:02 2026 by
+  Generated on Sat Sep  5 17:21:14 2026 by
   <a href="https://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.9.45 (ruby-4.0.6).
 </div>
