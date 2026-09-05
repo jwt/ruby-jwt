@@ -100,6 +100,57 @@ RSpec.describe JWT::EncodedToken do
     end
   end
 
+  describe '#encoded_payload=' do
+    let(:other_payload) { { 'other' => 'payload' } }
+    let(:other_encoded_payload) do
+      JWT::Token.new(payload: other_payload).tap { |t| t.sign!(algorithm: 'HS256', key: 'secret') }.encoded_payload
+    end
+
+    context 'when token has been verified' do
+      before { token.verify!(signature: { algorithm: 'HS256', key: 'secret' }) }
+
+      it 'requires the token to be verified again' do
+        token.encoded_payload = other_encoded_payload
+
+        expect { token.payload }.to raise_error(JWT::DecodeError, 'Verify the token signature before accessing the payload')
+      end
+
+      it 'discards the previously decoded payload' do
+        token.encoded_payload = other_encoded_payload
+
+        expect(token.unverified_payload).to eq(other_payload)
+      end
+
+      it 'does not verify against the previous signing input' do
+        token.encoded_payload = other_encoded_payload
+
+        expect { token.verify!(signature: { algorithm: 'HS256', key: 'secret' }) }.to raise_error(JWT::VerificationError, 'Signature verification failed')
+      end
+    end
+
+    context 'when the payload is reassigned to a matching payload' do
+      let(:encoded_token) { detached_payload_token.jwt }
+
+      before do
+        token.encoded_payload = detached_payload_token.encoded_payload
+        token.verify!(signature: { algorithm: 'HS256', key: 'secret' })
+        token.encoded_payload = detached_payload_token.encoded_payload
+      end
+
+      it 'requires the claims to be verified again' do
+        token.verify_signature!(algorithm: 'HS256', key: 'secret')
+
+        expect { token.payload }.to raise_error(JWT::DecodeError, 'Verify the token claims before accessing the payload')
+      end
+
+      it 'can be verified again' do
+        token.verify!(signature: { algorithm: 'HS256', key: 'secret' })
+
+        expect(token.payload).to eq(payload)
+      end
+    end
+  end
+
   describe '#header' do
     it { expect(token.header).to eq({ 'alg' => 'HS256' }) }
 

@@ -77,10 +77,21 @@ module JWT
       decoded_payload
     end
 
-    # Sets or returns the encoded payload of the JWT token.
+    # Returns the encoded payload of the JWT token.
     #
     # @return [String] the encoded payload.
-    attr_accessor :encoded_payload
+    attr_reader :encoded_payload
+
+    # Sets the encoded payload of the JWT token.
+    #
+    # Resets the verification state, requiring the token to be verified again.
+    #
+    # @param encoded_payload [String] the encoded payload.
+    def encoded_payload=(encoded_payload)
+      @encoded_payload = encoded_payload
+      @decoded_payload = nil
+      @signature_verified = @claims_verified = false
+    end
 
     # Returns the signing input of the JWT token.
     #
@@ -191,7 +202,7 @@ module JWT
 
       if unencoded_payload?
         verify_claims!(crit: ['b64'])
-        return parse_unencoded(encoded_payload)
+        return parse(encoded_payload)
       end
 
       parse_and_decode(encoded_payload)
@@ -203,10 +214,6 @@ module JWT
 
     def parse_and_decode(segment)
       parse(::JWT::Base64.url_decode(segment || ''))
-    end
-
-    def parse_unencoded(segment)
-      parse(segment)
     end
 
     def parse(segment)
