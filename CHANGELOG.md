@@ -6,6 +6,7 @@
 
 **Features:**
 
+- Allow a leeway to be given for the `iat` claim verification [#747](https://github.com/jwt/ruby-jwt/pull/747) - ([@denis1011101](https://github.com/denis1011101))
 - Revamp error hierarchy: introduce `JWT::Error`, `JWT::TokenError`, `JWT::MalformedTokenError`, `JWT::SignatureError`, and `JWT::ClaimValidationError` grouping classes. `JWT::DecodeError` is now a deprecated alias for `JWT::Error`; because of this, `rescue JWT::DecodeError` now also catches `JWT::EncodeError`. Signing failures now consistently raise `JWT::EncodeError`: an ECDSA signing key with a mismatched or unsupported curve and an invalid HMAC signing key previously surfaced as `JWT::IncorrectAlgorithm`, `JWT::UnsupportedEcdsaCurve` or `JWT::DecodeError` from `JWT.encode` [#722](https://github.com/jwt/ruby-jwt/pull/722) ([@anakinj](https://github.com/anakinj))
 - Your contribution here
 
@@ -13,6 +14,7 @@
 
 - Fix rejection of unknown algorithms from JWKs for RFC compliance and pquip [#728](https://github.com/jwt/ruby-jwt/pull/728)
 - Fix the `Style/DirectiveScope` RuboCop offense failing the build [#752](https://github.com/jwt/ruby-jwt/pull/752)
+- Fix `JWT::JWK::Set` sharing its key collection with the set it was copied from [#751](https://github.com/jwt/ruby-jwt/pull/751)
 
 ## [v3.2.0](https://github.com/jwt/ruby-jwt/tree/v3.2.0) (2026-05-13)
 

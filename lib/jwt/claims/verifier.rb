@@ -8,7 +8,7 @@ module JWT
         exp: ->(options) { Claims::Expiration.new(leeway: options.dig(:exp, :leeway)) },
         nbf: ->(options) { Claims::NotBefore.new(leeway: options.dig(:nbf, :leeway)) },
         iss: ->(options) { Claims::Issuer.new(issuers: options[:iss]) },
-        iat: ->(*)       { Claims::IssuedAt.new },
+        iat: ->(options) { Claims::IssuedAt.new(leeway: options.dig(:iat, :leeway)) },
         jti: ->(options) { Claims::JwtId.new(validator: options[:jti]) },
         aud: ->(options) { Claims::Audience.new(expected_audience: options[:aud]) },
         sub: ->(options) { Claims::Subject.new(expected_subject: options[:sub]) },
