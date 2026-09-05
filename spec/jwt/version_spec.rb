@@ -20,7 +20,7 @@ RSpec.describe JWT do
     end
 
     it 'has a PRE version' do
-      expect(JWT::VERSION::PRE).to be_a(String).or be_nil
+      expect(JWT::VERSION::PRE).to be_a(String).or(be_nil)
     end
 
     it 'has a STRING version' do

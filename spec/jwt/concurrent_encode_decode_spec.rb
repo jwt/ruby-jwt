@@ -17,8 +17,8 @@ RSpec.describe JWT::JWA::Ecdsa do
             token = JWT.encode(input_payload, curve, 'ES256', input_header)
 
             output_payload, output_header = JWT.decode(token, public_key, true, { algorithm: 'ES256', verify_expiration: true })
-            expect(output_payload).to eq input_payload
-            expect(output_header).to eq input_header
+            expect(output_payload).to eq(input_payload)
+            expect(output_header).to eq(input_header)
           end
         end
       end

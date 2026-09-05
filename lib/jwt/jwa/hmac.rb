@@ -69,7 +69,7 @@ module JWT
           def fixed_length_secure_compare(a, b)
             raise ArgumentError, "string length mismatch." unless a.bytesize == b.bytesize
 
-            l = a.unpack "C#{a.bytesize}"
+            l = a.unpack("C#{a.bytesize}")
 
             res = 0
             b.each_byte { |byte| res |= byte ^ l.shift }

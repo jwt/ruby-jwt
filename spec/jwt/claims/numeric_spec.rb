@@ -30,14 +30,14 @@ RSpec.describe JWT::Claims::Numeric do
       let(:claims) { { claim => '1' } }
 
       it 'raises error' do
-        expect { subject }.to raise_error JWT::InvalidPayload
+        expect { subject }.to raise_error(JWT::InvalidPayload)
       end
 
       context 'and key is a string' do
         let(:claims) { { claim.to_s => '1' } }
 
         it 'raises error' do
-          expect { subject }.to raise_error JWT::InvalidPayload
+          expect { subject }.to raise_error(JWT::InvalidPayload)
         end
       end
     end
@@ -46,7 +46,7 @@ RSpec.describe JWT::Claims::Numeric do
       let(:claims) { { claim => Time.now } }
 
       it 'raises error' do
-        expect { subject }.to raise_error JWT::InvalidPayload
+        expect { subject }.to raise_error(JWT::InvalidPayload)
       end
     end
 
@@ -54,7 +54,7 @@ RSpec.describe JWT::Claims::Numeric do
       let(:claims) { { claim => '1' } }
 
       it 'raises error' do
-        expect { subject }.to raise_error JWT::InvalidPayload
+        expect { subject }.to raise_error(JWT::InvalidPayload)
       end
     end
   end

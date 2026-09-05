@@ -40,11 +40,11 @@ RSpec.describe JWT::JWA::Ecdsa do
   describe '#verify' do
     context 'when the verification key is valid' do
       it 'returns true for a valid signature' do
-        expect(instance.verify(data: data, signature: signature, verification_key: ecdsa_key)).to be true
+        expect(instance.verify(data: data, signature: signature, verification_key: ecdsa_key)).to be(true)
       end
 
       it 'returns false for an invalid signature' do
-        expect(instance.verify(data: data, signature: 'invalid_signature', verification_key: ecdsa_key)).to be false
+        expect(instance.verify(data: data, signature: 'invalid_signature', verification_key: ecdsa_key)).to be(false)
       end
     end
 

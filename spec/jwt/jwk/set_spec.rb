@@ -8,7 +8,7 @@ RSpec.describe JWT::JWK::Set do
 
     context 'can create a set' do
       it 'from a JWK' do
-        jwk = JWT::JWK.new 'testkey'
+        jwk = JWT::JWK.new('testkey')
         expect(described_class.new(jwk).keys).to eql([jwk])
       end
 
@@ -25,7 +25,7 @@ RSpec.describe JWT::JWK::Set do
       end
 
       it 'from an array of keys' do
-        jwk = JWT::JWK.new 'testkey'
+        jwk = JWT::JWK.new('testkey')
         expect(described_class.new([jwk]).keys).to eql([jwk])
       end
 

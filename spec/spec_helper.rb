@@ -12,7 +12,7 @@ puts "OpenSSL::OPENSSL_VERSION: #{OpenSSL::OPENSSL_VERSION}"
 puts "OpenSSL::OPENSSL_LIBRARY_VERSION: #{OpenSSL::OPENSSL_LIBRARY_VERSION}\n\n"
 
 RSpec.configure do |config|
-  config.expect_with :rspec do |c|
+  config.expect_with(:rspec) do |c|
     c.syntax = :expect
   end
   config.include(SpecSupport::TestKeys)
@@ -23,6 +23,6 @@ RSpec.configure do |config|
   end
 
   config.run_all_when_everything_filtered = true
-  config.filter_run :focus
+  config.filter_run(:focus)
   config.order = 'random'
 end
