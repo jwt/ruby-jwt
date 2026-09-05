@@ -119,7 +119,7 @@ RSpec.describe JWT::JWA::Hmac do
       let(:hmac_secret) { 123 }
 
       it 'raises error' do
-        expect { subject }.to raise_error(JWT::VerificationError, 'HMAC key expected to be a String')
+        expect { subject }.to raise_error(JWT::VerificationKeyError, 'HMAC key expected to be a String')
       end
     end
 
@@ -130,7 +130,7 @@ RSpec.describe JWT::JWA::Hmac do
 
       it 'raises error and does not call OpenSSL::HMAC.digest' do
         expect(OpenSSL::HMAC).not_to receive(:digest)
-        expect { subject }.to raise_error(JWT::VerificationError, 'HMAC key expected to be a String')
+        expect { subject }.to raise_error(JWT::VerificationKeyError, 'HMAC key expected to be a String')
       end
     end
 
@@ -140,7 +140,7 @@ RSpec.describe JWT::JWA::Hmac do
 
       it 'raises error and does not call OpenSSL::HMAC.digest' do
         expect(OpenSSL::HMAC).not_to receive(:digest)
-        expect { subject }.to raise_error(JWT::VerificationError, 'HMAC key cannot be empty')
+        expect { subject }.to raise_error(JWT::VerificationKeyError, 'HMAC key cannot be empty')
       end
     end
 
@@ -159,7 +159,7 @@ RSpec.describe JWT::JWA::Hmac do
         let(:hmac_secret) { 'short' }
 
         it 'raises error' do
-          expect { subject }.to raise_error(JWT::VerificationError, 'HMAC key must be at least 32 bytes for HS256 algorithm')
+          expect { subject }.to raise_error(JWT::VerificationKeyError, 'HMAC key must be at least 32 bytes for HS256 algorithm')
         end
       end
 

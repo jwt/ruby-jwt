@@ -7,8 +7,15 @@ module JWT
   # The EncodeError class is raised when there is an error encoding a JWT.
   class EncodeError < Error; end
 
+  # The historical grouping of every error that is not an encoding error. Every
+  # error class below is a descendant, so `rescue JWT::DecodeError` keeps its
+  # original meaning.
+  #
+  # @deprecated Use {JWT::Error}, {JWT::TokenError} or a more specific error class instead.
+  class DecodeError < Error; end
+
   # The TokenError class is the base class for all errors related to token processing.
-  class TokenError < Error; end
+  class TokenError < DecodeError; end
 
   # The MalformedTokenError class is raised when the token is structurally invalid.
   class MalformedTokenError < TokenError; end
@@ -19,8 +26,13 @@ module JWT
   # The SignatureError class is the base class for signature and algorithm related errors.
   class SignatureError < TokenError; end
 
-  # The VerificationError class is raised when there is an error verifying a JWT signature.
+  # The VerificationError class is raised when the signature of a token does not
+  # match the one calculated from the signing input.
   class VerificationError < SignatureError; end
+
+  # The VerificationKeyError class is raised when the key or algorithm given for
+  # verification cannot be used, as opposed to a signature that does not match.
+  class VerificationKeyError < SignatureError; end
 
   # The IncorrectAlgorithm class is raised when the JWT algorithm is incorrect.
   class IncorrectAlgorithm < SignatureError; end
@@ -62,11 +74,8 @@ module JWT
   class MissingRequiredClaim < ClaimValidationError; end
 
   # The JWKError class is raised when there is an error with the JSON Web Key (JWK).
-  class JWKError < Error; end
+  class JWKError < DecodeError; end
 
   # Raised when a JWK uses a key type (kty) that this library does not support.
   class UnsupportedKeyType < JWKError; end
-
-  # @deprecated Use {JWT::Error}, {JWT::TokenError}, or a more specific error class instead.
-  DecodeError = Error
 end

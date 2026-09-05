@@ -58,10 +58,10 @@ RSpec.describe JWT::JWA::Ecdsa do
     end
 
     context 'when the verification key is not an OpenSSL::PKey::EC instance' do
-      it 'raises a JWT::VerificationError' do
+      it 'raises a JWT::VerificationKeyError' do
         expect do
           instance.verify(data: data, signature: '', verification_key: 'not_a_key')
-        end.to raise_error(JWT::VerificationError, 'The given key is a String. It has to be an OpenSSL::PKey::EC instance')
+        end.to raise_error(JWT::VerificationKeyError, 'The given key is a String. It has to be an OpenSSL::PKey::EC instance')
       end
     end
 

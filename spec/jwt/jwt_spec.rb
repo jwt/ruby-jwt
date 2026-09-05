@@ -946,7 +946,7 @@ RSpec.describe JWT do
       end
 
       it 'raises error on decoding' do
-        expect { JWT.decode(expected_token, 'secret', true, algorithm: custom_algorithm.new) }.to raise_error(JWT::VerificationError, /missing the verify method/)
+        expect { JWT.decode(expected_token, 'secret', true, algorithm: custom_algorithm.new) }.to raise_error(JWT::VerificationKeyError, /missing the verify method/)
       end
     end
   end

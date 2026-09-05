@@ -1,5 +1,11 @@
 # frozen_string_literal: true
 
+# Every JWT error class, discovered rather than listed, so a class added later
+# is covered by the backwards compatibility contract without touching this spec.
+JWT_ERROR_CLASSES = JWT.constants.map { |name| JWT.const_get(name) }
+                                 .select { |const| const.is_a?(Class) && const <= StandardError }
+                                 .freeze
+
 RSpec.describe 'JWT error hierarchy' do
   context 'base classes' do
     it 'JWT::Error inherits from StandardError' do
@@ -10,14 +16,32 @@ RSpec.describe 'JWT error hierarchy' do
       expect(JWT::EncodeError).to be < JWT::Error
     end
 
-    it 'JWT::TokenError inherits from JWT::Error' do
-      expect(JWT::TokenError).to be < JWT::Error
+    it 'JWT::TokenError inherits from JWT::DecodeError' do
+      expect(JWT::TokenError).to be < JWT::DecodeError
     end
   end
 
   context 'backwards compatibility' do
-    it 'JWT::DecodeError is an alias for JWT::Error' do
-      expect(JWT::DecodeError).to eq(JWT::Error)
+    # The contract `rescue JWT::DecodeError` has always had: every error the
+    # library raises is caught by it, with the sole exception of JWT::EncodeError.
+    it 'discovers the error classes it asserts on' do
+      expect(JWT_ERROR_CLASSES).to include(JWT::Error, JWT::TokenError, JWT::JWKError)
+    end
+
+    JWT_ERROR_CLASSES.each do |error_class|
+      next if error_class == JWT::Error || error_class <= JWT::EncodeError
+
+      it "JWT::DecodeError catches #{error_class}" do
+        expect(error_class).to be <= JWT::DecodeError
+      end
+    end
+
+    it 'JWT::DecodeError does not catch JWT::EncodeError' do
+      expect(JWT::EncodeError).not_to be <= JWT::DecodeError
+    end
+
+    it 'JWT::DecodeError inherits from JWT::Error' do
+      expect(JWT::DecodeError).to be < JWT::Error
     end
   end
 
@@ -38,6 +62,15 @@ RSpec.describe 'JWT error hierarchy' do
 
     it 'JWT::VerificationError inherits from JWT::SignatureError' do
       expect(JWT::VerificationError).to be < JWT::SignatureError
+    end
+
+    it 'JWT::VerificationKeyError inherits from JWT::SignatureError' do
+      expect(JWT::VerificationKeyError).to be < JWT::SignatureError
+    end
+
+    it 'JWT::VerificationKeyError is not a JWT::VerificationError' do
+      expect(JWT::VerificationKeyError).not_to be <= JWT::VerificationError
+      expect(JWT::VerificationError).not_to be <= JWT::VerificationKeyError
     end
 
     it 'JWT::IncorrectAlgorithm inherits from JWT::SignatureError' do
@@ -73,8 +106,8 @@ RSpec.describe 'JWT error hierarchy' do
   end
 
   context 'JWK errors' do
-    it 'JWT::JWKError inherits from JWT::Error' do
-      expect(JWT::JWKError).to be < JWT::Error
+    it 'JWT::JWKError inherits from JWT::DecodeError' do
+      expect(JWT::JWKError).to be < JWT::DecodeError
     end
   end
 
