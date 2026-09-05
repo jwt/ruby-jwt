@@ -47,6 +47,14 @@ RSpec.describe JWT::JWA::Ps do
       end
     end
 
+    context 'with a public key' do
+      it 'raises an error' do
+        expect do
+          ps256_instance.sign(data: data, signing_key: OpenSSL::PKey::RSA.new(rsa_key.public_to_pem))
+        end.to raise_error(JWT::EncodeError, 'The given key is not a private key')
+      end
+    end
+
     context 'with a key length less than 2048 bits' do
       let(:rsa_key) { OpenSSL::PKey::RSA.generate(1536) }
 

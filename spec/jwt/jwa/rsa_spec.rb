@@ -37,6 +37,14 @@ RSpec.describe JWT::JWA::Rsa do
         end.to raise_error(JWT::EncodeError, /The given key is a String. It has to be an OpenSSL::PKey::RSA instance/)
       end
     end
+
+    context 'with a public key' do
+      it 'raises an error' do
+        expect do
+          rsa_instance.sign(data: data, signing_key: OpenSSL::PKey::RSA.new(rsa_key.public_to_pem))
+        end.to raise_error(JWT::EncodeError, 'The given key is not a private key')
+      end
+    end
   end
 
   describe '#verify' do
