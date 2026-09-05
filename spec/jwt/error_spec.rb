@@ -2,9 +2,7 @@
 
 # Every JWT error class, discovered rather than listed, so a class added later
 # is covered by the backwards compatibility contract without touching this spec.
-JWT_ERROR_CLASSES = JWT.constants.map { |name| JWT.const_get(name) }
-                                 .select { |const| const.is_a?(Class) && const <= StandardError }
-                                 .freeze
+JWT_ERROR_CLASSES = JWT.constants.map { |name| JWT.const_get(name) }.select { |const| const.is_a?(Class) && const <= StandardError }.freeze
 
 RSpec.describe 'JWT error hierarchy' do
   context 'base classes' do
