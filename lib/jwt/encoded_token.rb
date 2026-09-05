@@ -190,7 +190,7 @@ module JWT
       raise JWT::DecodeError, 'Encoded payload is empty' if encoded_payload == ''
 
       if unencoded_payload?
-        verify_claims!(crit: ['b64'])
+        Claims::Crit.new(expected_crits: ['b64'], strict: true).verify!(context: ClaimsContext.new(self))
         return parse_unencoded(encoded_payload)
       end
 

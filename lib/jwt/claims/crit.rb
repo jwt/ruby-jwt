@@ -7,8 +7,10 @@ module JWT
       # Initializes a new Crit instance.
       #
       # @param expected_crits [String] the expected crit header values for the JWT token.
-      def initialize(expected_crits:)
+      # @param strict [Boolean] whether the crit header may contain only expected values.
+      def initialize(expected_crits:, strict: false)
         @expected_crits = Array(expected_crits)
+        @strict = strict
       end
 
       # Verifies the critical claim ('crit') in the JWT token header.
@@ -24,12 +26,15 @@ module JWT
         missing = (expected_crits - context.header['crit'])
         raise(JWT::InvalidCritError, "Crit header missing expected values: #{missing.join(', ')}") if missing.any?
 
+        unexpected = (context.header['crit'] - expected_crits)
+        raise(JWT::InvalidCritError, "Unsupported critical headers: #{unexpected.join(', ')}") if strict && unexpected.any?
+
         nil
       end
 
       private
 
-      attr_reader :expected_crits
+      attr_reader :expected_crits, :strict
     end
   end
 end
