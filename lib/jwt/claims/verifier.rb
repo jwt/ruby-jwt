@@ -33,8 +33,10 @@ module JWT
           errors = []
           iterate_verifiers(*options) do |verifier, verifier_options|
             verify_one!(context, verifier, verifier_options)
-          rescue ::JWT::DecodeError => e
-            errors << Error.new(message: e.message)
+          rescue ::JWT::ClaimValidationError, ::JWT::MalformedTokenError => e
+            # A payload that cannot be decoded has no valid claims either, so the
+            # predicate API reports it instead of raising.
+            errors << JWT::Claims::Error.new(message: e.message)
           end
           errors
         end

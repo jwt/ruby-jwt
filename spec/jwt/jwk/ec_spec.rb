@@ -142,8 +142,8 @@ RSpec.describe JWT::JWK::EC do
 
     context 'when the jwk has an invalid alg header' do
       let(:rsa) { described_class.new(ec_key, alg: 'INVALID') }
-      it 'raises JWT::VerificationError' do
-        expect { rsa.verify(data: data, signature: 'signature') }.to raise_error(JWT::VerificationError, 'Algorithm not supported')
+      it 'raises JWT::VerificationKeyError' do
+        expect { rsa.verify(data: data, signature: 'signature') }.to raise_error(JWT::VerificationKeyError, 'Algorithm not supported')
       end
     end
 
@@ -156,8 +156,8 @@ RSpec.describe JWT::JWK::EC do
 
     context 'when the jwk has HS256 as the alg parameter' do
       let(:rsa) { described_class.new(ec_key, alg: 'HS256') }
-      it 'raises JWT::DecodeError' do
-        expect { rsa.verify(data: data, signature: 'signature') }.to raise_error(JWT::DecodeError, 'HMAC key expected to be a String')
+      it 'raises JWT::VerificationKeyError' do
+        expect { rsa.verify(data: data, signature: 'signature') }.to raise_error(JWT::VerificationKeyError, 'HMAC key expected to be a String')
       end
     end
   end

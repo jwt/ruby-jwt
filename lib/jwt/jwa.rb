@@ -37,7 +37,7 @@ module JWT
       # @api private
       def create_signer(algorithm:, key:)
         if key.is_a?(JWK::KeyBase)
-          validate_jwk_algorithms!(key, algorithm, DecodeError)
+          validate_jwk_algorithms!(key, algorithm, EncodeError)
 
           return key
         end
@@ -49,7 +49,7 @@ module JWT
       def create_verifiers(algorithms:, keys:, preferred_algorithm:)
         jwks, other_keys = keys.partition { |key| key.is_a?(JWK::KeyBase) }
 
-        validate_jwk_algorithms!(jwks, algorithms, VerificationError)
+        validate_jwk_algorithms!(jwks, algorithms, VerificationKeyError)
 
         jwks + resolve_and_sort(algorithms: algorithms,
                                 preferred_algorithm: preferred_algorithm)

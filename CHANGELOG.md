@@ -1,12 +1,13 @@
 # Changelog
 
-## [v3.2.1](https://github.com/jwt/ruby-jwt/tree/v3.2.1) (NEXT)
+## [v3.3.0](https://github.com/jwt/ruby-jwt/tree/v3.3.0) (NEXT)
 
-[Full Changelog](https://github.com/jwt/ruby-jwt/compare/v3.2.0...v3.2.1)
+[Full Changelog](https://github.com/jwt/ruby-jwt/compare/v3.2.0...v3.3.0)
 
 **Features:**
 
 - Allow a leeway to be given for the `iat` claim verification [#747](https://github.com/jwt/ruby-jwt/pull/747) - ([@denis1011101](https://github.com/denis1011101))
+- Revamp error hierarchy: introduce `JWT::Error`, `JWT::TokenError`, `JWT::MalformedTokenError`, `JWT::SignatureError`, `JWT::VerificationKeyError` and `JWT::ClaimValidationError` grouping classes. `JWT::DecodeError` is deprecated but keeps its meaning: every error class except `JWT::EncodeError` still inherits from it. An unusable verification key now raises `JWT::VerificationKeyError`, a subclass of `JWT::VerificationError`, so existing rescues keep working while callers can distinguish an unusable key from a signature that does not match. `RS*` and `PS*` verification now reject a key of the wrong type instead of letting a `NoMethodError` escape. Signing failures now consistently raise `JWT::EncodeError`: an ECDSA signing key with a mismatched or unsupported curve previously surfaced as `JWT::IncorrectAlgorithm` or `JWT::UnsupportedEcdsaCurve`, and an `RS*` or `PS*` public signing key as an `ArgumentError`, from `JWT.encode`. Code wrapping `JWT.encode` in `rescue JWT::DecodeError` should rescue `JWT::Error` or `JWT::EncodeError` instead [#722](https://github.com/jwt/ruby-jwt/pull/722) ([@anakinj](https://github.com/anakinj))
 - Your contribution here
 
 **Fixes and enhancements:**

@@ -26,7 +26,7 @@ RSpec.describe JWT::EncodedToken do
 
       context 'when payload is not provided' do
         it 'raises decode error' do
-          expect { token.unverified_payload }.to raise_error(JWT::DecodeError, 'Encoded payload is empty')
+          expect { token.unverified_payload }.to raise_error(JWT::MalformedTokenError, 'Encoded payload is empty')
         end
       end
     end
@@ -45,7 +45,7 @@ RSpec.describe JWT::EncodedToken do
       let(:encoded_token) { '' }
 
       it 'raises decode error' do
-        expect { token.unverified_payload }.to raise_error(JWT::DecodeError, 'Invalid segment encoding')
+        expect { token.unverified_payload }.to raise_error(JWT::MalformedTokenError, 'Invalid segment encoding')
       end
     end
   end
@@ -81,7 +81,7 @@ RSpec.describe JWT::EncodedToken do
       before { token.verify_signature!(algorithm: 'HS256', key: 'secret') }
 
       it 'raises an error' do
-        expect { token.payload }.to raise_error(JWT::DecodeError, 'Verify the token claims before accessing the payload')
+        expect { token.payload }.to raise_error(JWT::TokenError, 'Verify the token claims before accessing the payload')
       end
     end
 
@@ -89,13 +89,13 @@ RSpec.describe JWT::EncodedToken do
       before { token.valid_signature?(algorithm: 'HS256', key: 'wrong') }
 
       it 'raises an error' do
-        expect { token.payload }.to raise_error(JWT::DecodeError, 'Verify the token signature before accessing the payload')
+        expect { token.payload }.to raise_error(JWT::TokenError, 'Verify the token signature before accessing the payload')
       end
     end
 
     context 'when token is not verified' do
       it 'raises an error' do
-        expect { token.payload }.to raise_error(JWT::DecodeError, 'Verify the token signature before accessing the payload')
+        expect { token.payload }.to raise_error(JWT::TokenError, 'Verify the token signature before accessing the payload')
       end
     end
   end
@@ -158,7 +158,7 @@ RSpec.describe JWT::EncodedToken do
       let(:encoded_token) { '' }
 
       it 'raises decode error' do
-        expect { token.header }.to raise_error(JWT::DecodeError, 'Invalid segment encoding')
+        expect { token.header }.to raise_error(JWT::MalformedTokenError, 'Invalid segment encoding')
       end
     end
   end
@@ -296,8 +296,8 @@ RSpec.describe JWT::EncodedToken do
       end
 
       context 'with algorithms not supported by key provided' do
-        it 'raises JWT::VerificationError' do
-          expect { token.verify_signature!(algorithm: %w[RS384 RS512], key: jwk) }.to raise_error(JWT::VerificationError, 'Provided JWKs do not support one of the specified algorithms: RS384, RS512')
+        it 'raises JWT::VerificationKeyError' do
+          expect { token.verify_signature!(algorithm: %w[RS384 RS512], key: jwk) }.to raise_error(JWT::VerificationKeyError, 'Provided JWKs do not support one of the specified algorithms: RS384, RS512')
         end
       end
     end
@@ -359,7 +359,7 @@ RSpec.describe JWT::EncodedToken do
         end
         context 'when payload is not provided' do
           it 'raises decode error' do
-            expect { token.verify_claims!(:exp, :nbf) }.to raise_error(JWT::DecodeError, 'Encoded payload is empty')
+            expect { token.verify_claims!(:exp, :nbf) }.to raise_error(JWT::MalformedTokenError, 'Encoded payload is empty')
           end
         end
       end
@@ -468,6 +468,32 @@ RSpec.describe JWT::EncodedToken do
         end
       end
     end
+
+    context 'when payload is detached and not provided' do
+      let(:encoded_token) { detached_payload_token.jwt }
+
+      it 'returns false instead of raising' do
+        expect(token.valid_claims?(:exp)).to be(false)
+      end
+    end
+
+    context 'when payload is not valid JSON' do
+      let(:encoded_token) do
+        header_segment = Base64.urlsafe_encode64('{"alg":"HS256"}', padding: false)
+        payload_segment = Base64.urlsafe_encode64('not json', padding: false)
+        signature = Base64.urlsafe_encode64(OpenSSL::HMAC.digest('SHA256', 'secret', "#{header_segment}.#{payload_segment}"), padding: false)
+        [header_segment, payload_segment, signature].join('.')
+      end
+
+      it 'returns false instead of raising' do
+        expect(token.valid_claims?(:exp)).to be(false)
+      end
+
+      it 'makes #valid? return false even though the signature is valid' do
+        expect(token.valid_signature?(algorithm: 'HS256', key: 'secret')).to be(true)
+        expect(token.valid?(signature: { algorithm: 'HS256', key: 'secret' })).to be(false)
+      end
+    end
   end
 
   describe '#claim_errors' do
@@ -486,6 +512,14 @@ RSpec.describe JWT::EncodedToken do
         end
       end
     end
+
+    context 'when payload is detached and not provided' do
+      let(:encoded_token) { detached_payload_token.jwt }
+
+      it 'reports the decoding problem instead of raising' do
+        expect(token.claim_errors(:exp).map(&:message)).to eq(['Encoded payload is empty'])
+      end
+    end
   end
 
   describe 'integration use-cases' do
@@ -502,16 +536,16 @@ RSpec.describe JWT::EncodedToken do
         expect(token.unverified_payload).to eq({ 'pay' => 'load' })
         expect(token.header).to eq({ 'alg' => 'HS256' })
 
-        expect { token.payload }.to raise_error(JWT::DecodeError, 'Verify the token signature before accessing the payload')
+        expect { token.payload }.to raise_error(JWT::TokenError, 'Verify the token signature before accessing the payload')
 
         expect(token.valid_signature?(algorithm: 'HS256', key: 'invalid_signing_key')).to be(false)
-        expect { token.payload }.to raise_error(JWT::DecodeError, 'Verify the token signature before accessing the payload')
+        expect { token.payload }.to raise_error(JWT::TokenError, 'Verify the token signature before accessing the payload')
 
         expect(token.valid_signature?(algorithm: 'HS256', key: 'secret_signing_key')).to be(true)
-        expect { token.payload }.to raise_error(JWT::DecodeError, 'Verify the token claims before accessing the payload')
+        expect { token.payload }.to raise_error(JWT::TokenError, 'Verify the token claims before accessing the payload')
 
         expect(token.valid_claims?(iss: 'issuer')).to be(false)
-        expect { token.payload }.to raise_error(JWT::DecodeError, 'Verify the token claims before accessing the payload')
+        expect { token.payload }.to raise_error(JWT::TokenError, 'Verify the token claims before accessing the payload')
 
         expect(token.valid_claims?).to be(true)
         expect(token.payload).to eq({ 'pay' => 'load' })
@@ -519,7 +553,7 @@ RSpec.describe JWT::EncodedToken do
         token = described_class.new(encoded_token)
 
         expect(token.valid?(signature: { algorithm: 'HS256', key: 'invalid_signing_key' })).to be(false)
-        expect { token.payload }.to raise_error(JWT::DecodeError, 'Verify the token signature before accessing the payload')
+        expect { token.payload }.to raise_error(JWT::TokenError, 'Verify the token signature before accessing the payload')
 
         expect(token.valid?(signature: { algorithm: 'HS256', key: 'secret_signing_key' })).to be(true)
         expect(token.payload).to eq({ 'pay' => 'load' })

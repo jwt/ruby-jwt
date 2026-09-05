@@ -47,6 +47,14 @@ RSpec.describe JWT::JWA::Ps do
       end
     end
 
+    context 'with a public key' do
+      it 'raises an error' do
+        expect do
+          ps256_instance.sign(data: data, signing_key: test_pkey('rsa-2048-public.pem'))
+        end.to raise_error(JWT::EncodeError, 'The given key is not a private key')
+      end
+    end
+
     context 'with a key length less than 2048 bits' do
       let(:rsa_key) { OpenSSL::PKey::RSA.generate(1536) }
 
@@ -80,6 +88,14 @@ RSpec.describe JWT::JWA::Ps do
     context 'with an invalid signature' do
       it 'raises a verification error' do
         expect(ps256_instance.verify(data: data, signature: 'invalid_signature', verification_key: rsa_key)).to be(false)
+      end
+    end
+
+    context 'when the verification key is not an OpenSSL::PKey::RSA instance' do
+      it 'raises a JWT::VerificationKeyError' do
+        expect do
+          ps256_instance.verify(data: data, signature: ps256_signature, verification_key: 'not_a_key')
+        end.to raise_error(JWT::VerificationKeyError, 'The given key is a String. It has to be an OpenSSL::PKey::RSA instance')
       end
     end
 

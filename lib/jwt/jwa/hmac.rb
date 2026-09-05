@@ -21,15 +21,13 @@ module JWT
       end
 
       def sign(data:, signing_key:)
-        ensure_valid_key!(signing_key)
-        validate_key_length!(signing_key)
+        validate_key!(signing_key) { |message| raise_sign_error!(message) }
 
         OpenSSL::HMAC.digest(digest.new, signing_key, data)
       end
 
       def verify(data:, signature:, verification_key:)
-        ensure_valid_key!(verification_key)
-        validate_key_length!(verification_key)
+        validate_key!(verification_key) { |message| raise_verify_error!(message) }
 
         SecurityUtils.secure_compare(signature, OpenSSL::HMAC.digest(digest.new, verification_key, data))
       end
@@ -42,18 +40,16 @@ module JWT
 
       attr_reader :digest
 
-      def ensure_valid_key!(key)
-        raise_verify_error!('HMAC key expected to be a String') unless key.is_a?(String)
-        raise_verify_error!('HMAC key cannot be empty') if key.empty?
-      end
+      # Yields a message for the first problem found with the key. The caller
+      # raises it, so signing and verification failures keep their own error class.
+      def validate_key!(key)
+        yield 'HMAC key expected to be a String' unless key.is_a?(String)
+        yield 'HMAC key cannot be empty' if key.empty?
 
-      def validate_key_length!(key)
         return unless JWT.configuration.decode.enforce_hmac_key_length
 
         min_length = MIN_KEY_LENGTHS[alg]
-        return if key.bytesize >= min_length
-
-        raise_verify_error!("HMAC key must be at least #{min_length} bytes for #{alg} algorithm")
+        yield "HMAC key must be at least #{min_length} bytes for #{alg} algorithm" if key.bytesize < min_length
       end
 
       # Copy of https://github.com/rails/rails/blob/v7.0.3.1/activesupport/lib/active_support/security_utils.rb

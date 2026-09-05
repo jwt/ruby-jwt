@@ -58,10 +58,10 @@ RSpec.describe JWT::JWA::Ecdsa do
     end
 
     context 'when the verification key is not an OpenSSL::PKey::EC instance' do
-      it 'raises a JWT::DecodeError' do
+      it 'raises a JWT::VerificationKeyError' do
         expect do
           instance.verify(data: data, signature: '', verification_key: 'not_a_key')
-        end.to raise_error(JWT::DecodeError, 'The given key is a String. It has to be an OpenSSL::PKey::EC instance')
+        end.to raise_error(JWT::VerificationKeyError, 'The given key is a String. It has to be an OpenSSL::PKey::EC instance')
       end
     end
 
@@ -82,7 +82,7 @@ RSpec.describe JWT::JWA::Ecdsa do
     end
 
     context 'when the signing key is a public key' do
-      it 'raises a JWT::DecodeError' do
+      it 'raises a JWT::EncodeError' do
         public_key = test_pkey('ec256-public.pem')
         expect do
           instance.sign(data: data, signing_key: public_key)
@@ -91,19 +91,28 @@ RSpec.describe JWT::JWA::Ecdsa do
     end
 
     context 'when the signing key is not an OpenSSL::PKey::EC instance' do
-      it 'raises a JWT::DecodeError' do
+      it 'raises a JWT::EncodeError' do
         expect do
           instance.sign(data: data, signing_key: 'not_a_key')
         end.to raise_error(JWT::EncodeError, 'The given key is a String. It has to be an OpenSSL::PKey::EC instance')
       end
     end
 
-    context 'when the signing key is invalid' do
-      it 'raises a JWT::DecodeError' do
+    context 'when the signing key uses an unsupported curve' do
+      it 'raises a JWT::EncodeError' do
         invalid_key = OpenSSL::PKey::EC.generate('sect571r1')
         expect do
           instance.sign(data: data, signing_key: invalid_key)
-        end.to raise_error(JWT::DecodeError, "The ECDSA curve 'sect571r1' is not supported")
+        end.to raise_error(JWT::EncodeError, "The ECDSA curve 'sect571r1' is not supported")
+      end
+    end
+
+    context 'when the signing key is for another curve' do
+      it 'raises a JWT::EncodeError' do
+        other_curve_key = OpenSSL::PKey::EC.generate('secp384r1')
+        expect do
+          instance.sign(data: data, signing_key: other_curve_key)
+        end.to raise_error(JWT::EncodeError, 'payload algorithm is ES256 but ES384 signing key was provided')
       end
     end
   end

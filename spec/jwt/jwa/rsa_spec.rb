@@ -37,6 +37,14 @@ RSpec.describe JWT::JWA::Rsa do
         end.to raise_error(JWT::EncodeError, /The given key is a String. It has to be an OpenSSL::PKey::RSA instance/)
       end
     end
+
+    context 'with a public key' do
+      it 'raises an error' do
+        expect do
+          rsa_instance.sign(data: data, signing_key: test_pkey('rsa-2048-public.pem'))
+        end.to raise_error(JWT::EncodeError, 'The given key is not a private key')
+      end
+    end
   end
 
   describe '#verify' do
@@ -57,6 +65,14 @@ RSpec.describe JWT::JWA::Rsa do
     context 'with an invalid key' do
       it 'returns false' do
         expect(rsa_instance.verify(data: data, signature: 'invalid_signature', verification_key: OpenSSL::PKey::RSA.generate(2048))).to be(false)
+      end
+    end
+
+    context 'when the verification key is not an OpenSSL::PKey::RSA instance' do
+      it 'raises a JWT::VerificationKeyError' do
+        expect do
+          rsa_instance.verify(data: data, signature: signature, verification_key: 'not_a_key')
+        end.to raise_error(JWT::VerificationKeyError, 'The given key is a String. It has to be an OpenSSL::PKey::RSA instance')
       end
     end
   end

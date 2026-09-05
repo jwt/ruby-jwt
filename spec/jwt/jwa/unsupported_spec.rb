@@ -9,7 +9,7 @@ RSpec.describe JWT::JWA::Unsupported do
 
   describe '.verify' do
     it 'raises an error for unsupported algorithm' do
-      expect { described_class.verify('data', 'signature', 'key') }.to raise_error(JWT::VerificationError, 'Algorithm not supported')
+      expect { described_class.verify('data', 'signature', 'key') }.to raise_error(JWT::VerificationKeyError, 'Algorithm not supported')
     end
   end
 end
