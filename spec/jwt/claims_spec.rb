@@ -9,6 +9,15 @@ RSpec.describe JWT::Claims do
       end
     end
 
+    context 'iat claim' do
+      let(:payload) { { 'iat' => Time.now.to_i + 10, 'pay' => 'load' } }
+
+      it 'verifies the iat' do
+        expect { described_class.verify_payload!(payload, iat: {}) }.to raise_error(JWT::InvalidIatError, 'Invalid iat')
+        described_class.verify_payload!(payload, iat: { leeway: 1000 })
+      end
+    end
+
     context 'exp claim' do
       let(:payload) { { 'exp' => Time.now.to_i - 10, 'pay' => 'load' } }
 

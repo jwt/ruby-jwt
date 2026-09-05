@@ -6,6 +6,7 @@
 
 **Features:**
 
+- Allow a leeway to be given for the `iat` claim verification [#747](https://github.com/jwt/ruby-jwt/pull/747) - ([@denis1011101](https://github.com/denis1011101))
 - Your contribution here
 
 **Fixes and enhancements:**

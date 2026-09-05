@@ -6,39 +6,73 @@
 
 name: Push Gem
 jobs:
-  push:
+  build:
     runs-on: ubuntu-latest
     permissions:
-      contents: write
-      id-token: write
+      contents: read
     steps:
-      - uses: rubygems/configure-rubygems-credentials@dc5a8d8553e6ee01fc26761a49e99e733d17954a # v2.1.0
-        with:
-          role-to-assume: ${{ secrets.RUBYGEMS_PUSH_ROLE }}
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
-      - name: Set remote URL
-        run: |
-          # Attribute commits to the last committer on HEAD
-          git config --global user.email "$(git log -1 --pretty=format:'%ae')"
-          git config --global user.name "$(git log -1 --pretty=format:'%an')"
-          git remote set-url origin "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/$GITHUB_REPOSITORY"
       - name: Set up Ruby
         uses: ruby/setup-ruby@95ef2b042f9d7a56d8268cba8559e2842e2ad01b # v1.321.0
         with:
           bundler-cache: false
           ruby-version: ruby
-      - name: Install dependencies
-        run: bundle install
-      - name: Release
-        run: bundle exec rake release
+      - name: Build gem
+        run: |
+          expected_tag="v$(ruby -Ilib -rjwt/version -e 'print JWT.gem_version')"
+          test "$GITHUB_REF_NAME" = "$expected_tag"
+          gem build ruby-jwt.gemspec
+      - name: Upload gem
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: jwt-gem
+          path: jwt-*.gem
+          retention-days: 1
+
+  push:
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@95ef2b042f9d7a56d8268cba8559e2842e2ad01b # v1.321.0
+        with:
+          bundler-cache: false
+          ruby-version: ruby
+      - name: Download gem
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          name: jwt-gem
+      - uses: rubygems/configure-rubygems-credentials@dc5a8d8553e6ee01fc26761a49e99e733d17954a # v2.1.0
+        with:
+          role-to-assume: ${{ secrets.RUBYGEMS_PUSH_ROLE }}
+      - name: Push gem
+        run: gem push jwt-*.gem
+
+  wait:
+    needs: push
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@95ef2b042f9d7a56d8268cba8559e2842e2ad01b # v1.321.0
+        with:
+          bundler-cache: false
+          ruby-version: ruby
+      - name: Download gem
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          name: jwt-gem
       - name: Wait for release to propagate
         run: |
           gem install rubygems-await
-          gem_tuple="$(ruby -rbundler/setup -rbundler -e '
-              spec = Bundler.definition.specs.find {|s| s.name == ARGV[0] }
-              raise "No spec for #{ARGV[0]}" unless spec
+          gem_tuple="$(ruby -rrubygems/package -e '
+              spec = Gem::Package.new(Dir["jwt-*.gem"].fetch(0)).spec
               print [spec.name, spec.version, spec.platform].join(":")
-            ' "jwt")"
+            ')"
           gem await "${gem_tuple}"
