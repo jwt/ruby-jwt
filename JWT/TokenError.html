@@ -4,7 +4,7 @@
     <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>
-  Exception: JWT::UnsupportedKeyType
+  Exception: JWT::TokenError
   
     &mdash; Documentation by YARD 0.9.45
   
@@ -15,7 +15,7 @@
   <link rel="stylesheet" href="../css/common.css" type="text/css">
 
 <script type="text/javascript">
-  pathId = "JWT::UnsupportedKeyType";
+  pathId = "JWT::TokenError";
   relpath = '../';
 </script>
 
@@ -38,10 +38,10 @@
       <div id="header">
         <div id="menu">
   
-    <a href="../_index.html">Index (U)</a> &raquo;
+    <a href="../_index.html">Index (T)</a> &raquo;
     <span class='title'><span class='object_link'><a href="../JWT.html" title="JWT (module)">JWT</a></span></span>
      &raquo; 
-    <span class="title">UnsupportedKeyType</span>
+    <span class="title">TokenError</span>
   
 </div>
 
@@ -61,7 +61,7 @@
         <div class="clear"></div>
       </div>
 
-      <div id="content"><h1>Exception: JWT::UnsupportedKeyType
+      <div id="content"><h1>Exception: JWT::TokenError
   
   
   
@@ -71,7 +71,7 @@
   <dl>
     <dt>Inherits:</dt>
     <dd>
-      <span class="inheritName"><span class='object_link'><a href="JWKError.html" title="JWT::JWKError (class)">JWKError</a></span></span>
+      <span class="inheritName"><span class='object_link'><a href="DecodeError.html" title="JWT::DecodeError (class)">DecodeError</a></span></span>
       
         <ul class="fullTree">
           <li>Object</li>
@@ -82,9 +82,7 @@
           
             <li class="next"><span class='object_link'><a href="DecodeError.html" title="JWT::DecodeError (class)">DecodeError</a></span></li>
           
-            <li class="next"><span class='object_link'><a href="JWKError.html" title="JWT::JWKError (class)">JWKError</a></span></li>
-          
-            <li class="next">JWT::UnsupportedKeyType</li>
+            <li class="next">JWT::TokenError</li>
           
         </ul>
         <a href="#" class="inheritanceTree">show all</a>
@@ -112,13 +110,16 @@
 
 <h2>Overview</h2><div class="docstring">
   <div class="discussion">
-    <p>Raised when a JWK uses a key type (kty) that this library does not support.</p>
+    <p>The TokenError class is the base class for all errors related to token processing.</p>
 
   </div>
 </div>
 <div class="tags">
   
 
+</div><div id="subclasses">
+  <h2>Direct Known Subclasses</h2>
+  <p class="children"><span class='object_link'><a href="ClaimValidationError.html" title="JWT::ClaimValidationError (class)">ClaimValidationError</a></span>, <span class='object_link'><a href="MalformedTokenError.html" title="JWT::MalformedTokenError (class)">MalformedTokenError</a></span>, <span class='object_link'><a href="SignatureError.html" title="JWT::SignatureError (class)">SignatureError</a></span></p>
 </div>
 
 
@@ -127,13 +128,7 @@
 
 
 
-  
-  
-  
-  
-  
-  
-  
+
   
   
   
@@ -153,7 +148,7 @@
 </div>
 
       <div id="footer">
-  Generated on Sat Sep  5 18:11:18 2026 by
+  Generated on Sat Sep  5 18:11:17 2026 by
   <a href="https://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.9.45 (ruby-4.0.6).
 </div>

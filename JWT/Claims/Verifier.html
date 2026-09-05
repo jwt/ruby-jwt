@@ -204,7 +204,9 @@
 37
 38
 39
-40</pre>
+40
+41
+42</pre>
     </td>
     <td>
       <pre class="code"><span class="info file"># File 'lib/jwt/claims/verifier.rb', line 32</span>
@@ -213,8 +215,10 @@
   <span class='id identifier rubyid_errors'>errors</span> <span class='op'>=</span> <span class='lbracket'>[</span><span class='rbracket'>]</span>
   <span class='id identifier rubyid_iterate_verifiers'>iterate_verifiers</span><span class='lparen'>(</span><span class='op'>*</span><span class='id identifier rubyid_options'>options</span><span class='rparen'>)</span> <span class='kw'>do</span> <span class='op'>|</span><span class='id identifier rubyid_verifier'>verifier</span><span class='comma'>,</span> <span class='id identifier rubyid_verifier_options'>verifier_options</span><span class='op'>|</span>
     <span class='id identifier rubyid_verify_one!'>verify_one!</span><span class='lparen'>(</span><span class='id identifier rubyid_context'>context</span><span class='comma'>,</span> <span class='id identifier rubyid_verifier'>verifier</span><span class='comma'>,</span> <span class='id identifier rubyid_verifier_options'>verifier_options</span><span class='rparen'>)</span>
-  <span class='kw'>rescue</span> <span class='op'>::</span><span class='const'><span class='object_link'><a href="../../JWT.html" title="JWT (module)">JWT</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="../DecodeError.html" title="JWT::DecodeError (class)">DecodeError</a></span></span> <span class='op'>=&gt;</span> <span class='id identifier rubyid_e'>e</span>
-    <span class='id identifier rubyid_errors'>errors</span> <span class='op'>&lt;&lt;</span> <span class='const'><span class='object_link'><a href="Error.html" title="JWT::Claims::Error (class)">Error</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='label'>message:</span> <span class='id identifier rubyid_e'>e</span><span class='period'>.</span><span class='id identifier rubyid_message'>message</span><span class='rparen'>)</span>
+  <span class='kw'>rescue</span> <span class='op'>::</span><span class='const'><span class='object_link'><a href="../../JWT.html" title="JWT (module)">JWT</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="../ClaimValidationError.html" title="JWT::ClaimValidationError (class)">ClaimValidationError</a></span></span><span class='comma'>,</span> <span class='op'>::</span><span class='const'><span class='object_link'><a href="../../JWT.html" title="JWT (module)">JWT</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="../MalformedTokenError.html" title="JWT::MalformedTokenError (class)">MalformedTokenError</a></span></span> <span class='op'>=&gt;</span> <span class='id identifier rubyid_e'>e</span>
+    <span class='comment'># A payload that cannot be decoded has no valid claims either, so the
+</span>    <span class='comment'># predicate API reports it instead of raising.
+</span>    <span class='id identifier rubyid_errors'>errors</span> <span class='op'>&lt;&lt;</span> <span class='const'><span class='object_link'><a href="../../JWT.html" title="JWT (module)">JWT</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="../Claims.html" title="JWT::Claims (module)">Claims</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="Error.html" title="JWT::Claims::Error (class)">Error</a></span></span><span class='period'>.</span><span class='id identifier rubyid_new'>new</span><span class='lparen'>(</span><span class='label'>message:</span> <span class='id identifier rubyid_e'>e</span><span class='period'>.</span><span class='id identifier rubyid_message'>message</span><span class='rparen'>)</span>
   <span class='kw'>end</span>
   <span class='id identifier rubyid_errors'>errors</span>
 <span class='kw'>end</span></pre>
@@ -277,7 +281,7 @@
 </div>
 
       <div id="footer">
-  Generated on Sat Sep  5 17:21:14 2026 by
+  Generated on Sat Sep  5 18:11:17 2026 by
   <a href="https://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.9.45 (ruby-4.0.6).
 </div>

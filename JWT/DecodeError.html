@@ -63,7 +63,7 @@
 
       <div id="content"><h1>Exception: JWT::DecodeError
   
-  
+  <span class="deprecated note title">Deprecated</span>
   
 </h1>
 <div class="box_info">
@@ -71,12 +71,14 @@
   <dl>
     <dt>Inherits:</dt>
     <dd>
-      <span class="inheritName">StandardError</span>
+      <span class="inheritName"><span class='object_link'><a href="Error.html" title="JWT::Error (class)">Error</a></span></span>
       
         <ul class="fullTree">
           <li>Object</li>
           
             <li class="next">StandardError</li>
+          
+            <li class="next"><span class='object_link'><a href="Error.html" title="JWT::Error (class)">Error</a></span></li>
           
             <li class="next">JWT::DecodeError</li>
           
@@ -106,7 +108,10 @@
 
 <h2>Overview</h2><div class="docstring">
   <div class="discussion">
-    <p>The DecodeError class is raised when there is an error decoding a JWT.</p>
+    <div class="note deprecated"><strong>Deprecated.</strong> <div class='inline'><p>Use <span class='object_link'><a href="Error.html" title="JWT::Error (class)">Error</a></span>, <span class='object_link'><a href="TokenError.html" title="JWT::TokenError (class)">TokenError</a></span> or a more specific error class instead.</p></div></div>
+<p>The historical grouping of every error that is not an encoding error. Every
+error class below is a descendant, so <code>rescue JWT::DecodeError</code> keeps its
+original meaning.</p>
 
   </div>
 </div>
@@ -115,7 +120,7 @@
 
 </div><div id="subclasses">
   <h2>Direct Known Subclasses</h2>
-  <p class="children"><span class='object_link'><a href="Base64DecodeError.html" title="JWT::Base64DecodeError (class)">Base64DecodeError</a></span>, <span class='object_link'><a href="ExpiredSignature.html" title="JWT::ExpiredSignature (class)">ExpiredSignature</a></span>, <span class='object_link'><a href="ImmatureSignature.html" title="JWT::ImmatureSignature (class)">ImmatureSignature</a></span>, <span class='object_link'><a href="IncorrectAlgorithm.html" title="JWT::IncorrectAlgorithm (class)">IncorrectAlgorithm</a></span>, <span class='object_link'><a href="InvalidAudError.html" title="JWT::InvalidAudError (class)">InvalidAudError</a></span>, <span class='object_link'><a href="InvalidCritError.html" title="JWT::InvalidCritError (class)">InvalidCritError</a></span>, <span class='object_link'><a href="InvalidIatError.html" title="JWT::InvalidIatError (class)">InvalidIatError</a></span>, <span class='object_link'><a href="InvalidIssuerError.html" title="JWT::InvalidIssuerError (class)">InvalidIssuerError</a></span>, <span class='object_link'><a href="InvalidJtiError.html" title="JWT::InvalidJtiError (class)">InvalidJtiError</a></span>, <span class='object_link'><a href="InvalidPayload.html" title="JWT::InvalidPayload (class)">InvalidPayload</a></span>, <span class='object_link'><a href="InvalidSubError.html" title="JWT::InvalidSubError (class)">InvalidSubError</a></span>, <span class='object_link'><a href="JWKError.html" title="JWT::JWKError (class)">JWKError</a></span>, <span class='object_link'><a href="MissingRequiredClaim.html" title="JWT::MissingRequiredClaim (class)">MissingRequiredClaim</a></span>, <span class='object_link'><a href="VerificationError.html" title="JWT::VerificationError (class)">VerificationError</a></span></p>
+  <p class="children"><span class='object_link'><a href="JWKError.html" title="JWT::JWKError (class)">JWKError</a></span>, <span class='object_link'><a href="TokenError.html" title="JWT::TokenError (class)">TokenError</a></span></p>
 </div>
 
 
@@ -126,11 +131,18 @@
 
 
   
+  
+  
+  
+  
+  
+  
+  
 
 </div>
 
       <div id="footer">
-  Generated on Sat Sep  5 17:21:14 2026 by
+  Generated on Sat Sep  5 18:11:17 2026 by
   <a href="https://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.9.45 (ruby-4.0.6).
 </div>

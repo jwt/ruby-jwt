@@ -576,7 +576,7 @@ to convert them to proc (using <code>to_proc</code>)</p>
 
 <span class='kw'>begin</span>
   <span class='const'><span class='object_link'><a href="JWT.html" title="JWT (module)">JWT</a></span></span><span class='period'>.</span><span class='id identifier rubyid_decode'><span class='object_link'><a href="JWT.html#decode-class_method" title="JWT.decode (method)">decode</a></span></span><span class='lparen'>(</span><span class='id identifier rubyid_token'>token</span><span class='comma'>,</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='kw'>true</span><span class='comma'>,</span> <span class='lbrace'>{</span> <span class='label'>x5c:</span> <span class='lbrace'>{</span> <span class='label'>root_certificates:</span> <span class='id identifier rubyid_root_certificates'>root_certificates</span><span class='comma'>,</span> <span class='label'>crls:</span> <span class='id identifier rubyid_crls'>crls</span> <span class='rbrace'>}</span> <span class='rbrace'>}</span><span class='rparen'>)</span>
-<span class='kw'>rescue</span> <span class='const'><span class='object_link'><a href="JWT.html" title="JWT (module)">JWT</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="JWT/DecodeError.html" title="JWT::DecodeError (class)">DecodeError</a></span></span>
+<span class='kw'>rescue</span> <span class='const'><span class='object_link'><a href="JWT.html" title="JWT (module)">JWT</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="JWT/TokenError.html" title="JWT::TokenError (class)">TokenError</a></span></span>
   <span class='comment'># Handle error, e.g. x5c header certificate revoked or expired
 </span><span class='kw'>end</span>
 </code></pre>
@@ -628,8 +628,8 @@ This behaviour may be overwritten by setting the <code>allow_nil_kid</code> opti
   <span class='const'><span class='object_link'><a href="JWT.html" title="JWT (module)">JWT</a></span></span><span class='period'>.</span><span class='id identifier rubyid_decode'><span class='object_link'><a href="JWT.html#decode-class_method" title="JWT.decode (method)">decode</a></span></span><span class='lparen'>(</span><span class='id identifier rubyid_token'>token</span><span class='comma'>,</span> <span class='kw'>nil</span><span class='comma'>,</span> <span class='kw'>true</span><span class='comma'>,</span> <span class='lbrace'>{</span> <span class='label'>algorithms:</span> <span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>RS512</span><span class='tstring_end'>&#39;</span></span><span class='rbracket'>]</span><span class='comma'>,</span> <span class='label'>jwks:</span> <span class='id identifier rubyid_jwks_loader'>jwks_loader</span> <span class='rbrace'>}</span><span class='rparen'>)</span>
 <span class='kw'>rescue</span> <span class='const'><span class='object_link'><a href="JWT.html" title="JWT (module)">JWT</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="JWT/JWKError.html" title="JWT::JWKError (class)">JWKError</a></span></span>
   <span class='comment'># Handle problems with the provided JWKs
-</span><span class='kw'>rescue</span> <span class='const'><span class='object_link'><a href="JWT.html" title="JWT (module)">JWT</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="JWT/DecodeError.html" title="JWT::DecodeError (class)">DecodeError</a></span></span>
-  <span class='comment'># Handle other decode related issues e.g. no kid in header, no matching public key found etc.
+</span><span class='kw'>rescue</span> <span class='const'><span class='object_link'><a href="JWT.html" title="JWT (module)">JWT</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="JWT/TokenError.html" title="JWT::TokenError (class)">TokenError</a></span></span>
+  <span class='comment'># Handle other token related issues e.g. no kid in header, no matching public key found etc.
 </span><span class='kw'>end</span>
 </code></pre>
 <h3 id="Importing_and_exporting_JSON_Web_Keys">Importing and exporting JSON Web Keys</h3>
@@ -689,7 +689,7 @@ bundle exec appraisal rake test
 <p>See <a href="LICENSE">LICENSE</a>.</p></div></div>
 
       <div id="footer">
-  Generated on Sat Sep  5 17:21:13 2026 by
+  Generated on Sat Sep  5 18:11:16 2026 by
   <a href="https://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.9.45 (ruby-4.0.6).
 </div>

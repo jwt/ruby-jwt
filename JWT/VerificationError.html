@@ -71,14 +71,20 @@
   <dl>
     <dt>Inherits:</dt>
     <dd>
-      <span class="inheritName"><span class='object_link'><a href="DecodeError.html" title="JWT::DecodeError (class)">DecodeError</a></span></span>
+      <span class="inheritName"><span class='object_link'><a href="SignatureError.html" title="JWT::SignatureError (class)">SignatureError</a></span></span>
       
         <ul class="fullTree">
           <li>Object</li>
           
             <li class="next">StandardError</li>
           
+            <li class="next"><span class='object_link'><a href="Error.html" title="JWT::Error (class)">Error</a></span></li>
+          
             <li class="next"><span class='object_link'><a href="DecodeError.html" title="JWT::DecodeError (class)">DecodeError</a></span></li>
+          
+            <li class="next"><span class='object_link'><a href="TokenError.html" title="JWT::TokenError (class)">TokenError</a></span></li>
+          
+            <li class="next"><span class='object_link'><a href="SignatureError.html" title="JWT::SignatureError (class)">SignatureError</a></span></li>
           
             <li class="next">JWT::VerificationError</li>
           
@@ -108,13 +114,17 @@
 
 <h2>Overview</h2><div class="docstring">
   <div class="discussion">
-    <p>The VerificationError class is raised when there is an error verifying a JWT.</p>
+    <p>The VerificationError class is raised when the signature of a token does not
+match the one calculated from the signing input.</p>
 
   </div>
 </div>
 <div class="tags">
   
 
+</div><div id="subclasses">
+  <h2>Direct Known Subclasses</h2>
+  <p class="children"><span class='object_link'><a href="VerificationKeyError.html" title="JWT::VerificationKeyError (class)">VerificationKeyError</a></span></p>
 </div>
 
 
@@ -123,6 +133,28 @@
 
 
 
+
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
   
   
   
@@ -135,7 +167,7 @@
 </div>
 
       <div id="footer">
-  Generated on Sat Sep  5 17:21:14 2026 by
+  Generated on Sat Sep  5 18:11:17 2026 by
   <a href="https://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.9.45 (ruby-4.0.6).
 </div>

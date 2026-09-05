@@ -202,12 +202,12 @@ rubocop:disable-next Naming/MethodParameterName, Style/StringLiterals, Style/Num
       <pre class="lines">
 
 
-73
-74
-75</pre>
+69
+70
+71</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/jwt/jwa/hmac.rb', line 73</span>
+      <pre class="code"><span class="info file"># File 'lib/jwt/jwa/hmac.rb', line 69</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_fixed_length_secure_compare'>fixed_length_secure_compare</span><span class='lparen'>(</span><span class='id identifier rubyid_a'>a</span><span class='comma'>,</span> <span class='id identifier rubyid_b'>b</span><span class='rparen'>)</span>
   <span class='const'>OpenSSL</span><span class='period'>.</span><span class='id identifier rubyid_fixed_length_secure_compare'>fixed_length_secure_compare</span><span class='lparen'>(</span><span class='id identifier rubyid_a'>a</span><span class='comma'>,</span> <span class='id identifier rubyid_b'>b</span><span class='rparen'>)</span>
@@ -245,12 +245,12 @@ to compare weak, short secrets to user input.</p>
       <pre class="lines">
 
 
-92
-93
-94</pre>
+88
+89
+90</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/jwt/jwa/hmac.rb', line 92</span>
+      <pre class="code"><span class="info file"># File 'lib/jwt/jwa/hmac.rb', line 88</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_secure_compare'>secure_compare</span><span class='lparen'>(</span><span class='id identifier rubyid_a'>a</span><span class='comma'>,</span> <span class='id identifier rubyid_b'>b</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_a'>a</span><span class='period'>.</span><span class='id identifier rubyid_bytesize'>bytesize</span> <span class='op'>==</span> <span class='id identifier rubyid_b'>b</span><span class='period'>.</span><span class='id identifier rubyid_bytesize'>bytesize</span> <span class='op'>&amp;&amp;</span> <span class='id identifier rubyid_fixed_length_secure_compare'>fixed_length_secure_compare</span><span class='lparen'>(</span><span class='id identifier rubyid_a'>a</span><span class='comma'>,</span> <span class='id identifier rubyid_b'>b</span><span class='rparen'>)</span>
@@ -265,7 +265,7 @@ to compare weak, short secrets to user input.</p>
 </div>
 
       <div id="footer">
-  Generated on Sat Sep  5 17:21:14 2026 by
+  Generated on Sat Sep  5 18:11:17 2026 by
   <a href="https://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.9.45 (ruby-4.0.6).
 </div>

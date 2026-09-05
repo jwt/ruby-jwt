@@ -59,7 +59,57 @@
         <div class="clear"></div>
       </div>
 
-      <div id="content"><div id='filecontents'><h1 id="Upgrading_ruby_jwt_to____3_0_0">Upgrading ruby-jwt to &gt;= 3.0.0</h1>
+      <div id="content"><div id='filecontents'><h1 id="Upgrading_ruby_jwt_to____3_3_0">Upgrading ruby-jwt to &gt;= 3.3.0</h1>
+<h2 id="Error_hierarchy_revamp">Error hierarchy revamp</h2>
+<p>The <a href="https://github.com/jwt/ruby-jwt/pull/722">error classes were reorganised</a> under a new <code>JWT::Error</code> base class, so failures can be rescued by category instead of one class at a time:</p>
+<ul>
+<li><code>JWT::Error</code> is the base class for everything the gem raises.</li>
+<li><code>JWT::TokenError</code> covers every failure in processing a token, and splits into <code>JWT::MalformedTokenError</code> (the token is structurally invalid), <code>JWT::SignatureError</code> (signature and algorithm problems) and <code>JWT::ClaimValidationError</code> (a claim did not verify).</li>
+<li><code>JWT::VerificationKeyError</code>, a subclass of <code>JWT::VerificationError</code>, says the key or algorithm given for verification cannot be used, as opposed to a signature that does not match.</li>
+</ul>
+<h3 id="Decoding_is_unaffected">Decoding is unaffected</h3>
+<p><code>JWT::DecodeError</code> is deprecated in favour of the classes above, but it keeps its meaning: every error class except <code>JWT::EncodeError</code> still inherits from it. A <code>rescue JWT::DecodeError</code> around <code>JWT.decode</code> catches everything it caught before, and the specific classes it has always raised, such as <code>JWT::ExpiredSignature</code>, are unchanged. There is nothing to do on the decoding side.</p>
+<p>Verification also became more predictable: <code>RS*</code> and <code>PS*</code> now reject a key of the wrong type with a <code>JWT::VerificationKeyError</code> instead of letting a <code>NoMethodError</code> escape.</p>
+<h3 id="Signing_failures_now_raise__JWT__EncodeError_">Signing failures now raise <code>JWT::EncodeError</code></h3>
+<p>This is the part that can break. Signing failures used to surface as decode errors, and are now consistently <code>JWT::EncodeError</code>, which is deliberately not a <code>JWT::DecodeError</code>:</p>
+<table>
+<thead>
+<tr>
+<th>Signing with</th>
+<th>Used to raise</th>
+<th>Now raises</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>a <code>nil</code>, empty or too short HMAC key</td>
+<td><code>JWT::DecodeError</code></td>
+<td><code>JWT::EncodeError</code></td>
+</tr>
+<tr>
+<td>an ECDSA key whose curve does not match the algorithm</td>
+<td><code>JWT::IncorrectAlgorithm</code></td>
+<td><code>JWT::EncodeError</code></td>
+</tr>
+<tr>
+<td>an ECDSA key on an unsupported curve</td>
+<td><code>JWT::UnsupportedEcdsaCurve</code></td>
+<td><code>JWT::EncodeError</code></td>
+</tr>
+<tr>
+<td>a JWK whose <code>alg</code> does not match the algorithm</td>
+<td><code>JWT::DecodeError</code></td>
+<td><code>JWT::EncodeError</code></td>
+</tr>
+<tr>
+<td>an <code>RS*</code> or <code>PS*</code> public key</td>
+<td><code>ArgumentError</code></td>
+<td><code>JWT::EncodeError</code></td>
+</tr>
+</tbody>
+</table>
+<p>If you wrap <code>JWT.encode</code> in <code>rescue JWT::DecodeError</code>, <code>rescue JWT::IncorrectAlgorithm</code> or <code>rescue JWT::UnsupportedEcdsaCurve</code>, rescue <code>JWT::EncodeError</code> or <code>JWT::Error</code> instead.</p>
+<h1 id="Upgrading_ruby_jwt_to____3_0_0">Upgrading ruby-jwt to &gt;= 3.0.0</h1>
 <h2 id="Removal_of_the_indirect__RbNaCl__https___github_com_RubyCrypto_rbnacl__dependency">Removal of the indirect <a href="https://github.com/RubyCrypto/rbnacl">RbNaCl</a> dependency</h2>
 <p>Historically, the set of supported algorithms was extended by including the <code>rbnacl</code> gem in the application's Gemfile. On load, ruby-jwt tried to load the gem and, if available, extend the algorithms to those provided by the <code>rbnacl/libsodium</code> libraries. This indirect dependency has caused some maintenance pain and confusion about which versions of the gem are supported.</p>
 <p>Some work to ease the way alternative algorithms can be implemented has been done. This enables the extraction of the algorithm provided by <code>rbnacl</code>.</p>
@@ -92,7 +142,7 @@
 <p>The gem was missing the Base64 encoding and decoding when representing and parsing a HMAC key as a JWK. This issue is now addressed. The added encoding will break compatibility with JWKs produced by older versions of the gem.</p></div></div>
 
       <div id="footer">
-  Generated on Sat Sep  5 17:21:14 2026 by
+  Generated on Sat Sep  5 18:11:17 2026 by
   <a href="https://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.9.45 (ruby-4.0.6).
 </div>

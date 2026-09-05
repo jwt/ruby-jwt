@@ -4,7 +4,7 @@
     <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>
-  Exception: JWT::UnsupportedKeyType
+  Exception: JWT::ClaimValidationError
   
     &mdash; Documentation by YARD 0.9.45
   
@@ -15,7 +15,7 @@
   <link rel="stylesheet" href="../css/common.css" type="text/css">
 
 <script type="text/javascript">
-  pathId = "JWT::UnsupportedKeyType";
+  pathId = "JWT::ClaimValidationError";
   relpath = '../';
 </script>
 
@@ -38,10 +38,10 @@
       <div id="header">
         <div id="menu">
   
-    <a href="../_index.html">Index (U)</a> &raquo;
+    <a href="../_index.html">Index (C)</a> &raquo;
     <span class='title'><span class='object_link'><a href="../JWT.html" title="JWT (module)">JWT</a></span></span>
      &raquo; 
-    <span class="title">UnsupportedKeyType</span>
+    <span class="title">ClaimValidationError</span>
   
 </div>
 
@@ -61,7 +61,7 @@
         <div class="clear"></div>
       </div>
 
-      <div id="content"><h1>Exception: JWT::UnsupportedKeyType
+      <div id="content"><h1>Exception: JWT::ClaimValidationError
   
   
   
@@ -71,7 +71,7 @@
   <dl>
     <dt>Inherits:</dt>
     <dd>
-      <span class="inheritName"><span class='object_link'><a href="JWKError.html" title="JWT::JWKError (class)">JWKError</a></span></span>
+      <span class="inheritName"><span class='object_link'><a href="TokenError.html" title="JWT::TokenError (class)">TokenError</a></span></span>
       
         <ul class="fullTree">
           <li>Object</li>
@@ -82,9 +82,9 @@
           
             <li class="next"><span class='object_link'><a href="DecodeError.html" title="JWT::DecodeError (class)">DecodeError</a></span></li>
           
-            <li class="next"><span class='object_link'><a href="JWKError.html" title="JWT::JWKError (class)">JWKError</a></span></li>
+            <li class="next"><span class='object_link'><a href="TokenError.html" title="JWT::TokenError (class)">TokenError</a></span></li>
           
-            <li class="next">JWT::UnsupportedKeyType</li>
+            <li class="next">JWT::ClaimValidationError</li>
           
         </ul>
         <a href="#" class="inheritanceTree">show all</a>
@@ -112,14 +112,18 @@
 
 <h2>Overview</h2><div class="docstring">
   <div class="discussion">
-    <p>Raised when a JWK uses a key type (kty) that this library does not support.</p>
+    <p>The ClaimValidationError class is the base class for all claim validation errors.</p>
 
   </div>
 </div>
 <div class="tags">
   
 
+</div><div id="subclasses">
+  <h2>Direct Known Subclasses</h2>
+  <p class="children"><span class='object_link'><a href="ExpiredSignature.html" title="JWT::ExpiredSignature (class)">ExpiredSignature</a></span>, <span class='object_link'><a href="ImmatureSignature.html" title="JWT::ImmatureSignature (class)">ImmatureSignature</a></span>, <span class='object_link'><a href="InvalidAudError.html" title="JWT::InvalidAudError (class)">InvalidAudError</a></span>, <span class='object_link'><a href="InvalidCritError.html" title="JWT::InvalidCritError (class)">InvalidCritError</a></span>, <span class='object_link'><a href="InvalidIatError.html" title="JWT::InvalidIatError (class)">InvalidIatError</a></span>, <span class='object_link'><a href="InvalidIssuerError.html" title="JWT::InvalidIssuerError (class)">InvalidIssuerError</a></span>, <span class='object_link'><a href="InvalidJtiError.html" title="JWT::InvalidJtiError (class)">InvalidJtiError</a></span>, <span class='object_link'><a href="InvalidPayload.html" title="JWT::InvalidPayload (class)">InvalidPayload</a></span>, <span class='object_link'><a href="InvalidSubError.html" title="JWT::InvalidSubError (class)">InvalidSubError</a></span>, <span class='object_link'><a href="MissingRequiredClaim.html" title="JWT::MissingRequiredClaim (class)">MissingRequiredClaim</a></span></p>
 </div>
+
 
 
 

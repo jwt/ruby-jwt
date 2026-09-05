@@ -60,11 +60,12 @@
       </div>
 
       <div id="content"><div id='filecontents'><h1 id="Changelog">Changelog</h1>
-<h2 id="_v3_2_1__https___github_com_jwt_ruby_jwt_tree_v3_2_1___NEXT_"><a href="https://github.com/jwt/ruby-jwt/tree/v3.2.1">v3.2.1</a> (NEXT)</h2>
-<p><a href="https://github.com/jwt/ruby-jwt/compare/v3.2.0...v3.2.1">Full Changelog</a></p>
+<h2 id="_v3_3_0__https___github_com_jwt_ruby_jwt_tree_v3_3_0___NEXT_"><a href="https://github.com/jwt/ruby-jwt/tree/v3.3.0">v3.3.0</a> (NEXT)</h2>
+<p><a href="https://github.com/jwt/ruby-jwt/compare/v3.2.0...v3.3.0">Full Changelog</a></p>
 <p><strong>Features:</strong></p>
 <ul>
 <li>Allow a leeway to be given for the <code>iat</code> claim verification <a href="https://github.com/jwt/ruby-jwt/pull/747">#747</a> - (<a href="https://github.com/denis1011101">@denis1011101</a>)</li>
+<li>Revamp the error hierarchy under a new <code>JWT::Error</code> base class; signing failures now consistently raise <code>JWT::EncodeError</code>, see <a href="UPGRADING.md">UPGRADING.md</a> <a href="https://github.com/jwt/ruby-jwt/pull/722">#722</a> (<a href="https://github.com/anakinj">@anakinj</a>)</li>
 <li>Your contribution here</li>
 </ul>
 <p><strong>Fixes and enhancements:</strong></p>
@@ -979,7 +980,7 @@
 </ul></div></div>
 
       <div id="footer">
-  Generated on Sat Sep  5 17:21:14 2026 by
+  Generated on Sat Sep  5 18:11:17 2026 by
   <a href="https://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.9.45 (ruby-4.0.6).
 </div>
