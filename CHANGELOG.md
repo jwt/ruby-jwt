@@ -11,6 +11,7 @@
 
 **Fixes and enhancements:**
 
+- Redact private JWK material from inspection [#754](https://github.com/jwt/ruby-jwt/pull/754) - [@OskarEichler](https://github.com/OskarEichler)
 - Fix rejection of unknown algorithms from JWKs for RFC compliance and pquip [#728](https://github.com/jwt/ruby-jwt/pull/728)
 - Fix the `Style/DirectiveScope` RuboCop offense failing the build [#752](https://github.com/jwt/ruby-jwt/pull/752)
 - Fix `JWT::JWK::Set` sharing its key collection with the set it was copied from [#751](https://github.com/jwt/ruby-jwt/pull/751)
