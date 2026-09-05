@@ -81,6 +81,7 @@ module JWT
     #
     def detach_payload!
       @detached_payload = true
+      @jwt = nil
 
       nil
     end
