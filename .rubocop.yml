@@ -25,3 +25,19 @@ Gemspec/DevelopmentDependencies:
 
 Naming/PredicateMethod:
   Enabled: false
+
+Style/MethodCallWithArgsParentheses:
+  Enabled: true
+  Exclude:
+    - "*.gemspec"
+  AllowedMethods:
+    - raise
+    - fail
+    - yield
+    - to
+    - not_to
+    - to_not
+    - describe
+    - context
+    - it
+    - specify

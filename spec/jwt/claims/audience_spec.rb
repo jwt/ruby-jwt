@@ -16,7 +16,7 @@ RSpec.describe JWT::Claims::Audience do
       it 'raises JWT::InvalidAudError' do
         expect do
           subject
-        end.to raise_error JWT::InvalidAudError
+        end.to raise_error(JWT::InvalidAudError)
       end
     end
 
@@ -27,7 +27,7 @@ RSpec.describe JWT::Claims::Audience do
       it 'raises JWT::InvalidAudError' do
         expect do
           subject
-        end.to raise_error JWT::InvalidAudError
+        end.to raise_error(JWT::InvalidAudError)
       end
     end
 

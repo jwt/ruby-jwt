@@ -8,7 +8,7 @@ RSpec.describe JWT::Claims::Required do
   context 'when payload is missing the required claim' do
     let(:required_claims) { ['exp'] }
     it 'raises JWT::MissingRequiredClaim' do
-      expect { verify! }.to raise_error JWT::MissingRequiredClaim, 'Missing required claim exp'
+      expect { verify! }.to raise_error(JWT::MissingRequiredClaim, 'Missing required claim exp')
     end
   end
 
