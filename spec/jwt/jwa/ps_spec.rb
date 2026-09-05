@@ -83,6 +83,14 @@ RSpec.describe JWT::JWA::Ps do
       end
     end
 
+    context 'when the verification key is not an OpenSSL::PKey::RSA instance' do
+      it 'raises a JWT::VerificationKeyError' do
+        expect do
+          ps256_instance.verify(data: data, signature: ps256_signature, verification_key: 'not_a_key')
+        end.to raise_error(JWT::VerificationKeyError, 'The given key is a String. It has to be an OpenSSL::PKey::RSA instance')
+      end
+    end
+
     context 'when verification results in a OpenSSL::PKey::PKeyError error' do
       it 'raises a JWT::VerificationError' do
         allow(rsa_key).to receive(:verify_pss).and_raise(OpenSSL::PKey::PKeyError.new('Error'))

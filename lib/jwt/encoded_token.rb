@@ -153,6 +153,7 @@ module JWT
     # Verifies the claims of the token.
     # @param options [Array<Symbol>, Hash] the claims to verify. By default, it checks the 'exp' claim.
     # @raise [JWT::ClaimValidationError] if the claims are invalid.
+    # @raise [JWT::MalformedTokenError] if the payload cannot be decoded, which happens before any claim is validated.
     def verify_claims!(*options)
       Claims::Verifier.verify!(ClaimsContext.new(self), *claims_options(options)).tap do
         @claims_verified = true

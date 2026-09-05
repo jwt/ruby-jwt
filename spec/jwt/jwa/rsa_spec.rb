@@ -59,5 +59,13 @@ RSpec.describe JWT::JWA::Rsa do
         expect(rsa_instance.verify(data: data, signature: 'invalid_signature', verification_key: OpenSSL::PKey::RSA.generate(2048))).to be(false)
       end
     end
+
+    context 'when the verification key is not an OpenSSL::PKey::RSA instance' do
+      it 'raises a JWT::VerificationKeyError' do
+        expect do
+          rsa_instance.verify(data: data, signature: signature, verification_key: 'not_a_key')
+        end.to raise_error(JWT::VerificationKeyError, 'The given key is a String. It has to be an OpenSSL::PKey::RSA instance')
+      end
+    end
   end
 end
