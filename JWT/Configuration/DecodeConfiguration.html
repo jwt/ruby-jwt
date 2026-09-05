@@ -271,7 +271,7 @@
       <li class="public ">
   <span class="summary_signature">
     
-      <a href="#verify_iat-instance_method" title="#verify_iat (instance method)">#<strong>verify_iat</strong>  &#x21d2; Boolean </a>
+      <a href="#verify_iat-instance_method" title="#verify_iat (instance method)">#<strong>verify_iat</strong>  &#x21d2; Boolean, Hash </a>
     
 
     
@@ -950,7 +950,7 @@
       <div class="method_details ">
   <h3 class="signature " id="verify_iat-instance_method">
   
-    #<strong>verify_iat</strong>  &#x21d2; <tt>Boolean</tt> 
+    #<strong>verify_iat</strong>  &#x21d2; <tt>Boolean</tt>, <tt>Hash</tt> 
   
 
   
@@ -958,7 +958,7 @@
   
 </h3><div class="docstring">
   <div class="discussion">
-    <p>Returns whether to verify the issued at claim.</p>
+    <p>Returns whether to verify the issued at claim. A hash can be given to configure the claim, currently only <code>leeway</code> is supported.</p>
 
   </div>
 </div>
@@ -970,12 +970,12 @@
     <li>
       
       
-        <span class='type'>(<tt>Boolean</tt>)</span>
+        <span class='type'>(<tt>Boolean</tt>, <tt>Hash</tt>)</span>
       
       
       
         &mdash;
-        <div class='inline'><p>whether to verify the issued at claim.</p></div>
+        <div class='inline'><p>whether to verify the issued at claim. A hash can be given to configure the claim, currently only <code>leeway</code> is supported.</p></div>
       
     </li>
   
@@ -1389,7 +1389,7 @@
 </div>
 
       <div id="footer">
-  Generated on Wed Sep  2 13:58:26 2026 by
+  Generated on Sat Sep  5 16:25:20 2026 by
   <a href="https://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.9.45 (ruby-4.0.6).
 </div>

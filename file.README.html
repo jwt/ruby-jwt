@@ -493,8 +493,9 @@ to convert them to proc (using <code>to_proc</code>)</p>
 <h3 id="Issued_At_Claim">Issued At Claim</h3>
 <p>From <a href="https://tools.ietf.org/html/rfc7519#section-4.1.6">Oauth JSON Web Token 4.1.6. &quot;iat&quot; (Issued At) Claim</a>:</p>
 <blockquote>
-<p>The <code>iat</code> (issued at) claim identifies the time at which the JWT was issued. This claim can be used to determine the age of the JWT. The <code>leeway</code> option is not taken into account when verifying this claim. The <code>iat_leeway</code> option was removed in version 2.2.0. Its value MUST be a number containing a <strong><em>NumericDate</em></strong> value. Use of this claim is OPTIONAL.</p>
+<p>The <code>iat</code> (issued at) claim identifies the time at which the JWT was issued. This claim can be used to determine the age of the JWT. Its value MUST be a number containing a <strong><em>NumericDate</em></strong> value. Use of this claim is OPTIONAL.</p>
 </blockquote>
+<p>The global <code>leeway</code> option does not apply to <code>iat</code>. To allow for clock drift, pass <code>leeway</code> under <code>verify_iat</code>, as shown below. The <code>iat_leeway</code> option was removed in version 2.2.0.</p>
 <pre class="code ruby"><code class="ruby"><span class='id identifier rubyid_iat'>iat</span> <span class='op'>=</span> <span class='const'>Time</span><span class='period'>.</span><span class='id identifier rubyid_now'>now</span><span class='period'>.</span><span class='id identifier rubyid_to_i'>to_i</span>
 <span class='id identifier rubyid_iat_payload'>iat_payload</span> <span class='op'>=</span> <span class='lbrace'>{</span> <span class='label'>data:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>data</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>iat:</span> <span class='id identifier rubyid_iat'>iat</span> <span class='rbrace'>}</span>
 
@@ -506,6 +507,9 @@ to convert them to proc (using <code>to_proc</code>)</p>
 <span class='kw'>rescue</span> <span class='const'><span class='object_link'><a href="JWT.html" title="JWT (module)">JWT</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="JWT/InvalidIatError.html" title="JWT::InvalidIatError (class)">InvalidIatError</a></span></span>
   <span class='comment'># Handle invalid token, e.g. logout user or deny access
 </span><span class='kw'>end</span>
+</code></pre>
+<p>By default, <code>iat</code> verification allows no clock drift. To allow drift between the issuer and verifier clocks, pass a leeway value explicitly:</p>
+<pre class="code ruby"><code class="ruby"><span class='id identifier rubyid_decoded_token'>decoded_token</span> <span class='op'>=</span> <span class='const'><span class='object_link'><a href="JWT.html" title="JWT (module)">JWT</a></span></span><span class='period'>.</span><span class='id identifier rubyid_decode'><span class='object_link'><a href="JWT.html#decode-class_method" title="JWT.decode (method)">decode</a></span></span><span class='lparen'>(</span><span class='id identifier rubyid_token'>token</span><span class='comma'>,</span> <span class='id identifier rubyid_hmac_secret'>hmac_secret</span><span class='comma'>,</span> <span class='kw'>true</span><span class='comma'>,</span> <span class='lbrace'>{</span> <span class='label'>verify_iat:</span> <span class='lbrace'>{</span> <span class='label'>leeway:</span> <span class='int'>30</span> <span class='rbrace'>}</span><span class='comma'>,</span> <span class='label'>algorithm:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>HS256</span><span class='tstring_end'>&#39;</span></span> <span class='rbrace'>}</span><span class='rparen'>)</span>
 </code></pre>
 <h3 id="Subject_Claim">Subject Claim</h3>
 <p>From <a href="https://tools.ietf.org/html/rfc7519#section-4.1.2">Oauth JSON Web Token 4.1.2. &quot;sub&quot; (Subject) Claim</a>:</p>
@@ -685,7 +689,7 @@ bundle exec appraisal rake test
 <p>See <a href="LICENSE">LICENSE</a>.</p></div></div>
 
       <div id="footer">
-  Generated on Wed Sep  2 13:58:24 2026 by
+  Generated on Sat Sep  5 16:25:18 2026 by
   <a href="https://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.9.45 (ruby-4.0.6).
 </div>

@@ -129,6 +129,30 @@
         <li class="public ">
   <span class="summary_signature">
     
+      <a href="#initialize-instance_method" title="#initialize (instance method)">#<strong>initialize</strong>(leeway: 0)  &#x21d2; IssuedAt </a>
+    
+
+    
+  </span>
+  
+  
+    <span class="note title constructor">constructor</span>
+  
+  
+  
+  
+  
+  
+
+  
+    <span class="summary_desc"><div class='inline'><p>Initializes a new IssuedAt instance.</p></div></span>
+  
+</li>
+
+      
+        <li class="public ">
+  <span class="summary_signature">
+    
       <a href="#verify!-instance_method" title="#verify! (instance method)">#<strong>verify!</strong>(context:, **_args)  &#x21d2; nil </a>
     
 
@@ -152,6 +176,69 @@
     
   
 
+<div id="constructor_details" class="method_details_list">
+  <h2>Constructor Details</h2>
+  
+    <div class="method_details first">
+  <h3 class="signature first" id="initialize-instance_method">
+  
+    #<strong>initialize</strong>(leeway: 0)  &#x21d2; <tt><span class='object_link'><a href="" title="JWT::Claims::IssuedAt (class)">IssuedAt</a></span></tt> 
+  
+
+  
+
+  
+</h3><div class="docstring">
+  <div class="discussion">
+    <p>Initializes a new IssuedAt instance.</p>
+
+  </div>
+</div>
+<div class="tags">
+  <p class="tag_title">Parameters:</p>
+<ul class="param">
+  
+    <li>
+      
+        <span class='name'>leeway</span>
+      
+      
+        <span class='type'>(<tt>Integer</tt>)</span>
+      
+      
+        <em class="default">(defaults to: <tt>0</tt>)</em>
+      
+      
+        &mdash;
+        <div class='inline'><p>the drift (in seconds) to allow between the clock of the issuer and the clock of the verifier. Default: 0.</p></div>
+      
+    </li>
+  
+</ul>
+
+
+</div><table class="source_code">
+  <tr>
+    <td>
+      <pre class="lines">
+
+
+10
+11
+12</pre>
+    </td>
+    <td>
+      <pre class="code"><span class="info file"># File 'lib/jwt/claims/issued_at.rb', line 10</span>
+
+<span class='kw'>def</span> <span class='id identifier rubyid_initialize'>initialize</span><span class='lparen'>(</span><span class='label'>leeway:</span> <span class='int'>0</span><span class='rparen'>)</span>
+  <span class='ivar'>@leeway</span> <span class='op'>=</span> <span class='id identifier rubyid_leeway'>leeway</span> <span class='op'>||</span> <span class='int'>0</span>
+<span class='kw'>end</span></pre>
+    </td>
+  </tr>
+</table>
+</div>
+  
+</div>
 
 
   <div id="instance_method_details" class="method_details_list">
@@ -243,23 +330,23 @@
       <pre class="lines">
 
 
-13
-14
-15
-16
-17
-18
-19</pre>
+20
+21
+22
+23
+24
+25
+26</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/jwt/claims/issued_at.rb', line 13</span>
+      <pre class="code"><span class="info file"># File 'lib/jwt/claims/issued_at.rb', line 20</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_verify!'>verify!</span><span class='lparen'>(</span><span class='label'>context:</span><span class='comma'>,</span> <span class='op'>**</span><span class='id identifier rubyid__args'>_args</span><span class='rparen'>)</span>
   <span class='kw'>return</span> <span class='kw'>unless</span> <span class='id identifier rubyid_context'>context</span><span class='period'>.</span><span class='id identifier rubyid_payload'>payload</span><span class='period'>.</span><span class='id identifier rubyid_is_a?'>is_a?</span><span class='lparen'>(</span><span class='const'>Hash</span><span class='rparen'>)</span>
   <span class='kw'>return</span> <span class='kw'>unless</span> <span class='id identifier rubyid_context'>context</span><span class='period'>.</span><span class='id identifier rubyid_payload'>payload</span><span class='period'>.</span><span class='id identifier rubyid_key?'>key?</span><span class='lparen'>(</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>iat</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span>
 
   <span class='id identifier rubyid_iat'>iat</span> <span class='op'>=</span> <span class='id identifier rubyid_context'>context</span><span class='period'>.</span><span class='id identifier rubyid_payload'>payload</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>iat</span><span class='tstring_end'>&#39;</span></span><span class='rbracket'>]</span>
-  <span class='id identifier rubyid_raise'>raise</span><span class='lparen'>(</span><span class='const'><span class='object_link'><a href="../../JWT.html" title="JWT (module)">JWT</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="../InvalidIatError.html" title="JWT::InvalidIatError (class)">InvalidIatError</a></span></span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>Invalid iat</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span> <span class='kw'>if</span> <span class='op'>!</span><span class='id identifier rubyid_iat'>iat</span><span class='period'>.</span><span class='id identifier rubyid_is_a?'>is_a?</span><span class='lparen'>(</span><span class='op'>::</span><span class='const'>Numeric</span><span class='rparen'>)</span> <span class='op'>||</span> <span class='id identifier rubyid_iat'>iat</span><span class='period'>.</span><span class='id identifier rubyid_to_f'>to_f</span> <span class='op'>&gt;</span> <span class='const'>Time</span><span class='period'>.</span><span class='id identifier rubyid_now'>now</span><span class='period'>.</span><span class='id identifier rubyid_to_f'>to_f</span>
+  <span class='id identifier rubyid_raise'>raise</span><span class='lparen'>(</span><span class='const'><span class='object_link'><a href="../../JWT.html" title="JWT (module)">JWT</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="../InvalidIatError.html" title="JWT::InvalidIatError (class)">InvalidIatError</a></span></span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>Invalid iat</span><span class='tstring_end'>&#39;</span></span><span class='rparen'>)</span> <span class='kw'>if</span> <span class='op'>!</span><span class='id identifier rubyid_iat'>iat</span><span class='period'>.</span><span class='id identifier rubyid_is_a?'>is_a?</span><span class='lparen'>(</span><span class='op'>::</span><span class='const'>Numeric</span><span class='rparen'>)</span> <span class='op'>||</span> <span class='id identifier rubyid_iat'>iat</span><span class='period'>.</span><span class='id identifier rubyid_to_f'>to_f</span> <span class='op'>&gt;</span> <span class='lparen'>(</span><span class='const'>Time</span><span class='period'>.</span><span class='id identifier rubyid_now'>now</span><span class='period'>.</span><span class='id identifier rubyid_to_f'>to_f</span> <span class='op'>+</span> <span class='id identifier rubyid_leeway'>leeway</span><span class='rparen'>)</span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -271,7 +358,7 @@
 </div>
 
       <div id="footer">
-  Generated on Wed Sep  2 13:58:25 2026 by
+  Generated on Sat Sep  5 16:25:20 2026 by
   <a href="https://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.9.45 (ruby-4.0.6).
 </div>
