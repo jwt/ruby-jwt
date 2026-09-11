@@ -67,11 +67,24 @@
 <li><code>JWT::TokenError</code> covers every failure in processing a token, and splits into <code>JWT::MalformedTokenError</code> (the token is structurally invalid), <code>JWT::SignatureError</code> (signature and algorithm problems) and <code>JWT::ClaimValidationError</code> (a claim did not verify).</li>
 <li><code>JWT::VerificationKeyError</code>, a subclass of <code>JWT::VerificationError</code>, says the key or algorithm given for verification cannot be used, as opposed to a signature that does not match.</li>
 </ul>
-<h3 id="Decoding_is_unaffected">Decoding is unaffected</h3>
-<p><code>JWT::DecodeError</code> is deprecated in favour of the classes above, but it keeps its meaning: every error class except <code>JWT::EncodeError</code> still inherits from it. A <code>rescue JWT::DecodeError</code> around <code>JWT.decode</code> catches everything it caught before, and the specific classes it has always raised, such as <code>JWT::ExpiredSignature</code>, are unchanged. There is nothing to do on the decoding side.</p>
-<p>Verification also became more predictable: <code>RS*</code> and <code>PS*</code> now reject a key of the wrong type with a <code>JWT::VerificationKeyError</code> instead of letting a <code>NoMethodError</code> escape.</p>
+<h3 id="Backwards_compatibility">Backwards compatibility</h3>
+<p>This is a backwards compatible change for effectively every application. The new classes were inserted above the existing ones rather than replacing them, so every error class you already rescue keeps its name, its meaning and everything it used to catch. In the ordinary case, upgrading needs no code change at all.</p>
+<p>There is one exception, and it is narrow enough to be worth stating precisely. It applies only if all three of the following are true:</p>
+<ol>
+<li>You rescue around <code>JWT.encode</code>, not around <code>JWT.decode</code>.</li>
+<li>The class you rescue is <code>JWT::DecodeError</code>, <code>JWT::IncorrectAlgorithm</code>, <code>JWT::UnsupportedEcdsaCurve</code> or <code>ArgumentError</code>.</li>
+<li>That rescue is reached at all, which takes a key or algorithm that cannot sign in the first place.</li>
+</ol>
+<p>If any one of the three does not hold, there is nothing to do. If all three do, the fix is a one line change, described in the next section.</p>
+<p>Why that is a small target in practice:</p>
+<ul>
+<li><strong>Decoding is untouched.</strong> <code>JWT::DecodeError</code> is deprecated in favour of the classes above, but it keeps its meaning: every error class except <code>JWT::EncodeError</code> still inherits from it. A <code>rescue JWT::DecodeError</code> around <code>JWT.decode</code> catches everything it caught before, and the specific classes it has always raised, such as <code>JWT::ExpiredSignature</code>, are unchanged.</li>
+<li><strong>Signing that currently works is untouched.</strong> Every case in the table below is an unusable key or algorithm, a misconfiguration that fails on every call made with that key. None of them can be triggered by a particular payload or token, so an application that signs tokens successfully today does not reach them at all.</li>
+<li><strong>Failures you let escape are untouched.</strong> All of these raised before and still raise; only the class changed. Code that does not rescue them behaves exactly as it did.</li>
+</ul>
+<p>One decode-side behaviour did change, but in the direction of catching more: <code>RS*</code> and <code>PS*</code> now reject a key of the wrong type with a <code>JWT::VerificationKeyError</code>, which is a <code>JWT::DecodeError</code>, instead of letting a <code>NoMethodError</code> escape.</p>
 <h3 id="Signing_failures_now_raise__JWT__EncodeError_">Signing failures now raise <code>JWT::EncodeError</code></h3>
-<p>This is the part that can break. Signing failures used to surface as decode errors, and are now consistently <code>JWT::EncodeError</code>, which is deliberately not a <code>JWT::DecodeError</code>:</p>
+<p>Signing failures used to surface as decode errors, and are now consistently <code>JWT::EncodeError</code>, which is deliberately not a <code>JWT::DecodeError</code>:</p>
 <table>
 <thead>
 <tr>
@@ -109,6 +122,11 @@
 </tbody>
 </table>
 <p>If you wrap <code>JWT.encode</code> in <code>rescue JWT::DecodeError</code>, <code>rescue JWT::IncorrectAlgorithm</code> or <code>rescue JWT::UnsupportedEcdsaCurve</code>, rescue <code>JWT::EncodeError</code> or <code>JWT::Error</code> instead.</p>
+<h3 id="Why_this_is_a_minor_release">Why this is a minor release</h3>
+<p>The exception described above is a real incompatibility, and 3.3.0 is still deliberately a minor release rather than a new major.</p>
+<p>The reason is that nothing here turns a call that used to succeed into one that fails, or the other way round. Every case in the table raised an error before and raises an error now, only under a different class. No token is signed that would previously have been refused, no token verifies that would previously have been rejected, and no signature is produced or accepted on different terms than before. What changed is which <code>rescue</code> clause matches on a path that was already failing.</p>
+<p>Weighed against the cost of a second major migration so soon after 3.0.0, that did not seem to warrant one.</p>
+<p>If you find a case where this change affects whether a call succeeds, rather than which error it raises when it fails, please <a href="https://github.com/jwt/ruby-jwt/issues">open an issue</a>. That would be a bug rather than an intended consequence of the reorganisation.</p>
 <h1 id="Upgrading_ruby_jwt_to____3_0_0">Upgrading ruby-jwt to &gt;= 3.0.0</h1>
 <h2 id="Removal_of_the_indirect__RbNaCl__https___github_com_RubyCrypto_rbnacl__dependency">Removal of the indirect <a href="https://github.com/RubyCrypto/rbnacl">RbNaCl</a> dependency</h2>
 <p>Historically, the set of supported algorithms was extended by including the <code>rbnacl</code> gem in the application's Gemfile. On load, ruby-jwt tried to load the gem and, if available, extend the algorithms to those provided by the <code>rbnacl/libsodium</code> libraries. This indirect dependency has caused some maintenance pain and confusion about which versions of the gem are supported.</p>
@@ -142,7 +160,7 @@
 <p>The gem was missing the Base64 encoding and decoding when representing and parsing a HMAC key as a JWK. This issue is now addressed. The added encoding will break compatibility with JWKs produced by older versions of the gem.</p></div></div>
 
       <div id="footer">
-  Generated on Sat Sep  5 19:50:06 2026 by
+  Generated on Fri Sep 11 20:31:14 2026 by
   <a href="https://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.9.45 (ruby-4.0.6).
 </div>
