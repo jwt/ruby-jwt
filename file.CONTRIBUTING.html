@@ -113,13 +113,20 @@ git rebase upstream/main
 git push origin fix-a-little-problem -f
 </code></pre>
 <h2 id="Releasing_a_new_version">Releasing a new version</h2>
-<p>The version is using the <a href="http://semver.org/">Semantic Versioning</a> and the version is located in the <a href="lib/jwt/version.rb">version.rb</a> file.
-Also update the <a href="CHANGELOG.md">CHANGELOG</a> to reflect the upcoming version release.</p>
-<pre class="code bash"><code class="bash">rake release
-</code></pre></div></div>
+<p>The version follows <a href="http://semver.org/">Semantic Versioning</a> and lives in the <a href="lib/jwt/version.rb">version.rb</a> file. It is bumped right after every release, so main normally already carries the next version number. Check that it is the number you mean to release and adjust it if, say, a feature landed on what had been set up as a patch release.</p>
+<p>Prepare the release on a branch: give the upcoming <a href="CHANGELOG.md">CHANGELOG</a> section its release date and remove the <code>Your contribution here</code> placeholders. Merge it as usual.</p>
+<p>Then tag the merged commit and push the tag to this repository:</p>
+<pre class="code bash"><code class="bash">git checkout main
+git pull upstream main
+git tag -a v3.3.0 -m &quot;Version 3.3.0&quot;
+git push upstream v3.3.0
+</code></pre>
+<p>Pushing the tag is what publishes the gem. The <a href=".github/workflows/push_gem.yml">push_gem.yml</a> workflow verifies that the tag matches <code>JWT.gem_version</code>, builds the gem, pushes it to RubyGems using trusted publishing and waits for it to propagate. No RubyGems credentials are needed on your machine.</p>
+<p>Do not use <code>rake release</code>. It builds and pushes the gem from your machine, which bypasses trusted publishing, and it pushes the tag too, so the workflow then fails trying to publish a version that already exists.</p>
+<p>Once the workflow is green, <a href="https://github.com/jwt/ruby-jwt/releases/new">create a GitHub release</a> for the tag, named <code>jwt-&lt;version&gt;</code> and with the changelog section for that version as its body. Finally, open the next iteration by bumping the version and adding a fresh <code>NEXT</code> changelog section.</p></div></div>
 
       <div id="footer">
-  Generated on Fri Sep 11 20:40:10 2026 by
+  Generated on Fri Sep 11 20:40:50 2026 by
   <a href="https://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.9.45 (ruby-4.0.6).
 </div>
