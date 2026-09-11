@@ -1,6 +1,6 @@
 # Changelog
 
-## [v3.3.0](https://github.com/jwt/ruby-jwt/tree/v3.3.0) (NEXT)
+## [v3.3.0](https://github.com/jwt/ruby-jwt/tree/v3.3.0) (2026-09-11)
 
 [Full Changelog](https://github.com/jwt/ruby-jwt/compare/v3.2.0...v3.3.0)
 
@@ -8,7 +8,6 @@
 
 - Allow a leeway to be given for the `iat` claim verification [#747](https://github.com/jwt/ruby-jwt/pull/747) - ([@denis1011101](https://github.com/denis1011101))
 - Revamp the error hierarchy under a new `JWT::Error` base class; signing failures now consistently raise `JWT::EncodeError`, see [UPGRADING.md](UPGRADING.md) [#722](https://github.com/jwt/ruby-jwt/pull/722) ([@anakinj](https://github.com/anakinj))
-- Your contribution here
 
 **Fixes and enhancements:**
 
