@@ -14,6 +14,28 @@ RSpec.describe JWT::EncodedToken do
   subject(:token) { described_class.new(encoded_token) }
 
   describe '#unverified_payload' do
+    it 'does not mark claims verified while decoding a signed unencoded payload' do
+      encoded_header = JWT::Base64.url_encode(JSON.generate(alg: 'HS256', b64: false, crit: ['b64']))
+      raw_payload = '{"foo":"bar"}'
+      signing_input = "#{encoded_header}.#{raw_payload}"
+      signature = JWT::Base64.url_encode(OpenSSL::HMAC.digest('SHA256', 'secret', signing_input))
+      unencoded = described_class.new("#{signing_input}.#{signature}")
+      unencoded.verify_signature!(algorithm: 'HS256', key: 'secret')
+
+      expect(unencoded.unverified_payload).to eq('foo' => 'bar')
+      expect { unencoded.payload }.to raise_error(JWT::DecodeError, 'Verify the token claims before accessing the payload')
+      unencoded.verify_claims!
+      expect(unencoded.payload).to eq('foo' => 'bar')
+    end
+
+    it 'rejects unknown critical extensions when decoding an unencoded payload' do
+      encoded_header = JWT::Base64.url_encode(JSON.generate(alg: 'HS256', b64: false, crit: %w[b64 unknown]))
+      unencoded = described_class.new("#{encoded_header}..signature")
+      unencoded.encoded_payload = '{"foo":"bar"}'
+
+      expect { unencoded.unverified_payload }.to raise_error(JWT::InvalidCritError, 'Unsupported critical headers: unknown')
+    end
+
     it { expect(token.unverified_payload).to eq(payload) }
 
     context 'when payload is detached' do

@@ -5,6 +5,20 @@ RSpec.describe JWT::Claims::Crit do
   let(:expected_crits) { [] }
   let(:header) { {} }
 
+  context 'in strict mode' do
+    subject(:verify!) { described_class.new(expected_crits: ['b64'], strict: true).verify!(context: SpecSupport::Token.new(header: header)) }
+
+    it 'accepts only supported critical headers' do
+      header['crit'] = ['b64']
+      expect(verify!).to be_nil
+    end
+
+    it 'rejects unexpected critical headers' do
+      header['crit'] = %w[b64 unknown]
+      expect { verify! }.to raise_error(JWT::InvalidCritError, 'Unsupported critical headers: unknown')
+    end
+  end
+
   context 'when header is missing' do
     it 'raises JWT::InvalidCritError' do
       expect { verify! }.to raise_error(JWT::InvalidCritError, 'Crit header missing')
