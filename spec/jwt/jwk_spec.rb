@@ -4,6 +4,26 @@ RSpec.describe JWT::JWK do
   let(:rsa_key) { test_pkey('rsa-2048-private.pem') }
   let(:ec_key) { test_pkey('ec256k-private.pem') }
 
+  describe '#inspect' do
+    it 'shows only the public export for RSA and EC keys without changing private export' do
+      [rsa_key, ec_key].each do |key|
+        jwk = described_class.new(key)
+        private_export = jwk.export(include_private: true)
+
+        expect(jwk.inspect).to eq("#<#{jwk.class} public_export=#{jwk.export.inspect}>")
+        expect(jwk.inspect).not_to include(private_export.fetch(:d))
+        expect(jwk.export(include_private: true)).to eq(private_export)
+      end
+    end
+
+    it 'does not expose an HMAC secret' do
+      jwk = described_class.new('private-test-secret')
+
+      expect(jwk.inspect).not_to include('private-test-secret', jwk.export(include_private: true).fetch(:k))
+      expect(jwk.inspect).to include(jwk.kid)
+    end
+  end
+
   describe '.import' do
     let(:keypair) { rsa_key.public_key }
     let(:exported_key) { described_class.new(keypair).export }

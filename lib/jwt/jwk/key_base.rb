@@ -51,11 +51,7 @@ module JWT
       end
 
       def inspect
-        "#<#{self.class} @parameters=#{export.inspect}>"
-      end
-
-      def pretty_print(pp)
-        pp.text(inspect)
+        "#<#{self.class} public_export=#{export.inspect}>"
       end
 
       alias eql? ==
