@@ -10,6 +10,7 @@
 
 **Fixes and enhancements:**
 
+- Enforce optional JWK `alg`, `use`, and `key_ops` metadata when selecting a verification key from a JWKS - [@sj26](https://github.com/sj26).
 - Your contribution here
 
 ## [v3.3.0](https://github.com/jwt/ruby-jwt/tree/v3.3.0) (2026-09-11)
