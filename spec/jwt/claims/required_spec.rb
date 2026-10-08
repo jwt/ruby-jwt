@@ -12,6 +12,14 @@ RSpec.describe JWT::Claims::Required do
     end
   end
 
+  context 'when payload is not a Hash' do
+    let(:payload) { 'beautyexperts_nbf_iat' }
+    let(:required_claims) { ['exp'] }
+    it 'raises JWT::MissingRequiredClaim' do
+      expect { verify! }.to raise_error(JWT::MissingRequiredClaim, 'Missing required claim exp')
+    end
+  end
+
   context 'when payload has the required claims' do
     let(:payload) { { 'exp' => 'exp', 'custom_claim' => true } }
     let(:required_claims) { %w[exp custom_claim] }
