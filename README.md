@@ -667,10 +667,19 @@ To decode a JWT using a trusted entity's JSON Web Key Set (JWKS):
 
 ```ruby
 jwks = JWT::JWK::Set.new(jwks_hash)
-jwks.filter! {|key| key[:use] == 'sig' } # Signing keys only!
 algorithms = jwks.map { |key| key[:alg] }.compact.uniq
 JWT.decode(token, nil, true, algorithms: algorithms, jwks: jwks)
 ```
+
+The `jwks` option and `JWT::JWK::KeyFinder` check the selected key's optional metadata before verification:
+
+- `alg`, when present, must match the token's `alg` header exactly (case-sensitive).
+- `use`, when present, must be `sig`.
+- `key_ops`, when present, must contain `verify`.
+
+Omitted metadata does not restrict the key. Incompatible metadata raises `JWT::VerificationKeyError`.
+The caller must still supply the allowed algorithms; JWK metadata does not replace that allowlist.
+These checks do not apply when an application extracts a raw key with `jwk.verify_key` itself.
 
 The `jwks` option can also be given as a lambda that evaluates every time a key identifier is resolved.
 This can be used to implement caching of remotely fetched JWK Sets.
@@ -695,9 +704,7 @@ jwks_loader = ->(options) do
   @cached_keys ||= begin
     @cache_last_update = Time.now.to_i
     # Replace with your own JWKS fetching routine
-    jwks = JWT::JWK::Set.new(jwks_hash)
-    jwks.select! { |key| key[:use] == 'sig' } # Signing Keys only
-    jwks
+    JWT::JWK::Set.new(jwks_hash)
   end
 end
 
