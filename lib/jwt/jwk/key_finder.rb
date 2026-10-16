@@ -27,13 +27,17 @@ module JWT
 
       # Returns the verification key for the given kid
       # @param [String] kid the key id
-      def key_for(kid, key_field = :kid)
+      # @param [Symbol] key_field the JWK field to match
+      # @param [String, nil] algorithm the token's algorithm, when available
+      def key_for(kid, key_field = :kid, algorithm: nil)
         raise ::JWT::MalformedTokenError, "Invalid type for #{key_field} header parameter" unless kid.nil? || kid.is_a?(String)
 
         jwk = resolve_key(kid, key_field)
 
         raise ::JWT::SignatureError, 'No keys found in jwks' unless @jwks.any?
         raise ::JWT::SignatureError, "Could not find public key for kid #{kid}" unless jwk
+
+        validate_key_usage!(jwk, algorithm)
 
         jwk.verify_key
       end
@@ -44,16 +48,27 @@ module JWT
         @key_fields.each do |key_field|
           field_value = token.header[key_field.to_s]
 
-          return key_for(field_value, key_field) if field_value
+          return key_for(field_value, key_field, algorithm: token.header['alg']) if field_value
         end
 
         raise ::JWT::SignatureError, 'No key id (kid) or x5t found from token headers' unless @allow_nil_kid
 
         kid = token.header['kid']
-        key_for(kid)
+        key_for(kid, algorithm: token.header['alg'])
       end
 
       private
+
+      def validate_key_usage!(jwk, algorithm)
+        raise JWT::VerificationKeyError, 'JWK alg does not match the token algorithm' if algorithm && jwk.parameters.fetch(:alg, algorithm) != algorithm
+
+        raise JWT::VerificationKeyError, 'JWK use does not permit signature verification' if jwk.parameters.fetch(:use, 'sig') != 'sig'
+
+        key_ops = jwk.parameters.fetch(:key_ops, ['verify'])
+        return if key_ops.is_a?(Array) && key_ops.include?('verify')
+
+        raise JWT::VerificationKeyError, 'JWK key_ops does not permit signature verification'
+      end
 
       def resolve_key(kid, key_field)
         key_matcher = ->(key) { (kid.nil? && @allow_nil_kid) || key[key_field] == kid }
