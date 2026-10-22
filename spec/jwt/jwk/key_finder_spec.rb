@@ -34,6 +34,10 @@ RSpec.describe JWT::JWK::KeyFinder do
     ['ES256', 'ES384', 'ec256-private.pem']
   ].each do |algorithm, other_algorithm, key_file|
     context "when verifying #{algorithm}" do
+      before do
+        skip 'OpenSSL gem missing RSA-PSS support' if algorithm.start_with?('PS') && !OpenSSL::PKey::RSA.method_defined?(:sign_pss)
+      end
+
       let(:jwk) { JWT::JWK.new(key_file ? test_pkey(key_file) : 'a-secret-for-HMAC') }
       let(:parameters) { jwk.export(include_private: key_file.nil?).merge(metadata) }
       let(:payload) { { 'data' => 'signed payload' } }
