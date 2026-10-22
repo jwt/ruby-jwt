@@ -671,15 +671,21 @@ algorithms = jwks.map { |key| key[:alg] }.compact.uniq
 JWT.decode(token, nil, true, algorithms: algorithms, jwks: jwks)
 ```
 
-The `jwks` option and `JWT::JWK::KeyFinder` check the selected key's optional metadata before verification:
+The `jwks` option and `JWT::JWK::KeyFinder` select a key with compatible optional metadata before verification:
 
 - `alg`, when present, must match the token's `alg` header exactly (case-sensitive).
 - `use`, when present, must be `sig`.
 - `key_ops`, when present, must contain `verify`.
 
-Omitted metadata does not restrict the key. Incompatible metadata raises `JWT::VerificationKeyError`.
+Omitted metadata does not restrict the key. Incompatible candidates are skipped; if no eligible key is found,
+the existing loader invalidation is attempted before raising `JWT::SignatureError`.
+Direct verification with a JWK also enforces `use` and `key_ops`, raising `JWT::VerificationKeyError` if incompatible.
 The caller must still supply the allowed algorithms; JWK metadata does not replace that allowlist.
-These checks do not apply when an application extracts a raw key with `jwk.verify_key` itself.
+`KeyFinder#call` returns the JWK itself when `alg` is present, binding verification to that algorithm even
+when the caller allows several algorithms. Without `alg`, it returns the raw verification key as before.
+`KeyFinder#key_for(kid, key_field = :kid)` still returns a raw key and has no token algorithm context.
+`call` resolves JWKs directly; subclasses that customize token lookup should override `call`, not `key_for`.
+Applications extracting a raw key with `key_for` or `jwk.verify_key` must enforce algorithm restrictions themselves.
 
 The `jwks` option can also be given as a lambda that evaluates every time a key identifier is resolved.
 This can be used to implement caching of remotely fetched JWK Sets.
