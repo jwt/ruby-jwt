@@ -42,7 +42,7 @@ RSpec.describe JWT::Token do
 
       context 'with mismatching algorithm provided in sign call' do
         it 'signs the token' do
-          expect { token.sign!(algorithm: %w[RS384 RS512], key: jwk) }.to raise_error(JWT::DecodeError, 'Provided JWKs do not support one of the specified algorithms: RS384, RS512')
+          expect { token.sign!(algorithm: %w[RS384 RS512], key: jwk) }.to raise_error(JWT::EncodeError, 'Provided JWKs do not support one of the specified algorithms: RS384, RS512')
         end
       end
     end
@@ -101,6 +101,28 @@ RSpec.describe JWT::Token do
         token.detach_payload!
         token.sign!(algorithm: 'HS256', key: 'secret')
         expect(token.jwt).to eq('eyJhbGciOiJIUzI1NiJ9..UEhDY1Qlj29ammxuVRA_-gBah4qTy5FngIWg0yEAlC0')
+      end
+    end
+
+    context 'after the token has been rendered' do
+      before do
+        token.sign!(algorithm: 'HS256', key: 'secret')
+        token.jwt
+      end
+
+      it 'detaches the payload' do
+        token.detach_payload!
+        expect(token.jwt).to eq('eyJhbGciOiJIUzI1NiJ9..UEhDY1Qlj29ammxuVRA_-gBah4qTy5FngIWg0yEAlC0')
+      end
+
+      it 'detaches the payload from #to_s' do
+        token.detach_payload!
+        expect(token.to_s).to eq('eyJhbGciOiJIUzI1NiJ9..UEhDY1Qlj29ammxuVRA_-gBah4qTy5FngIWg0yEAlC0')
+      end
+
+      it 'keeps the encoded payload available' do
+        token.detach_payload!
+        expect(token.encoded_payload).to eq('eyJwYXkiOiJsb2FkIn0')
       end
     end
   end

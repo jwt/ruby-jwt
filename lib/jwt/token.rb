@@ -81,6 +81,7 @@ module JWT
     #
     def detach_payload!
       @detached_payload = true
+      @jwt = nil
 
       nil
     end
@@ -104,7 +105,7 @@ module JWT
 
     # Verifies the claims of the token.
     # @param options [Array<Symbol>, Hash] the claims to verify.
-    # @raise [JWT::DecodeError] if the claims are invalid.
+    # @raise [JWT::ClaimValidationError] if the claims are invalid.
     def verify_claims!(*options)
       Claims::Verifier.verify!(self, *options)
     end

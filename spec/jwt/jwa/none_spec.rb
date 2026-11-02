@@ -11,7 +11,7 @@ RSpec.describe JWT::JWA::None do
 
   describe '#verify' do
     it 'returns true' do
-      expect(subject.verify('data', 'signature', 'key')).to be true
+      expect(subject.verify('data', 'signature', 'key')).to be(true)
     end
   end
 end

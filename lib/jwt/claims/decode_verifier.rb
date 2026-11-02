@@ -15,7 +15,7 @@ module JWT
         verify_expiration: ->(options) { Claims::Expiration.new(leeway: options[:exp_leeway] || options[:leeway]) },
         verify_not_before: ->(options) { Claims::NotBefore.new(leeway: options[:nbf_leeway] || options[:leeway]) },
         verify_iss: ->(options) { options[:iss] && Claims::Issuer.new(issuers: options[:iss]) },
-        verify_iat: ->(*) { Claims::IssuedAt.new },
+        verify_iat: ->(options) { Claims::IssuedAt.new(leeway: options[:verify_iat].is_a?(Hash) ? options[:verify_iat][:leeway] : nil) },
         verify_jti: ->(options) { Claims::JwtId.new(validator: options[:verify_jti]) },
         verify_aud: ->(options) { options[:aud] && Claims::Audience.new(expected_audience: options[:aud]) },
         verify_sub: ->(options) { options[:sub] && Claims::Subject.new(expected_subject: options[:sub]) },

@@ -1,8 +1,8 @@
 # Changelog
 
-## [v3.2.1](https://github.com/jwt/ruby-jwt/tree/v3.2.1) (NEXT)
+## [v3.3.1](https://github.com/jwt/ruby-jwt/tree/v3.3.1) (NEXT)
 
-[Full Changelog](https://github.com/jwt/ruby-jwt/compare/v3.2.0...v3.2.1)
+[Full Changelog](https://github.com/jwt/ruby-jwt/compare/v3.3.0...v3.3.1)
 
 **Features:**
 
@@ -10,8 +10,26 @@
 
 **Fixes and enhancements:**
 
+- Test that `JWT::Claims::Required` raises `JWT::MissingRequiredClaim` for a non-Hash payload [#768](https://github.com/jwt/ruby-jwt/pull/768) ([@renanmpimentel](https://github.com/renanmpimentel))
+- Your contribution here
+
+## [v3.3.0](https://github.com/jwt/ruby-jwt/tree/v3.3.0) (2026-09-11)
+
+[Full Changelog](https://github.com/jwt/ruby-jwt/compare/v3.2.0...v3.3.0)
+
+**Features:**
+
+- Allow a leeway to be given for the `iat` claim verification [#747](https://github.com/jwt/ruby-jwt/pull/747) - ([@denis1011101](https://github.com/denis1011101))
+- Revamp the error hierarchy under a new `JWT::Error` base class; signing failures now consistently raise `JWT::EncodeError`, see [UPGRADING.md](UPGRADING.md) [#722](https://github.com/jwt/ruby-jwt/pull/722) ([@anakinj](https://github.com/anakinj))
+
+**Fixes and enhancements:**
+
+- Refactor `JWT::JWK::Set#initialize` so each construction path is a named method [#758](https://github.com/jwt/ruby-jwt/pull/758) ([@anakinj](https://github.com/anakinj))
 - Fix rejection of unknown algorithms from JWKs for RFC compliance and pquip [#728](https://github.com/jwt/ruby-jwt/pull/728)
 - Fix the `Style/DirectiveScope` RuboCop offense failing the build [#752](https://github.com/jwt/ruby-jwt/pull/752)
+- Fix `JWT::JWK::Set` sharing its key collection with the set it was copied from [#751](https://github.com/jwt/ruby-jwt/pull/751)
+- Reset the decoded payload and verification state in `JWT::EncodedToken#encoded_payload=` [#749](https://github.com/jwt/ruby-jwt/issues/749)
+- Fix `JWT::Token#detach_payload!` not invalidating an already rendered token [#748](https://github.com/jwt/ruby-jwt/issues/748)
 
 ## [v3.2.0](https://github.com/jwt/ruby-jwt/tree/v3.2.0) (2026-05-13)
 

@@ -6,7 +6,7 @@ RSpec.describe JWT::Claims::NotBefore do
   describe '#verify!' do
     context 'when nbf is in the future' do
       it 'raises JWT::ImmatureSignature' do
-        expect { described_class.new(leeway: 0).verify!(context: SpecSupport::Token.new(payload: payload)) }.to raise_error JWT::ImmatureSignature
+        expect { described_class.new(leeway: 0).verify!(context: SpecSupport::Token.new(payload: payload)) }.to raise_error(JWT::ImmatureSignature)
       end
     end
 

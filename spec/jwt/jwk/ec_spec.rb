@@ -9,16 +9,16 @@ RSpec.describe JWT::JWK::EC do
     context 'when a keypair with both keys given' do
       let(:keypair) { ec_key }
       it 'creates an instance of the class' do
-        expect(subject).to be_a described_class
-        expect(subject.private?).to eq true
+        expect(subject).to be_a(described_class)
+        expect(subject.private?).to eq(true)
       end
     end
 
     context 'when a keypair with only public key is given' do
       let(:keypair) { test_pkey('ec256-public.pem') }
       it 'creates an instance of the class' do
-        expect(subject).to be_a described_class
-        expect(subject.private?).to eq false
+        expect(subject).to be_a(described_class)
+        expect(subject.private?).to eq(false)
       end
     end
 
@@ -60,7 +60,7 @@ RSpec.describe JWT::JWK::EC do
     context 'when keypair with private key is exported' do
       let(:keypair) { ec_key }
       it 'returns a hash with the both parts of the key' do
-        expect(subject).to be_a Hash
+        expect(subject).to be_a(Hash)
         expect(subject).to include(:kty, :kid, :x, :y)
 
         # Exported keys do not currently include private key info,
@@ -73,7 +73,7 @@ RSpec.describe JWT::JWK::EC do
     context 'when keypair with public key is exported' do
       let(:keypair) { test_pkey('ec256-public.pem') }
       it 'returns a hash with the public parts of the key' do
-        expect(subject).to be_a Hash
+        expect(subject).to be_a(Hash)
         expect(subject).to include(:kty, :kid, :x, :y)
 
         # Don't include private `d` if not explicitly requested.
@@ -83,7 +83,7 @@ RSpec.describe JWT::JWK::EC do
       context 'when a custom "kid" is provided' do
         let(:kid) { 'custom_key_identifier' }
         it 'exports it' do
-          expect(subject[:kid]).to eq 'custom_key_identifier'
+          expect(subject[:kid]).to eq('custom_key_identifier')
         end
       end
     end
@@ -92,7 +92,7 @@ RSpec.describe JWT::JWK::EC do
       subject { described_class.new(keypair).export(include_private: true) }
       let(:keypair) { ec_key }
       it 'returns a hash with the both parts of the key' do
-        expect(subject).to be_a Hash
+        expect(subject).to be_a(Hash)
         expect(subject).to include(:kty, :kid, :x, :y)
 
         # `d` is the private part.
@@ -142,8 +142,8 @@ RSpec.describe JWT::JWK::EC do
 
     context 'when the jwk has an invalid alg header' do
       let(:rsa) { described_class.new(ec_key, alg: 'INVALID') }
-      it 'raises JWT::VerificationError' do
-        expect { rsa.verify(data: data, signature: 'signature') }.to raise_error(JWT::VerificationError, 'Algorithm not supported')
+      it 'raises JWT::VerificationKeyError' do
+        expect { rsa.verify(data: data, signature: 'signature') }.to raise_error(JWT::VerificationKeyError, 'Algorithm not supported')
       end
     end
 
@@ -156,8 +156,8 @@ RSpec.describe JWT::JWK::EC do
 
     context 'when the jwk has HS256 as the alg parameter' do
       let(:rsa) { described_class.new(ec_key, alg: 'HS256') }
-      it 'raises JWT::DecodeError' do
-        expect { rsa.verify(data: data, signature: 'signature') }.to raise_error(JWT::DecodeError, 'HMAC key expected to be a String')
+      it 'raises JWT::VerificationKeyError' do
+        expect { rsa.verify(data: data, signature: 'signature') }.to raise_error(JWT::VerificationKeyError, 'HMAC key expected to be a String')
       end
     end
   end
@@ -194,8 +194,8 @@ RSpec.describe JWT::JWK::EC do
           let(:params) { exported_key }
 
           it 'returns a private key' do
-            expect(subject.private?).to eq true
-            expect(subject).to be_a described_class
+            expect(subject.private?).to eq(true)
+            expect(subject).to be_a(described_class)
 
             # Regular export returns only the non-private parts.
             public_only = exported_key.reject { |k, _v| k == :d }
@@ -221,8 +221,8 @@ RSpec.describe JWT::JWK::EC do
             let(:params) { exported_key }
 
             it 'returns a hash with the public parts of the key' do
-              expect(subject).to be_a described_class
-              expect(subject.private?).to eq false
+              expect(subject).to be_a(described_class)
+              expect(subject.private?).to eq(false)
               expect(subject.export).to eq(exported_key)
             end
           end

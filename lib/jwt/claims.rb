@@ -41,7 +41,7 @@ module JWT
       # @param payload [Hash] the JWT payload.
       # @param options [Array] the options for verifying the claims.
       # @return [void]
-      # @raise [JWT::DecodeError] if any claim is invalid.
+      # @raise [JWT::ClaimValidationError] if any claim is invalid.
       def verify_payload!(payload, *options)
         Verifier.verify!(VerificationContext.new(payload: payload), *options)
       end
