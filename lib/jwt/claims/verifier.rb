@@ -8,7 +8,7 @@ module JWT
         exp: ->(options) { Claims::Expiration.new(leeway: options.dig(:exp, :leeway)) },
         nbf: ->(options) { Claims::NotBefore.new(leeway: options.dig(:nbf, :leeway)) },
         iss: ->(options) { Claims::Issuer.new(issuers: options[:iss]) },
-        iat: ->(*)       { Claims::IssuedAt.new },
+        iat: ->(options) { Claims::IssuedAt.new(leeway: options.dig(:iat, :leeway)) },
         jti: ->(options) { Claims::JwtId.new(validator: options[:jti]) },
         aud: ->(options) { Claims::Audience.new(expected_audience: options[:aud]) },
         sub: ->(options) { Claims::Subject.new(expected_subject: options[:sub]) },
@@ -33,8 +33,10 @@ module JWT
           errors = []
           iterate_verifiers(*options) do |verifier, verifier_options|
             verify_one!(context, verifier, verifier_options)
-          rescue ::JWT::DecodeError => e
-            errors << Error.new(message: e.message)
+          rescue ::JWT::ClaimValidationError, ::JWT::MalformedTokenError => e
+            # A payload that cannot be decoded has no valid claims either, so the
+            # predicate API reports it instead of raising.
+            errors << JWT::Claims::Error.new(message: e.message)
           end
           errors
         end

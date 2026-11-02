@@ -18,9 +18,9 @@ module JWT
     # @param verify [Boolean] whether to verify the token's signature.
     # @param options [Hash] additional options for decoding and verification.
     # @param keyfinder [Proc] an optional key finder block to dynamically find the key for verification.
-    # @raise [JWT::DecodeError] if decoding or verification fails.
+    # @raise [JWT::Error] if decoding or verification fails.
     def initialize(jwt, key, verify, options, &keyfinder)
-      raise JWT::DecodeError, 'Nil JSON web token' unless jwt
+      raise JWT::MalformedTokenError, 'Nil JSON web token' unless jwt
 
       @token = EncodedToken.new(jwt)
       @key = key
@@ -51,14 +51,14 @@ module JWT
     def verify_signature
       return if none_algorithm?
 
-      raise JWT::DecodeError, 'No verification key available' unless @key
+      raise JWT::SignatureError, 'No verification key available' unless @key
 
       token.verify_signature!(algorithm: allowed_and_valid_algorithms, key: @key)
     end
 
     def verify_algo
       raise JWT::IncorrectAlgorithm, 'An algorithm must be specified' if allowed_algorithms.empty?
-      raise JWT::DecodeError, 'Token header not a JSON object' unless valid_token_header?
+      raise JWT::MalformedTokenError, 'Token header not a JSON object' unless valid_token_header?
       raise JWT::IncorrectAlgorithm, 'Token is missing alg header' unless alg_in_header
       raise JWT::IncorrectAlgorithm, 'Expected a different algorithm' if allowed_and_valid_algorithms.empty?
     end
@@ -100,7 +100,7 @@ module JWT
       # key can be of type [string, nil, OpenSSL::PKey, Array]
       return key if key && !Array(key).empty?
 
-      raise JWT::DecodeError, 'No verification key available'
+      raise JWT::SignatureError, 'No verification key available'
     end
 
     def validate_segment_count!
@@ -109,7 +109,7 @@ module JWT
       return if !@verify && segment_count == 2 # If no verifying required, the signature is not needed
       return if segment_count == 2 && none_algorithm?
 
-      raise JWT::DecodeError, 'Not enough or too many segments'
+      raise JWT::MalformedTokenError, 'Not enough or too many segments'
     end
 
     def none_algorithm?

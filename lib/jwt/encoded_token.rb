@@ -63,10 +63,10 @@ module JWT
     # Returns the payload of the JWT token. Access requires the signature and claims to have been verified.
     #
     # @return [Hash] the payload.
-    # @raise [JWT::DecodeError] if the signature has not been verified.
+    # @raise [JWT::TokenError] if the signature has not been verified.
     def payload
-      raise JWT::DecodeError, 'Verify the token signature before accessing the payload' unless @signature_verified
-      raise JWT::DecodeError, 'Verify the token claims before accessing the payload' unless @claims_verified
+      raise JWT::TokenError, 'Verify the token signature before accessing the payload' unless @signature_verified
+      raise JWT::TokenError, 'Verify the token claims before accessing the payload' unless @claims_verified
 
       decoded_payload
     end
@@ -77,10 +77,21 @@ module JWT
       decoded_payload
     end
 
-    # Sets or returns the encoded payload of the JWT token.
+    # Returns the encoded payload of the JWT token.
     #
     # @return [String] the encoded payload.
-    attr_accessor :encoded_payload
+    attr_reader :encoded_payload
+
+    # Sets the encoded payload of the JWT token.
+    #
+    # Resets the verification state, requiring the token to be verified again.
+    #
+    # @param encoded_payload [String] the encoded payload.
+    def encoded_payload=(encoded_payload)
+      @encoded_payload = encoded_payload
+      @decoded_payload = nil
+      @signature_verified = @claims_verified = false
+    end
 
     # Returns the signing input of the JWT token.
     #
@@ -98,7 +109,7 @@ module JWT
     # @param signature [Hash] the parameters for signature verification (see {#verify_signature!}).
     # @param claims [Array<Symbol>, Hash] the claims to verify (see {#verify_claims!}).
     # @return [nil]
-    # @raise [JWT::DecodeError] if the signature or claim verification fails.
+    # @raise [JWT::Error] if the signature or claim verification fails.
     def verify!(signature:, claims: nil)
       verify_signature!(**signature)
       claims.is_a?(Array) ? verify_claims!(*claims) : verify_claims!(claims)
@@ -152,7 +163,8 @@ module JWT
 
     # Verifies the claims of the token.
     # @param options [Array<Symbol>, Hash] the claims to verify. By default, it checks the 'exp' claim.
-    # @raise [JWT::DecodeError] if the claims are invalid.
+    # @raise [JWT::ClaimValidationError] if the claims are invalid.
+    # @raise [JWT::MalformedTokenError] if the payload cannot be decoded, which happens before any claim is validated.
     def verify_claims!(*options)
       Claims::Verifier.verify!(ClaimsContext.new(self), *claims_options(options)).tap do
         @claims_verified = true
@@ -187,11 +199,11 @@ module JWT
     end
 
     def decode_payload
-      raise JWT::DecodeError, 'Encoded payload is empty' if encoded_payload == ''
+      raise JWT::MalformedTokenError, 'Encoded payload is empty' if encoded_payload == ''
 
       if unencoded_payload?
         verify_claims!(crit: ['b64'])
-        return parse_unencoded(encoded_payload)
+        return parse(encoded_payload)
       end
 
       parse_and_decode(encoded_payload)
@@ -205,14 +217,10 @@ module JWT
       parse(::JWT::Base64.url_decode(segment || ''))
     end
 
-    def parse_unencoded(segment)
-      parse(segment)
-    end
-
     def parse(segment)
       JWT::JSON.parse(segment)
     rescue ::JSON::ParserError
-      raise JWT::DecodeError, 'Invalid segment encoding'
+      raise JWT::MalformedTokenError, 'Invalid segment encoding'
     end
 
     def decoded_payload

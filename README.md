@@ -532,7 +532,9 @@ end
 
 From [Oauth JSON Web Token 4.1.6. "iat" (Issued At) Claim](https://tools.ietf.org/html/rfc7519#section-4.1.6):
 
-> The `iat` (issued at) claim identifies the time at which the JWT was issued. This claim can be used to determine the age of the JWT. The `leeway` option is not taken into account when verifying this claim. The `iat_leeway` option was removed in version 2.2.0. Its value MUST be a number containing a **_NumericDate_** value. Use of this claim is OPTIONAL.
+> The `iat` (issued at) claim identifies the time at which the JWT was issued. This claim can be used to determine the age of the JWT. Its value MUST be a number containing a **_NumericDate_** value. Use of this claim is OPTIONAL.
+
+The global `leeway` option does not apply to `iat`. To allow for clock drift, pass `leeway` under `verify_iat`, as shown below. The `iat_leeway` option was removed in version 2.2.0.
 
 ```ruby
 iat = Time.now.to_i
@@ -546,6 +548,12 @@ begin
 rescue JWT::InvalidIatError
   # Handle invalid token, e.g. logout user or deny access
 end
+```
+
+By default, `iat` verification allows no clock drift. To allow drift between the issuer and verifier clocks, pass a leeway value explicitly:
+
+```ruby
+decoded_token = JWT.decode(token, hmac_secret, true, { verify_iat: { leeway: 30 }, algorithm: 'HS256' })
 ```
 
 ### Subject Claim
@@ -632,7 +640,7 @@ end
 
 begin
   JWT.decode(token, nil, true, { x5c: { root_certificates: root_certificates, crls: crls } })
-rescue JWT::DecodeError
+rescue JWT::TokenError
   # Handle error, e.g. x5c header certificate revoked or expired
 end
 ```
@@ -697,8 +705,8 @@ begin
   JWT.decode(token, nil, true, { algorithms: ['RS512'], jwks: jwks_loader })
 rescue JWT::JWKError
   # Handle problems with the provided JWKs
-rescue JWT::DecodeError
-  # Handle other decode related issues e.g. no kid in header, no matching public key found etc.
+rescue JWT::TokenError
+  # Handle other token related issues e.g. no kid in header, no matching public key found etc.
 end
 ```
 

@@ -15,7 +15,7 @@ module JWT
   # Version constants
   module VERSION
     MAJOR = 3
-    MINOR = 2
+    MINOR = 3
     TINY  = 1
     PRE   = nil
 

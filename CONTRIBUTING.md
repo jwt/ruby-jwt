@@ -90,9 +90,21 @@ git push origin fix-a-little-problem -f
 
 ## Releasing a new version
 
-The version is using the [Semantic Versioning](http://semver.org/) and the version is located in the [version.rb](lib/jwt/version.rb) file.
-Also update the [CHANGELOG](CHANGELOG.md) to reflect the upcoming version release.
+The version follows [Semantic Versioning](http://semver.org/) and lives in the [version.rb](lib/jwt/version.rb) file. It is bumped right after every release, so main normally already carries the next version number. Check that it is the number you mean to release and adjust it if, say, a feature landed on what had been set up as a patch release.
+
+Prepare the release on a branch: give the upcoming [CHANGELOG](CHANGELOG.md) section its release date and remove the `Your contribution here` placeholders. Merge it as usual.
+
+Then tag the merged commit and push the tag to this repository:
 
 ```bash
-rake release
+git checkout main
+git pull upstream main
+git tag -a v3.3.0 -m "Version 3.3.0"
+git push upstream v3.3.0
 ```
+
+Pushing the tag is what publishes the gem. The [push_gem.yml](.github/workflows/push_gem.yml) workflow verifies that the tag matches `JWT.gem_version`, builds the gem, pushes it to RubyGems using trusted publishing and waits for it to propagate. No RubyGems credentials are needed on your machine.
+
+Do not use `rake release`. It builds and pushes the gem from your machine, which bypasses trusted publishing, and it pushes the tag too, so the workflow then fails trying to publish a version that already exists.
+
+Once the workflow is green, [create a GitHub release](https://github.com/jwt/ruby-jwt/releases/new) for the tag, named `jwt-<version>` and with the changelog section for that version as its body. Finally, open the next iteration by bumping the version and adding a fresh `NEXT` changelog section.

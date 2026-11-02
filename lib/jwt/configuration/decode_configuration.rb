@@ -11,7 +11,7 @@ module JWT
       # @!attribute [rw] verify_iss
       #   @return [Boolean] whether to verify the issuer claim.
       # @!attribute [rw] verify_iat
-      #   @return [Boolean] whether to verify the issued at claim.
+      #   @return [Boolean, Hash] whether to verify the issued at claim. A hash can be given to configure the claim, currently only `leeway` is supported.
       # @!attribute [rw] verify_jti
       #   @return [Boolean] whether to verify the JWT ID claim.
       # @!attribute [rw] verify_aud

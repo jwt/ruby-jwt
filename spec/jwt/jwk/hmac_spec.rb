@@ -8,8 +8,8 @@ RSpec.describe JWT::JWK::HMAC do
   describe '.new' do
     context 'when a secret key given' do
       it 'creates an instance of the class' do
-        expect(jwk).to be_a described_class
-        expect(jwk.private?).to eq true
+        expect(jwk).to be_a(described_class)
+        expect(jwk.private?).to eq(true)
       end
     end
 
@@ -34,7 +34,7 @@ RSpec.describe JWT::JWK::HMAC do
       let(:key) { hmac_key }
       subject { described_class.new(key, kid).export }
       it 'returns a hash with the key' do
-        expect(subject).to be_a Hash
+        expect(subject).to be_a(Hash)
         expect(subject).to include(:kty, :kid)
       end
     end
@@ -43,7 +43,7 @@ RSpec.describe JWT::JWK::HMAC do
       let(:key) { hmac_key }
       subject { described_class.new(key, kid).export(include_private: true) }
       it 'returns a hash with the key' do
-        expect(subject).to be_a Hash
+        expect(subject).to be_a(Hash)
         expect(subject).to include(:kty, :kid, :k)
       end
     end
@@ -58,7 +58,7 @@ RSpec.describe JWT::JWK::HMAC do
       let(:params) { exported_key }
 
       it 'returns a key' do
-        expect(subject).to be_a described_class
+        expect(subject).to be_a(described_class)
         expect(subject.export(include_private: true)).to eq(exported_key)
       end
 
@@ -102,64 +102,64 @@ RSpec.describe JWT::JWK::HMAC do
   describe '#==' do
     it 'is equal to itself' do
       other = jwk
-      expect(jwk == other).to eq true
+      expect(jwk == other).to eq(true)
     end
 
     it 'is equal to a clone of itself' do
       other = jwk.clone
-      expect(jwk == other).to eq true
+      expect(jwk == other).to eq(true)
     end
 
     it 'is not equal to nil' do
       other = nil
-      expect(jwk == other).to eq false
+      expect(jwk == other).to eq(false)
     end
 
     it 'is not equal to boolean true' do
       other = true
-      expect(jwk == other).to eq false
+      expect(jwk == other).to eq(false)
     end
 
     it 'is not equal to a non-key' do
       other = Object.new
-      expect(jwk == other).to eq false
+      expect(jwk == other).to eq(false)
     end
 
     it 'is not equal to a different key' do
       other = described_class.new('other-key')
-      expect(jwk == other).to eq false
+      expect(jwk == other).to eq(false)
     end
   end
 
   describe '#<=>' do
     it 'is equal to itself' do
       other = jwk
-      expect(jwk <=> other).to eq 0
+      expect(jwk <=> other).to eq(0)
     end
 
     it 'is equal to a clone of itself' do
       other = jwk.clone
-      expect(jwk <=> other).to eq 0
+      expect(jwk <=> other).to eq(0)
     end
 
     it 'is not comparable to nil' do
       other = nil
-      expect(jwk <=> other).to eq nil
+      expect(jwk <=> other).to eq(nil)
     end
 
     it 'is not comparable to boolean true' do
       other = true
-      expect(jwk <=> other).to eq nil
+      expect(jwk <=> other).to eq(nil)
     end
 
     it 'is not comparable to a non-key' do
       other = Object.new
-      expect(jwk <=> other).to eq nil
+      expect(jwk <=> other).to eq(nil)
     end
 
     it 'is not equal to a different key' do
       other = described_class.new('other-key')
-      expect(jwk <=> other).not_to eq 0
+      expect(jwk <=> other).not_to eq(0)
     end
   end
 end
