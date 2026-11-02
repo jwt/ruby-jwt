@@ -11,7 +11,7 @@
 **Fixes and enhancements:**
 
 - Test that `JWT::Claims::Required` raises `JWT::MissingRequiredClaim` for a non-Hash payload [#768](https://github.com/jwt/ruby-jwt/pull/768) ([@renanmpimentel](https://github.com/renanmpimentel))
-- Do not call the `key_finder` of `JWT::EncodedToken` when the token's algorithm is not allowed [#784](https://github.com/jwt/ruby-jwt/pull/784) ([@anakinj](https://github.com/anakinj))
+- Do not call the `key_finder` of `JWT::EncodedToken` when the token's algorithm is not allowed, so a mismatched `alg` header no longer verifies with a key finder [#784](https://github.com/jwt/ruby-jwt/pull/784) ([@anakinj](https://github.com/anakinj))
 - Your contribution here
 
 ## [v3.3.0](https://github.com/jwt/ruby-jwt/tree/v3.3.0) (2026-09-11)

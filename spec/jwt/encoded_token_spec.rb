@@ -241,6 +241,43 @@ RSpec.describe JWT::EncodedToken do
         expect(token.verify_signature!(algorithm: %w[RS256 HS256], key_finder: ->(_token) { 'secret' })).to eq(nil)
       end
 
+      it 'accepts algorithm names given as symbols and in a different case' do
+        expect(token.verify_signature!(algorithm: :HS256, key_finder: ->(_token) { 'secret' })).to eq(nil)
+        expect(token.verify_signature!(algorithm: 'hs256', key_finder: ->(_token) { 'secret' })).to eq(nil)
+      end
+
+      it 'accepts a custom algorithm object' do
+        custom = Class.new do
+          include JWT::JWA::SigningAlgorithm
+
+          def alg
+            'CUSTOM'
+          end
+
+          def sign(*)
+            'signature'
+          end
+
+          def verify(*)
+            true
+          end
+        end.new
+        custom_token = JWT::Token.new(payload: payload).tap { |t| t.sign!(algorithm: custom, key: 'secret') }.jwt
+
+        expect(described_class.new(custom_token).verify_signature!(algorithm: custom, key_finder: ->(_token) { 'secret' })).to eq(nil)
+      end
+
+      it 'reports an unknown algorithm as a configuration error' do
+        expect { token.verify_signature!(algorithm: 'FOO', key_finder: ->(_token) { 'secret' }) }.to raise_error(JWT::VerificationKeyError, 'Algorithm not supported')
+      end
+
+      it 'does not load the JWKS through the JWK key finder' do
+        loader = double('jwks loader')
+        expect(loader).not_to receive(:call)
+
+        expect { token.verify_signature!(algorithm: 'RS256', key_finder: JWT::JWK::KeyFinder.new(jwks: loader)) }.to raise_error(JWT::VerificationError, 'Signature verification failed')
+      end
+
       context 'when the token algorithm is not allowed' do
         let(:key_finder) { ->(_token) { raise 'key finder should not be called' } }
 
@@ -250,10 +287,20 @@ RSpec.describe JWT::EncodedToken do
 
         it 'is reported as invalid without calling the key finder' do
           expect(token.valid_signature?(algorithm: %w[RS256 RS512], key_finder: key_finder)).to eq(false)
+          expect(token.valid?(signature: { algorithm: 'RS256', key_finder: key_finder })).to eq(false)
+        end
+
+        it 'clears an earlier successful verification' do
+          token.verify_signature!(algorithm: 'HS256', key: 'secret')
+          token.verify_claims!
+          expect(token.payload).to eq(payload)
+
+          expect(token.valid_signature?(algorithm: 'RS256', key_finder: key_finder)).to eq(false)
+          expect { token.payload }.to raise_error(JWT::TokenError, 'Verify the token signature before accessing the payload')
         end
       end
 
-      [{}, { 'alg' => nil }, { 'alg' => [] }].each do |invalid_header|
+      [{}, { 'alg' => nil }, { 'alg' => [] }, { 'alg' => 123 }, { 'alg' => true }, { 'alg' => {} }].each do |invalid_header|
         context "when the token header is #{invalid_header}" do
           let(:encoded_token) do
             encoded = JWT::Base64.url_encode(JSON.generate(invalid_header))
