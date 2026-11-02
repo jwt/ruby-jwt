@@ -236,6 +236,49 @@ RSpec.describe JWT::EncodedToken do
       it 'can utilize an array provided by keyfinder' do
         expect(token.verify_signature!(algorithm: 'HS256', key_finder: ->(_token) { %w[wrong secret] })).to eq(nil)
       end
+
+      it 'accepts the token when one of several algorithms is allowed' do
+        expect(token.verify_signature!(algorithm: %w[RS256 HS256], key_finder: ->(_token) { 'secret' })).to eq(nil)
+      end
+
+      context 'when the token algorithm is not allowed' do
+        let(:key_finder) { ->(_token) { raise 'key finder should not be called' } }
+
+        it 'raises without calling the key finder' do
+          expect { token.verify_signature!(algorithm: 'RS256', key_finder: key_finder) }.to raise_error(JWT::VerificationError, 'Signature verification failed')
+        end
+
+        it 'is reported as invalid without calling the key finder' do
+          expect(token.valid_signature?(algorithm: %w[RS256 RS512], key_finder: key_finder)).to eq(false)
+        end
+      end
+
+      [{}, { 'alg' => nil }, { 'alg' => [] }].each do |invalid_header|
+        context "when the token header is #{invalid_header}" do
+          let(:encoded_token) do
+            encoded = JWT::Base64.url_encode(JSON.generate(invalid_header))
+            "#{encoded}.#{JWT::Base64.url_encode('{}')}.signature"
+          end
+
+          it 'raises without calling the key finder' do
+            key_finder = ->(_token) { raise 'key finder should not be called' }
+            expect { token.verify_signature!(algorithm: 'RS256', key_finder: key_finder) }.to raise_error(JWT::VerificationError, 'Signature verification failed')
+          end
+        end
+      end
+
+      context 'when no algorithm is given and the key finder provides a JWK' do
+        let(:jwk) { JWT::JWK.new(test_pkey('rsa-2048-private.pem'), alg: 'RS256') }
+        let(:encoded_token) do
+          JWT::Token.new(payload: payload)
+                    .tap { |t| t.sign!(algorithm: 'RS256', key: jwk.signing_key) }
+                    .jwt
+        end
+
+        it 'uses the JWK for verification' do
+          expect(token.verify_signature!(algorithm: [], key_finder: ->(_token) { jwk })).to eq(nil)
+        end
+      end
     end
 
     context 'when neither key or key_finder is given' do

@@ -146,9 +146,11 @@ module JWT
     # @param algorithm [String, Array<String>, Object, Array<Object>] the algorithm(s) to use for verification.
     # @param key [String, Array<String>, JWT::JWK::KeyBase, Array<JWT::JWK::KeyBase>] the key(s) to use for verification.
     # @param key_finder [#call] an object responding to `call` to find the key for verification.
+    #   Not called if the token's algorithm is not among the given algorithms.
     # @return [Boolean] true if the signature is valid, false otherwise.
     def valid_signature?(algorithm: nil, key: nil, key_finder: nil)
       raise ArgumentError, 'Provide either key or key_finder, not both or neither' if key.nil? == key_finder.nil?
+      return false if key_finder && !algorithm_allowed?(algorithm)
 
       keys      = Array(key || key_finder.call(self))
       verifiers = JWA.create_verifiers(algorithms: algorithm, keys: keys, preferred_algorithm: header['alg'])
@@ -191,6 +193,13 @@ module JWT
     alias to_s jwt
 
     private
+
+    # An empty list leaves the choice of algorithm to the JWKs given by the key finder.
+    def algorithm_allowed?(algorithms)
+      algorithms = Array(algorithms)
+
+      algorithms.empty? || algorithms.any? { |algorithm| JWA.resolve(algorithm).valid_alg?(header['alg']) }
+    end
 
     def claims_options(options)
       return DEFAULT_CLAIMS if options.first.nil?
