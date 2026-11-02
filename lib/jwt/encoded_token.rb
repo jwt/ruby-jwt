@@ -122,6 +122,7 @@ module JWT
     # @param signature [Hash] the parameters for signature verification (see {#verify_signature!}).
     # @param claims [Array<Symbol>, Hash] the claims to verify (see {#verify_claims!}).
     # @return [Boolean] true if the signature and claims are valid, false otherwise.
+    # @raise [JWT::MalformedTokenError] if the token is structurally invalid.
     def valid?(signature:, claims: nil)
       valid_signature?(**signature) &&
         (claims.is_a?(Array) ? valid_claims?(*claims) : valid_claims?(claims))
@@ -134,6 +135,7 @@ module JWT
     # @param key_finder [#call] an object responding to `call` to find the key for verification.
     # @return [nil]
     # @raise [JWT::VerificationError] if the signature verification fails.
+    # @raise [JWT::MalformedTokenError] if the token is structurally invalid.
     # @raise [ArgumentError] if neither key nor key_finder is provided, or if both are provided.
     def verify_signature!(algorithm:, key: nil, key_finder: nil)
       return if valid_signature?(algorithm: algorithm, key: key, key_finder: key_finder)
