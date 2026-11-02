@@ -211,6 +211,20 @@ RSpec.describe JWT::EncodedToken do
       end
     end
 
+    ['.extra', '.'].each do |suffix|
+      context "when the token is followed by #{suffix.inspect}" do
+        subject(:token) { described_class.new("#{encoded_token}#{suffix}") }
+
+        it 'raises decode error' do
+          expect { token.verify_signature!(algorithm: 'HS256', key: 'secret') }.to raise_error(JWT::MalformedTokenError, 'Too many segments')
+        end
+
+        it 'raises decode error from #valid_signature?' do
+          expect { token.valid_signature?(algorithm: 'HS256', key: 'secret') }.to raise_error(JWT::MalformedTokenError, 'Too many segments')
+        end
+      end
+    end
+
     context 'when payload is detached' do
       let(:encoded_token) { detached_payload_token.jwt }
 

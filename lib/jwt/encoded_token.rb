@@ -147,8 +147,11 @@ module JWT
     # @param key [String, Array<String>, JWT::JWK::KeyBase, Array<JWT::JWK::KeyBase>] the key(s) to use for verification.
     # @param key_finder [#call] an object responding to `call` to find the key for verification.
     # @return [Boolean] true if the signature is valid, false otherwise.
+    # @raise [JWT::MalformedTokenError] if the token is structurally invalid.
     def valid_signature?(algorithm: nil, key: nil, key_finder: nil)
       raise ArgumentError, 'Provide either key or key_finder, not both or neither' if key.nil? == key_finder.nil?
+
+      validate_segment_count!
 
       keys      = Array(key || key_finder.call(self))
       verifiers = JWA.create_verifiers(algorithms: algorithm, keys: keys, preferred_algorithm: header['alg'])
@@ -191,6 +194,10 @@ module JWT
     alias to_s jwt
 
     private
+
+    def validate_segment_count!
+      raise JWT::MalformedTokenError, 'Too many segments' if jwt.count('.') > 2
+    end
 
     def claims_options(options)
       return DEFAULT_CLAIMS if options.first.nil?
