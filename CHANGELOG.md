@@ -11,6 +11,7 @@
 **Fixes and enhancements:**
 
 - Test that `JWT::Claims::Required` raises `JWT::MissingRequiredClaim` for a non-Hash payload [#768](https://github.com/jwt/ruby-jwt/pull/768) ([@renanmpimentel](https://github.com/renanmpimentel))
+- Raise `JWT::MalformedTokenError` for a token header that is not a JSON object when using `JWT::EncodedToken` [#783](https://github.com/jwt/ruby-jwt/pull/783) ([@anakinj](https://github.com/anakinj))
 - Your contribution here
 
 ## [v3.3.0](https://github.com/jwt/ruby-jwt/tree/v3.3.0) (2026-09-11)

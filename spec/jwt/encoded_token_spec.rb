@@ -161,6 +161,24 @@ RSpec.describe JWT::EncodedToken do
         expect { token.header }.to raise_error(JWT::MalformedTokenError, 'Invalid segment encoding')
       end
     end
+
+    ['[]', 'null', '"header"', '1'].each do |json|
+      context "when the header is the JSON value #{json}" do
+        let(:encoded_token) { "#{JWT::Base64.url_encode(json)}.#{JWT::Base64.url_encode('{}')}.signature" }
+
+        it 'raises decode error' do
+          expect { token.header }.to raise_error(JWT::MalformedTokenError, 'Token header not a JSON object')
+        end
+
+        it 'raises decode error when verifying the signature' do
+          expect { token.verify_signature!(algorithm: 'HS256', key: 'secret') }.to raise_error(JWT::MalformedTokenError, 'Token header not a JSON object')
+        end
+
+        it 'raises decode error when reading the payload' do
+          expect { token.unverified_payload }.to raise_error(JWT::MalformedTokenError, 'Token header not a JSON object')
+        end
+      end
+    end
   end
 
   describe '#signature' do

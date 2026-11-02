@@ -51,8 +51,11 @@ module JWT
     # Returns the decoded header of the JWT token.
     #
     # @return [Hash] the header.
+    # @raise [JWT::MalformedTokenError] if the header is not a JSON object.
     def header
-      @header ||= parse_and_decode(@encoded_header)
+      @header ||= parse_and_decode(@encoded_header).tap do |decoded_header|
+        raise JWT::MalformedTokenError, 'Token header not a JSON object' unless decoded_header.is_a?(Hash)
+      end
     end
 
     # Returns the encoded header of the JWT token.

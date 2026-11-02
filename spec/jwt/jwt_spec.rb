@@ -451,7 +451,7 @@ RSpec.describe JWT do
           it 'should raise JWT::MalformedTokenError' do
             expect do
               JWT.decode('WyJIUzI1NiJd.e30K')
-            end.to raise_error(JWT::MalformedTokenError, 'Not enough or too many segments')
+            end.to raise_error(JWT::MalformedTokenError, 'Token header not a JSON object')
           end
         end
 
