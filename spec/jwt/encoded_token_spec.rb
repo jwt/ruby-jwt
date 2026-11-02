@@ -162,7 +162,7 @@ RSpec.describe JWT::EncodedToken do
       end
     end
 
-    ['[]', 'null', '"header"', '1'].each do |json|
+    ['[]', 'null', '"header"', '1', 'true', 'false'].each do |json|
       context "when the header is the JSON value #{json}" do
         let(:encoded_token) { "#{JWT::Base64.url_encode(json)}.#{JWT::Base64.url_encode('{}')}.signature" }
 
