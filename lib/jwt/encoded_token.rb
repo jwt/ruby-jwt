@@ -51,8 +51,11 @@ module JWT
     # Returns the decoded header of the JWT token.
     #
     # @return [Hash] the header.
+    # @raise [JWT::MalformedTokenError] if the header is not a JSON object.
     def header
-      @header ||= parse_and_decode(@encoded_header)
+      @header ||= parse_and_decode(@encoded_header).tap do |decoded_header|
+        raise JWT::MalformedTokenError, 'Token header not a JSON object' unless decoded_header.is_a?(Hash)
+      end
     end
 
     # Returns the encoded header of the JWT token.
@@ -122,6 +125,7 @@ module JWT
     # @param signature [Hash] the parameters for signature verification (see {#verify_signature!}).
     # @param claims [Array<Symbol>, Hash] the claims to verify (see {#verify_claims!}).
     # @return [Boolean] true if the signature and claims are valid, false otherwise.
+    # @raise [JWT::MalformedTokenError] if the token is structurally invalid.
     def valid?(signature:, claims: nil)
       valid_signature?(**signature) &&
         (claims.is_a?(Array) ? valid_claims?(*claims) : valid_claims?(claims))
@@ -134,6 +138,7 @@ module JWT
     # @param key_finder [#call] an object responding to `call` to find the key for verification.
     # @return [nil]
     # @raise [JWT::VerificationError] if the signature verification fails.
+    # @raise [JWT::MalformedTokenError] if the token is structurally invalid.
     # @raise [ArgumentError] if neither key nor key_finder is provided, or if both are provided.
     def verify_signature!(algorithm:, key: nil, key_finder: nil)
       return if valid_signature?(algorithm: algorithm, key: key, key_finder: key_finder)
@@ -149,10 +154,12 @@ module JWT
     #   Not called if the token's algorithm is not among the given algorithms, in which case the
     #   signature is not valid. The token's alg header is not compared when a key is given directly.
     # @return [Boolean] true if the signature is valid, false otherwise.
+    # @raise [JWT::MalformedTokenError] if the token is structurally invalid.
     def valid_signature?(algorithm: nil, key: nil, key_finder: nil)
       raise ArgumentError, 'Provide either key or key_finder, not both or neither' if key.nil? == key_finder.nil?
 
       @signature_verified = false
+      validate_segment_count!
       return false if key_finder && !algorithm_allowed?(algorithm)
 
       keys      = Array(key || key_finder.call(self))
@@ -196,6 +203,10 @@ module JWT
     alias to_s jwt
 
     private
+
+    def validate_segment_count!
+      raise JWT::MalformedTokenError, 'Too many segments' if jwt.count('.') > 2
+    end
 
     # An empty list leaves the choice of algorithm to the JWKs given by the key finder.
     # An unknown algorithm is a configuration error that the verifier reports.

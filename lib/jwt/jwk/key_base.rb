@@ -50,6 +50,10 @@ module JWT
         jwa.sign(**kwargs, signing_key: signing_key)
       end
 
+      def inspect
+        "#<#{self.class} public_export=#{export.inspect}>"
+      end
+
       alias eql? ==
 
       def <=>(other)
