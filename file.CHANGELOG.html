@@ -71,6 +71,7 @@
 <li>Test that <code>JWT::Claims::Required</code> raises <code>JWT::MissingRequiredClaim</code> for a non-Hash payload <a href="https://github.com/jwt/ruby-jwt/pull/768">#768</a> (<a href="https://github.com/renanmpimentel">@renanmpimentel</a>)</li>
 <li>Ignore unsupported <code>kty</code> values when a <code>JWT::JWK::Set</code> is built from an array <a href="https://github.com/jwt/ruby-jwt/pull/744">#744</a> (<a href="https://github.com/RalphBragg">@RalphBragg</a>)</li>
 <li>Redact private JWK material from inspection <a href="https://github.com/jwt/ruby-jwt/pull/754">#754</a> - <a href="https://github.com/OskarEichler">@OskarEichler</a></li>
+<li>Reject tokens with too many segments in <code>JWT::EncodedToken</code> signature verification <a href="https://github.com/jwt/ruby-jwt/pull/782">#782</a> (<a href="https://github.com/anakinj">@anakinj</a>)</li>
 <li>Your contribution here</li>
 </ul>
 <h2 id="_v3_3_0__https___github_com_jwt_ruby_jwt_tree_v3_3_0___2026_09_11_"><a href="https://github.com/jwt/ruby-jwt/tree/v3.3.0">v3.3.0</a> (2026-09-11)</h2>
@@ -993,7 +994,7 @@
 </ul></div></div>
 
       <div id="footer">
-  Generated on Mon Nov  2 21:04:30 2026 by
+  Generated on Tue Nov  3 07:11:16 2026 by
   <a href="https://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.9.45 (ruby-4.0.9).
 </div>
