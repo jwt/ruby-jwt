@@ -14,6 +14,7 @@
 - Ignore unsupported `kty` values when a `JWT::JWK::Set` is built from an array [#744](https://github.com/jwt/ruby-jwt/pull/744) ([@RalphBragg](https://github.com/RalphBragg))
 - Redact private JWK material from inspection [#754](https://github.com/jwt/ruby-jwt/pull/754) - [@OskarEichler](https://github.com/OskarEichler)
 - Reject tokens with too many segments in `JWT::EncodedToken` signature verification [#782](https://github.com/jwt/ruby-jwt/pull/782) ([@anakinj](https://github.com/anakinj))
+- Raise `JWT::MalformedTokenError` for a token header that is not a JSON object, including a string header in `JWT.decode` without verification [#783](https://github.com/jwt/ruby-jwt/pull/783) ([@anakinj](https://github.com/anakinj))
 - Your contribution here
 
 ## [v3.3.0](https://github.com/jwt/ruby-jwt/tree/v3.3.0) (2026-09-11)
