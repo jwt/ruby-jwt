@@ -211,6 +211,40 @@ RSpec.describe JWT::EncodedToken do
       end
     end
 
+    ['.extra', '.'].each do |suffix|
+      context "when the token is followed by #{suffix.inspect}" do
+        subject(:token) { described_class.new("#{encoded_token}#{suffix}") }
+
+        it 'raises decode error' do
+          expect { token.verify_signature!(algorithm: 'HS256', key: 'secret') }.to raise_error(JWT::MalformedTokenError, 'Too many segments')
+        end
+
+        it 'raises decode error from #valid_signature?' do
+          expect { token.valid_signature?(algorithm: 'HS256', key: 'secret') }.to raise_error(JWT::MalformedTokenError, 'Too many segments')
+        end
+
+        it 'raises decode error from #valid? and #verify!' do
+          signature = { algorithm: 'HS256', key: 'secret' }
+
+          expect { token.valid?(signature: signature) }.to raise_error(JWT::MalformedTokenError, 'Too many segments')
+          expect { token.verify!(signature: signature) }.to raise_error(JWT::MalformedTokenError, 'Too many segments')
+        end
+
+        it 'does not call the key finder' do
+          key_finder = ->(_token) { raise 'key finder should not be called' }
+
+          expect { token.verify_signature!(algorithm: 'HS256', key_finder: key_finder) }.to raise_error(JWT::MalformedTokenError, 'Too many segments')
+        end
+
+        it 'does not make the payload available' do
+          token.verify_claims!
+
+          expect { token.verify_signature!(algorithm: 'HS256', key: 'secret') }.to raise_error(JWT::MalformedTokenError)
+          expect { token.payload }.to raise_error(JWT::TokenError, 'Verify the token signature before accessing the payload')
+        end
+      end
+    end
+
     context 'when payload is detached' do
       let(:encoded_token) { detached_payload_token.jwt }
 
