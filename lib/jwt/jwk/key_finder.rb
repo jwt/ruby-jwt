@@ -27,46 +27,53 @@ module JWT
 
       # Returns the verification key for the given kid
       # @param [String] kid the key id
+      # @param [Symbol] key_field the JWK field to match
       def key_for(kid, key_field = :kid)
-        raise ::JWT::MalformedTokenError, "Invalid type for #{key_field} header parameter" unless kid.nil? || kid.is_a?(String)
-
-        jwk = resolve_key(kid, key_field)
-
-        raise ::JWT::SignatureError, 'No keys found in jwks' unless @jwks.any?
-        raise ::JWT::SignatureError, "Could not find public key for kid #{kid}" unless jwk
-
-        jwk.verify_key
+        find_jwk(kid, key_field).verify_key
       end
 
       # Returns the key for the given token
       # @param [JWT::EncodedToken] token the token
+      # @return [JWT::JWK::KeyBase, Object] the JWK when alg is present, otherwise its raw verification key
       def call(token)
-        @key_fields.each do |key_field|
-          field_value = token.header[key_field.to_s]
+        key_field = @key_fields.find { |field| token.header[field.to_s] }
 
-          return key_for(field_value, key_field) if field_value
-        end
+        raise ::JWT::SignatureError, 'No key id (kid) or x5t found from token headers' unless key_field || @allow_nil_kid
 
-        raise ::JWT::SignatureError, 'No key id (kid) or x5t found from token headers' unless @allow_nil_kid
-
-        kid = token.header['kid']
-        key_for(kid)
+        key_field ||= :kid
+        jwk = find_jwk(token.header[key_field.to_s], key_field, token.header['alg'])
+        jwk.parameters.key?(:alg) ? jwk : jwk.verify_key
       end
 
       private
 
-      def resolve_key(kid, key_field)
-        key_matcher = ->(key) { (kid.nil? && @allow_nil_kid) || key[key_field] == kid }
+      def find_jwk(kid, key_field, algorithm = nil)
+        raise ::JWT::MalformedTokenError, "Invalid type for #{key_field} header parameter" unless kid.nil? || kid.is_a?(String)
 
+        jwk = resolve_key(kid, key_field, algorithm)
+
+        raise ::JWT::SignatureError, 'No keys found in jwks' unless @jwks.any?
+        raise ::JWT::SignatureError, "Could not find public key for kid #{kid}" unless jwk
+
+        jwk
+      end
+
+      def resolve_key(kid, key_field, algorithm)
         # First try without invalidation to facilitate application caching
         @jwks ||= JWT::JWK::Set.new(@jwks_loader.call(key_field => kid))
-        jwk = @jwks.find { |key| key_matcher.call(key) }
+        jwk = matching_key(kid, key_field, algorithm)
 
         return jwk if jwk
 
         # Second try, invalidate for backwards compatibility
         @jwks = JWT::JWK::Set.new(@jwks_loader.call(invalidate: true, kid_not_found: true, key_field => kid))
-        @jwks.find { |key| key_matcher.call(key) }
+        matching_key(kid, key_field, algorithm)
+      end
+
+      def matching_key(kid, key_field, algorithm)
+        @jwks.find do |key|
+          ((kid.nil? && @allow_nil_kid) || key[key_field] == kid) && key.usable_for_verification?(algorithm)
+        end
       end
     end
   end
