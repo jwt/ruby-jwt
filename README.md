@@ -769,13 +769,7 @@ bundle exec appraisal rake test
 
 ## Releasing
 
-To cut a new release adjust the [version.rb](lib/jwt/version.rb) and [CHANGELOG](CHANGELOG.md) with desired version numbers and dates and commit the changes. Tag the release with the version number using the following command:
-
-```bash
-rake release:source_control_push
-```
-
-This will tag a new version an trigger a [GitHub action](.github/workflows/push_gem.yml) that eventually will push the gem to rubygems.org.
+See [Releasing a new version](CONTRIBUTING.md#releasing-a-new-version) in CONTRIBUTING.
 
 ## How to contribute
 
