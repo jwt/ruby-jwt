@@ -73,6 +73,7 @@
 <li>Redact private JWK material from inspection <a href="https://github.com/jwt/ruby-jwt/pull/754">#754</a> - <a href="https://github.com/OskarEichler">@OskarEichler</a></li>
 <li>Reject tokens with too many segments in <code>JWT::EncodedToken</code> signature verification <a href="https://github.com/jwt/ruby-jwt/pull/782">#782</a> (<a href="https://github.com/anakinj">@anakinj</a>)</li>
 <li>Raise <code>JWT::MalformedTokenError</code> for a token header that is not a JSON object, including a string header in <code>JWT.decode</code> without verification <a href="https://github.com/jwt/ruby-jwt/pull/783">#783</a> (<a href="https://github.com/anakinj">@anakinj</a>)</li>
+<li>Do not call the <code>key_finder</code> of <code>JWT::EncodedToken</code> when the token's algorithm is not allowed, so a mismatched <code>alg</code> header no longer verifies with a key finder <a href="https://github.com/jwt/ruby-jwt/pull/784">#784</a> (<a href="https://github.com/anakinj">@anakinj</a>)</li>
 <li>Your contribution here</li>
 </ul>
 <h2 id="_v3_3_0__https___github_com_jwt_ruby_jwt_tree_v3_3_0___2026_09_11_"><a href="https://github.com/jwt/ruby-jwt/tree/v3.3.0">v3.3.0</a> (2026-09-11)</h2>
@@ -995,7 +996,7 @@
 </ul></div></div>
 
       <div id="footer">
-  Generated on Tue Nov  3 08:57:13 2026 by
+  Generated on Tue Nov  3 09:04:57 2026 by
   <a href="https://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.9.45 (ruby-4.0.9).
 </div>
