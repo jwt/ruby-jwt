@@ -151,12 +151,16 @@ module JWT
     # @param algorithm [String, Array<String>, Object, Array<Object>] the algorithm(s) to use for verification.
     # @param key [String, Array<String>, JWT::JWK::KeyBase, Array<JWT::JWK::KeyBase>] the key(s) to use for verification.
     # @param key_finder [#call] an object responding to `call` to find the key for verification.
+    #   Not called if the token's algorithm is not among the given algorithms, in which case the
+    #   signature is not valid. The token's alg header is not compared when a key is given directly.
     # @return [Boolean] true if the signature is valid, false otherwise.
     # @raise [JWT::MalformedTokenError] if the token is structurally invalid.
     def valid_signature?(algorithm: nil, key: nil, key_finder: nil)
       raise ArgumentError, 'Provide either key or key_finder, not both or neither' if key.nil? == key_finder.nil?
 
+      @signature_verified = false
       validate_segment_count!
+      return false if key_finder && !algorithm_allowed?(algorithm)
 
       keys      = Array(key || key_finder.call(self))
       verifiers = JWA.create_verifiers(algorithms: algorithm, keys: keys, preferred_algorithm: header['alg'])
@@ -202,6 +206,14 @@ module JWT
 
     def validate_segment_count!
       raise JWT::MalformedTokenError, 'Too many segments' if jwt.count('.') > 2
+    end
+
+    # An empty list leaves the choice of algorithm to the JWKs given by the key finder.
+    # An unknown algorithm is a configuration error that the verifier reports.
+    def algorithm_allowed?(algorithms)
+      algorithms = Array(algorithms).map { |algorithm| JWA.resolve(algorithm) }
+
+      algorithms.empty? || algorithms.any? { |algorithm| algorithm == JWA::Unsupported || algorithm.valid_alg?(header['alg']) }
     end
 
     def claims_options(options)
