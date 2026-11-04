@@ -230,7 +230,8 @@ module JWT
           when 'P-256' then 'prime256v1'
           when 'P-384' then 'secp384r1'
           when 'P-521' then 'secp521r1'
-          when 'P-256K' then 'secp256k1'
+          # 'secp256k1' is the name registered in RFC 8812, 'P-256K' an earlier draft name
+          when 'secp256k1', 'P-256K' then 'secp256k1'
           else raise JWT::JWKError, 'Invalid curve provided'
           end
         end
