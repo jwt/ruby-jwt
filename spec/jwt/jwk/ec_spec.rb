@@ -274,5 +274,38 @@ RSpec.describe JWT::JWK::EC do
         expect(payload).to eq('sub' => '1')
       end
     end
+
+    context 'when the coordinates are not a point on the given curve' do
+      let(:ec_key) { OpenSSL::PKey::EC.generate('prime256v1') }
+      let(:keypair) { ec_key }
+      let(:public_params) { exported_key }
+
+      {
+        'the curve does not match the coordinates' => ->(params) { params.merge(crv: 'P-384') },
+        'the point is not on the curve' => ->(params) { params.merge(y: params[:x]) }
+      }.each do |description, invalidate|
+        context "when #{description}" do
+          let(:params) { invalidate.call(public_params) }
+
+          it 'raises a JWT::JWKError when the key is used' do
+            jwk = subject
+            %i[verify_key private? export].each do |method_name|
+              expect { jwk.public_send(method_name) }.to raise_error(JWT::JWKError, /Invalid EC point for curve/) do |error|
+                expect(error.cause).to be_a(OpenSSL::PKey::EC::Point::Error)
+              end
+            end
+          end
+
+          it 'raises a JWT::JWKError when decoding with a JWKS' do
+            token = JWT.encode({ 'sub' => '1' }, ec_key, 'ES256', kid: 'ec-key')
+            jwks = { keys: [params.merge(kid: 'ec-key')] }
+
+            expect do
+              JWT.decode(token, nil, true, algorithms: ['ES256'], jwks: jwks)
+            end.to raise_error(JWT::JWKError, /Invalid EC point for curve/)
+          end
+        end
+      end
+    end
   end
 end

@@ -160,6 +160,8 @@ module JWT
           OpenSSL::PKey::EC::Group.new(curve),
           OpenSSL::BN.new([0x04, x_octets, y_octets].pack('Ca*a*'), 2)
         )
+      rescue OpenSSL::PKey::EC::Point::Error
+        raise JWT::JWKError, "Invalid EC point for curve #{jwk_crv}"
       end
 
       if ::JWT.openssl_3?
