@@ -75,6 +75,7 @@
 <li>Raise <code>JWT::MalformedTokenError</code> for a token header that is not a JSON object, including a string header in <code>JWT.decode</code> without verification <a href="https://github.com/jwt/ruby-jwt/pull/783">#783</a> (<a href="https://github.com/anakinj">@anakinj</a>)</li>
 <li>Do not call the <code>key_finder</code> of <code>JWT::EncodedToken</code> when the token's algorithm is not allowed, so a mismatched <code>alg</code> header no longer verifies with a key finder <a href="https://github.com/jwt/ruby-jwt/pull/784">#784</a> (<a href="https://github.com/anakinj">@anakinj</a>)</li>
 <li>Accept the RFC 8812 curve name <code>secp256k1</code> when importing EC JWKs, alongside <code>P-256K</code> <a href="https://github.com/jwt/ruby-jwt/pull/787">#787</a> (<a href="https://github.com/anakinj">@anakinj</a>)</li>
+<li>Raise <code>JWT::JWKError</code> instead of <code>OpenSSL::PKey::EC::Point::Error</code> for EC JWK coordinates that are not a point on the given curve <a href="https://github.com/jwt/ruby-jwt/pull/789">#789</a> (<a href="https://github.com/anakinj">@anakinj</a>)</li>
 <li>Your contribution here</li>
 </ul>
 <h2 id="_v3_3_0__https___github_com_jwt_ruby_jwt_tree_v3_3_0___2026_09_11_"><a href="https://github.com/jwt/ruby-jwt/tree/v3.3.0">v3.3.0</a> (2026-09-11)</h2>
@@ -997,7 +998,7 @@
 </ul></div></div>
 
       <div id="footer">
-  Generated on Wed Nov  4 17:51:46 2026 by
+  Generated on Wed Nov  4 19:26:07 2026 by
   <a href="https://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.9.45 (ruby-4.0.9).
 </div>
