@@ -169,6 +169,7 @@ RSpec.describe JWT::JWK::EC do
         expect(JWT::JWK::EC.to_openssl_curve('P-384')).to eq('secp384r1')
         expect(JWT::JWK::EC.to_openssl_curve('P-521')).to eq('secp521r1')
         expect(JWT::JWK::EC.to_openssl_curve('P-256K')).to eq('secp256k1')
+        expect(JWT::JWK::EC.to_openssl_curve('secp256k1')).to eq('secp256k1')
       end
     end
     context 'when an invalid curve name is given' do
@@ -250,6 +251,27 @@ RSpec.describe JWT::JWK::EC do
             expect(jwk).to be_kind_of(JWT::JWK::EC)
           end
         end
+      end
+    end
+
+    context 'when crv is the RFC 8812 name secp256k1' do
+      let(:ec_key) { OpenSSL::PKey::EC.generate('secp256k1') }
+      let(:keypair) { ec_key }
+      let(:include_private) { true }
+      let(:params) { exported_key.merge(crv: 'secp256k1') }
+
+      it 'imports the key and keeps the given curve name' do
+        expect(subject.private?).to eq(true)
+        expect(subject.verify_key.group.curve_name).to eq('secp256k1')
+        expect(subject.export(include_private: true)).to eq(params)
+      end
+
+      it 'verifies an ES256K token' do
+        token = JWT.encode({ 'sub' => '1' }, ec_key, 'ES256K', kid: subject.kid)
+        jwks = { keys: [params.reject { |k, _v| k == :d }] }
+
+        payload, = JWT.decode(token, nil, true, algorithms: ['ES256K'], jwks: jwks)
+        expect(payload).to eq('sub' => '1')
       end
     end
   end

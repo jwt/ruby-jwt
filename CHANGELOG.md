@@ -16,6 +16,7 @@
 - Reject tokens with too many segments in `JWT::EncodedToken` signature verification [#782](https://github.com/jwt/ruby-jwt/pull/782) ([@anakinj](https://github.com/anakinj))
 - Raise `JWT::MalformedTokenError` for a token header that is not a JSON object, including a string header in `JWT.decode` without verification [#783](https://github.com/jwt/ruby-jwt/pull/783) ([@anakinj](https://github.com/anakinj))
 - Do not call the `key_finder` of `JWT::EncodedToken` when the token's algorithm is not allowed, so a mismatched `alg` header no longer verifies with a key finder [#784](https://github.com/jwt/ruby-jwt/pull/784) ([@anakinj](https://github.com/anakinj))
+- Accept the RFC 8812 curve name `secp256k1` when importing EC JWKs, alongside `P-256K` [#787](https://github.com/jwt/ruby-jwt/pull/787) ([@anakinj](https://github.com/anakinj))
 - Your contribution here
 
 ## [v3.3.0](https://github.com/jwt/ruby-jwt/tree/v3.3.0) (2026-09-11)
