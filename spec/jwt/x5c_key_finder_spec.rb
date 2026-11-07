@@ -197,4 +197,18 @@ RSpec.describe JWT::X5cKeyFinder do
     revoked.add_extension(ext)
     revoked
   end
+  context 'when the x5c header parameter is malformed' do
+    [
+      ['a non-array string', 'not-an-array'],
+      ['an integer', 123],
+      ['nil', nil],
+      ['an empty array', []],
+      ['an array of non-string/non-certificate values', [123]],
+      ['an array of valid base64 that is not a certificate', [Base64.strict_encode64('this is not a certificate')]]
+    ].each do |desc, bad_x5c|
+      it "raises JWT::DecodeError for #{desc} rather than a raw exception" do
+        expect { described_class.new([root_certificate], [crl]).from(bad_x5c) }.to raise_error(JWT::DecodeError)
+      end
+    end
+  end
 end
