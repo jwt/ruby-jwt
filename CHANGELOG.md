@@ -10,6 +10,7 @@
 
 **Fixes and enhancements:**
 
+- Enforce optional JWK `alg`, `use`, and `key_ops` metadata during JWKS selection and verification. `KeyFinder#call` now returns the JWK when `alg` is present to bind verification to that algorithm; `key_for` keeps returning raw keys. Direct JWK verification also enforces `use` and `key_ops` [#769](https://github.com/jwt/ruby-jwt/pull/769) - [@sj26](https://github.com/sj26).
 - Test that `JWT::Claims::Required` raises `JWT::MissingRequiredClaim` for a non-Hash payload [#768](https://github.com/jwt/ruby-jwt/pull/768) ([@renanmpimentel](https://github.com/renanmpimentel))
 - Ignore unsupported `kty` values when a `JWT::JWK::Set` is built from an array [#744](https://github.com/jwt/ruby-jwt/pull/744) ([@RalphBragg](https://github.com/RalphBragg))
 - Redact private JWK material from inspection [#754](https://github.com/jwt/ruby-jwt/pull/754) - [@OskarEichler](https://github.com/OskarEichler)

@@ -64,7 +64,7 @@ module JWT
 
         return if Array(jwks).all? do |jwk|
           algorithms.any? do |alg|
-            jwk.jwa.valid_alg?(alg)
+            jwk.jwa.valid_alg?(resolve(alg).alg)
           end
         end
 

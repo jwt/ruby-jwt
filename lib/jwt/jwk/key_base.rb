@@ -42,7 +42,17 @@ module JWT
         other.is_a?(::JWT::JWK::KeyBase) && self[:kid] == other[:kid]
       end
 
+      def usable_for_verification?(algorithm = nil)
+        return false if algorithm && parameters.fetch(:alg, algorithm) != algorithm
+        return false if parameters.fetch(:use, 'sig') != 'sig'
+
+        key_ops = parameters.fetch(:key_ops, ['verify'])
+        key_ops.is_a?(Array) && key_ops.include?('verify')
+      end
+
       def verify(**kwargs)
+        raise JWT::VerificationKeyError, 'JWK metadata does not permit signature verification' unless usable_for_verification?
+
         jwa.verify(**kwargs, verification_key: verify_key)
       end
 
