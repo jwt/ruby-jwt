@@ -15,10 +15,10 @@ module JWT
       #
       # @param context [Object] the context containing the JWT payload.
       # @param _args [Hash] additional arguments (not used).
-      # @raise [JWT::InvalidAudError] if the audience claim is invalid.
+      # @raise [JWT::InvalidAudError] if the audience claim is invalid or the payload is not a Hash.
       # @return [nil]
       def verify!(context:, **_args)
-        aud = context.payload['aud']
+        aud = context.payload['aud'] if context.payload.is_a?(Hash)
         raise JWT::InvalidAudError, "Invalid audience. Expected #{expected_audience}, received #{aud || '<none>'}" if ([*aud] & [*expected_audience]).empty?
       end
 

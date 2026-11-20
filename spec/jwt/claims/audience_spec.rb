@@ -75,5 +75,14 @@ RSpec.describe JWT::Claims::Audience do
         subject
       end
     end
+
+    context 'when payload is not a Hash' do
+      let(:expected_audience) { scalar_aud }
+      let(:payload) { [scalar_aud] }
+
+      it 'raises JWT::InvalidAudError' do
+        expect { subject }.to raise_error(JWT::InvalidAudError, 'Invalid audience. Expected ruby-jwt-aud, received <none>')
+      end
+    end
   end
 end
