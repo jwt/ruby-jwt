@@ -15,10 +15,11 @@ module JWT
       #
       # @param context [Object] the context containing the JWT payload.
       # @param _args [Hash] additional arguments (not used).
-      # @raise [JWT::InvalidIssuerError] if the issuer claim is invalid.
+      # @raise [JWT::InvalidIssuerError] if the issuer claim is invalid or the payload is not a Hash.
       # @return [nil]
       def verify!(context:, **_args)
-        case (iss = context.payload['iss'])
+        iss = context.payload['iss'] if context.payload.is_a?(Hash)
+        case iss
         when *issuers
           nil
         else

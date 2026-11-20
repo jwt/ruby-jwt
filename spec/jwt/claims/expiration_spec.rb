@@ -37,4 +37,24 @@ RSpec.describe JWT::Claims::Expiration do
       verify!
     end
   end
+
+  context 'when exp is not a Numeric' do
+    { true => 'TrueClass', ['x'] => 'Array', {} => 'Hash', '1700000000' => 'String' }.each do |exp, type|
+      context "when exp is a #{type}" do
+        let(:payload) { { 'exp' => exp } }
+
+        it 'raises JWT::InvalidPayload' do
+          expect { verify! }.to raise_error(JWT::InvalidPayload, "exp claim must be a Numeric value but it is a #{type}")
+        end
+      end
+    end
+  end
+
+  context 'when exp is a Float in the future' do
+    let(:payload) { { 'exp' => Time.now.to_f + 5.5 } }
+
+    it 'passes validation' do
+      verify!
+    end
+  end
 end

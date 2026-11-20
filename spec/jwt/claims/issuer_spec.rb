@@ -27,6 +27,17 @@ RSpec.describe JWT::Claims::Issuer do
     end
   end
 
+  context 'when payload is not a Hash' do
+    [['x'], 42, nil, 'beautyexperts_nbf_iat'].each do |non_hash_payload|
+      context "when payload is #{non_hash_payload.inspect}" do
+        let(:payload) { non_hash_payload }
+        it 'raises JWT::InvalidIssuerError' do
+          expect { verify! }.to raise_error(JWT::InvalidIssuerError, 'Invalid issuer. Expected ["ruby-jwt-gem"], received <none>')
+        end
+      end
+    end
+  end
+
   context 'when expected issuer is an array that matches the payload' do
     let(:expected_issuers) { ['first', issuer, 'third'] }
     it 'passes validation' do
