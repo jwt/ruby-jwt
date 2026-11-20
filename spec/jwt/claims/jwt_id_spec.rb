@@ -19,6 +19,20 @@ RSpec.describe JWT::Claims::JwtId do
     end
   end
 
+  context 'when payload is not a Hash' do
+    let(:payload) { [jti] }
+    it 'raises JWT::InvalidJtiError' do
+      expect { verify! }.to raise_error(JWT::InvalidJtiError, 'Missing jti')
+    end
+
+    context 'when a validator is given' do
+      let(:validator) { ->(jti, payload) { jti.nil? && payload == [jti] } }
+      it 'is called with a nil jti' do
+        expect { verify! }.to raise_error(JWT::InvalidJtiError, 'Invalid jti')
+      end
+    end
+  end
+
   context 'when payload contains a jti that is an empty string' do
     let(:jti) { '' }
     it 'raises JWT::InvalidJtiError' do

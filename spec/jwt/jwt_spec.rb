@@ -514,6 +514,68 @@ RSpec.describe JWT do
       end
     end
 
+    context 'when exp or nbf is not a Numeric' do
+      let(:token) { JWT::Token.new(payload: payload).tap { |t| t.sign!(algorithm: 'HS256', key: secret) }.jwt }
+
+      context 'when exp is an Array' do
+        let(:payload) { { 'exp' => ['x'] } }
+
+        it 'raises JWT::InvalidPayload' do
+          expect { JWT.decode(token, secret, true, algorithm: 'HS256') }.to raise_error(JWT::InvalidPayload, 'exp claim must be a Numeric value but it is a Array')
+        end
+      end
+
+      context 'when exp is a Boolean' do
+        let(:payload) { { 'exp' => true } }
+
+        it 'raises JWT::InvalidPayload' do
+          expect { JWT.decode(token, secret, true, algorithm: 'HS256') }.to raise_error(JWT::InvalidPayload, 'exp claim must be a Numeric value but it is a TrueClass')
+        end
+      end
+
+      context 'when nbf is a Hash' do
+        let(:payload) { { 'exp' => Time.now.to_i + 60, 'nbf' => {} } }
+
+        it 'raises JWT::InvalidPayload' do
+          expect { JWT.decode(token, secret, true, algorithm: 'HS256') }.to raise_error(JWT::InvalidPayload, 'nbf claim must be a Numeric value but it is a Hash')
+        end
+      end
+    end
+
+    context 'when the payload is not a JSON object' do
+      let(:token) { JWT::Token.new(payload: payload).tap { |t| t.sign!(algorithm: 'HS256', key: secret) }.jwt }
+
+      [['x'], 42, nil, 'string'].each do |non_object_payload|
+        context "when the payload is #{non_object_payload.inspect}" do
+          let(:payload) { non_object_payload }
+
+          it 'decodes the payload when no claim needs a JSON object' do
+            expect(JWT.decode(token, secret, true, algorithm: 'HS256')).to eq([payload, { 'alg' => 'HS256' }])
+          end
+
+          it 'raises JWT::InvalidIssuerError when the issuer is verified' do
+            expect { JWT.decode(token, secret, true, algorithm: 'HS256', verify_iss: true, iss: 'me') }.to raise_error(JWT::InvalidIssuerError, 'Invalid issuer. Expected ["me"], received <none>')
+          end
+
+          it 'raises JWT::InvalidAudError when the audience is verified' do
+            expect { JWT.decode(token, secret, true, algorithm: 'HS256', verify_aud: true, aud: 'me') }.to raise_error(JWT::InvalidAudError, 'Invalid audience. Expected me, received <none>')
+          end
+
+          it 'raises JWT::InvalidSubError when the subject is verified' do
+            expect { JWT.decode(token, secret, true, algorithm: 'HS256', verify_sub: true, sub: 'me') }.to raise_error(JWT::InvalidSubError, 'Invalid subject. Expected me, received <none>')
+          end
+
+          it 'raises JWT::InvalidJtiError when the jti is verified' do
+            expect { JWT.decode(token, secret, true, algorithm: 'HS256', verify_jti: true) }.to raise_error(JWT::InvalidJtiError, 'Missing jti')
+          end
+
+          it 'raises JWT::MissingRequiredClaim when a claim is required' do
+            expect { JWT.decode(token, secret, true, algorithm: 'HS256', required_claims: ['exp']) }.to raise_error(JWT::MissingRequiredClaim, 'Missing required claim exp')
+          end
+        end
+      end
+    end
+
     context 'claim verification order' do
       let(:token) { JWT.encode({ nbf: Time.now.to_i + 100 }, 'secret') }
 

@@ -662,6 +662,14 @@ RSpec.describe JWT::EncodedToken do
         expect(token.claim_errors(:exp).map(&:message)).to eq(['Encoded payload is empty'])
       end
     end
+
+    context 'when exp is not a Numeric' do
+      let(:encoded_token) { JWT::Token.new(payload: { 'exp' => true }).tap { |t| t.sign!(algorithm: 'HS256', key: 'secret') }.jwt }
+
+      it 'reports the invalid claim instead of raising' do
+        expect(token.claim_errors(:exp).map(&:message)).to eq(['exp claim must be a Numeric value but it is a TrueClass'])
+      end
+    end
   end
 
   describe 'integration use-cases' do
