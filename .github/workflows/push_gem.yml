@@ -3,6 +3,18 @@
   push:
     tags:
       - v*
+  workflow_call:
+    inputs:
+      tag:
+        description: The tag to publish, e.g. v3.4.0
+        required: true
+        type: string
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: An existing tag to (re-)publish, e.g. v3.4.0
+        required: true
+        type: string
 
 name: Push Gem
 jobs:
@@ -13,6 +25,7 @@ jobs:
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
+          ref: ${{ inputs.tag && format('refs/tags/{0}', inputs.tag) || github.ref }}
           persist-credentials: false
       - name: Set up Ruby
         uses: ruby/setup-ruby@b3aaceaef7e0ee231b499e7b5f49c03fc1d32199 # v1.338.0
@@ -20,9 +33,11 @@ jobs:
           bundler-cache: false
           ruby-version: ruby
       - name: Build gem
+        env:
+          TAG: ${{ inputs.tag || github.ref_name }}
         run: |
           expected_tag="v$(ruby -Ilib -rjwt/version -e 'print JWT.gem_version')"
-          test "$GITHUB_REF_NAME" = "$expected_tag"
+          test "$TAG" = "$expected_tag"
           gem build ruby-jwt.gemspec
       - name: Upload gem
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
