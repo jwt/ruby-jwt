@@ -80,6 +80,10 @@ module JWT
 
       private
 
+      def private_key_elements
+        EC_PRIVATE_KEY_ELEMENTS
+      end
+
       def ec_key
         @ec_key ||= create_ec_key(self[:crv], self[:x], self[:y], self[:d])
       end

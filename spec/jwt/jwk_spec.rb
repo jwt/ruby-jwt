@@ -22,6 +22,30 @@ RSpec.describe JWT::JWK do
       expect(jwk.inspect).not_to include('private-test-secret', jwk.export(include_private: true).fetch(:k))
       expect(jwk.inspect).to include(jwk.kid)
     end
+
+    context 'when the imported key material is invalid' do
+      let(:ec_export) { described_class.new(test_pkey('ec256-private.pem'), kid: 'ec-kid').export(include_private: true) }
+
+      it 'inspects an EC point not on the curve without exposing the private key' do
+        jwk = described_class.import(ec_export.merge(y: ec_export[:x]))
+
+        expect(jwk.inspect).to include('ec-kid')
+        expect(jwk.inspect).not_to include(ec_export[:d])
+      end
+
+      it 'inspects an RSA modulus that is not base64 without exposing the private key' do
+        jwk = described_class.import(kty: 'RSA', n: '!!!', e: 'AQAB', d: 'secret-d', kid: 'rsa-kid')
+
+        expect(jwk.inspect).to include('rsa-kid')
+        expect(jwk.inspect).not_to include('secret-d')
+      end
+
+      it 'still raises when the private export is requested' do
+        jwk = described_class.import(ec_export.merge(y: ec_export[:x]))
+
+        expect { jwk.export(include_private: true) }.to raise_error(JWT::JWKError)
+      end
+    end
   end
 
   describe '.import' do

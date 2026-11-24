@@ -51,7 +51,8 @@ module JWT
       end
 
       def inspect
-        "#<#{self.class} public_export=#{export.inspect}>"
+        public_parameters = parameters.reject { |key, _| private_key_elements.include?(key) }
+        "#<#{self.class} public_export=#{public_parameters.inspect}>"
       end
 
       alias eql? ==

@@ -73,6 +73,10 @@ module JWT
 
       private
 
+      def private_key_elements
+        RSA_PRIVATE_KEY_ELEMENTS
+      end
+
       def rsa_key
         @rsa_key ||= self.class.create_rsa_key(jwk_attributes(*(RSA_KEY_ELEMENTS - [:kty])))
       end

@@ -69,6 +69,10 @@ module JWT
 
       private
 
+      def private_key_elements
+        HMAC_PRIVATE_KEY_ELEMENTS
+      end
+
       def secret
         @secret ||= ::JWT::Base64.url_decode(self[:k])
       end
