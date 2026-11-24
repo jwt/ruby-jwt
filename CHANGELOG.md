@@ -1,12 +1,8 @@
 # Changelog
 
-## [v3.3.1](https://github.com/jwt/ruby-jwt/tree/v3.3.1) (NEXT)
+## [v3.3.1](https://github.com/jwt/ruby-jwt/tree/v3.3.1) (2026-11-24)
 
 [Full Changelog](https://github.com/jwt/ruby-jwt/compare/v3.3.0...v3.3.1)
-
-**Features:**
-
-- Your contribution here
 
 **Fixes and enhancements:**
 
@@ -20,7 +16,6 @@
 - Raise `JWT::JWKError` instead of `OpenSSL::PKey::EC::Point::Error` for EC JWK coordinates that are not a point on the given curve [#789](https://github.com/jwt/ruby-jwt/pull/789) ([@anakinj](https://github.com/anakinj))
 - Raise `JWT::MalformedTokenError` for a malformed `x5c` header parameter instead of a raw Ruby exception [#740](https://github.com/jwt/ruby-jwt/pull/740) - [@arpitjain099](https://github.com/arpitjain099).
 - Reject `nbf` and `exp` claims that are not finite numbers with `JWT::InvalidPayload` when decoding, including numeric strings ([GHSA-gp6v-qjfx-hrxc](https://github.com/jwt/ruby-jwt/security/advisories/GHSA-gp6v-qjfx-hrxc))
-- Your contribution here
 
 ## [v3.3.0](https://github.com/jwt/ruby-jwt/tree/v3.3.0) (2026-09-11)
 
