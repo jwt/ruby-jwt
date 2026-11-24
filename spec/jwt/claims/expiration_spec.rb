@@ -37,4 +37,14 @@ RSpec.describe JWT::Claims::Expiration do
       verify!
     end
   end
+
+  ['never', '', ' ', 'NaN', '9999999999', '9999999999abc', nil, true, false, [], {}, Float::INFINITY, -Float::INFINITY, Float::NAN].each do |value|
+    context "when exp is #{value.inspect}" do
+      let(:payload) { { 'exp' => value } }
+
+      it 'raises JWT::InvalidPayload' do
+        expect { verify! }.to raise_error(JWT::InvalidPayload, 'exp claim must be a finite Numeric value')
+      end
+    end
+  end
 end

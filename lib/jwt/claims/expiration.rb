@@ -16,12 +16,15 @@ module JWT
       # @param context [Object] the context containing the JWT payload.
       # @param _args [Hash] additional arguments (not used).
       # @raise [JWT::ExpiredSignature] if the token has expired.
+      # @raise [JWT::InvalidPayload] if the 'exp' claim is not a finite number.
       # @return [nil]
       def verify!(context:, **_args)
         return unless context.payload.is_a?(Hash)
         return unless context.payload.key?('exp')
 
-        raise JWT::ExpiredSignature, 'Signature has expired' if context.payload['exp'].to_i <= (Time.now.to_i - leeway)
+        exp = context.payload['exp']
+        raise JWT::InvalidPayload, 'exp claim must be a finite Numeric value' unless exp.is_a?(::Numeric) && exp.finite?
+        raise JWT::ExpiredSignature, 'Signature has expired' if exp.to_i <= (Time.now.to_i - leeway)
       end
 
       private
