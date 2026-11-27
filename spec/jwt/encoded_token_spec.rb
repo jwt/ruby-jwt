@@ -85,6 +85,48 @@ RSpec.describe JWT::EncodedToken do
       end
     end
 
+    context 'when the payload is not encoded' do
+      let(:unencoded_header) { { 'alg' => 'HS256', 'b64' => false, 'crit' => ['b64'] } }
+      let(:encoded_token) do
+        signing_input = "#{JWT::Base64.url_encode(JWT::JSON.generate(unencoded_header))}.#{JWT::JSON.generate(payload)}"
+        "#{signing_input}.#{JWT::Base64.url_encode(OpenSSL::HMAC.digest('SHA256', 'secret', signing_input))}"
+      end
+
+      before { token.verify_signature!(algorithm: 'HS256', key: 'secret') }
+
+      context 'when only the signature is verified' do
+        let(:payload) { { 'exp' => Time.now.to_i - 60 } }
+
+        it 'raises an error after the unverified payload is read' do
+          expect(token.unverified_payload).to eq(payload)
+          expect { token.payload }.to raise_error(JWT::TokenError, 'Verify the token claims before accessing the payload')
+        end
+
+        it 'still verifies the claims' do
+          token.unverified_payload
+          expect { token.verify_claims! }.to raise_error(JWT::ExpiredSignature)
+          expect { token.payload }.to raise_error(JWT::TokenError, 'Verify the token claims before accessing the payload')
+        end
+      end
+
+      context 'when the signature and the claims are verified' do
+        let(:payload) { { 'exp' => Time.now.to_i + 60 } }
+
+        it 'returns the payload' do
+          token.verify_claims!
+          expect(token.payload).to eq(payload)
+        end
+      end
+
+      context 'when the b64 crit header is missing' do
+        let(:unencoded_header) { { 'alg' => 'HS256', 'b64' => false } }
+
+        it 'raises JWT::InvalidCritError' do
+          expect { token.unverified_payload }.to raise_error(JWT::InvalidCritError, 'Crit header missing')
+        end
+      end
+    end
+
     context 'when token is verified using #valid_signature? but is not valid' do
       before { token.valid_signature?(algorithm: 'HS256', key: 'wrong') }
 
