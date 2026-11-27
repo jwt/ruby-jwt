@@ -7,8 +7,6 @@
 
 A ruby implementation of the [RFC 7519 OAuth JSON Web Token (JWT)](https://tools.ietf.org/html/rfc7519) standard.
 
-If you have further questions related to development or usage, join us: [ruby-jwt google group](https://groups.google.com/forum/#!forum/ruby-jwt).
-
 See [CHANGELOG.md](CHANGELOG.md) for a complete set of changes and [upgrade guide](UPGRADING.md) for upgrading between major versions.
 
 ## Sponsors
