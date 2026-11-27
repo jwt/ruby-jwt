@@ -15,10 +15,10 @@ module JWT
       #
       # @param context [Object] the context containing the JWT payload.
       # @param _args [Hash] additional arguments (not used).
-      # @raise [JWT::InvalidJtiError] if the JWT ID claim is invalid or missing.
+      # @raise [JWT::InvalidJtiError] if the JWT ID claim is invalid or missing, or the payload is not a Hash.
       # @return [nil]
       def verify!(context:, **_args)
-        jti = context.payload['jti']
+        jti = context.payload['jti'] if context.payload.is_a?(Hash)
         if validator.respond_to?(:call)
           verified = validator.arity == 2 ? validator.call(jti, context.payload) : validator.call(jti)
           raise(JWT::InvalidJtiError, 'Invalid jti') unless verified
