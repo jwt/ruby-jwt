@@ -226,7 +226,7 @@ module JWT
       raise JWT::MalformedTokenError, 'Encoded payload is empty' if encoded_payload == ''
 
       if unencoded_payload?
-        verify_claims!(crit: ['b64'])
+        Claims::Verifier.verify!(ClaimsContext.new(self), crit: ['b64'])
         return parse(encoded_payload)
       end
 
