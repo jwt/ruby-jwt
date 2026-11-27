@@ -3,6 +3,21 @@
   push:
     tags:
       - v*
+  workflow_call:
+    inputs:
+      tag:
+        description: The tag to publish, e.g. v3.4.0
+        required: true
+        type: string
+    secrets:
+      RUBYGEMS_PUSH_ROLE:
+        required: true
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: An existing tag to (re-)publish, e.g. v3.4.0
+        required: true
+        type: string
 
 name: Push Gem
 jobs:
@@ -10,19 +25,22 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
+    env:
+      TAG: ${{ inputs.tag || github.ref_name }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
+          ref: refs/tags/${{ env.TAG }}
           persist-credentials: false
       - name: Set up Ruby
-        uses: ruby/setup-ruby@b3aaceaef7e0ee231b499e7b5f49c03fc1d32199 # v1.338.0
+        uses: ruby/setup-ruby@be3c7df29b3349ec6bcfc6b4792f1cf9f5237d18 # v1.343.0
         with:
           bundler-cache: false
           ruby-version: ruby
       - name: Build gem
         run: |
           expected_tag="v$(ruby -Ilib -rjwt/version -e 'print JWT.gem_version')"
-          test "$GITHUB_REF_NAME" = "$expected_tag"
+          test "$TAG" = "$expected_tag"
           gem build ruby-jwt.gemspec
       - name: Upload gem
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
@@ -39,7 +57,7 @@ jobs:
       id-token: write
     steps:
       - name: Set up Ruby
-        uses: ruby/setup-ruby@b3aaceaef7e0ee231b499e7b5f49c03fc1d32199 # v1.338.0
+        uses: ruby/setup-ruby@be3c7df29b3349ec6bcfc6b4792f1cf9f5237d18 # v1.343.0
         with:
           bundler-cache: false
           ruby-version: ruby
@@ -60,7 +78,7 @@ jobs:
       contents: read
     steps:
       - name: Set up Ruby
-        uses: ruby/setup-ruby@b3aaceaef7e0ee231b499e7b5f49c03fc1d32199 # v1.338.0
+        uses: ruby/setup-ruby@be3c7df29b3349ec6bcfc6b4792f1cf9f5237d18 # v1.343.0
         with:
           bundler-cache: false
           ruby-version: ruby

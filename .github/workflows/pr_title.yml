@@ -1,0 +1,26 @@
+---
+name: PR title
+
+"on":
+  pull_request:
+    types: [opened, edited, synchronize, reopened]
+
+permissions: {}
+
+jobs:
+  conventional-commit:
+    name: Conventional Commits
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check the PR title
+        env:
+          TITLE: ${{ github.event.pull_request.title }}
+        run: |
+          pattern='^(feat|fix|perf|refactor|docs|test|ci|build|chore|revert)(\([a-z0-9._/-]+\))?!?: [^ ].*'
+          if printf '%s' "$TITLE" | grep -Eq "$pattern"; then
+            echo "PR title follows Conventional Commits: $TITLE"
+          else
+            echo "::error::The PR title must follow Conventional Commits, for example 'fix: Reject tokens with too many segments' or 'feat!: Drop Ruby 2.5'. It becomes the squash commit message, and the changelog will be generated from it. See CONTRIBUTING.md."
+            echo "Title: $TITLE"
+            exit 1
+          fi

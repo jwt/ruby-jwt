@@ -6,5 +6,5 @@ This Pull Request changes/fixes this thing
 
 Before the PR can be merged be sure the following are checked:
 
+- [ ] The pull request title follows [Conventional Commits](https://www.conventionalcommits.org/), for example `fix: Reject tokens with too many segments`
 - [ ] There are tests for the fix or feature added/changed
-- [ ] A description of the changes and a reference to the PR has been added to CHANGELOG.md. More details in the [CONTRIBUTING.md](https://github.com/jwt/ruby-jwt/blob/main/CONTRIBUTING.md)
