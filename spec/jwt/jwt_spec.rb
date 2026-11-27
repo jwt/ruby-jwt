@@ -585,8 +585,20 @@ RSpec.describe JWT do
     context 'when the issuer is not a String' do
       let(:token) { JWT.encode({ iss: 42 }, secret, 'HS256') }
 
+      it 'decodes the token when the expected issuer is the same value' do
+        expect(JWT.decode(token, secret, true, algorithm: 'HS256', verify_iss: true, iss: 42).first).to eq('iss' => 42)
+      end
+
       it 'raises JWT::InvalidIssuerError without calling an issuer Proc' do
         expect { JWT.decode(token, secret, true, algorithm: 'HS256', verify_iss: true, iss: ->(iss) { iss.start_with?('me') }) }.to raise_error(JWT::InvalidIssuerError, /received 42\z/)
+      end
+    end
+
+    context 'when the audience is [nil]' do
+      let(:token) { JWT.encode({ aud: [nil] }, secret, 'HS256') }
+
+      it 'raises JWT::InvalidAudError when nil is one of the expected audiences' do
+        expect { JWT.decode(token, secret, true, algorithm: 'HS256', verify_aud: true, aud: [nil]) }.to raise_error(JWT::InvalidAudError)
       end
     end
 

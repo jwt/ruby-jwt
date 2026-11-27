@@ -15,14 +15,15 @@ module JWT
       #
       # @param context [Object] the context containing the JWT payload.
       # @param _args [Hash] additional arguments (not used).
-      # @raise [JWT::InvalidIssuerError] if the issuer claim is missing, is not a String or matches none of the expected issuers.
-      #   A payload that is not a Hash has no issuer claim. The expected issuers are only matched against a String.
+      # @raise [JWT::InvalidIssuerError] if the issuer claim is missing or matches none of the expected issuers.
+      #   A payload that is not a Hash has no issuer claim. Regexp, Proc and Method matchers are only used for
+      #   a String issuer; any other issuer has to equal one of the expected issuers.
       # @return [nil]
       def verify!(context:, **_args)
         iss = context.payload['iss'] if context.payload.is_a?(Hash)
-        return if iss.is_a?(String) && expected_issuer?(iss)
+        return if expected_issuer?(iss)
 
-        raise JWT::InvalidIssuerError, "Invalid issuer. Expected #{issuers}, received #{iss || '<none>'}"
+        raise JWT::InvalidIssuerError, "Invalid issuer. Expected #{issuers}, received #{iss.nil? ? '<none>' : iss}"
       end
 
       private
@@ -30,6 +31,9 @@ module JWT
       attr_reader :issuers
 
       def expected_issuer?(iss)
+        return false if iss.nil?
+        return issuers.include?(iss) unless iss.is_a?(String)
+
         case iss
         when *issuers then true
         else false

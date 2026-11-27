@@ -20,9 +20,9 @@ module JWT
       # @return [nil]
       def verify!(context:, **_args)
         sub = context.payload['sub'] if context.payload.is_a?(Hash)
-        return if !sub.nil? && !expected_subject.empty? && sub.to_s == expected_subject
+        return if !sub.nil? && !expected_subject.strip.empty? && sub.to_s == expected_subject
 
-        raise JWT::InvalidSubError, "Invalid subject. Expected #{expected_subject}, received #{sub || '<none>'}"
+        raise JWT::InvalidSubError, "Invalid subject. Expected #{expected_subject}, received #{sub.nil? ? '<none>' : sub}"
       end
 
       private

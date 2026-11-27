@@ -47,21 +47,28 @@ RSpec.describe JWT::Claims::Subject do
     end
   end
 
-  [nil, ''].each do |blank_subject|
+  context 'when the subject is false' do
+    let(:subject_claim) { false }
+    it 'raises JWT::InvalidSubError naming the received value' do
+      expect { verify! }.to raise_error(JWT::InvalidSubError, 'Invalid subject. Expected ruby-jwt-subject, received false')
+    end
+  end
+
+  [nil, '', '  '].each do |blank_subject|
     context "when the expected subject is #{blank_subject.inspect}" do
       let(:expected_subject) { blank_subject }
 
       context 'when payload does not contain a subject' do
         let(:payload) { {} }
         it 'raises JWT::InvalidSubError' do
-          expect { verify! }.to raise_error(JWT::InvalidSubError, 'Invalid subject. Expected , received <none>')
+          expect { verify! }.to raise_error(JWT::InvalidSubError, /received <none>\z/)
         end
       end
 
-      context 'when the subject is an empty String' do
-        let(:subject_claim) { '' }
+      context 'when the subject is the same blank String' do
+        let(:subject_claim) { blank_subject.to_s }
         it 'raises JWT::InvalidSubError' do
-          expect { verify! }.to raise_error(JWT::InvalidSubError, 'Invalid subject. Expected , received ')
+          expect { verify! }.to raise_error(JWT::InvalidSubError)
         end
       end
     end

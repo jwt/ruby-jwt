@@ -432,7 +432,7 @@ From [Oauth JSON Web Token 4.1.1. "iss" (Issuer) Claim](https://tools.ietf.org/h
 
 > The `iss` (issuer) claim identifies the principal that issued the JWT. The processing of this claim is generally application specific. The `iss` value is a case-sensitive string containing a **_StringOrURI_** value. Use of this claim is OPTIONAL.
 
-You can pass multiple allowed issuers as an Array, verification will pass if one of them matches the `iss` value in the payload.
+You can pass multiple allowed issuers as an Array, verification will pass if one of them matches the `iss` value in the payload. A token without an `iss` claim does not pass, and `nil` never matches. The Regexp, Proc and Method matchers shown below are only used when `iss` is a String; any other `iss` value has to equal one of the expected issuers.
 
 ```ruby
 iss = 'My Awesome Company Inc. or https://my.awesome.website/'
@@ -559,6 +559,8 @@ decoded_token = JWT.decode(token, hmac_secret, true, { verify_iat: { leeway: 30 
 From [Oauth JSON Web Token 4.1.2. "sub" (Subject) Claim](https://tools.ietf.org/html/rfc7519#section-4.1.2):
 
 > The `sub` (subject) claim identifies the principal that is the subject of the JWT. The Claims in a JWT are normally statements about the subject. The subject value MUST either be scoped to be locally unique in the context of the issuer or be globally unique. The processing of this claim is generally application specific. The sub value is a case-sensitive string containing a **_StringOrURI_** value. Use of this claim is OPTIONAL.
+
+When `sub` is verified, a token without a `sub` claim does not pass, and the expected subject must not be blank.
 
 ```ruby
 sub = 'Subject'
