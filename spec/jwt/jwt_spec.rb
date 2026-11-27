@@ -272,6 +272,24 @@ RSpec.describe JWT do
           JWT.decode(token, %w[not_the_secret not_the_secret_2], true, { algorithm: 'HS256' })
         end.to raise_error(JWT::VerificationError, 'Signature verification failed')
       end
+
+      it 'should be able to verify signature when a key of another type comes first' do
+        decoded_token = JWT.decode(token, [test_pkey('ec256-private.pem'), secret], true, { algorithm: 'HS256' })
+        expect(decoded_token.first).to eq(payload)
+      end
+
+      it 'should be able to verify signature when the block returns a key of another type first' do
+        decoded_token = JWT.decode(token, nil, true, { algorithm: 'HS256' }) do
+          [test_pkey('ec256-private.pem'), secret]
+        end
+        expect(decoded_token.first).to eq(payload)
+      end
+
+      it 'should fail if the other keys are of another type or invalid' do
+        expect do
+          JWT.decode(token, [test_pkey('ec256-private.pem'), 'not_the_secret'], true, { algorithm: 'HS256' })
+        end.to raise_error(JWT::VerificationError, 'Signature verification failed')
+      end
     end
 
     context 'when encoded payload is used to extract key through find_key' do
