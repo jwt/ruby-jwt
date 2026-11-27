@@ -31,7 +31,7 @@ RSpec.describe JWT::JWA::Hmac do
       let(:hmac_secret) { test_pkey('rsa-2048-private.pem').public_key.to_pem }
 
       it 'raises JWT::EncodeError' do
-        expect { subject }.to raise_error(JWT::EncodeError, 'HMAC key cannot be a PEM or OpenSSH encoded key')
+        expect { subject }.to raise_error(JWT::EncodeError, 'HMAC key cannot be a public key or certificate')
       end
     end
 
@@ -152,34 +152,48 @@ RSpec.describe JWT::JWA::Hmac do
       end
     end
 
-    context 'when verification_key is PEM or OpenSSH encoded' do
+    context 'when verification_key is a public key or certificate' do
       let(:signature) { valid_signature }
 
       {
         'an RSA public key in PEM' => -> { test_pkey('rsa-2048-private.pem').public_key.to_pem },
         'an EC public key in PEM' => -> { test_pkey('ec256-public.pem').to_pem },
-        'a PEM key with leading whitespace' => -> { "\n  #{test_pkey('rsa-2048-private.pem').public_key.to_pem}" },
+        'a PKCS#1 RSA public key in PEM' => -> { "-----BEGIN RSA PUBLIC KEY-----\nMIIBCgKCAQEA\n-----END RSA PUBLIC KEY-----\n" },
+        'a PEM public key with leading whitespace' => -> { "\n  #{test_pkey('rsa-2048-private.pem').public_key.to_pem}" },
+        'an X.509 certificate in PEM' => -> { "-----BEGIN CERTIFICATE-----\nMIIBszCCAVmgAwIBAgIU\n-----END CERTIFICATE-----\n" },
+        'an RFC 4716 SSH public key' => -> { "---- BEGIN SSH2 PUBLIC KEY ----\nAAAAB3NzaC1yc2EAAAADAQAB\n---- END SSH2 PUBLIC KEY ----\n" },
         'an OpenSSH RSA public key' => -> { 'ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC7 user@host' },
         'an OpenSSH Ed25519 public key' => -> { 'ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIGb9 user@host' },
-        'an OpenSSH ECDSA public key' => -> { 'ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAA user@host' }
+        'an OpenSSH ECDSA public key' => -> { 'ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAA user@host' },
+        'an OpenSSH security key' => -> { 'sk-ssh-ed25519@openssh.com AAAAGnNrLXNzaC1lZDI1NTE5QG9wZW5zc2guY29t user@host' },
+        'an OpenSSH certificate' => -> { 'ssh-ed25519-cert-v01@openssh.com AAAAIHNzaC1lZDI1NTE5LWNlcnQ user@host' },
+        'an authorized_keys line with options' => -> { 'from="10.0.0.1",no-pty ssh-rsa AAAAB3NzaC1yc2EAAAADAQAB user@host' }
       }.each do |description, key|
         context "when it is #{description}" do
           let(:hmac_secret) { instance_exec(&key) }
 
           it 'raises error and does not call OpenSSL::HMAC.digest' do
             expect(OpenSSL::HMAC).not_to receive(:digest)
-            expect { subject }.to raise_error(JWT::VerificationKeyError, 'HMAC key cannot be a PEM or OpenSSH encoded key')
+            expect { subject }.to raise_error(JWT::VerificationKeyError, 'HMAC key cannot be a public key or certificate')
           end
         end
       end
     end
 
-    context 'when verification_key only resembles an encoded key' do
+    context 'when verification_key is not public key material' do
       let(:signature) { OpenSSL::HMAC.digest(OpenSSL::Digest.new('SHA256'), hmac_secret, 'test') }
 
-      ['ssh-shared-secret', 'sk-live-0123456789abcdef', 'ssh-rsa', '-----not-a-pem-banner-----', "\xFF\xFEnot utf-8".dup.force_encoding('UTF-8')].each do |key|
-        context "when it is #{key.inspect}" do
-          let(:hmac_secret) { key }
+      {
+        'a secret starting with ssh-' => -> { 'ssh-shared-secret' },
+        'a secret starting with sk-' => -> { 'sk-live-0123456789abcdef' },
+        'an OpenSSH key type without key data' => -> { 'ssh-rsa' },
+        'dashes that are not a PEM banner' => -> { '-----not-a-pem-banner-----' },
+        'an RSA private key in PEM' => -> { test_pkey('rsa-2048-private.pem').to_pem },
+        'an OpenSSH private key' => -> { "-----BEGIN OPENSSH PRIVATE KEY-----\nb3BlbnNzaC1rZXktdjEAAAAA\n-----END OPENSSH PRIVATE KEY-----\n" },
+        'a secret that is not valid UTF-8' => -> { "\xFF\xFEnot utf-8".dup.force_encoding('UTF-8') }
+      }.each do |description, key|
+        context "when it is #{description}" do
+          let(:hmac_secret) { instance_exec(&key) }
 
           it { is_expected.to be(true) }
         end

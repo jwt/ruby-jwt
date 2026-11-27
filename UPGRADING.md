@@ -1,3 +1,20 @@
+# Upgrading ruby-jwt to >= 3.3.2
+
+## Public keys and certificates are rejected as HMAC secrets
+
+`HS256`, `HS384` and `HS512` no longer accept a public key or a certificate as the shared secret. Signing with one raises `JWT::EncodeError`, and verifying with one raises `JWT::VerificationKeyError`, both with the message `HMAC key cannot be a public key or certificate`. This covers:
+
+- a public key in PEM, such as `-----BEGIN PUBLIC KEY-----` or `-----BEGIN RSA PUBLIC KEY-----`;
+- a certificate in PEM, such as `-----BEGIN CERTIFICATE-----`;
+- an OpenSSH public key or certificate, such as `ssh-ed25519 AAAA…`, including a line from `authorized_keys`;
+- an RFC 4716 SSH public key (`---- BEGIN SSH2 PUBLIC KEY ----`).
+
+A public key is known to others by design, so anyone holding it could sign tokens that verify with such a secret. If you use one, replace it with a randomly generated secret. Tokens signed with the old secret will no longer verify. Private keys are not affected.
+
+## Every key is tried when several are given
+
+When several keys are given for verification, a key that cannot be used for the algorithm, such as an EC key for `HS256` or an EC key on another curve, no longer stops the remaining keys from being tried. A token now verifies if any key matches. When none does, the error for the first unusable key is raised, as before.
+
 # Upgrading ruby-jwt to >= 3.3.0
 
 ## Error hierarchy revamp
