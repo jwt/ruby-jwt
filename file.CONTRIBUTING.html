@@ -6,7 +6,7 @@
 <title>
   File: CONTRIBUTING
   
-    &mdash; Documentation by YARD 0.9.45
+    &mdash; Documentation by YARD 0.9.46
   
 </title>
 
@@ -96,6 +96,13 @@ bundle exec rubocop
 git push origin fix-a-little-problem
 </code></pre>
 <p>Make a new pull request on the <a href="https://github.com/jwt/ruby-jwt/pulls">ruby-jwt project</a> with a description what the change is about.</p>
+<p>Title the pull request in the <a href="https://www.conventionalcommits.org/">Conventional Commits</a> format, for example <code>fix: Reject tokens with too many segments</code>. Pull requests are squash merged, so the title becomes the commit message, and the changelog will be generated from it. Use one of these types:</p>
+<ul>
+<li><code>feat</code> for a new feature, which leads to a minor release</li>
+<li><code>fix</code> for a bug fix, which leads to a patch release</li>
+<li><code>perf</code>, <code>refactor</code>, <code>docs</code>, <code>test</code>, <code>ci</code>, <code>build</code>, <code>chore</code> or <code>revert</code> for everything else</li>
+</ul>
+<p>Add <code>!</code> after the type, as in <code>feat!:</code>, for a breaking change, which leads to a major release. A check on the pull request verifies the format, and maintainers may adjust the title before merging.</p>
 <h2 id="Update_the_CHANGELOG__again">Update the CHANGELOG, again</h2>
 <p>Update the <a href="CHANGELOG.md">CHANGELOG</a> with the pull request id from the previous step.</p>
 <p>You can amend the previous commit with the updated changelog change and force push your branch. The PR will get automatically updated.</p>
@@ -126,9 +133,9 @@ git push upstream v3.3.0
 <p>Once the workflow is green, <a href="https://github.com/jwt/ruby-jwt/releases/new">create a GitHub release</a> for the tag, named <code>jwt-&lt;version&gt;</code> and with the changelog section for that version as its body. Finally, open the next iteration by bumping the version and adding a fresh <code>NEXT</code> changelog section.</p></div></div>
 
       <div id="footer">
-  Generated on Tue Nov 24 17:35:43 2026 by
+  Generated on Fri Nov 27 17:28:09 2026 by
   <a href="https://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
-  0.9.45 (ruby-4.0.9).
+  0.9.46 (ruby-4.0.9).
 </div>
 
     </div>

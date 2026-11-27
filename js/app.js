@@ -144,6 +144,9 @@
 
 	function createSourceLinks() {
 		queryAll(".method_details_list .source_code").forEach((sourceCode) => {
+			if (sourceCode.previousElementSibling?.classList.contains("showSource"))
+				return;
+
 			const toggleWrapper = document.createElement("span");
 			const link = document.createElement("a");
 

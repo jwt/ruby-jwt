@@ -2,6 +2,7 @@
 	let clicked = null;
 	let searchTimeout = null;
 	const searchCache = [];
+	let lastSearchString = null;
 	let caseSensitiveMatch = false;
 
 	function query(selector, root) {
@@ -166,6 +167,7 @@
 	}
 
 	function clearSearch() {
+		lastSearchString = null;
 		clearSearchTimeout();
 		queryAll("#full_list .found").forEach((node) => {
 			node.classList.remove("found");
@@ -184,6 +186,8 @@
 	}
 
 	function performSearch(searchString) {
+		if (searchString === lastSearchString) return;
+		lastSearchString = searchString;
 		clearSearchTimeout();
 		query("#full_list").classList.add("insearch");
 		query("#content").classList.add("insearch");
@@ -229,7 +233,7 @@
 	}
 
 	function searchDone() {
-		const found = queryAll("#full_list li").filter(isVisible).length;
+		const found = queryAll("#full_list .found").length;
 
 		searchTimeout = null;
 		highlight();
