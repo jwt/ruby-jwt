@@ -11,7 +11,7 @@ RSpec.describe JWT::Claims::Verifier do
           :iat,
           :jti,
           { aud: 'aud' },
-          :sub,
+          { sub: 'subject' },
           :crit,
           { required: [] },
           :numeric
@@ -19,7 +19,7 @@ RSpec.describe JWT::Claims::Verifier do
       end
 
       it 'verifies all claims' do
-        token = SpecSupport::Token.new(payload: { 'iss' => 'issuer', 'jti' => 1, 'aud' => 'aud' }, header: { 'crit' => [] })
+        token = SpecSupport::Token.new(payload: { 'iss' => 'issuer', 'jti' => 1, 'aud' => 'aud', 'sub' => 'subject' }, header: { 'crit' => [] })
         expect(described_class.verify!(token, *options)).to eq(nil)
       end
     end

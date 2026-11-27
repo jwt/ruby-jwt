@@ -28,12 +28,85 @@ RSpec.describe JWT::Claims::Issuer do
   end
 
   context 'when payload is not a Hash' do
-    [['x'], 42, nil, 'beautyexperts_nbf_iat'].each do |non_hash_payload|
+    [['x'], 42, nil, 'iss'].each do |non_hash_payload|
       context "when payload is #{non_hash_payload.inspect}" do
         let(:payload) { non_hash_payload }
         it 'raises JWT::InvalidIssuerError' do
           expect { verify! }.to raise_error(JWT::InvalidIssuerError, 'Invalid issuer. Expected ["ruby-jwt-gem"], received <none>')
         end
+      end
+    end
+
+    context 'when payload is a String containing the expected issuer' do
+      let(:payload) { 'iss' }
+      let(:expected_issuers) { 'iss' }
+      it 'raises JWT::InvalidIssuerError' do
+        expect { verify! }.to raise_error(JWT::InvalidIssuerError, 'Invalid issuer. Expected ["iss"], received <none>')
+      end
+    end
+
+    context 'when issuer is given as a Proc' do
+      let(:payload) { ['x'] }
+      let(:expected_issuers) { ->(iss) { iss.start_with?('ruby') } }
+      it 'raises JWT::InvalidIssuerError without calling the Proc' do
+        expect { verify! }.to raise_error(JWT::InvalidIssuerError, /received <none>/)
+      end
+    end
+  end
+
+  context 'when the issuer is not a String' do
+    let(:issuer) { 42 }
+
+    context 'when the expected issuer is the same value' do
+      let(:expected_issuers) { 42 }
+      it 'passes validation' do
+        verify!
+      end
+    end
+
+    context 'when the same value is one of the expected issuers' do
+      let(:expected_issuers) { [42, 'other'] }
+      it 'passes validation' do
+        verify!
+      end
+    end
+
+    context 'when the expected issuer is the value as a String' do
+      let(:expected_issuers) { '42' }
+      it 'raises JWT::InvalidIssuerError' do
+        expect { verify! }.to raise_error(JWT::InvalidIssuerError, 'Invalid issuer. Expected ["42"], received 42')
+      end
+    end
+
+    context 'when issuer is given as a Proc' do
+      let(:expected_issuers) { ->(iss) { iss.start_with?('ruby') } }
+      it 'raises JWT::InvalidIssuerError without calling the Proc' do
+        expect { verify! }.to raise_error(JWT::InvalidIssuerError, /received 42\z/)
+      end
+    end
+
+    context 'when issuer is given as a RegExp' do
+      let(:expected_issuers) { /42/ }
+      it 'raises JWT::InvalidIssuerError' do
+        expect { verify! }.to raise_error(JWT::InvalidIssuerError, %r{Expected \[/42/\], received 42\z})
+      end
+    end
+  end
+
+  context 'when the issuer is false' do
+    let(:issuer) { false }
+    it 'raises JWT::InvalidIssuerError naming the received value' do
+      expect { verify! }.to raise_error(JWT::InvalidIssuerError, 'Invalid issuer. Expected ["ruby-jwt-gem"], received false')
+    end
+  end
+
+  context 'when nil is one of the expected issuers' do
+    let(:expected_issuers) { [nil] }
+
+    context 'when payload does not contain any issuer' do
+      let(:payload) { {} }
+      it 'raises JWT::InvalidIssuerError' do
+        expect { verify! }.to raise_error(JWT::InvalidIssuerError, 'Invalid issuer. Expected [nil], received <none>')
       end
     end
   end
@@ -102,7 +175,15 @@ RSpec.describe JWT::Claims::Issuer do
 
   context 'when issuer is given as a Proc and payload does not have any issuer' do
     let(:payload) { {} }
-    let(:expected_issuers) { ->(iss) { iss&.start_with?('ruby') } }
+    let(:expected_issuers) { ->(iss) { iss.start_with?('ruby') } }
+    it 'raises JWT::InvalidIssuerError without calling the Proc' do
+      expect { verify! }.to raise_error(JWT::InvalidIssuerError, /received <none>/)
+    end
+  end
+
+  context 'when issuer is given as a Proc that accepts a missing issuer' do
+    let(:payload) { {} }
+    let(:expected_issuers) { lambda(&:nil?) }
     it 'raises JWT::InvalidIssuerError' do
       expect { verify! }.to raise_error(JWT::InvalidIssuerError, /received <none>/)
     end
@@ -110,7 +191,7 @@ RSpec.describe JWT::Claims::Issuer do
 
   context 'when issuer is given as a Method instance' do
     def issuer_start_with_ruby?(issuer)
-      issuer&.start_with?('ruby')
+      issuer.start_with?('ruby')
     end
 
     let(:issuer) { 'ruby-jwt-gem' }
@@ -118,6 +199,20 @@ RSpec.describe JWT::Claims::Issuer do
 
     it 'passes validation' do
       verify!
+    end
+
+    context 'when payload does not have any issuer' do
+      let(:payload) { {} }
+      it 'raises JWT::InvalidIssuerError without calling the Method' do
+        expect { verify! }.to raise_error(JWT::InvalidIssuerError, /received <none>\z/)
+      end
+    end
+
+    context 'when the issuer is not a String' do
+      let(:issuer) { 42 }
+      it 'raises JWT::InvalidIssuerError without calling the Method' do
+        expect { verify! }.to raise_error(JWT::InvalidIssuerError, /received 42\z/)
+      end
     end
   end
 end
