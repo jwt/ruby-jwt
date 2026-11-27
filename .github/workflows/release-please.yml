@@ -13,6 +13,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
+      issues: write
       pull-requests: write
     outputs:
       release_created: ${{ steps.release.outputs.release_created }}
@@ -30,4 +31,5 @@ jobs:
     uses: ./.github/workflows/push_gem.yml
     with:
       tag: ${{ needs.release-please.outputs.tag_name }}
-    secrets: inherit
+    secrets:
+      RUBYGEMS_PUSH_ROLE: ${{ secrets.RUBYGEMS_PUSH_ROLE }}
