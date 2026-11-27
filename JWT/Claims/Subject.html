@@ -316,7 +316,8 @@
       
       
         &mdash;
-        <div class='inline'><p>if the subject claim is invalid or the payload is not a Hash.</p></div>
+        <div class='inline'><p>if the subject claim is missing or does not match the expected subject,
+or if the expected subject is blank. A payload that is not a Hash has no subject claim.</p></div>
       
     </li>
   
@@ -328,17 +329,21 @@
       <pre class="lines">
 
 
-20
 21
 22
-23</pre>
+23
+24
+25
+26</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/jwt/claims/subject.rb', line 20</span>
+      <pre class="code"><span class="info file"># File 'lib/jwt/claims/subject.rb', line 21</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_verify!'>verify!</span><span class='lparen'>(</span><span class='label'>context:</span><span class='comma'>,</span> <span class='op'>**</span><span class='id identifier rubyid__args'>_args</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_sub'>sub</span> <span class='op'>=</span> <span class='id identifier rubyid_context'>context</span><span class='period'>.</span><span class='id identifier rubyid_payload'>payload</span><span class='lbracket'>[</span><span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>sub</span><span class='tstring_end'>&#39;</span></span><span class='rbracket'>]</span> <span class='kw'>if</span> <span class='id identifier rubyid_context'>context</span><span class='period'>.</span><span class='id identifier rubyid_payload'>payload</span><span class='period'>.</span><span class='id identifier rubyid_is_a?'>is_a?</span><span class='lparen'>(</span><span class='const'>Hash</span><span class='rparen'>)</span>
-  <span class='id identifier rubyid_raise'>raise</span><span class='lparen'>(</span><span class='const'><span class='object_link'><a href="../../JWT.html" title="JWT (module)">JWT</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="../InvalidSubError.html" title="JWT::InvalidSubError (class)">InvalidSubError</a></span></span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>Invalid subject. Expected </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_expected_subject'>expected_subject</span><span class='embexpr_end'>}</span><span class='tstring_content'>, received </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_sub'>sub</span> <span class='op'>||</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>&lt;none&gt;</span><span class='tstring_end'>&#39;</span></span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span><span class='rparen'>)</span> <span class='kw'>unless</span> <span class='id identifier rubyid_sub'>sub</span><span class='period'>.</span><span class='id identifier rubyid_to_s'>to_s</span> <span class='op'>==</span> <span class='id identifier rubyid_expected_subject'>expected_subject</span>
+  <span class='kw'>return</span> <span class='kw'>if</span> <span class='op'>!</span><span class='id identifier rubyid_sub'>sub</span><span class='period'>.</span><span class='id identifier rubyid_nil?'>nil?</span> <span class='op'>&amp;&amp;</span> <span class='op'>!</span><span class='id identifier rubyid_expected_subject'>expected_subject</span><span class='period'>.</span><span class='id identifier rubyid_strip'>strip</span><span class='period'>.</span><span class='id identifier rubyid_empty?'>empty?</span> <span class='op'>&amp;&amp;</span> <span class='id identifier rubyid_sub'>sub</span><span class='period'>.</span><span class='id identifier rubyid_to_s'>to_s</span> <span class='op'>==</span> <span class='id identifier rubyid_expected_subject'>expected_subject</span>
+
+  <span class='id identifier rubyid_raise'>raise</span> <span class='const'><span class='object_link'><a href="../../JWT.html" title="JWT (module)">JWT</a></span></span><span class='op'>::</span><span class='const'><span class='object_link'><a href="../InvalidSubError.html" title="JWT::InvalidSubError (class)">InvalidSubError</a></span></span><span class='comma'>,</span> <span class='tstring'><span class='tstring_beg'>&quot;</span><span class='tstring_content'>Invalid subject. Expected </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_expected_subject'>expected_subject</span><span class='embexpr_end'>}</span><span class='tstring_content'>, received </span><span class='embexpr_beg'>#{</span><span class='id identifier rubyid_sub'>sub</span><span class='period'>.</span><span class='id identifier rubyid_nil?'>nil?</span> <span class='op'>?</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>&lt;none&gt;</span><span class='tstring_end'>&#39;</span></span> <span class='op'>:</span> <span class='id identifier rubyid_sub'>sub</span><span class='embexpr_end'>}</span><span class='tstring_end'>&quot;</span></span>
 <span class='kw'>end</span></pre>
     </td>
   </tr>
@@ -350,7 +355,7 @@
 </div>
 
       <div id="footer">
-  Generated on Fri Nov 27 18:45:36 2026 by
+  Generated on Fri Nov 27 19:08:13 2026 by
   <a href="https://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.9.46 (ruby-4.0.10).
 </div>

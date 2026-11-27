@@ -416,7 +416,7 @@ used. JWT supports these reserved claim names:</p>
 <blockquote>
 <p>The <code>iss</code> (issuer) claim identifies the principal that issued the JWT. The processing of this claim is generally application specific. The <code>iss</code> value is a case-sensitive string containing a <strong><em>StringOrURI</em></strong> value. Use of this claim is OPTIONAL.</p>
 </blockquote>
-<p>You can pass multiple allowed issuers as an Array, verification will pass if one of them matches the <code>iss</code> value in the payload.</p>
+<p>You can pass multiple allowed issuers as an Array, verification will pass if one of them matches the <code>iss</code> value in the payload. A token without an <code>iss</code> claim does not pass, and <code>nil</code> never matches. The Regexp, Proc and Method matchers shown below are only used when <code>iss</code> is a String; any other <code>iss</code> value has to equal one of the expected issuers.</p>
 <pre class="code ruby"><code class="ruby"><span class='id identifier rubyid_iss'>iss</span> <span class='op'>=</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>My Awesome Company Inc. or https://my.awesome.website/</span><span class='tstring_end'>&#39;</span></span>
 <span class='id identifier rubyid_iss_payload'>iss_payload</span> <span class='op'>=</span> <span class='lbrace'>{</span> <span class='label'>data:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>test</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>iss:</span> <span class='id identifier rubyid_iss'>iss</span> <span class='rbrace'>}</span>
 
@@ -506,6 +506,7 @@ used. JWT supports these reserved claim names:</p>
 <blockquote>
 <p>The <code>sub</code> (subject) claim identifies the principal that is the subject of the JWT. The Claims in a JWT are normally statements about the subject. The subject value MUST either be scoped to be locally unique in the context of the issuer or be globally unique. The processing of this claim is generally application specific. The sub value is a case-sensitive string containing a <strong><em>StringOrURI</em></strong> value. Use of this claim is OPTIONAL.</p>
 </blockquote>
+<p>When <code>sub</code> is verified, a token without a <code>sub</code> claim does not pass, and the expected subject must not be blank.</p>
 <pre class="code ruby"><code class="ruby"><span class='id identifier rubyid_sub'>sub</span> <span class='op'>=</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>Subject</span><span class='tstring_end'>&#39;</span></span>
 <span class='id identifier rubyid_sub_payload'>sub_payload</span> <span class='op'>=</span> <span class='lbrace'>{</span> <span class='label'>data:</span> <span class='tstring'><span class='tstring_beg'>&#39;</span><span class='tstring_content'>test</span><span class='tstring_end'>&#39;</span></span><span class='comma'>,</span> <span class='label'>sub:</span> <span class='id identifier rubyid_sub'>sub</span> <span class='rbrace'>}</span>
 
@@ -676,7 +677,7 @@ bundle exec appraisal rake test
 <p>See <a href="LICENSE">LICENSE</a>.</p></div></div>
 
       <div id="footer">
-  Generated on Fri Nov 27 18:45:34 2026 by
+  Generated on Fri Nov 27 19:08:11 2026 by
   <a href="https://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.9.46 (ruby-4.0.10).
 </div>
