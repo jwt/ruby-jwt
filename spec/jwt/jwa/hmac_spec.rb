@@ -27,6 +27,14 @@ RSpec.describe JWT::JWA::Hmac do
       end
     end
 
+    context 'when a PEM encoded public key is passed as hmac_secret' do
+      let(:hmac_secret) { test_pkey('rsa-2048-private.pem').public_key.to_pem }
+
+      it 'raises JWT::EncodeError' do
+        expect { subject }.to raise_error(JWT::EncodeError, 'HMAC key cannot be a PEM or OpenSSH encoded key')
+      end
+    end
+
     context 'when blank hmac_secret is passed' do
       let(:hmac_secret) { '' }
 
@@ -141,6 +149,40 @@ RSpec.describe JWT::JWA::Hmac do
       it 'raises error and does not call OpenSSL::HMAC.digest' do
         expect(OpenSSL::HMAC).not_to receive(:digest)
         expect { subject }.to raise_error(JWT::VerificationKeyError, 'HMAC key cannot be empty')
+      end
+    end
+
+    context 'when verification_key is PEM or OpenSSH encoded' do
+      let(:signature) { valid_signature }
+
+      {
+        'an RSA public key in PEM' => -> { test_pkey('rsa-2048-private.pem').public_key.to_pem },
+        'an EC public key in PEM' => -> { test_pkey('ec256-public.pem').to_pem },
+        'a PEM key with leading whitespace' => -> { "\n  #{test_pkey('rsa-2048-private.pem').public_key.to_pem}" },
+        'an OpenSSH RSA public key' => -> { 'ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC7 user@host' },
+        'an OpenSSH Ed25519 public key' => -> { 'ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIGb9 user@host' },
+        'an OpenSSH ECDSA public key' => -> { 'ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAA user@host' }
+      }.each do |description, key|
+        context "when it is #{description}" do
+          let(:hmac_secret) { instance_exec(&key) }
+
+          it 'raises error and does not call OpenSSL::HMAC.digest' do
+            expect(OpenSSL::HMAC).not_to receive(:digest)
+            expect { subject }.to raise_error(JWT::VerificationKeyError, 'HMAC key cannot be a PEM or OpenSSH encoded key')
+          end
+        end
+      end
+    end
+
+    context 'when verification_key only resembles an encoded key' do
+      let(:signature) { OpenSSL::HMAC.digest(OpenSSL::Digest.new('SHA256'), hmac_secret, 'test') }
+
+      ['ssh-shared-secret', 'sk-live-0123456789abcdef', 'ssh-rsa', '-----not-a-pem-banner-----', "\xFF\xFEnot utf-8".dup.force_encoding('UTF-8')].each do |key|
+        context "when it is #{key.inspect}" do
+          let(:hmac_secret) { key }
+
+          it { is_expected.to be(true) }
+        end
       end
     end
 

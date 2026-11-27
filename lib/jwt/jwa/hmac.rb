@@ -15,6 +15,10 @@ module JWT
         'HS512' => 64
       }.freeze
 
+      PEM_BANNER = /-----BEGIN [A-Z0-9 ]+-----/.freeze
+      OPENSSH_PUBLIC_KEY = /\A\s*(?:ssh-(?:rsa|dss|ed25519|ed448)|ecdsa-sha2-nistp(?:256|384|521)|sk-(?:ssh-ed25519|ecdsa-sha2-nistp256)@openssh\.com)\s+\S/.freeze
+      private_constant :PEM_BANNER, :OPENSSH_PUBLIC_KEY
+
       def initialize(alg, digest)
         @alg = alg
         @digest = digest
@@ -45,11 +49,17 @@ module JWT
       def validate_key!(key)
         yield 'HMAC key expected to be a String' unless key.is_a?(String)
         yield 'HMAC key cannot be empty' if key.empty?
+        yield 'HMAC key cannot be a PEM or OpenSSH encoded key' if encoded_key?(key)
 
         return unless JWT.configuration.decode.enforce_hmac_key_length
 
         min_length = MIN_KEY_LENGTHS[alg]
         yield "HMAC key must be at least #{min_length} bytes for #{alg} algorithm" if key.bytesize < min_length
+      end
+
+      def encoded_key?(key)
+        binary = key.b
+        binary.match?(PEM_BANNER) || binary.match?(OPENSSH_PUBLIC_KEY)
       end
 
       # Copy of https://github.com/rails/rails/blob/v7.0.3.1/activesupport/lib/active_support/security_utils.rb

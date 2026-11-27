@@ -15,11 +15,11 @@ module JWT
         errors = []
         verified = @keys.any? do |key|
           @jwa.verify(*args, **kwargs, verification_key: key)
-        rescue VerificationError => e
+        rescue VerificationError, IncorrectAlgorithm => e
           errors << e
           false
         end
-        raise errors.first if !verified && !errors.empty? && errors.size == @keys.size
+        raise errors.first if !verified && !errors.empty?
 
         verified
       end

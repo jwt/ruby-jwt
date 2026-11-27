@@ -285,10 +285,43 @@ RSpec.describe JWT do
         expect(decoded_token.first).to eq(payload)
       end
 
-      it 'should fail if the other keys are of another type or invalid' do
+      it 'should report the key of another type if no key matches' do
         expect do
           JWT.decode(token, [test_pkey('ec256-private.pem'), 'not_the_secret'], true, { algorithm: 'HS256' })
-        end.to raise_error(JWT::VerificationError, 'Signature verification failed')
+        end.to raise_error(JWT::VerificationKeyError, 'HMAC key expected to be a String')
+      end
+
+      it 'should be able to verify signature when an EC key on another curve comes first' do
+        es384_token = JWT.encode(payload, test_pkey('ec384-private.pem'), 'ES384')
+        keys = [test_pkey('ec256-public.pem'), test_pkey('ec384-public.pem')]
+
+        expect(JWT.decode(es384_token, keys, true, { algorithm: 'ES384' }).first).to eq(payload)
+        expect(JWT.decode(es384_token, keys, true, { algorithms: %w[ES256 ES384] }).first).to eq(payload)
+      end
+    end
+
+    context 'when a public key in PEM is one of the keys and HMAC is allowed' do
+      let(:rsa_key) { test_pkey('rsa-2048-private.pem') }
+      let(:public_pem) { rsa_key.public_key.to_pem }
+      let(:algorithms) { %w[RS256 HS256] }
+      let(:hmac_token_signed_with_pem) do
+        signing_input = [{ 'alg' => 'HS256' }, { 'admin' => true }].map { |part| JWT::Base64.url_encode(JWT::JSON.generate(part)) }.join('.')
+        "#{signing_input}.#{JWT::Base64.url_encode(OpenSSL::HMAC.digest('SHA256', public_pem, signing_input))}"
+      end
+
+      it 'decodes an RS256 token' do
+        token = JWT.encode({ 'sub' => 'alice' }, rsa_key, 'RS256')
+        expect(JWT.decode(token, [public_pem, rsa_key.public_key], true, { algorithms: algorithms }).first).to eq('sub' => 'alice')
+      end
+
+      %i[pem_first pem_last pem_only].each do |arrangement|
+        it "rejects an HS256 token signed with the PEM as the secret (#{arrangement})" do
+          keys = { pem_first: [public_pem, rsa_key.public_key], pem_last: [rsa_key.public_key, public_pem], pem_only: public_pem }.fetch(arrangement)
+
+          expect do
+            JWT.decode(hmac_token_signed_with_pem, keys, true, { algorithms: algorithms })
+          end.to raise_error(JWT::VerificationKeyError)
+        end
       end
     end
 
@@ -441,9 +474,9 @@ RSpec.describe JWT do
 
       context 'no algorithm provided' do
         it 'should use the default decode algorithm' do
-          token = JWT.encode(payload, rsa_public.to_s)
+          token = JWT.encode(payload, secret)
 
-          jwt_payload, header = JWT.decode(token, rsa_public.to_s)
+          jwt_payload, header = JWT.decode(token, secret)
 
           expect(header['alg']).to eq('HS256')
           expect(jwt_payload).to eq(payload)
