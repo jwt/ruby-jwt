@@ -41,13 +41,8 @@ bundle exec rubocop
 ## Implement your feature
 
 Implement tests and your change. Don't be shy adding a little something in the [README](README.md).
-Add a short description of the change in either the `Features` or `Fixes` section in the [CHANGELOG](CHANGELOG.md) file.
 
-The form of the row (You need to return to the row when you know the pull request id)
-
-```markdown
-- Fix a little problem [#123](https://github.com/jwt/ruby-jwt/pull/123) - [@you](https://github.com/you).
-```
+Don't edit the [CHANGELOG](CHANGELOG.md). It's generated from the pull request titles when a release is made.
 
 ## Push your branch and create a pull request
 
@@ -61,25 +56,13 @@ git push origin fix-a-little-problem
 
 Make a new pull request on the [ruby-jwt project](https://github.com/jwt/ruby-jwt/pulls) with a description what the change is about.
 
-Title the pull request in the [Conventional Commits](https://www.conventionalcommits.org/) format, for example `fix: Reject tokens with too many segments`. Pull requests are squash merged, so the title becomes the commit message, and the changelog will be generated from it. Use one of these types:
+Title the pull request in the [Conventional Commits](https://www.conventionalcommits.org/) format, for example `fix: Reject tokens with too many segments`. Pull requests are squash merged, so the title becomes the commit message, and the changelog is generated from it. Write the description as it should read in the changelog. Use one of these types:
 
 - `feat` for a new feature, which leads to a minor release
 - `fix` for a bug fix, which leads to a patch release
 - `perf`, `refactor`, `docs`, `test`, `ci`, `build`, `chore` or `revert` for everything else
 
 Add `!` after the type, as in `feat!:`, for a breaking change, which leads to a major release. A check on the pull request verifies the format, and maintainers may adjust the title before merging.
-
-## Update the CHANGELOG, again
-
-Update the [CHANGELOG](CHANGELOG.md) with the pull request id from the previous step.
-
-You can amend the previous commit with the updated changelog change and force push your branch. The PR will get automatically updated.
-
-```bash
-git add CHANGELOG.md
-git commit --amend --no-edit
-git push origin fix-a-little-problem -f
-```
 
 ## Keep an eye on your pull request
 
@@ -98,21 +81,23 @@ git push origin fix-a-little-problem -f
 
 ## Releasing a new version
 
-The version follows [Semantic Versioning](http://semver.org/) and lives in the [version.rb](lib/jwt/version.rb) file. It is bumped right after every release, so main normally already carries the next version number. Check that it is the number you mean to release and adjust it if, say, a feature landed on what had been set up as a patch release.
+Releases are made with [release-please](https://github.com/googleapis/release-please). The version follows [Semantic Versioning](http://semver.org/) and is picked from the pull request titles merged since the last release: `fix` and `perf` lead to a patch release, `feat` to a minor release, and a `!` after the type to a major release.
 
-Prepare the release on a branch: give the upcoming [CHANGELOG](CHANGELOG.md) section its release date and remove the `Your contribution here` placeholders. Merge it as usual.
+After each merge to main, the [release-please.yml](.github/workflows/release-please.yml) workflow opens or updates a release pull request. It bumps the version in [version.rb](lib/jwt/version.rb) and adds a section to the [CHANGELOG](CHANGELOG.md) with an entry for each `feat`, `fix`, `perf` and `revert` pull request. Other types are left out. Edit a pull request's title before merging it if the changelog entry should read differently.
 
-Then tag the merged commit and push the tag to this repository:
+To release, merge the release pull request. The workflow then tags the merge commit, creates the GitHub release, and calls [push_gem.yml](.github/workflows/push_gem.yml), which verifies that the tag matches `JWT.gem_version`, builds the gem, pushes it to RubyGems using trusted publishing and waits for it to propagate. No RubyGems credentials are needed on your machine.
+
+If publishing fails, fix the cause and run the **Push Gem** workflow manually with the tag as input to publish it again.
+
+Do not use `rake release`. It builds and pushes the gem from your machine, which bypasses trusted publishing.
+
+### Releasing 2.x
+
+The `2-10-stable` branch is released by hand. Bump the version in [version.rb](lib/jwt/version.rb), add a section to the [CHANGELOG](CHANGELOG.md) and merge it, then tag the merged commit and push the tag:
 
 ```bash
-git checkout main
-git pull upstream main
-git tag -a v3.3.0 -m "Version 3.3.0"
-git push upstream v3.3.0
+git tag -a v2.10.4 -m "Version 2.10.4"
+git push upstream v2.10.4
 ```
 
-Pushing the tag is what publishes the gem. The [push_gem.yml](.github/workflows/push_gem.yml) workflow verifies that the tag matches `JWT.gem_version`, builds the gem, pushes it to RubyGems using trusted publishing and waits for it to propagate. No RubyGems credentials are needed on your machine.
-
-Do not use `rake release`. It builds and pushes the gem from your machine, which bypasses trusted publishing, and it pushes the tag too, so the workflow then fails trying to publish a version that already exists.
-
-Once the workflow is green, [create a GitHub release](https://github.com/jwt/ruby-jwt/releases/new) for the tag, named `jwt-<version>` and with the changelog section for that version as its body. Finally, open the next iteration by bumping the version and adding a fresh `NEXT` changelog section.
+Pushing the tag runs [push_gem.yml](.github/workflows/push_gem.yml) on the branch. Then [create a GitHub release](https://github.com/jwt/ruby-jwt/releases/new) for the tag.
