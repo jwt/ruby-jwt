@@ -7,3 +7,5 @@ updates:
       interval: "weekly"
     cooldown:
       default-days: 7
+    commit-message:
+      prefix: "ci"

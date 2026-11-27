@@ -61,6 +61,14 @@ git push origin fix-a-little-problem
 
 Make a new pull request on the [ruby-jwt project](https://github.com/jwt/ruby-jwt/pulls) with a description what the change is about.
 
+Title the pull request in the [Conventional Commits](https://www.conventionalcommits.org/) format, for example `fix: Reject tokens with too many segments`. Pull requests are squash merged, so the title becomes the commit message, and the changelog will be generated from it. Use one of these types:
+
+- `feat` for a new feature, which leads to a minor release
+- `fix` for a bug fix, which leads to a patch release
+- `perf`, `refactor`, `docs`, `test`, `ci`, `build`, `chore` or `revert` for everything else
+
+Add `!` after the type, as in `feat!:`, for a breaking change, which leads to a major release. A check on the pull request verifies the format, and maintainers may adjust the title before merging.
+
 ## Update the CHANGELOG, again
 
 Update the [CHANGELOG](CHANGELOG.md) with the pull request id from the previous step.
