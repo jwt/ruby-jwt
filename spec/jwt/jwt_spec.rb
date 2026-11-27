@@ -541,10 +541,52 @@ RSpec.describe JWT do
             expect { JWT.decode(token, secret, true, algorithm: 'HS256', verify_jti: true) }.to raise_error(JWT::InvalidJtiError, 'Missing jti')
           end
 
+          it 'raises JWT::InvalidIssuerError without calling an issuer Proc' do
+            expect { JWT.decode(token, secret, true, algorithm: 'HS256', verify_iss: true, iss: ->(iss) { iss.start_with?('me') }) }.to raise_error(JWT::InvalidIssuerError, /received <none>/)
+          end
+
+          it 'raises JWT::InvalidJtiError without calling a jti validator that takes the payload' do
+            expect { JWT.decode(token, secret, true, algorithm: 'HS256', verify_jti: ->(_jti, payload) { payload['iat'] }) }.to raise_error(JWT::InvalidJtiError, 'Missing jti')
+          end
+
           it 'raises JWT::MissingRequiredClaim when a claim is required' do
             expect { JWT.decode(token, secret, true, algorithm: 'HS256', required_claims: ['exp']) }.to raise_error(JWT::MissingRequiredClaim, 'Missing required claim exp')
           end
         end
+      end
+
+      %w[iss aud sub].each do |claim|
+        context "when the payload is the String #{claim.inspect}" do
+          let(:payload) { claim }
+
+          it "raises when the #{claim} claim is verified against #{claim.inspect}" do
+            expect { JWT.decode(token, secret, true, algorithm: 'HS256', "verify_#{claim}": true, claim.to_sym => claim) }.to raise_error(JWT::ClaimValidationError, /received <none>/)
+          end
+        end
+      end
+    end
+
+    context 'when a verified claim is missing' do
+      let(:token) { JWT.encode({ data: 'test' }, secret, 'HS256') }
+
+      it 'raises JWT::InvalidIssuerError when nil is one of the expected issuers' do
+        expect { JWT.decode(token, secret, true, algorithm: 'HS256', verify_iss: true, iss: [nil]) }.to raise_error(JWT::InvalidIssuerError, 'Invalid issuer. Expected [nil], received <none>')
+      end
+
+      it 'raises JWT::InvalidIssuerError without calling an issuer Proc' do
+        expect { JWT.decode(token, secret, true, algorithm: 'HS256', verify_iss: true, iss: ->(iss) { iss.start_with?('me') }) }.to raise_error(JWT::InvalidIssuerError, /received <none>/)
+      end
+
+      it 'raises JWT::InvalidSubError when the expected subject is blank' do
+        expect { JWT.decode(token, secret, true, algorithm: 'HS256', verify_sub: true, sub: '') }.to raise_error(JWT::InvalidSubError, 'Invalid subject. Expected , received <none>')
+      end
+    end
+
+    context 'when the issuer is not a String' do
+      let(:token) { JWT.encode({ iss: 42 }, secret, 'HS256') }
+
+      it 'raises JWT::InvalidIssuerError without calling an issuer Proc' do
+        expect { JWT.decode(token, secret, true, algorithm: 'HS256', verify_iss: true, iss: ->(iss) { iss.start_with?('me') }) }.to raise_error(JWT::InvalidIssuerError, /received 42\z/)
       end
     end
 
