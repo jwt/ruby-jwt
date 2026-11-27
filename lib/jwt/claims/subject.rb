@@ -15,10 +15,10 @@ module JWT
       #
       # @param context [Object] the context containing the JWT payload.
       # @param _args [Hash] additional arguments (not used).
-      # @raise [JWT::InvalidSubError] if the subject claim is invalid.
+      # @raise [JWT::InvalidSubError] if the subject claim is invalid or the payload is not a Hash.
       # @return [nil]
       def verify!(context:, **_args)
-        sub = context.payload['sub']
+        sub = context.payload['sub'] if context.payload.is_a?(Hash)
         raise(JWT::InvalidSubError, "Invalid subject. Expected #{expected_subject}, received #{sub || '<none>'}") unless sub.to_s == expected_subject
       end
 
