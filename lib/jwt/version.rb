@@ -16,7 +16,7 @@ module JWT
   module VERSION
     MAJOR = 3 # x-release-please-major
     MINOR = 3 # x-release-please-minor
-    TINY  = 1 # x-release-please-patch
+    TINY  = 2 # x-release-please-patch
     PRE   = nil
 
     STRING = [MAJOR, MINOR, TINY, PRE].compact.join('.')
