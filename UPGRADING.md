@@ -1,3 +1,31 @@
+# Upgrading ruby-jwt to >= 3.3.2
+
+## Claim checks fail when the claim is missing
+
+The `iss` and `sub` checks no longer pass for a token that lacks the claim, and the `iss`, `aud`, `sub` and `jti` checks treat a payload that is not a Hash as having no claims. Each check raises its own error, such as `JWT::InvalidIssuerError`, instead of passing or raising a plain Ruby error.
+
+- **`iss`:** a token without `iss` fails, whatever the expected issuers are. Issuer Procs and Methods are no longer called with `nil`, so a Proc written to accept a missing issuer now rejects the token. `nil` among the expected issuers, as in `iss: [ENV['JWT_ISSUER']]` with the variable unset, no longer matches a token without `iss`. Regexp, Proc and Method matchers are only used for a String `iss`; any other value has to equal one of the expected issuers.
+- **`aud`:** `nil` among the expected audiences no longer matches a token whose `aud` is `[null]`.
+- **`sub`:** a token without `sub` fails, and so does every token when the expected subject is blank. This includes `:sub` given to `JWT::EncodedToken#verify_claims!` or `JWT::Claims.verify_payload!` without a value, which used to pass for tokens without `sub`.
+- **Payloads that are not a Hash:** Hash-like objects, such as `ActionController::Parameters`, given to `JWT::Claims.verify_payload!` or used as a `JWT::Token` payload now fail these checks. Convert them with `to_h` first. `JWT.decode` is not affected, because it parses the payload from JSON.
+
+## Public keys and certificates are rejected as HMAC secrets
+
+`HS256`, `HS384` and `HS512` reject the PEM and SSH encodings listed below when used as the shared secret. Public keys in other encodings, including DER, bare base64 and JWK JSON strings, are not detected and can still act as HMAC secrets; do not include them in mixed asymmetric/HMAC key lists. Signing with a rejected encoding raises `JWT::EncodeError`, and verifying with one raises `JWT::VerificationKeyError`, both with the message `HMAC key cannot be a public key or certificate`. This covers:
+
+- a public key in PEM, such as `-----BEGIN PUBLIC KEY-----` or `-----BEGIN RSA PUBLIC KEY-----`;
+- a certificate in PEM, such as `-----BEGIN CERTIFICATE-----`;
+- an OpenSSH public key or certificate, such as `ssh-ed25519 AAAA…`, including a line from `authorized_keys`;
+- an RFC 4716 SSH public key (`---- BEGIN SSH2 PUBLIC KEY ----`).
+
+A public key is known to others by design, so anyone holding it could sign tokens that verify with such a secret. If you use one, replace it with a randomly generated secret. Tokens signed with the old secret will no longer verify. A private key used as the secret is not affected, unless the same string also holds a public key or certificate, as a combined key and certificate file does.
+
+## Every key is tried when several are given
+
+When several keys are given for verification, a key that cannot be used for the algorithm, such as an EC key for `HS256` or an EC key on another curve, no longer stops the remaining keys from being tried. A token now verifies if any key matches. When none does, the error for the first unusable key is raised, as before.
+
+If you allow an HMAC algorithm alongside an asymmetric one, every String in the key list can now act as an HMAC secret, wherever it is in the list. RSA, ECDSA and EdDSA only accept key objects, so a public key given as a String, in any format, does nothing for them and should not be in the list. Keep the keys for each algorithm apart instead, for example with a key finder block that returns keys based on the token's `alg` header.
+
 # Upgrading ruby-jwt to >= 3.3.0
 
 ## Error hierarchy revamp
