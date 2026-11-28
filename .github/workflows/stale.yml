@@ -1,0 +1,33 @@
+---
+name: Stale pull requests
+
+"on":
+  schedule:
+    - cron: "17 3 * * *"
+  workflow_dispatch:
+
+permissions: {}
+
+jobs:
+  stale:
+    runs-on: ubuntu-latest
+    permissions:
+      actions: write
+      issues: write
+      pull-requests: write
+    steps:
+      - uses: actions/stale@4391f3da665fdf50b6810c1a66712fb9ba21aa93 # v11.0.0
+        with:
+          days-before-issue-stale: -1
+          days-before-issue-close: -1
+          days-before-pr-stale: 60
+          days-before-pr-close: 14
+          stale-pr-label: stale
+          stale-pr-message: >-
+            This pull request has had no activity for 60 days, so it has been marked as stale.
+            It will be closed in 14 days unless something happens.
+            If you are still working on it, push a commit or leave a comment and it will stay open.
+          close-pr-message: >-
+            Closing this pull request because it has had no activity for a while.
+            Thank you for the contribution! If you want to pick it up again,
+            reopen it or open a new pull request.
