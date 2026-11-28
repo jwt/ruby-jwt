@@ -1,5 +1,16 @@
 # Changelog
 
+## [3.3.2](https://github.com/jwt/ruby-jwt/compare/v3.3.1...v3.3.2) (2026-11-28)
+
+
+### Fixes and enhancements
+
+* Do not mark the claims as verified when reading an unencoded payload ([#809](https://github.com/jwt/ruby-jwt/issues/809)) ([953e444](https://github.com/jwt/ruby-jwt/commit/953e444258c92d651c2d61a59a25def1b5bf93e4)), closes [#723](https://github.com/jwt/ruby-jwt/issues/723)
+* raise `JWT::ClaimValidationError` for a payload that is not a JSON object ([#794](https://github.com/jwt/ruby-jwt/issues/794)) ([04e5ecd](https://github.com/jwt/ruby-jwt/commit/04e5ecdd6d38348eca87e3ad4ddda0235538dc36)), closes [#793](https://github.com/jwt/ruby-jwt/issues/793)
+* Reject a missing iss or sub, and raise claim errors instead of crashing in the iss and jti checks ([#808](https://github.com/jwt/ruby-jwt/issues/808)) ([d487fca](https://github.com/jwt/ruby-jwt/commit/d487fcab7defe2dd5782e334eb1124d9683c0bae))
+* Reject public keys and certificates as HMAC secrets ([d78ddc2](https://github.com/jwt/ruby-jwt/commit/d78ddc2f652d2894ef1085828ea2a75fecc43a88))
+* Try the remaining keys when a verification key is of the wrong type or on another EC curve ([d78ddc2](https://github.com/jwt/ruby-jwt/commit/d78ddc2f652d2894ef1085828ea2a75fecc43a88))
+
 ## [v3.3.1](https://github.com/jwt/ruby-jwt/tree/v3.3.1) (2026-11-24)
 
 [Full Changelog](https://github.com/jwt/ruby-jwt/compare/v3.3.0...v3.3.1)
