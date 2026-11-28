@@ -11,7 +11,7 @@ The `iss` and `sub` checks no longer pass for a token that lacks the claim, and 
 
 ## Public keys and certificates are rejected as HMAC secrets
 
-`HS256`, `HS384` and `HS512` no longer accept a public key or a certificate as the shared secret. Signing with one raises `JWT::EncodeError`, and verifying with one raises `JWT::VerificationKeyError`, both with the message `HMAC key cannot be a public key or certificate`. This covers:
+`HS256`, `HS384` and `HS512` reject the PEM and SSH encodings listed below when used as the shared secret. Public keys in other encodings, including DER, bare base64 and JWK JSON strings, are not detected and can still act as HMAC secrets; do not include them in mixed asymmetric/HMAC key lists. Signing with a rejected encoding raises `JWT::EncodeError`, and verifying with one raises `JWT::VerificationKeyError`, both with the message `HMAC key cannot be a public key or certificate`. This covers:
 
 - a public key in PEM, such as `-----BEGIN PUBLIC KEY-----` or `-----BEGIN RSA PUBLIC KEY-----`;
 - a certificate in PEM, such as `-----BEGIN CERTIFICATE-----`;
