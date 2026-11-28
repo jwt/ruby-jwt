@@ -288,13 +288,13 @@ entropy for the algorithm's security level.</p>
       <pre class="lines">
 
 
-18
-19
-20
-21</pre>
+22
+23
+24
+25</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/jwt/jwa/hmac.rb', line 18</span>
+      <pre class="code"><span class="info file"># File 'lib/jwt/jwa/hmac.rb', line 22</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_initialize'>initialize</span><span class='lparen'>(</span><span class='id identifier rubyid_alg'>alg</span><span class='comma'>,</span> <span class='id identifier rubyid_digest'>digest</span><span class='rparen'>)</span>
   <span class='ivar'>@alg</span> <span class='op'>=</span> <span class='id identifier rubyid_alg'>alg</span>
@@ -327,14 +327,14 @@ entropy for the algorithm's security level.</p>
       <pre class="lines">
 
 
-23
-24
-25
-26
-27</pre>
+27
+28
+29
+30
+31</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/jwt/jwa/hmac.rb', line 23</span>
+      <pre class="code"><span class="info file"># File 'lib/jwt/jwa/hmac.rb', line 27</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_sign'>sign</span><span class='lparen'>(</span><span class='label'>data:</span><span class='comma'>,</span> <span class='label'>signing_key:</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_validate_key!'>validate_key!</span><span class='lparen'>(</span><span class='id identifier rubyid_signing_key'>signing_key</span><span class='rparen'>)</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_message'>message</span><span class='op'>|</span> <span class='id identifier rubyid_raise_sign_error!'>raise_sign_error!</span><span class='lparen'>(</span><span class='id identifier rubyid_message'>message</span><span class='rparen'>)</span> <span class='rbrace'>}</span>
@@ -361,14 +361,14 @@ entropy for the algorithm's security level.</p>
       <pre class="lines">
 
 
-29
-30
-31
-32
-33</pre>
+33
+34
+35
+36
+37</pre>
     </td>
     <td>
-      <pre class="code"><span class="info file"># File 'lib/jwt/jwa/hmac.rb', line 29</span>
+      <pre class="code"><span class="info file"># File 'lib/jwt/jwa/hmac.rb', line 33</span>
 
 <span class='kw'>def</span> <span class='id identifier rubyid_verify'>verify</span><span class='lparen'>(</span><span class='label'>data:</span><span class='comma'>,</span> <span class='label'>signature:</span><span class='comma'>,</span> <span class='label'>verification_key:</span><span class='rparen'>)</span>
   <span class='id identifier rubyid_validate_key!'>validate_key!</span><span class='lparen'>(</span><span class='id identifier rubyid_verification_key'>verification_key</span><span class='rparen'>)</span> <span class='lbrace'>{</span> <span class='op'>|</span><span class='id identifier rubyid_message'>message</span><span class='op'>|</span> <span class='id identifier rubyid_raise_verify_error!'>raise_verify_error!</span><span class='lparen'>(</span><span class='id identifier rubyid_message'>message</span><span class='rparen'>)</span> <span class='rbrace'>}</span>
@@ -385,7 +385,7 @@ entropy for the algorithm's security level.</p>
 </div>
 
       <div id="footer">
-  Generated on Fri Nov 27 19:08:42 2026 by
+  Generated on Sat Nov 28 05:40:23 2026 by
   <a href="https://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.9.46 (ruby-4.0.10).
 </div>

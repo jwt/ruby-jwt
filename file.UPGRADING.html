@@ -59,7 +59,28 @@
         <div class="clear"></div>
       </div>
 
-      <div id="content"><div id='filecontents'><h1 id="Upgrading_ruby_jwt_to____3_3_0">Upgrading ruby-jwt to &gt;= 3.3.0</h1>
+      <div id="content"><div id='filecontents'><h1 id="Upgrading_ruby_jwt_to____3_3_2">Upgrading ruby-jwt to &gt;= 3.3.2</h1>
+<h2 id="Claim_checks_fail_when_the_claim_is_missing">Claim checks fail when the claim is missing</h2>
+<p>The <code>iss</code> and <code>sub</code> checks no longer pass for a token that lacks the claim, and the <code>iss</code>, <code>aud</code>, <code>sub</code> and <code>jti</code> checks treat a payload that is not a Hash as having no claims. Each check raises its own error, such as <code>JWT::InvalidIssuerError</code>, instead of passing or raising a plain Ruby error.</p>
+<ul>
+<li><strong><code>iss</code>:</strong> a token without <code>iss</code> fails, whatever the expected issuers are. Issuer Procs and Methods are no longer called with <code>nil</code>, so a Proc written to accept a missing issuer now rejects the token. <code>nil</code> among the expected issuers, as in <code>iss: [ENV['JWT_ISSUER']]</code> with the variable unset, no longer matches a token without <code>iss</code>. Regexp, Proc and Method matchers are only used for a String <code>iss</code>; any other value has to equal one of the expected issuers.</li>
+<li><strong><code>aud</code>:</strong> <code>nil</code> among the expected audiences no longer matches a token whose <code>aud</code> is <code>[null]</code>.</li>
+<li><strong><code>sub</code>:</strong> a token without <code>sub</code> fails, and so does every token when the expected subject is blank. This includes <code>:sub</code> given to <code>JWT::EncodedToken#verify_claims!</code> or <code>JWT::Claims.verify_payload!</code> without a value, which used to pass for tokens without <code>sub</code>.</li>
+<li><strong>Payloads that are not a Hash:</strong> Hash-like objects, such as <code>ActionController::Parameters</code>, given to <code>JWT::Claims.verify_payload!</code> or used as a <code>JWT::Token</code> payload now fail these checks. Convert them with <code>to_h</code> first. <code>JWT.decode</code> is not affected, because it parses the payload from JSON.</li>
+</ul>
+<h2 id="Public_keys_and_certificates_are_rejected_as_HMAC_secrets">Public keys and certificates are rejected as HMAC secrets</h2>
+<p><code>HS256</code>, <code>HS384</code> and <code>HS512</code> reject the PEM and SSH encodings listed below when used as the shared secret. Public keys in other encodings, including DER, bare base64 and JWK JSON strings, are not detected and can still act as HMAC secrets; do not include them in mixed asymmetric/HMAC key lists. Signing with a rejected encoding raises <code>JWT::EncodeError</code>, and verifying with one raises <code>JWT::VerificationKeyError</code>, both with the message <code>HMAC key cannot be a public key or certificate</code>. This covers:</p>
+<ul>
+<li>a public key in PEM, such as <code>-----BEGIN PUBLIC KEY-----</code> or <code>-----BEGIN RSA PUBLIC KEY-----</code>;</li>
+<li>a certificate in PEM, such as <code>-----BEGIN CERTIFICATE-----</code>;</li>
+<li>an OpenSSH public key or certificate, such as <code>ssh-ed25519 AAAA…</code>, including a line from <code>authorized_keys</code>;</li>
+<li>an RFC 4716 SSH public key (<code>---- BEGIN SSH2 PUBLIC KEY ----</code>).</li>
+</ul>
+<p>A public key is known to others by design, so anyone holding it could sign tokens that verify with such a secret. If you use one, replace it with a randomly generated secret. Tokens signed with the old secret will no longer verify. A private key used as the secret is not affected, unless the same string also holds a public key or certificate, as a combined key and certificate file does.</p>
+<h2 id="Every_key_is_tried_when_several_are_given">Every key is tried when several are given</h2>
+<p>When several keys are given for verification, a key that cannot be used for the algorithm, such as an EC key for <code>HS256</code> or an EC key on another curve, no longer stops the remaining keys from being tried. A token now verifies if any key matches. When none does, the error for the first unusable key is raised, as before.</p>
+<p>If you allow an HMAC algorithm alongside an asymmetric one, every String in the key list can now act as an HMAC secret, wherever it is in the list. RSA, ECDSA and EdDSA only accept key objects, so a public key given as a String, in any format, does nothing for them and should not be in the list. Keep the keys for each algorithm apart instead, for example with a key finder block that returns keys based on the token's <code>alg</code> header.</p>
+<h1 id="Upgrading_ruby_jwt_to____3_3_0">Upgrading ruby-jwt to &gt;= 3.3.0</h1>
 <h2 id="Error_hierarchy_revamp">Error hierarchy revamp</h2>
 <p>The <a href="https://github.com/jwt/ruby-jwt/pull/722">error classes were reorganised</a> under a new <code>JWT::Error</code> base class, so failures can be rescued by category instead of one class at a time:</p>
 <ul>
@@ -160,7 +181,7 @@
 <p>The gem was missing the Base64 encoding and decoding when representing and parsing a HMAC key as a JWK. This issue is now addressed. The added encoding will break compatibility with JWKs produced by older versions of the gem.</p></div></div>
 
       <div id="footer">
-  Generated on Fri Nov 27 19:08:42 2026 by
+  Generated on Sat Nov 28 05:40:22 2026 by
   <a href="https://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
   0.9.46 (ruby-4.0.10).
 </div>
